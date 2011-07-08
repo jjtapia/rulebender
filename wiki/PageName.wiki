@@ -1,3 +1,1 @@
-#summary One-sentence summary of this page.
-
 See http://rulebender.org for more information.
