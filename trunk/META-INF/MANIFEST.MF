@@ -1,0 +1,18 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: RuleBender
+Bundle-SymbolicName: rulebender; singleton:=true
+Bundle-Version: 2.0.0.qualifier
+Bundle-Activator: rulebender.Activator
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime,
+ org.eclipse.ui.ide;bundle-version="3.7.0",
+ org.eclipse.core.resources;bundle-version="3.7.100",
+ org.eclipse.ui.navigator;bundle-version="3.5.100",
+ org.eclipse.ui.navigator.resources;bundle-version="3.4.300",
+ org.eclipse.ui.console;bundle-version="3.5.100",
+ org.eclipse.ui.editors;bundle-version="3.7.0",
+ org.eclipse.jface.text;bundle-version="3.7.0"
+Bundle-ActivationPolicy: lazy
+Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Import-Package: org.eclipse.core.filesystem
