@@ -10,7 +10,8 @@ public class NETPartitionScanner extends RuleBasedPartitionScanner{
   
 	public final static String NET_COMMENT = "__net_comment";
 	
-	public NETPartitionScanner() {
+	public NETPartitionScanner() 
+	{
 		//tokens
 		IToken netComment = new Token(NET_COMMENT);
 		

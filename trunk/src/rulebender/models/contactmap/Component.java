@@ -6,25 +6,89 @@ import java.util.ArrayList;
 public class Component 
 {
 	private String name;
-	private ArrayList<State> states = new ArrayList<State>();
+	private ArrayList<State> states;
+	private int uniqueID;
 	
-	int x;
-	int y;
-	int width;
-	int height;
-	int textx;
-	int texty;
-	Color color = null;
+	public Component(String name)
+	{
+		setName(name);
+		
+		states = new ArrayList<State>();
+	}
+	
 	public void setName(String name) {
 		this.name = name;
 	}
+	
 	public String getName() {
 		return name;
 	}
-	public void setStates(ArrayList<State> states) {
-		this.states = states;
+	
+	public void addState(State state) 
+	{	
+		states.add(state);
 	}
-	public ArrayList<State> getStates() {
+	
+	public void mergeStates(Component c)
+	{
+		ArrayList<State> incomingStates = c.getStates();
+		
+		if(incomingStates == null)
+			return;
+				
+		for(State s : incomingStates)
+		{
+			if(!stateExists(s.getName()))
+			{
+				addState(s);
+			}
+		}
+	}
+	
+	public boolean stateExists(String name)
+	{
+		for(State s : states)
+		{
+			if(s.getName() == name)
+			{
+				return true;
+			}
+		}
+		
+		return false;
+	}
+	
+	public ArrayList<State> getStates() 
+	{
 		return states;
+	}
+	
+	public void setUniqueID(int id)
+	{
+		uniqueID = id;
+	}
+	
+	public int getUniqueID()
+	{
+		return uniqueID;
+	}
+
+	public int getStateIndex(String state1) 
+	{
+		// Return -1 if there is no state information
+		if(state1 == null)
+			return -1;
+		
+		// I'm ignoring the case for now where there is no state arrayslist
+		// If that happens, then I have bigger problems.
+		
+		// Get the index if there is state information
+		for(int i = 0; i < states.size(); i++)
+		{
+			if(states.get(i).equals(state1))
+				return i;
+		}
+		
+		return -2;
 	}
 }

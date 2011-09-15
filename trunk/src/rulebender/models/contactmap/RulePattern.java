@@ -4,19 +4,52 @@ import java.util.ArrayList;
 
 public class RulePattern 
 {
-
-	private ArrayList<MoleculePattern> molepatterns = new ArrayList<MoleculePattern>();
-	private ArrayList<Integer> bonds = new ArrayList<Integer>();
-	public void setBonds(ArrayList<Integer> bonds) {
-		this.bonds = bonds;
+	private ArrayList<MoleculePattern> molepatterns;
+	private ArrayList<Integer> bonds;
+	
+	/**
+	 *  constructor
+	 */
+	public RulePattern()
+	{
+		molepatterns = new ArrayList<MoleculePattern>();
+		bonds = new ArrayList<Integer>();
 	}
-	public ArrayList<Integer> getBonds() {
+	
+	/**
+	 * Returns the bond arraylist.
+	 * 
+	 * REQUIRED for the CMapModel
+	 *
+	 * @return
+	 */
+	public ArrayList<Integer> getBonds() 
+	{
 		return bonds;
 	}
-	public void setMolepatterns(ArrayList<MoleculePattern> molepatterns) {
-		this.molepatterns = molepatterns;
-	}
-	public ArrayList<MoleculePattern> getMolepatterns() {
+	
+	/**
+	 * Returns the molepatterns arraylist
+	 * 
+	 * REQUIRED for the CMapModel
+	 * @return
+	 */
+	public ArrayList<MoleculePattern> getMolepatterns() 
+	{
 		return molepatterns;
+	}
+	
+	/**
+	 * Adds a MoleculePattern object to the arraylist
+	 * @param moleculePattern
+	 */
+	public void addMoleculePattern(MoleculePattern moleculePattern) 
+	{
+		molepatterns.add(moleculePattern);
+	}
+	
+	public void addBondIndex(int index)
+	{
+		bonds.add(index);
 	}
 }

@@ -1,9 +1,5 @@
 package rulebender.models.contactmap;
 
-import java.awt.Color;
-import java.util.ArrayList;
-
-
 public class Bond 
 {
 	private int molecule1;
@@ -14,17 +10,14 @@ public class Bond
 	private int state2;
 	private boolean CanGenerate;
 	
-	Color color = null;
-	ArrayList<Point> position = new ArrayList<Point>();
-	
-	public Bond()
+	public Bond(int moleIndex1, int compIndex1, int stateIndex1, int moleIndex2, int compIndex2, int stateIndex2)
 	{
-		setMolecule1(-1);
-		setComponent1(-1);
-		setState1(-1);
-		setMolecule2(-1);
-		setComponent2(-1);
-		setState2(-1);
+		setMolecule1(moleIndex1);
+		setComponent1(compIndex1);
+		setState1(stateIndex1);
+		setMolecule2(moleIndex2);
+		setComponent2(compIndex2);
+		setState2(stateIndex2);
 		setCanGenerate(false);
 	}
 

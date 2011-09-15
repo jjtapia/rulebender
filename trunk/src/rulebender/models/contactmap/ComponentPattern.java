@@ -2,30 +2,32 @@ package rulebender.models.contactmap;
 
 public class ComponentPattern 
 {
-	private int compindex;
-	private int stateindex;
-	private int wildcards; // -1: None 0: ? 1: +
-	public ComponentPattern()
+	private int componentIndex;
+	private int stateIndex;
+	private int wildCards; // -1: None 0: ? 1: +
+	
+	public ComponentPattern(int componentIndexIn, int stateIndexIn, int wildCardIn)
 	{
-		setStateindex(-1);
-		setWildcards(-1);
+		setComponentIndex(componentIndexIn);
+		setStateIndex(stateIndexIn);
+		setWildCards(wildCardIn);
 	}
-	public void setCompindex(int compindex) {
-		this.compindex = compindex;
+	public void setComponentIndex(int compindex) {
+		this.componentIndex = compindex;
 	}
-	public int getCompindex() {
-		return compindex;
+	public int getCompIndex() {
+		return componentIndex;
 	}
-	public void setStateindex(int stateindex) {
-		this.stateindex = stateindex;
+	public void setStateIndex(int stateindex) {
+		this.stateIndex = stateindex;
 	}
 	public int getStateindex() {
-		return stateindex;
+		return stateIndex;
 	}
-	public void setWildcards(int wildcards) {
-		this.wildcards = wildcards;
+	public void setWildCards(int wildcards) {
+		this.wildCards = wildcards;
 	}
 	public int getWildcards() {
-		return wildcards;
+		return wildCards;
 	}
 }

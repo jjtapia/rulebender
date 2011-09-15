@@ -3,7 +3,8 @@ package rulebender.views.contactmap;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.part.ViewPart;
 
-public class ContactMapView extends ViewPart {
+public class ContactMapView extends ViewPart 
+{
 
 	public ContactMapView() 
 	{
@@ -11,13 +12,15 @@ public class ContactMapView extends ViewPart {
 	}
 
 	@Override
-	public void createPartControl(Composite parent) {
+	public void createPartControl(Composite parent) 
+	{
 		// TODO Auto-generated method stub
 
 	}
 
 	@Override
-	public void setFocus() {
+	public void setFocus() 
+	{
 		// TODO Auto-generated method stub
 
 	}

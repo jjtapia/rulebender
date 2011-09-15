@@ -2,18 +2,32 @@ package rulebender.models.contactmap;
 
 public class BondAction 
 {
-	private int bondindex;//start from 0
+	private int bondIndex;//start from 0
 	private int action;// negative means delete, positive means add
-	public void setAction(int action) {
+	
+	public BondAction(int indexIn, int actionIn) 
+	{
+		setAction(actionIn);
+		setBondIndex(indexIn);
+	}
+	
+	public void setAction(int action) 
+	{
 		this.action = action;
 	}
-	public int getAction() {
+	
+	public int getAction() 
+	{
 		return action;
 	}
-	public void setBondindex(int bondindex) {
-		this.bondindex = bondindex;
+	
+	public void setBondIndex(int bondindex) 
+	{
+		this.bondIndex = bondindex;
 	}
-	public int getBondindex() {
-		return bondindex;
+	
+	public int getBondIndex() 
+	{
+		return bondIndex;
 	}
 }

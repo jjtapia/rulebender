@@ -3,15 +3,19 @@ package rulebender.models.contactmap;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Compartment {
+public class Compartment 
+{
 	private String name;
 	private Compartment parent;
-	private List children;
+	private List<Compartment> children;
 	
-	public Compartment(String name, Compartment parent) {
+	public Compartment(String name, Compartment parent) 
+	{
 		this.name = name;
 		this.parent = parent;
+		
 		this.children = new ArrayList<Compartment>();
+	
 		if (parent != null) {
 			parent.addChild(this);
 		}
@@ -29,7 +33,7 @@ public class Compartment {
 		this.parent = parent;
 	}
 	
-	public List getChildren() {
+	public List<Compartment> getChildren() {
 		return children;
 	}
 	

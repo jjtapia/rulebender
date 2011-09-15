@@ -9,15 +9,21 @@ public class Rule
 	private boolean bidirection;
 	private String rate1;
 	private String rate2;
-	private ArrayList<RulePattern> reactantpatterns = new ArrayList<RulePattern>();
-	private ArrayList<RulePattern> productpatterns = new ArrayList<RulePattern>();
-	private ArrayList<BondAction> bondactions = new ArrayList<BondAction>();
+	
+	private ArrayList<RulePattern> reactantPatterns;
+	private ArrayList<RulePattern> productPatterns;
+	private ArrayList<BondAction> bondActions;
+	
 	//TODO: molecule actions, Non-trivial, refer to BNG bible to see different cases
 	
 	public Rule()
 	{
 		setRate1(null);
 		setRate2(null);
+		
+		reactantPatterns = new ArrayList<RulePattern>();
+		productPatterns = new ArrayList<RulePattern>();
+		bondActions = new ArrayList<BondAction>();
 	}
 	
 	
@@ -64,27 +70,34 @@ public class Rule
 		return rate1;
 	}
 
-	public void setReactantpatterns(ArrayList<RulePattern> reactantpatterns) {
-		this.reactantpatterns = reactantpatterns;
+	
+	public void addReactantPattern(RulePattern rulePattern)
+	{	
+		reactantPatterns.add(rulePattern);
+	}
+	
+	public void addProductPattern(RulePattern rulePattern)
+	{
+		productPatterns.add(rulePattern);
+	}
+	
+	public void addBondAction(BondAction bondAction)
+	{
+		bondActions.add(bondAction);
+	}
+	
+	public ArrayList<RulePattern> getReactantpatterns() 
+	{
+		return reactantPatterns;
+	}
+	
+	public ArrayList<RulePattern> getProductpatterns() 
+	{
+		return productPatterns;
 	}
 
-	public ArrayList<RulePattern> getReactantpatterns() {
-		return reactantpatterns;
-	}
-
-	public void setProductpatterns(ArrayList<RulePattern> productpatterns) {
-		this.productpatterns = productpatterns;
-	}
-
-	public ArrayList<RulePattern> getProductpatterns() {
-		return productpatterns;
-	}
-
-	public void setBondactions(ArrayList<BondAction> bondactions) {
-		this.bondactions = bondactions;
-	}
-
-	public ArrayList<BondAction> getBondactions() {
-		return bondactions;
+	public ArrayList<BondAction> getBondactions() 
+	{
+		return bondActions;
 	}
 }

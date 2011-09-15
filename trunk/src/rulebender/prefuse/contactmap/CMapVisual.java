@@ -734,7 +734,7 @@ public class CMapVisual
 		// For the bonds created or destroyed by the rule
 		for(BondAction ba : thisRule.getBondactions())
 		{
-			String bondid = Integer.toString(ba.getBondindex());
+			String bondid = Integer.toString(ba.getBondIndex());
 			// Get the edge for this bond.
 			Edge e_state = edges.get(bondid + "." + "state");
 			Edge e_comp = edges.get(bondid + "." + "component");
@@ -780,19 +780,19 @@ public class CMapVisual
 				
 				// molecule level, no components
 				if (mp.getComppatterns().size() == 0) {
-					r_comp.addReactantMoleNode(nodes.get(""+mp.getMoleindex()));
-					r_state.addReactantMoleNode(nodes.get(""+mp.getMoleindex()));
+					r_comp.addReactantMoleNode(nodes.get(""+mp.getMoleIndex()));
+					r_state.addReactantMoleNode(nodes.get(""+mp.getMoleIndex()));
 				}
 				
 				// component level
 				for(ComponentPattern cp : mp.getComppatterns()) {
 					if (cp.getStateindex() != -1) {
 						// has certain state
-						r_state.addReactantCompNode(nodes.get(mp.getMoleindex()+"."+cp.getCompindex()+"."+cp.getStateindex()));
+						r_state.addReactantCompNode(nodes.get(mp.getMoleIndex()+"."+cp.getCompIndex()+"."+cp.getStateindex()));
 					}							
 
-					r_comp.addReactantCompNode(nodes.get(mp.getMoleindex()+"."+cp.getCompindex()));
-					r_state.addReactantCompNode(nodes.get(mp.getMoleindex()+"."+cp.getCompindex()));
+					r_comp.addReactantCompNode(nodes.get(mp.getMoleIndex()+"."+cp.getCompIndex()));
+					r_state.addReactantCompNode(nodes.get(mp.getMoleIndex()+"."+cp.getCompIndex()));
 				}
 
 			}
@@ -812,19 +812,19 @@ public class CMapVisual
 			for(MoleculePattern mp : pp.getMolepatterns()) {
 				// molecule level, no components
 				if (mp.getComppatterns().size() == 0) {
-					r_comp.addProductMoleNode(nodes.get(""+mp.getMoleindex()));
-					r_state.addProductMoleNode(nodes.get(""+mp.getMoleindex()));
+					r_comp.addProductMoleNode(nodes.get(""+mp.getMoleIndex()));
+					r_state.addProductMoleNode(nodes.get(""+mp.getMoleIndex()));
 				}
 				
 				// component level
 				for(ComponentPattern cp : mp.getComppatterns()) {
 					if (cp.getStateindex() != -1) {
 						// has certain state
-						r_state.addProductCompNode(nodes.get(mp.getMoleindex()+"."+cp.getCompindex()+"."+cp.getStateindex()));
+						r_state.addProductCompNode(nodes.get(mp.getMoleIndex()+"."+cp.getCompIndex()+"."+cp.getStateindex()));
 					}						
 					
-					r_comp.addProductCompNode(nodes.get(mp.getMoleindex()+"."+cp.getCompindex()));
-					r_state.addProductCompNode(nodes.get(mp.getMoleindex()+"."+cp.getCompindex()));
+					r_comp.addProductCompNode(nodes.get(mp.getMoleIndex()+"."+cp.getCompIndex()));
+					r_state.addProductCompNode(nodes.get(mp.getMoleIndex()+"."+cp.getCompIndex()));
 				}
 			}
 		}
@@ -836,24 +836,24 @@ public class CMapVisual
 		{
 			for (MoleculePattern pmp : pp.getMolepatterns()) 
 			{
-				int pmoleId = pmp.getMoleindex();
+				int pmoleId = pmp.getMoleIndex();
 				
 				for (RulePattern rp : thisRule.getReactantpatterns()) 
 				{
 					for (MoleculePattern rmp : rp.getMolepatterns()) 
 					{
 						
-						int rmoleId = rmp.getMoleindex();
+						int rmoleId = rmp.getMoleIndex();
 
 						// same molecule
 						if (rmoleId == pmoleId) 
 						{
 							for(ComponentPattern rcp : rmp.getComppatterns())  
 							{
-								int rcompId = rcp.getCompindex();
+								int rcompId = rcp.getCompIndex();
 								for(ComponentPattern pcp : pmp.getComppatterns())  
 								{
-									int pcompId = pcp.getCompindex();
+									int pcompId = pcp.getCompIndex();
 									
 									// same component
 									if (rcompId == pcompId) 
@@ -864,8 +864,8 @@ public class CMapVisual
 										// different state
 										if (rstateId != pstateId) 
 										{
-											Node pstateNode = nodes.get(pmp.getMoleindex()+"."+pcp.getCompindex()+"."+pcp.getStateindex());
-											Node rstateNode = nodes.get(rmp.getMoleindex()+"."+rcp.getCompindex()+"."+rcp.getStateindex());
+											Node pstateNode = nodes.get(pmp.getMoleIndex()+"."+pcp.getCompIndex()+"."+pcp.getStateindex());
+											Node rstateNode = nodes.get(rmp.getMoleIndex()+"."+rcp.getCompIndex()+"."+rcp.getStateindex());
 											
 											// rule direction includes forward
 											if (r_state.getName().indexOf(">") != -1) 	
@@ -904,7 +904,7 @@ public class CMapVisual
 											pstateNode.set("statechange", true);
 											
 											// set component "statechange" = true
-											Node compNode = nodes.get(pmp.getMoleindex()+"."+pcp.getCompindex());
+											Node compNode = nodes.get(pmp.getMoleIndex()+"."+pcp.getCompIndex());
 											compNode.set("statechange", true);
 											
 											// DEBUG
@@ -943,7 +943,7 @@ public class CMapVisual
 				for (MoleculePattern mp : rp.getMolepatterns()) {
 					if (mp.getComppatterns().size() != 1) {
 						// molecule-level node
-						Node moleNode = nodes.get("" + mp.getMoleindex());
+						Node moleNode = nodes.get("" + mp.getMoleIndex());
 						if (moleNode != null) {
 							moleSet.add(moleNode);
 						}
@@ -952,10 +952,10 @@ public class CMapVisual
 						ComponentPattern cp = mp.getComppatterns().get(0);
 						Node compNode = null, stateNode = null;
 						// component node
-						compNode = nodes.get("" + mp.getMoleindex() + "." + cp.getCompindex());
+						compNode = nodes.get("" + mp.getMoleIndex() + "." + cp.getCompIndex());
 						if (cp.getStateindex() != -1) {
 							// state node
-							stateNode = nodes.get(mp.getMoleindex()+"."+cp.getCompindex()+"."+cp.getStateindex());
+							stateNode = nodes.get(mp.getMoleIndex()+"."+cp.getCompIndex()+"."+cp.getStateindex());
 							if (stateNode != null) {
 								moleSet.add(stateNode);
 							}
@@ -1002,7 +1002,7 @@ public class CMapVisual
 					// molecule level, no components or more than one components
 					if (mp.getComppatterns().size() != 1) {
 
-						Node moleNode = nodes.get("" + mp.getMoleindex());
+						Node moleNode = nodes.get("" + mp.getMoleIndex());
 						// set visible
 						VisualItem nItem = vis.getVisualItem(COMPONENT_GRAPH, moleNode);
 						
@@ -1018,12 +1018,12 @@ public class CMapVisual
 						
 						ComponentPattern cp = mp.getComppatterns().get(0);
 						Node compNode = null, stateNode = null;
-						compNode = nodes.get("" + mp.getMoleindex() + "." + cp.getCompindex());
+						compNode = nodes.get("" + mp.getMoleIndex() + "." + cp.getCompIndex());
 						boolean hasState = false;
 						
 						if (cp.getStateindex() != -1) {
 							// has certain state
-							stateNode = nodes.get(mp.getMoleindex()+"."+cp.getCompindex()+"."+cp.getStateindex());
+							stateNode = nodes.get(mp.getMoleIndex()+"."+cp.getCompIndex()+"."+cp.getStateindex());
 							hasState = true;
 						}						
 						

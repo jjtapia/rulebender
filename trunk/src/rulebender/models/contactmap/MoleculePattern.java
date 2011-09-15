@@ -5,18 +5,34 @@ import java.util.ArrayList;
 public class MoleculePattern 
 {
 
-	private int moleindex;
-	private ArrayList<ComponentPattern> comppatterns = new ArrayList<ComponentPattern>();
-	public void setMoleindex(int moleindex) {
-		this.moleindex = moleindex;
+	private int moleIndex;
+	
+	private ArrayList<ComponentPattern> compPatterns;
+	
+	public MoleculePattern(int moleculeIndexIn)
+	{
+		setMoleIndex(moleculeIndexIn);
+		
+		compPatterns = new ArrayList<ComponentPattern>();
 	}
-	public int getMoleindex() {
-		return moleindex;
+	
+	public int getMoleIndex() 
+	{
+		return moleIndex;
 	}
-	public void setComppatterns(ArrayList<ComponentPattern> comppatterns) {
-		this.comppatterns = comppatterns;
+	
+	public void setMoleIndex(int index)
+	{
+		moleIndex = index;
 	}
-	public ArrayList<ComponentPattern> getComppatterns() {
-		return comppatterns;
+	
+	public ArrayList<ComponentPattern> getComppatterns() 
+	{
+		return compPatterns;
+	}
+
+	public void addComponentPattern(int componentIndex, int stateIndex, int wildCard) 
+	{	
+		compPatterns.add(new ComponentPattern(componentIndex, stateIndex, wildCard));	
 	}
 }

@@ -1,23 +1,22 @@
 package rulebender.models.contactmap;
 
-import java.awt.Color;
 import java.util.ArrayList;
 
-public class Molecule {
+public class Molecule
+{
 	private String expression;
 	private boolean expComplete = false;
 	private String name;
-	private ArrayList<Component> components = new ArrayList<Component>();
-	private ArrayList<String> compartments = new ArrayList<String>();
+	private ArrayList<Component> components;
+	private ArrayList<String> compartments;
 	
-	int x;
-	int y;
-	int width;
-	int height;
-	int textx;
-	int texty;
-	Color color = null;
-	
+	public Molecule(String name_in)
+	{
+		setName(name_in);
+		
+		components = new ArrayList<Component>();
+		compartments = new ArrayList<String>();
+	}
 	
 	/**
 	 * The expression set at the very beginning may be not complete.
@@ -25,7 +24,8 @@ public class Molecule {
 	 * So reset it when the first time get called.
 	 * @return complete expression of molecule
 	 */
-	public String getExpression() {
+	public String getExpression() 
+	{
 		if (expComplete == false) {
 			expression = "";
 			expression += name + "(";
@@ -60,6 +60,7 @@ public class Molecule {
 		}
 		return expression;
 	}
+	
 	public void setExpression(String expression) {
 		this.expression = expression;
 	}
@@ -69,26 +70,115 @@ public class Molecule {
 	public String getName() {
 		return name;
 	}
-	public void setComponents(ArrayList<Component> components) {
-		this.components = components;
+	
+	public int addComponent(Component comp) 
+	{	
+		int cCount = 0;
+		
+		for(Component c : components)
+		{
+			if(c.getName().equals(comp.getName()))
+			{
+				cCount++;
+			}
+		}
+		
+		comp.setUniqueID(cCount);
+		
+		components.add(comp);
+		
+		return cCount;
 	}
-	public ArrayList<Component> getComponents() {
+	
+	/**
+	 * Returns a component object for a name string.
+	 * @param name
+	 */
+	public Component getComponent(String name, int id)
+	{
+		for(Component c : components)
+		{
+			if(c.getName().equals(name) && c.getUniqueID() == id)
+				return c;
+		}
+		
+		return null;
+	}
+	
+	/**
+	 * Given a state and a component string, add the state to the component.
+	 * @param state
+	 * @param component
+	 */
+	public void addStateToComponent(String state, String component)
+	{
+		for(Component c : components)
+		{
+			if(c.getName().equals("component"))
+			c.addState(new State(state));
+		}
+	}
+		
+	public ArrayList<Component> getComponents() 
+	{
 		return components;
 	}
 	
-	public void addCompartment(String compartment) {
-		this.compartments.add(compartment);
+	public void addCompartment(String compartment) 
+	{
+		compartments.add(compartment);
 	}
 	
-	public ArrayList<String> getCompartments() {
+	public ArrayList<String> getCompartments() 
+	{
 		return compartments;
 	}
 	
-	public String getFirstCompartment() {
-		if (compartments.size() >= 1) {
+	public String getFirstCompartment() 
+	{
+		if (compartments.size() >= 1) 
+		{
 			return compartments.get(0);
 		}
 		
 		return null;
+	}
+
+	public void mergeData(Molecule molecule) 
+	{
+		// For each new component
+		for(Component c : molecule.getComponents())
+		{
+			Component existingComponent = getComponent(c.getName(), c.getUniqueID());
+					
+			// If the component is not already in the molecule
+			if(existingComponent == null)
+			{
+				// Just add it
+				addComponent(c);
+			}
+			// If it is already in the molecule, then we have to check the states
+			else
+			{
+				existingComponent.mergeStates(c);
+			}	
+		}
+	}
+
+	public int getComponentIndex(String compName1, int compID1) 
+	{
+		System.out.println("Searching for index of component: " + compName1 + "." + compID1);
+		
+		for(int i = 0; i < components.size(); i++)
+		{
+			System.out.println("\tFound component: " + components.get(i).getName() + "." + components.get(i).getUniqueID());
+			
+			if(components.get(i).getName().equals(compName1) && components.get(i).getUniqueID() == compID1)
+			{
+				return i;
+			}
+		}
+		
+		return -1;
 	}
 }

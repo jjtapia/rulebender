@@ -14,14 +14,13 @@ public class BNGLConfiguration extends SourceViewerConfiguration
 {
 	private PresentationReconciler reconciler;
 
-	public String[] getConfiguredContentTypes(ISourceViewer sourceViewer) {
-		
-		return new String[] { IDocument.DEFAULT_CONTENT_TYPE,
-				NETPartitionScanner.NET_COMMENT};
+	public String[] getConfiguredContentTypes(ISourceViewer sourceViewer) 
+	{	
+		return new String[] {IDocument.DEFAULT_CONTENT_TYPE, NETPartitionScanner.NET_COMMENT};
 	}
 
-	public IPresentationReconciler getPresentationReconciler(
-			ISourceViewer sourceViewer) {
+	public IPresentationReconciler getPresentationReconciler(ISourceViewer sourceViewer) 
+	{
 		if (reconciler != null)
 			return reconciler;
 

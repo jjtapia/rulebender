@@ -15,9 +15,9 @@ public class NavigatorDoubleClickListener implements IDoubleClickListener
 		TreeViewer viewer = (TreeViewer) event.getViewer();
 		ISelection selection = event.getSelection();
 	
-		viewer.setExpandedState((FileBrowserTreeNodeInterface)selection,!viewer.getExpandedState((FileBrowserTreeNodeInterface)selection));
-		
-		//System.out.println("Double click on " + ((FileBrowserTreeNodeInterface) selection).getName());
+		//viewer.setExpandedState((FileBrowserTreeNodeInterface) selection, !viewer.getExpandedState((FileBrowserTreeNodeInterface)selection));
+	
+		System.out.println("Double click on " + ((FileBrowserTreeNodeInterface) selection).getName());
 	}
 
 }

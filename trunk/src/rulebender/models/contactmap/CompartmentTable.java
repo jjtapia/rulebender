@@ -7,35 +7,49 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-public class CompartmentTable {
+public class CompartmentTable 
+{
 	private Compartment root;
-	private Hashtable compartments;
-	private List cmptList;
+	private Hashtable<String, Compartment> compartments;
+	private List<Compartment> cmptList;
 	
-	public CompartmentTable() {
+	public CompartmentTable() 
+	{
 		root = null;
 		compartments = new Hashtable<String, Compartment>();
 	}
 	
-	public Compartment getRoot() {
+	public Compartment getRoot() 
+	{
 		return root;
 	}
-	public void setRoot(Compartment root) {
+	
+	public void setRoot(Compartment root) 
+	{
 		this.root = root;
 	}
 	
-	public void addCompartment(Compartment compartment) {		
+	public void addCompartment(Compartment compartment) 
+	{		
 		compartments.put(compartment.getName(), compartment);
+		
 		if (compartment.getParent() == null) {
 			this.root = compartment;
 		}
 	}
 	
-	public Compartment getCompartment(String name) {
-		return (Compartment)compartments.get(name);
+	public Compartment getCompartment(String name) 
+	{
+		if(name == null)
+		{
+			return null;
+		}
+		
+		return compartments.get(name);
 	}
 	
-	public List getCompartmentsList(boolean update) {
+	public List<Compartment> getCompartmentsList(boolean update) 
+	{
 		if (update == true && cmptList != null) {
 			return cmptList;
 		} else {
@@ -87,7 +101,8 @@ public class CompartmentTable {
 		return false;
 	}
 	
-	public void print() {
+	public void print() 
+	{
 		for (Enumeration e = compartments.keys(); e.hasMoreElements();) {
 			Compartment cur = (Compartment) compartments.get(e.nextElement());
 			System.out.print("Name: " + cur.getName());

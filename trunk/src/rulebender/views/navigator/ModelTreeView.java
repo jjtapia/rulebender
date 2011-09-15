@@ -40,8 +40,13 @@ public class ModelTreeView extends ViewPart
 		m_treeViewer = new TreeViewer(parent, SWT.FULL_SELECTION | SWT.MULTI);
 		m_treeViewer.setContentProvider(new TreeContentProvider());
 		m_treeViewer.setLabelProvider(new TreeLabelProvider());
+		
+		getSite().setSelectionProvider(m_treeViewer);
+		
 		FolderNode rootNode = new FolderNode(new File(rootDirPath));
 		m_treeViewer.setInput(rootNode);
+		
+		m_treeViewer.addDoubleClickListener(new NavigatorDoubleClickListener());
 		
 		//m_treeViewer.addDoubleClickListener(new NavigatorDoubleClickListener());
 		m_treeViewer.expandAll();
