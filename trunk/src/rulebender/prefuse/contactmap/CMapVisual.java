@@ -4,12 +4,9 @@ import java.awt.Dimension;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Hashtable;
-import java.util.Iterator;
 import java.util.Set;
 
 import javax.swing.table.TableModel;
-
-
 
 import prefuse.Display;
 import prefuse.Visualization;
@@ -272,16 +269,16 @@ public class CMapVisual
 		Molecule tmole;
 		Component tcomp;
 		State tstate;
+		
 		// store first node of each compartments to control layout
 		Hashtable<String, Node> compartmentsFirstNode = new Hashtable<String, Node>();
-		
 		
 		// This is so I can add invisible edges between all of the components in the 
 		// molecule.  This is for the force directed layout.
 		ArrayList<Node> otherCompsInMol;
 		
 		// In general, we construct the graph by making a node for each component
-		// and then group the components in the same molecule into an aggregator. 
+		// and then group the components in the same molecule into an aggregate. 
 		// There are visible edges representing bonds, and then invisible edges
 		// between components in the same molecule. 
 		
@@ -655,7 +652,8 @@ public class CMapVisual
 		return n_state;
 	}
 	
-	private void createEdgesForBonds() {
+	private void createEdgesForBonds() 
+	{
 		// Create an edge for each bond.
 		for(int b = 0; b < model.getBonds().size(); b++)
 		{
@@ -689,23 +687,28 @@ public class CMapVisual
 			e_comp.set("displaymode", "both");
 			e_comp.set("type", "componentVisible_edge");
 			
+			
 			// left component has state requirement
-			if (tbond.getState1() != -1) {
+			if (tbond.getState1() != -1) 
+			{
 				leftparentnode = leftnode; // component node
 				leftnode = nodes.get(tbond.getMolecule1()+"."+tbond.getComponent1()+"."+tbond.getState1()); // state node
 				if (leftnode != null)
 					leftnode.set("hasedge", true);
 			}
+	
 			// right component has state requirement
-			if (tbond.getState2() != -1) {
+			if (tbond.getState2() != -1) 
+			{
 				rightparentnode = rightnode; // component node
 				rightnode = nodes.get(tbond.getMolecule2()+"."+tbond.getComponent2()+"."+tbond.getState2()); // state node
 				if (rightnode != null)
 					rightnode.set("hasedge", true);
 			}
 			
-			if (leftparentnode != null || rightparentnode != null) {
-				// Create the edge
+			// If either of the parent nodes are not null... TODO should it be &&? (changed from ||)
+			if (leftparentnode != null && rightparentnode != null) 
+			{
 				e_state = comp_graph.addEdge(leftnode, rightnode);
 				
 				// add component information

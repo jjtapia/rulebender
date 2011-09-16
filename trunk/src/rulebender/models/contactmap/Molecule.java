@@ -86,7 +86,7 @@ public class Molecule
 		comp.setUniqueID(cCount);
 		
 		components.add(comp);
-		
+			
 		return cCount;
 	}
 	
@@ -96,6 +96,7 @@ public class Molecule
 	 */
 	public Component getComponent(String name, int id)
 	{
+		
 		for(Component c : components)
 		{
 			if(c.getName().equals(name) && c.getUniqueID() == id)
@@ -114,8 +115,10 @@ public class Molecule
 	{
 		for(Component c : components)
 		{
-			if(c.getName().equals("component"))
-			c.addState(new State(state));
+			if(c.getName().equals(component))
+			{ 
+				c.addState(new State(state));
+			}
 		}
 	}
 		
@@ -147,32 +150,37 @@ public class Molecule
 	public void mergeData(Molecule molecule) 
 	{
 		// For each new component
-		for(Component c : molecule.getComponents())
+		for(Component component : molecule.getComponents())
 		{
-			Component existingComponent = getComponent(c.getName(), c.getUniqueID());
+			Component existingComponent = getComponent(component.getName(), component.getUniqueID());
 					
 			// If the component is not already in the molecule
 			if(existingComponent == null)
 			{
 				// Just add it
-				addComponent(c);
+				addComponent(component);
 			}
 			// If it is already in the molecule, then we have to check the states
 			else
 			{
-				existingComponent.mergeStates(c);
+				existingComponent.mergeStates(component);
 			}	
+		}
+		
+		// For each compartment
+		for(String compartment  : molecule.getCompartments())
+		{
+			if(!compartments.contains(compartment))
+			{
+				compartments.add(compartment);
+			}
 		}
 	}
 
 	public int getComponentIndex(String compName1, int compID1) 
 	{
-		System.out.println("Searching for index of component: " + compName1 + "." + compID1);
-		
 		for(int i = 0; i < components.size(); i++)
 		{
-			System.out.println("\tFound component: " + components.get(i).getName() + "." + components.get(i).getUniqueID());
-			
 			if(components.get(i).getName().equals(compName1) && components.get(i).getUniqueID() == compID1)
 			{
 				return i;

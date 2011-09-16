@@ -24,9 +24,15 @@ public class Component
 		return name;
 	}
 	
-	public void addState(State state) 
+	public void addState(State stateIn) 
 	{	
-		states.add(state);
+		for(State state : states )
+		{
+			if(stateIn.getName().equals(state.getName()))
+					return;
+		}
+		
+		states.add(stateIn);
 	}
 	
 	public void mergeStates(Component c)

@@ -26,6 +26,7 @@ public class PrefuseTestView extends ViewPart
 		Composite swtAwtComponent = new Composite(parent, SWT.EMBEDDED);
 		
 		java.awt.Frame frame = SWT_AWT.new_Frame( swtAwtComponent );
+		
 		frame.add(d);
 		
 	}

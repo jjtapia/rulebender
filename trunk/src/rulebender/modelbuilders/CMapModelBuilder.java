@@ -242,6 +242,13 @@ public class CMapModelBuilder implements ModelBuilderInterface
 				// For each ComponentData object.
 				for(ComponentData cd : mpd.getComponentPatterns())
 				{
+					// Get the state value and add it to the molecule
+					if(cd.getState() != null)
+					{
+						mole.addStateToComponent(cd.getState(), cd.getComponent());
+					}
+					
+					// Add the component data to the molecule pattern object.
 					moleculePattern.addComponentPattern(mole.getComponentIndex(cd.getComponent(),cd.getUniqueID()),
 													 mole.getComponent(cd.getComponent(), cd.getUniqueID()).getStateIndex(cd.getState()),
 													 0);
@@ -275,6 +282,12 @@ public class CMapModelBuilder implements ModelBuilderInterface
 				// For each ComponentData object.
 				for(ComponentData cd : mpd.getComponentPatterns())
 				{
+					// Get the state value and add it to the molecule
+					if(cd.getState() != null)
+					{
+						mole.addStateToComponent(cd.getState(), cd.getComponent());
+					}
+					
 					moleculePattern.addComponentPattern(mole.getComponentIndex(cd.getComponent(),cd.getUniqueID()),
 													 mole.getComponent(cd.getComponent(), cd.getUniqueID()).getStateIndex(cd.getState()),
 													 0);
@@ -291,9 +304,6 @@ public class CMapModelBuilder implements ModelBuilderInterface
 		
 		// So, we need to add the bonds, get the index, and then set the
 		// index value in the rule object.
-		
-		//DEBUG
-		System.out.println("ruleData.getBondActions is null?: " + (ruleData.getBondActions() == null));
 		
 		// For each bond
 		for(BondActionData bad : ruleData.getBondActions())
@@ -314,16 +324,12 @@ public class CMapModelBuilder implements ModelBuilderInterface
 	public void foundObservable(String observableID, String observableName,
 			String observableType) 
 	{
-		System.out.println("Observable:\n\tid: " + observableID + 
-						   "\n\tname: " + observableName + "\n\ttype: " + 
-						   observableType);
+	
 	}
 
 	
 	public void foundObservablePattern(String observableID, String patternID) 
 	{
-		System.out.println("ObservablePattern:\n\tobservable id: " + observableID +
-						   "\n\tpattern id: " + patternID);
 		
 	}
 
@@ -331,9 +337,6 @@ public class CMapModelBuilder implements ModelBuilderInterface
 	public void foundObservablePatternMolecule(String observableID,
 			String patternID, String moleculeID, String moleculeName) 
 	{
-		System.out.println("ObservablePatternMolecule:\n\tobservable ID: " + observableID 
-						   + "\n\tpattern id: " + patternID + "\n\tmolecule id: " +
-						   moleculeID + "\n\tmolecule name: " + moleculeName);
 	}
 
 	
@@ -341,10 +344,6 @@ public class CMapModelBuilder implements ModelBuilderInterface
 			String patternID, String moleculeID, String componentID,
 			String componentName) 
 	{
-		System.out.println("ObservablePatternMolecule:\n\tobservable ID: " + observableID 
-				   + "\n\tpattern id: " + patternID + "\n\tmolecule id: " +
-				   moleculeID + "\n\tcomponent id: " + componentID + 
-				   "\n\tcomponent name: " + componentName);
 		
 	}
 
@@ -353,12 +352,7 @@ public class CMapModelBuilder implements ModelBuilderInterface
 			String observableID, String patternID, String moleculeID,
 			String componentID, String componentState) 
 	{
-		System.out.println("ObservablePatternMolecule:\n\tobservable ID: " + observableID 
-				   + "\n\tpattern id: " + patternID + "\n\tmolecule id: " +
-				   moleculeID + "\n\tcomponent id: " + componentID + 
-				   "\n\tcomponent state: " + componentState);
-	
-		
+			
 	}
 	
 	public CMapModel getCMapModel() 

@@ -3,7 +3,7 @@ package rulebender.modelbuilders.ruledata;
 public class ComponentData 
 {
 	private String component;
-	private String state;
+	private String state = null;
 	private int uniqueID;
 	
 	public ComponentData(String componentNameIn) 

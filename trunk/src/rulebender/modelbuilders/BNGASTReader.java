@@ -502,12 +502,15 @@ public class BNGASTReader
 						reactantPatternData.addComponentToMolecule(component, reactantPatternMolecule.getAttributeValue("name"));
 						
 						// Add it to the registry
-						System.out.println("Adding ComponentData for id: " + reactantPatternMoleculeComponent.getAttributeValue("id"));
 						componentDataForID.put(reactantPatternMoleculeComponent.getAttributeValue("id"), component);
 								   
 						//There could be a state.
 						if(reactantPatternMolecule.getAttributeValue("state") != null)
 						{
+							System.out.println("ReactantPattern State: " + reactantPatternMoleculeComponent.getAttributeValue("state") + ", " +  
+									   reactantPatternMoleculeComponent.getAttributeValue("name") + ", " +
+									   reactantPatternMolecule.getAttributeValue("name"));
+							
 							// Set the state in the data structure.
 							reactantPatternData.setStateForComponentInMolecule(reactantPatternMoleculeComponent.getAttributeValue("state"), 
 																			   reactantPatternMoleculeComponent.getAttributeValue("name"),
@@ -541,18 +544,13 @@ public class BNGASTReader
 						// The ids are S#_M#_C#
 						
 						// the mole id is up to the second underscore
-						System.out.println("Getting last index of _ for: " + comp1);
 						String mole1id = comp1.substring(0, comp1.lastIndexOf("_"));
-						System.out.println("Getting last index of _ for: " + comp2);
 						String mole2id = comp2.substring(0, comp2.lastIndexOf("_"));
 						
 						// Get the names from the registries 
 						String moleName1 = moleculeNameForID.get(mole1id);
-						System.out.println("Trying to get component data for ID: " + comp1);
 						String compName1 = componentDataForID.get(comp1).getComponent();
 						String moleName2 = moleculeNameForID.get(mole2id);
-						System.out.println("Trying to get component data for ID: " + comp2);
-						System.out.println(comp2 + " is " + (componentDataForID.get(comp2) == null ? "not" : "") + " in the registry");
 						String compName2 = componentDataForID.get(comp2).getComponent();
 						
 						int compID1 = componentDataForID.get(comp1).getUniqueID();
@@ -609,13 +607,16 @@ public class BNGASTReader
 						// Add it to the molecule
 						productPatternData.addComponentToMolecule(component, productPatternMolecule.getAttributeValue("name"));
 						
-						// Add it to the registry
-						System.out.println("Adding ComponentData for id: " + productPatternMoleculeComponent.getAttributeValue("id"));
+						// Add it to the registry					
 						componentDataForID.put(productPatternMoleculeComponent.getAttributeValue("id"), component);
 								   
 						//There could be a state.
 						if(productPatternMolecule.getAttributeValue("state") != null)
 						{
+							System.out.println("ProductPattern State: " + productPatternMoleculeComponent.getAttributeValue("state") + ", " +  
+									productPatternMoleculeComponent.getAttributeValue("name") + ", " +
+									productPatternMolecule.getAttributeValue("name"));
+							
 							// Set the state in the data structure.
 							productPatternData.setStateForComponentInMolecule(productPatternMoleculeComponent.getAttributeValue("state"), 
 																			   productPatternMoleculeComponent.getAttributeValue("name"),
@@ -653,12 +654,9 @@ public class BNGASTReader
 						
 						// Get the names from the registries 
 						String moleName1 = moleculeNameForID.get(mole1id);
-						System.out.println("Trying to get component for id: " + comp1);
 						String compName1 = componentDataForID.get(comp1).getComponent();
 						String moleName2 = moleculeNameForID.get(mole2id);
 						
-						System.out.println("Trying to get component for id: " + comp2);				
-	
 						String compName2 = componentDataForID.get(comp2).getComponent();
 						
 						int compID1 = componentDataForID.get(comp1).getUniqueID();
@@ -728,7 +726,6 @@ public class BNGASTReader
 				String moleName1 = moleculeNameForID.get(mole1id);
 				String compName1 = componentDataForID.get(comp1).getComponent();
 				String moleName2 = moleculeNameForID.get(mole2id);
-				System.out.println("Trying to get componentdata for id: " + comp2);
 				String compName2 = componentDataForID.get(comp2).getComponent();
 				
 				String state1 = componentDataForID.get(comp1).getState();
