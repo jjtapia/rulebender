@@ -43,8 +43,20 @@
             restorable="true">
       </view>
       <view
-            class="rulebender.views.contactmap.ContactMapView"
+            class="rulebender.views.ContactMapView"
             id="rulebender.views.contactmap.ContactMapView"
+            name="Contact Map"
+            restorable="true">
+      </view>
+      <view
+            class="rulebender.views.PrefuseTestView"
+            id="rulebender.views.PrefuseTestView"
+            name="Prefuse Test View"
+            restorable="true">
+      </view>
+      <view
+            class="rulebender.views.ContactMapView"
+            id="rulebender.views.ContactMapView"
             name="Contact Map"
             restorable="true">
       </view>
@@ -67,6 +79,23 @@
                ratio="0.2f"
                relationship="left"
                relative="org.eclipse.ui.editorss">
+         </view>
+         <view
+               id="rulebender.views.ContactMapView"
+               minimized="false"
+               moveable="true"
+               relationship="right"
+               relative="org.eclipse.ui.editorss"
+               visible="true">
+         </view>
+         <view
+               closeable="true"
+               id="rulebender.views.PrefuseTestView"
+               minimized="false"
+               moveable="true"
+               relationship="stack"
+               relative="rulebender.views.contactmap.ContactMapView"
+               visible="true">
          </view>
       </perspectiveExtension>
    </extension>
