@@ -83,10 +83,7 @@ public class CMapModelBuilder implements ModelBuilderInterface
 
 	public void parameterFound(String id, String type, String value)
 	{
-		//DEBUG
-		System.out.println("Parameter:\n\tid: " + id + "\n\ttype: " + "\n\tvalue: " + value);
-		
-		// Ignored for contact map.
+			// Ignored for contact map.
 	}
 	
 	/**
@@ -108,7 +105,6 @@ public class CMapModelBuilder implements ModelBuilderInterface
 	 */
 	public void foundMoleculeType(Molecule molecule) 
 	{
-		System.out.println("Found molecule in molecule types: " + molecule.getName());
 		int index = model.addMolecule(molecule);
 		moleculeIDForName.put(molecule.getName(), index);
 	}
@@ -124,8 +120,6 @@ public class CMapModelBuilder implements ModelBuilderInterface
 	 */
 	public void foundMoleculeInSeedSpecies(Molecule molecule) 
 	{
-		System.out.println("Found molecule in seed species: " + molecule.getName());
-		
 		
 		Molecule existingMolecule = null;
 		
@@ -158,32 +152,34 @@ public class CMapModelBuilder implements ModelBuilderInterface
 	public void foundBondInSeedSpecies(String moleName1, String compName1, int compID1,
 			String state1, String moleName2, String compName2, int compID2, String state2) 
 	{
-		System.out.println("Found Bond:\n\tmole1: " + moleName1 + "\n\tcomp1: " + compName1 + "\n\tcompID1: "
-							+ compID1 + "\n\tmole2: " + moleName2 + "\n\tcomp2: " + compName2 + "\n\tcompID2" + 
-							compID2);
+		// The old contact map did not include edges that were found in the seed species block.
 		
-		addBondToModel( moleName1,  compName1,  compID1,
-				 state1,  moleName2,  compName2,  compID2, state2);
+		// addBondToModel( moleName1,  compName1,  compID1, state1,  moleName2,  compName2,  compID2, state2);
 	}
 	
 	private int addBondToModel(String moleName1, String compName1, int compID1,
 			String state1, String moleName2, String compName2, int compID2, String state2)
 	{
+		System.out.println("Adding Bond:" + moleName1 + "(" + compName1 + "~" + state1 +
+							")." + moleName2 + "(" + compName2 + "~" + state2 + ")");
+		
+
+		//TODO this is the problem.  All of the state indices are -1.
+		
+		
 		//Need ints for all of these strings
 		int moleIndex1 = moleculeIDForName.get(moleName1);
-		System.out.println("\tmolecule1 index: " + moleIndex1);
 		int compIndex1 = model.getMolecules().get(moleIndex1).getComponentIndex(compName1, compID1);
-		System.out.println("\tcomponent index: " + compIndex1);
 		int stateIndex1 = (model.getMolecules().get(moleIndex1).getComponents().get(compIndex1)).getStateIndex(state1);
+		
+		System.out.println("State index 1: " + stateIndex1);
 		
 		//Need ints for all of these strings
 		int moleIndex2 = moleculeIDForName.get(moleName2);
 		int compIndex2 = model.getMolecules().get(moleIndex2).getComponentIndex(compName2, compID2);
 		int stateIndex2 = (model.getMolecules().get(moleIndex2).getComponents().get(compIndex2)).getStateIndex(state2);
 		
-		return model.addBond(new Bond(moleIndex1, compIndex1, stateIndex1, 
-					           moleIndex2, compIndex2, stateIndex2));
-		
+		return model.addBond(new Bond(moleIndex1, compIndex1, stateIndex1, moleIndex2, compIndex2, stateIndex2));
 	}
 	
 	/**
@@ -257,6 +253,8 @@ public class CMapModelBuilder implements ModelBuilderInterface
 				} // done adding components to moleculepatterns
 			} // done with the molecule patterns
 		} // done with reactant patterns
+		
+		// TODO Do something with the bonds?
 		
 		// For each RulePatternDataObject
 		for(RulePatternData rpd : ruleData.getProductPatternData())

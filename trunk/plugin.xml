@@ -305,7 +305,7 @@
             class="rulebender.editors.simple.SimpleEditor"
             contributorClass="org.eclipse.ui.texteditor.BasicTextEditorActionContributor"
             default="true"
-            extensions="txt"
+            extensions="txt, bngl"
             id="rulebender.editors.simple"
             name="Simple Editor">
       </editor>
@@ -313,7 +313,6 @@
             class="rulebender.editors.bngl.BNGLEditor"
             contributorClass="org.eclipse.ui.texteditor.BasicTextEditorActionContributor"
             default="false"
-            extensions="bngl"
             id="rulebender.editors.bngl"
             name="BNGL Editor">
       </editor>

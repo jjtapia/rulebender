@@ -505,12 +505,8 @@ public class BNGASTReader
 						componentDataForID.put(reactantPatternMoleculeComponent.getAttributeValue("id"), component);
 								   
 						//There could be a state.
-						if(reactantPatternMolecule.getAttributeValue("state") != null)
+						if(reactantPatternMoleculeComponent.getAttributeValue("state") != null)
 						{
-							System.out.println("ReactantPattern State: " + reactantPatternMoleculeComponent.getAttributeValue("state") + ", " +  
-									   reactantPatternMoleculeComponent.getAttributeValue("name") + ", " +
-									   reactantPatternMolecule.getAttributeValue("name"));
-							
 							// Set the state in the data structure.
 							reactantPatternData.setStateForComponentInMolecule(reactantPatternMoleculeComponent.getAttributeValue("state"), 
 																			   reactantPatternMoleculeComponent.getAttributeValue("name"),
@@ -558,7 +554,6 @@ public class BNGASTReader
 						
 						String state1 = componentDataForID.get(comp1).getState();
 						String state2 = componentDataForID.get(comp1).getState();
-						
 						
 						reactantPatternData.addbond(moleName1, compName1, compID1, state1, moleName2, compName2, compID2, state2);
 					}	
@@ -611,12 +606,8 @@ public class BNGASTReader
 						componentDataForID.put(productPatternMoleculeComponent.getAttributeValue("id"), component);
 								   
 						//There could be a state.
-						if(productPatternMolecule.getAttributeValue("state") != null)
+						if(productPatternMoleculeComponent.getAttributeValue("state") != null)
 						{
-							System.out.println("ProductPattern State: " + productPatternMoleculeComponent.getAttributeValue("state") + ", " +  
-									productPatternMoleculeComponent.getAttributeValue("name") + ", " +
-									productPatternMolecule.getAttributeValue("name"));
-							
 							// Set the state in the data structure.
 							productPatternData.setStateForComponentInMolecule(productPatternMoleculeComponent.getAttributeValue("state"), 
 																			   productPatternMoleculeComponent.getAttributeValue("name"),
@@ -745,6 +736,9 @@ public class BNGASTReader
 				{
 					action = -1;
 				}
+				
+				System.out.println("Adding BondData to Rule: " + moleName1 + "(" + compName1 + "[" + compID1 + "]~" + state1 +
+						  ")." + moleName2 + "(" + compName2 +"[" + compID2 + "]~" + state2 + ")");
 				
 				ruleData.addBondData(moleName1, compName1, compID1, state1, moleName2, compName2, compID2, state2, action);
 				

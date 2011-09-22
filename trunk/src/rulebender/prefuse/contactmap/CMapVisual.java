@@ -436,6 +436,7 @@ public class CMapVisual
 						
 						for(int k = 0; k < tcomp.getStates().size(); k++)
 						{
+							
 							tstate = tcomp.getStates().get(k);
 							
 							((ArrayList<String>) n.get("states")).add(tstate.getName());
@@ -609,7 +610,8 @@ public class CMapVisual
 		*/
 	}
 	
-	private Node makeComponentNode(Molecule tmole, Component tcomp, int moleIndex, int compIndex) {
+	private Node makeComponentNode(Molecule tmole, Component tcomp, int moleIndex, int compIndex) 
+	{
 		Node n = comp_graph.addNode();
 		// Set its name
 	    n.setString(VisualItem.LABEL, " " + tcomp.getName() + " ");
@@ -630,7 +632,8 @@ public class CMapVisual
 	}
 	
 	private Node makeStateNode(Molecule tmole, Component tcomp, State tstate,
-			int moleIndex, int compIndex, int stateIndex, Node compNode) {
+			int moleIndex, int compIndex, int stateIndex, Node compNode) 
+	{
 		Node n_state = comp_graph.addNode();
 		// set its name
 		n_state.setString(VisualItem.LABEL, tstate.getName());
@@ -657,7 +660,6 @@ public class CMapVisual
 		// Create an edge for each bond.
 		for(int b = 0; b < model.getBonds().size(); b++)
 		{
-			
 			// Declare two type of Edges, to show the CMAP in two mode: no states, with states
 			Edge e_comp, e_state;
 			
@@ -688,26 +690,52 @@ public class CMapVisual
 			e_comp.set("type", "componentVisible_edge");
 			
 			
-			// left component has state requirement
+			System.out.println("Check " + tbond.getMolecule1() + "." + tbond.getComponent1());
 			if (tbond.getState1() != -1) 
 			{
 				leftparentnode = leftnode; // component node
 				leftnode = nodes.get(tbond.getMolecule1()+"."+tbond.getComponent1()+"."+tbond.getState1()); // state node
+				
 				if (leftnode != null)
+				{
+					System.out.println("\tright node not null: " + tbond.getMolecule1()+"."+tbond.getComponent1()+"."+tbond.getState1());
 					leftnode.set("hasedge", true);
+				}
+				else
+				{
+					System.out.println("\tright node null: " + tbond.getMolecule1()+"."+tbond.getComponent1()+"."+tbond.getState1());
+				}
+			}
+			else
+			{
+				System.out.println("\tDid not consider " + tbond.getMolecule1() + "." + tbond.getComponent1());
 			}
 	
+			
+			System.out.println("Check " + tbond.getMolecule2() + "." + tbond.getComponent2());
 			// right component has state requirement
 			if (tbond.getState2() != -1) 
 			{
 				rightparentnode = rightnode; // component node
 				rightnode = nodes.get(tbond.getMolecule2()+"."+tbond.getComponent2()+"."+tbond.getState2()); // state node
+				
 				if (rightnode != null)
+				{
 					rightnode.set("hasedge", true);
+					System.out.println("\tright node not null: " + tbond.getMolecule1()+"."+tbond.getComponent1()+"."+tbond.getState1());
+				}
+				else
+				{
+					System.out.println("\tright node null: " + tbond.getMolecule1()+"."+tbond.getComponent1()+"."+tbond.getState1());
+				}
+			}
+			else
+			{
+				System.out.println("\tDid not consider " + tbond.getMolecule2() + "." + tbond.getComponent2());
 			}
 			
 			// If either of the parent nodes are not null... TODO should it be &&? (changed from ||)
-			if (leftparentnode != null && rightparentnode != null) 
+			if (leftparentnode != null || rightparentnode != null) 
 			{
 				e_state = comp_graph.addEdge(leftnode, rightnode);
 				

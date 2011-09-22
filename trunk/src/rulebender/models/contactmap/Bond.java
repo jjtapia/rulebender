@@ -53,8 +53,9 @@ public class Bond
 		return molecule2;
 	}
 
-	public void setState1(int state1) {
-		this.state1 = state1;
+	public void setState1(int state1)
+	{
+		this.state1 = state1;	
 	}
 
 	public int getState1() {

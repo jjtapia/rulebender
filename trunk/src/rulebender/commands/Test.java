@@ -1,16 +1,25 @@
 package rulebender.commands;
 
+import java.util.Iterator;
+import java.util.List;
+
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.commands.IHandler;
 import org.eclipse.core.commands.IHandlerListener;
 import org.eclipse.jface.action.IStatusLineManager;
+import org.eclipse.jface.viewers.ISelectionProvider;
+import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.IActionBars;
+import org.eclipse.ui.IViewReference;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.console.ConsolePlugin;
 import org.eclipse.ui.console.IConsole;
 import org.eclipse.ui.console.MessageConsole;
 import org.eclipse.ui.console.MessageConsoleStream;
+
+import rulebender.views.ContactMapView;
 
 public class Test extends AbstractHandler
 {
@@ -29,8 +38,18 @@ public class Test extends AbstractHandler
 		ConsolePlugin.getDefault().getConsoleManager().addConsoles(  
 				new IConsole[] { messageConsole });  
   
-		msgConsoleStream.println("It works");  
-  
+		msgConsoleStream.println("Rebuilding Contact Map");
+		
+		
+		IViewReference[] views = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getViewReferences();
+		
+		for(IViewReference view : views)
+		{
+			if(view.getView(true) instanceof ContactMapView)
+			{
+				((ContactMapView) view.getView(true)).tempRefresh();
+			}
+		}
 		
 		
 		/*

@@ -46,7 +46,8 @@ public class BondData
 		return targetState;
 	}
 
-	public void setTargetState(String targetState) {
+	public void setTargetState(String targetState) 
+	{
 		this.targetState = targetState;
 	}
 

@@ -115,7 +115,9 @@ public class OpenFileHandler extends AbstractHandler
 		// registered to edit the file.  (The registration in plugin.xml
 		// is based on filename extension)
 		IEditorDescriptor descriptor = editorRegistry.getDefaultEditor(file.getName());	
-				
+		
+		System.out.println(descriptor.getId());
+		
 		// If the descriptor is not null and is not equal to the default editor...
 		// (I had some trouble opening files with the default.)
 		if (descriptor != null && !descriptor.getId().equals("org.eclipse.ui.DefaultTextEditor"))

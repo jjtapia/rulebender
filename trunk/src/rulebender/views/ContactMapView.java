@@ -39,6 +39,8 @@ public class ContactMapView extends ViewPart implements ISelectionListener
 	
 	public static String FCERI_JI = "/Users/mr_smith22586/Documents/workspace/CMapTest/testModels/fceri_ji.bngl";
 	
+	java.awt.Frame frame;
+	
 	public ContactMapView() 
 	{
 		// TODO Auto-generated constructor stub
@@ -49,9 +51,11 @@ public class ContactMapView extends ViewPart implements ISelectionListener
 	{
 		Composite swtAwtComponent = new Composite(parent, SWT.EMBEDDED);
 		
-		java.awt.Frame frame = SWT_AWT.new_Frame( swtAwtComponent);
+		frame = SWT_AWT.new_Frame( swtAwtComponent);
 		
 		frame.add(generateContactMap());
+		
+		getSite().getPage().addPostSelectionListener(this);
 	}
 
 	@Override
@@ -63,7 +67,8 @@ public class ContactMapView extends ViewPart implements ISelectionListener
 
 	public void selectionChanged(IWorkbenchPart part, ISelection selection) 
 	{
-		System.out.println("Selection: ");
+		System.out.println("Selection:\n\t" + "\tpart: " + part.getTitle() + "\n\tselection: " + selection.toString());
+		
 		
 	}
 	
@@ -83,8 +88,6 @@ public class ContactMapView extends ViewPart implements ISelectionListener
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
-	
 		
 		// Null check for the ast
 		if(ast == null)
@@ -119,5 +122,20 @@ public class ContactMapView extends ViewPart implements ISelectionListener
 		CMapVisual cVisual = new CMapVisual(cModel, dim, new Dimension(100,100));
 		
 		return cVisual.getDisplay();
+	}
+	
+	public void tempRefresh()
+	{
+		System.out.println("Refreshing...");
+		
+		frame.removeAll();
+		
+		frame.add(generateContactMap());
+		
+		frame.pack();
+		frame.repaint();
+		
+		
+		
 	}
 }
