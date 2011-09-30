@@ -91,7 +91,7 @@ public class Component
 		// Get the index if there is state information
 		for(int i = 0; i < states.size(); i++)
 		{
-			if(states.get(i).equals(state1))
+			if(states.get(i).getName().equals(state1))
 				return i;
 		}
 		

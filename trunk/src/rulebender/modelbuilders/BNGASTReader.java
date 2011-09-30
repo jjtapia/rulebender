@@ -1,7 +1,6 @@
 package rulebender.modelbuilders;
 
 import java.io.StringReader;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -16,11 +15,8 @@ import org.jdom.input.SAXBuilder;
 
 //import sun.awt.ComponentFactory;
 
-import rulebender.models.contactmap.CMapModel;
-import rulebender.models.contactmap.Bond;
 import rulebender.models.contactmap.Component;
 import rulebender.models.contactmap.Molecule;
-import rulebender.models.contactmap.Rule;
 
 import bngparser.grammars.BNGGrammar.prog_return;
 
@@ -457,6 +453,9 @@ public class BNGASTReader
 		// For each of the reaction rules.
 		for(Element reactionRule : reactionRulesList)
 		{
+			System.out.println("***************************  RULE  ***************************\nname:"
+							   + reactionRule.getAttributeValue("name"));
+			
 			RuleData ruleData = new RuleData(reactionRule.getAttributeValue("name"));
 			
 			HashMap<String, String> moleculeNameForID = new HashMap<String, String>();
@@ -507,10 +506,18 @@ public class BNGASTReader
 						//There could be a state.
 						if(reactantPatternMoleculeComponent.getAttributeValue("state") != null)
 						{
-							// Set the state in the data structure.
-							reactantPatternData.setStateForComponentInMolecule(reactantPatternMoleculeComponent.getAttributeValue("state"), 
-																			   reactantPatternMoleculeComponent.getAttributeValue("name"),
-																			   reactantPatternMolecule.getAttributeValue("name"));
+							//DEBUG
+							//System.out.println("Adding State \"" + reactantPatternMoleculeComponent.getAttributeValue("state") +
+							 //          "\"for component \"" + reactantPatternMoleculeComponent.getAttributeValue("name") +
+							 //          "\" of reactant molecule \"" + reactantPatternMolecule.getAttributeValue("name") +"\"");
+					
+							
+							component.setState(reactantPatternMoleculeComponent.getAttributeValue("state"));
+							
+							//DEBUG
+							//System.out.println("State is: " + component.getState());
+							//System.out.println("State for id \"" + reactantPatternMoleculeComponent.getAttributeValue("id") +
+							//				   "\" is: " + componentDataForID.get(reactantPatternMoleculeComponent.getAttributeValue("id")).getState());
 						} // Done with state
 					} // done with reactantPatternMoleculeComponent
 				} // Done with reactantPatternMolecule
@@ -534,6 +541,7 @@ public class BNGASTReader
 						{
 							// wildcard
 							// TODO JUST SKIPPED IT FOR NOW
+							System.out.println("***WILDCARD***");
 							continue;
 						}
 						
@@ -608,10 +616,17 @@ public class BNGASTReader
 						//There could be a state.
 						if(productPatternMoleculeComponent.getAttributeValue("state") != null)
 						{
-							// Set the state in the data structure.
-							productPatternData.setStateForComponentInMolecule(productPatternMoleculeComponent.getAttributeValue("state"), 
-																			   productPatternMoleculeComponent.getAttributeValue("name"),
-																			   productPatternMolecule.getAttributeValue("name"));
+							//DEBUG
+							//System.out.println("Adding State \"" + productPatternMoleculeComponent.getAttributeValue("state") +
+							//		           "\"for component \"" + productPatternMoleculeComponent.getAttributeValue("name") +
+							//		           "\" of product molecule \"" + productPatternMolecule.getAttributeValue("name") +"\"");
+							
+							component.setState(productPatternMoleculeComponent.getAttributeValue("state"));
+							
+							//DEBUG
+							//System.out.println("State is: " + component.getState());
+							//System.out.println("State for id \"" + productPatternMoleculeComponent.getAttributeValue("id") +
+							//				   "\" is: " + componentDataForID.get(productPatternMoleculeComponent.getAttributeValue("id")).getState());
 						} // Done with state
 					} // done with productPatternMoleculeComponent
 				} // Done with productPatternMolecule
@@ -698,12 +713,14 @@ public class BNGASTReader
 				
 				// The ids of the components.
 				String comp1 = operation.getAttributeValue("site1");
+				
 				String comp2 = operation.getAttributeValue("site2");
 				
 
 				if(comp2.equals(""))
 				{
 					//TODO WILDCARD, BITCHES!  Handled it later.
+					System.out.println("Wildcard");
 					continue;
 				}
 				
@@ -719,26 +736,43 @@ public class BNGASTReader
 				String moleName2 = moleculeNameForID.get(mole2id);
 				String compName2 = componentDataForID.get(comp2).getComponent();
 				
+				//DEBUG
+				//System.out.println("comp1 id \"" + comp1 + "\" gives component \"" + 
+				//				   componentDataForID.get(comp1).getComponent() + "\" and state \"" +
+				//				   componentDataForID.get(comp1).getState() + "\"");
+				//System.out.println("comp2 id: " + comp2 + "\" gives component \"" + 
+				//		   componentDataForID.get(comp2).getComponent() + "\" and state \"" +
+				//		   componentDataForID.get(comp2).getState() + "\"");
+				
 				String state1 = componentDataForID.get(comp1).getState();
-				String state2 = componentDataForID.get(comp1).getState();
+				String state2 = componentDataForID.get(comp2).getState();
 				
 				int compID1 = componentDataForID.get(comp1).getUniqueID();
 				int compID2 = componentDataForID.get(comp2).getUniqueID();
 				
 				int action;
-				
-				// If it is an Addbond operation
-				if(operation.getValue().equals("AddBond"))
+			
+				//DEBUG
+				//System.out.println("Name: " + ruleData.getName() + " Operation: " + operation.getName());
+			
+				// If it is an AddBond operation
+				if(operation.getName().equals("AddBond"))
 				{
 					action = 1;
 				}
-				else
-				{
+				// If it is an DeleteBond operation
+				else if(operation.getName().equals("DeleteBond"))
+				{ 
 					action = -1;
 				}
+				else
+				{
+					action = 0;
+				}
 				
-				System.out.println("Adding BondData to Rule: " + moleName1 + "(" + compName1 + "[" + compID1 + "]~" + state1 +
-						  ")." + moleName2 + "(" + compName2 +"[" + compID2 + "]~" + state2 + ")");
+				//DEBUG
+				//System.out.println("Adding BondData to Rule: " + moleName1 + "(" + compName1 + "[" + compID1 + "]~" + state1 +
+				//		  ")." + moleName2 + "(" + compName2 +"[" + compID2 + "]~" + state2 + ")" + "action: " + action);
 				
 				ruleData.addBondData(moleName1, compName1, compID1, state1, moleName2, compName2, compID2, state2, action);
 				

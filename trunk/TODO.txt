@@ -2,41 +2,10 @@ TODO:
 
 * In the future, the parser will recognize bonds of the type Ex1().Ex2().  
 
-For rule, need to tell
+* The overview window does not zoom in when molecules are brought together.
 
-	ArrayList<RuleData>
-		String expression
-		String name;
-		String rate;
-		
-		ArrayList<RulePatternData> reactantpatterns;
-			ArrayList<MoleculePatternData> molepatterns;
-				moleculeName
-				ArrayList<ComponentPattern> comppatterns;
-					componentName
-					stateName
-			ArrayList<BondData> bonds;
-				sourceMolName
-				sourceCompName
-				sourceStateName
-				targetMolName
-				targetCompName
-				targetStateName
-		
-		ArrayList<RulePattern> productpatterns;
-			ArrayList<MoleculePatternData> molepatterns;
-				moleculeName
-				ArrayList<ComponentPattern> comppatterns;
-					componentName
-					stateName
-			ArrayList<BondData> bonds;
-				sourceMolName
-				sourceCompName
-				sourceStateName
-				targetMolName
-				targetCompName
-				targetStateName
-				
-		ArrayList<BondAction> bondactions;
-			int bondindex; // index into bonds arraylist
-			int action;// negative means delete, positive means add
+* Wild cards. they are ignored for now. 
+
+* Need to be able to add states that are found in rules. 
+
+* Popups don't work. 

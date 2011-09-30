@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.List;
 
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.ui.plugin.AbstractUIPlugin;
 
 /**
  * 
@@ -16,6 +17,8 @@ import org.eclipse.swt.graphics.Image;
 public class FolderNode extends TreeNode {
 	private File fFolder; // actual data object
 
+	private static final Image folderImage = AbstractUIPlugin.imageDescriptorFromPlugin ("rulebender","/icons/fldr_obj.gif").createImage();
+	private static final Image projectImage = AbstractUIPlugin.imageDescriptorFromPlugin ("rulebender","/icons/prj_obj.gif").createImage();
 	/**
 	 * 
 	 * @param folder
@@ -55,8 +58,16 @@ public class FolderNode extends TreeNode {
 	/**
 	 * @return fold image
 	 */
-	public Image getImage() {
-		return null;
+	public Image getImage() 
+	{
+		if(this.getParent().getParent() == null)
+		{
+			return projectImage;
+		}
+		else
+		{
+			return folderImage;
+		}
 	}
 
 	/**

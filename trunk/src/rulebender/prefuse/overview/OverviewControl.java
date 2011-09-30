@@ -1,4 +1,5 @@
-package rulebender.prefuse.contactmap;
+package rulebender.prefuse.overview;
+
 
 import java.awt.Color;
 import java.awt.Graphics2D;
@@ -13,7 +14,6 @@ import prefuse.controls.ControlAdapter;
 import prefuse.util.ColorLib;
 import prefuse.util.display.PaintListener;
 import prefuse.util.ui.UILib;
-import prefuse.visual.VisualItem;
 
 public class OverviewControl extends ControlAdapter implements PaintListener {
 
@@ -222,25 +222,4 @@ public class OverviewControl extends ControlAdapter implements PaintListener {
 
         g.setColor(anterior);
     }*/
-    
-    @Override
-    public void itemPressed(VisualItem item, MouseEvent e) {
-        mousePressed(e);
-    }
-        
-    @Override
-    public void itemReleased(VisualItem item, MouseEvent e) {
-            mouseReleased(e);
-    }
-        
-    @Override
-    public void itemDragged(VisualItem item, MouseEvent e) {
-            mouseDragged(e);
-    }
-    
-  //trick to prevent hovering visual items from the overview
-    @Override
-    public void itemEntered(VisualItem item, MouseEvent e) {
-        if(item.isValid()) item.setHover(false);
-    }
 }

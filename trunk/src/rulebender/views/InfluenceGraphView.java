@@ -29,8 +29,9 @@ import rulebender.prefuse.contactmap.CMapVisual;
 import rulebender.utility.BNGParserCommands;
 import rulebender.views.contactmap.ContactMapSelectionListener;
 import rulebender.views.contactmap.LayeredPane;
+import rulebender.views.influencegraph.InfluenceGraphSelectionListener;
 
-public class ContactMapView extends ViewPart  
+public class InfluenceGraphView extends ViewPart  
 {
 
 	// The holding object for the contact map visualizaitons and the 
@@ -45,11 +46,11 @@ public class ContactMapView extends ViewPart
 	// The awt frame that holds the contact map.
 	private java.awt.Frame frame;
 	
-	private ContactMapSelectionListener listener;
+	private InfluenceGraphSelectionListener listener;
 	
 	private Composite parentComposite;
 	
-	public ContactMapView() 
+	public InfluenceGraphView() 
 	{
 		// Do nothing
 	}
@@ -109,7 +110,7 @@ public class ContactMapView extends ViewPart
 		});
 		
 		// Set up the selection listener
-		listener = new ContactMapSelectionListener(this);
+		listener = new InfluenceGraphSelectionListener(this);
 	}
 
 	/**

@@ -104,8 +104,8 @@ component_def(id,name,state,numberOfBonds)::= <<
 
 type_user_object(name) ::= "<name>"
 
-reaction_block(id,name,reactant,product,rate,bidirectional,birate,leftMap,rightMap,operations,operator1,operator2) ::=<<
-  \<ReactionRule id="<id>" name="<name>"\>
+reaction_block(id,name,reactant,product,rate,bidirectional,birate,leftMap,rightMap,operations,operator1,operator2,expression) ::=<<
+  \<ReactionRule id="<id>" name="<name>" expression="<expression>"\>
    \<ListOfReactantPatterns\>
       <reactant: {react | \<ReactantPattern id="<id>_RP<i>"\>  
        <react> 
@@ -165,4 +165,7 @@ functions_block(id,referencesName,referencesType,expression)::=<<
 compartments_block(id,dimensions,size,outside)::=<<
    \<Compartment id="<id>" spatialDimensions="<dimensions>" size="<size>" <if(outside)>outside="<outside>"<endif>/\>
 >>
+
+
+
 

@@ -8,6 +8,7 @@ public class RuleData
 	private String name;
 	private String rate;
 	
+	// Each pattern can be 1 or many molecules (if they are bound)
 	private ArrayList<RulePatternData> reactantPatternData;
 	private ArrayList<RulePatternData> productPatternData;
 	private ArrayList<BondActionData> bondActionData;

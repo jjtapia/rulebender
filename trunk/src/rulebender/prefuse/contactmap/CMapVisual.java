@@ -30,7 +30,7 @@ import rulebender.models.contactmap.MoleculePattern;
 import rulebender.models.contactmap.Rule;
 import rulebender.models.contactmap.RulePattern;
 import rulebender.models.contactmap.State;
-import rulebender.prefuse.networkviewer.FitOverviewListener;
+import rulebender.prefuse.overview.FitOverviewListener;
 import rulebender.prefuse.networkviewer.contactmap.CMAPNetworkViewer;
 import rulebender.prefuse.networkviewer.contactmap.VisualRule;
 
@@ -91,8 +91,6 @@ public class CMapVisual
 	
 	CMapModel model;
 	
-	Display /*mainDisplay,*/ overviewDisplay;
-	
 	Dimension mainDisplaySize, overviewDisplaySize;
 	
 	 // This is an index to the Node objects so that I can retrieve them 
@@ -107,13 +105,11 @@ public class CMapVisual
     private Hashtable<Set<Node>, Node> hubNodes;
     
 	
-	public CMapVisual(CMapModel model_in, Dimension cMapSize,
-			Dimension cMapOverviewSize) 
+	public CMapVisual(CMapModel model_in, Dimension cMapSize) 
 	{
 
 		model = model_in;
 		mainDisplaySize = cMapSize;
-		overviewDisplaySize = cMapOverviewSize;
 		
 		// Instantiate the NetworkViewer object.
 		nv = new CMAPNetworkViewer(mainDisplaySize); 
@@ -574,7 +570,6 @@ public class CMapVisual
 			}*/
 		
 		nv.build();
-		setUpOverviewDisplay();
 		
 		// initialize annotation
 		//CMapAnnotationController cmapAnnotation = new CMapAnnotationController();	
@@ -689,54 +684,78 @@ public class CMapVisual
 			e_comp.set("displaymode", "both");
 			e_comp.set("type", "componentVisible_edge");
 			
-			
 			System.out.println("Check " + tbond.getMolecule1() + "." + tbond.getComponent1());
+			
+			// If the state of the first component is not -1 (there is one)
 			if (tbond.getState1() != -1) 
 			{
-				leftparentnode = leftnode; // component node
-				leftnode = nodes.get(tbond.getMolecule1()+"."+tbond.getComponent1()+"."+tbond.getState1()); // state node
+				//DEBUG
+				System.out.println("Has State: " + tbond.getState1());
 				
+				// Set the leftparentNode as the leftnode.  The leftnode is the component level.
+				leftparentnode = leftnode; 
+				
+				// Set the the leftnode as the state level node.
+				leftnode = nodes.get(tbond.getMolecule1()+"."+tbond.getComponent1()+"."+tbond.getState1());
+				
+				// If there is a state node, then set the node as having an edge.
 				if (leftnode != null)
 				{
-					System.out.println("\tright node not null: " + tbond.getMolecule1()+"."+tbond.getComponent1()+"."+tbond.getState1());
+					System.out.println("\t left node not null: " + tbond.getMolecule1()+"."+tbond.getComponent1()+"."+tbond.getState1());
 					leftnode.set("hasedge", true);
+					
 				}
+				// Do nothing. 
 				else
 				{
-					System.out.println("\tright node null: " + tbond.getMolecule1()+"."+tbond.getComponent1()+"."+tbond.getState1());
+					System.out.println("\tleft node null: " + tbond.getMolecule1()+"."+tbond.getComponent1()+"."+tbond.getState1());
 				}
 			}
 			else
 			{
-				System.out.println("\tDid not consider " + tbond.getMolecule1() + "." + tbond.getComponent1());
+				System.out.println("\tDid not consider " + tbond.getMolecule1() + "." + tbond.getComponent1() + "(no state)");
 			}
 	
 			
 			System.out.println("Check " + tbond.getMolecule2() + "." + tbond.getComponent2());
-			// right component has state requirement
+			
+			// if the right node has a state 
 			if (tbond.getState2() != -1) 
 			{
-				rightparentnode = rightnode; // component node
+				//DEBUG
+				System.out.println("Has State: " + tbond.getState2());
+				
+				// Set the parent node as the component level node.
+				rightparentnode = rightnode; 
+				
+				// Set the rightnode as the state level.
 				rightnode = nodes.get(tbond.getMolecule2()+"."+tbond.getComponent2()+"."+tbond.getState2()); // state node
 				
+				// If there is a state level, then set the node as having an edge.
 				if (rightnode != null)
 				{
 					rightnode.set("hasedge", true);
-					System.out.println("\tright node not null: " + tbond.getMolecule1()+"."+tbond.getComponent1()+"."+tbond.getState1());
+					System.out.println("\tright node not null: " + tbond.getMolecule2()+"."+tbond.getComponent2()+"."+tbond.getState2());
 				}
+				// Do nothing if there is no state level.
 				else
 				{
-					System.out.println("\tright node null: " + tbond.getMolecule1()+"."+tbond.getComponent1()+"."+tbond.getState1());
+					System.out.println("\tright node null: " + tbond.getMolecule2()+"."+tbond.getComponent2()+"."+tbond.getState2());
 				}
 			}
+			// Do nothing if there is no state associated with the node.
 			else
 			{
-				System.out.println("\tDid not consider " + tbond.getMolecule2() + "." + tbond.getComponent2());
+				System.out.println("\tDid not consider " + tbond.getMolecule2() + "." + tbond.getComponent2() + "(no state)");
 			}
 			
-			// If either of the parent nodes are not null... TODO should it be &&? (changed from ||)
+			// If either of the parent nodes are not null, then there is a bond that 
+			// requires a state.
 			if (leftparentnode != null || rightparentnode != null) 
 			{
+				// Create the node between the left and right state nodes. 
+				// If there was state information for the node, then that node
+				// is a state level node.  
 				e_state = comp_graph.addEdge(leftnode, rightnode);
 				
 				// add component information
@@ -1125,29 +1144,6 @@ public class CMapVisual
 	{
 		return nv.getDisplay();
 	}
-	
-	public void setUpOverviewDisplay()
-	{
-		// Make a new display out of the same visualization 
-		// that is used for the cmap.
-		overviewDisplay = new Display(vis);
-		
-		// Set it to high quality.
-		overviewDisplay.setHighQuality(true);
-		
-		// Set the size to match the available JPanel size 
-		// that is passed in as a Dimension.
-		overviewDisplay.setSize(overviewDisplaySize);
-		
-		// Add a listener that will zoom out/in to fit the items 
-		// onto the screen. 
-		overviewDisplay.addItemBoundsListener(new FitOverviewListener());
-	}
-	
-	public Display getOverviewDisplay()
-	{	
-		return overviewDisplay;
-	}	
 	
 	public CMAPNetworkViewer getCMAPNetworkViewer() {
 		return this.nv;

@@ -47,10 +47,10 @@ public class Test extends AbstractHandler
 		{
 			if(view.getView(true) instanceof ContactMapView)
 			{
-				((ContactMapView) view.getView(true)).tempRefresh();
+				//((ContactMapView) view.getView(true)).tempRefresh();
 			}
 		}
-		
+	
 		
 		/*
 		 * Status Line 

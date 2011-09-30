@@ -179,6 +179,8 @@ public class CMapModelBuilder implements ModelBuilderInterface
 		int compIndex2 = model.getMolecules().get(moleIndex2).getComponentIndex(compName2, compID2);
 		int stateIndex2 = (model.getMolecules().get(moleIndex2).getComponents().get(compIndex2)).getStateIndex(state2);
 		
+		System.out.println("State index 2: " + stateIndex2);
+		
 		return model.addBond(new Bond(moleIndex1, compIndex1, stateIndex1, moleIndex2, compIndex2, stateIndex2));
 	}
 	

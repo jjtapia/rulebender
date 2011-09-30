@@ -32,6 +32,7 @@ import prefuse.visual.VisualItem;
 import prefuse.visual.VisualTupleSet;
 import prefuse.visual.expression.InGroupPredicate;
 import rulebender.prefuse.networkviewer.CustomizedZoomToFitControl;
+import rulebender.prefuse.overview.Overview;
 
 public class CMAPNetworkViewer 
 {

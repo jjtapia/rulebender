@@ -49,9 +49,9 @@
             restorable="true">
       </view>
       <view
-            class="rulebender.views.PrefuseTestView"
+            class="rulebender.views.InfluenceGraphView"
             id="rulebender.views.PrefuseTestView"
-            name="Prefuse Test View"
+            name="Influence Graph"
             restorable="true">
       </view>
       <view

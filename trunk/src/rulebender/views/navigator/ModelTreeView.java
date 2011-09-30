@@ -7,6 +7,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.part.ViewPart;
 
+import rulebender.dialog.PickWorkspaceDialog;
 import rulebender.models.filebrowser.BNGModelCollection;
 import rulebender.models.filebrowser.FileBrowserTreeBuilder;
 import rulebender.models.filebrowser2.FolderNode;
@@ -35,7 +36,7 @@ public class ModelTreeView extends ViewPart
 		m_treeViewer.setInput(root);
 		*/
 		
-		String rootDirPath="/Users/mr_smith22586/Documents/workspace/BNGModelsTest";
+		String rootDirPath = PickWorkspaceDialog.getLastSetWorkspaceDirectory();
 		
 		m_treeViewer = new TreeViewer(parent, SWT.FULL_SELECTION | SWT.MULTI);
 		m_treeViewer.setContentProvider(new TreeContentProvider());
@@ -48,8 +49,7 @@ public class ModelTreeView extends ViewPart
 		
 		m_treeViewer.addDoubleClickListener(new NavigatorDoubleClickListener());
 		
-		//m_treeViewer.addDoubleClickListener(new NavigatorDoubleClickListener());
-		m_treeViewer.expandAll();
+		//m_treeViewer.expandAll();
 	}
 
 	@Override
