@@ -1,40 +1,26 @@
 package rulebender.views;
 
 import java.awt.Dimension;
-import java.io.IOException;
-import java.util.HashMap;
 import java.util.Timer;
 import java.util.TimerTask;
-
-import rulebender.modelbuilders.BNGASTReader;
-import rulebender.modelbuilders.CMapModelBuilder;
-
-import org.antlr.runtime.RecognitionException;
-import org.eclipse.jface.viewers.ISelection;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ControlAdapter;
 import org.eclipse.swt.events.ControlEvent;
 import org.eclipse.swt.awt.SWT_AWT;
 import org.eclipse.swt.widgets.Composite;
+
 // Use explicitly
 //import org.eclipse.swt.widgets.Display;
-import org.eclipse.ui.ISelectionListener;
-import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.part.ViewPart;
 
-import bngparser.grammars.BNGGrammar.prog_return;
-import rulebender.models.contactmap.CMapModel;
-import rulebender.prefuse.contactmap.CMapVisual;
-import rulebender.utility.BNGParserCommands;
-import rulebender.views.contactmap.ContactMapSelectionListener;
 import rulebender.views.contactmap.LayeredPane;
 import rulebender.views.influencegraph.InfluenceGraphSelectionListener;
 
 public class InfluenceGraphView extends ViewPart  
 {
 
-	// The holding object for the contact map visualizaitons and the 
+	// The holding object for the contact map visualizations and the 
 	// overview. 
 	private LayeredPane layeredPane;
 	
