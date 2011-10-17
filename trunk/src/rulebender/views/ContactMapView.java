@@ -28,7 +28,6 @@ import rulebender.models.contactmap.CMapModel;
 import rulebender.prefuse.contactmap.CMapVisual;
 import rulebender.utility.BNGParserCommands;
 import rulebender.views.contactmap.ContactMapSelectionListener;
-import rulebender.views.contactmap.LayeredPane;
 
 public class ContactMapView extends ViewPart  
 {
@@ -118,7 +117,7 @@ public class ContactMapView extends ViewPart
 	 */
 	public void setCMap(prefuse.Display d)
 	{
-		layeredPane.setCMap(d);
+		layeredPane.setDisplay(d);
 	}
 	
 	public void tempRefresh() 

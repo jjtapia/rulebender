@@ -14,22 +14,21 @@ import org.eclipse.swt.widgets.Composite;
 //import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.part.ViewPart;
 
-import rulebender.views.contactmap.LayeredPane;
 import rulebender.views.influencegraph.InfluenceGraphSelectionListener;
 
 public class InfluenceGraphView extends ViewPart  
 {
 
-	// The holding object for the contact map visualizations and the 
+	// The holding object for the influence graph visualizations and the 
 	// overview. 
 	private LayeredPane layeredPane;
 	
-	// This timer is used to make sure that the contact map
+	// This timer is used to make sure that the influence graph
 	// is not regenerated every time the window resize event occurs. 
 	private final static Timer timer = new Timer();
 	private static boolean timerRunning = false;
 	
-	// The awt frame that holds the contact map.
+	// The awt frame that holds the influence graph.
 	private java.awt.Frame frame;
 	
 	private InfluenceGraphSelectionListener listener;
@@ -52,8 +51,8 @@ public class InfluenceGraphView extends ViewPart
 		// Create the special swt/awt frame to hold the awt stuff.
 		frame = SWT_AWT.new_Frame( swtAwtComponent);
 		
-		// Create the ContactMapLayeredPane.  This is my data type that has a
-		// large jpanel for the cmap, and an overlayed jpanel for the overview
+		// Create the LayeredPane.  This is my data type that has a
+		// large jpanel for the igraph, and an overlayed jpanel for the overview
 		// in the bottom left corner.
 		layeredPane = new LayeredPane(new Dimension(400,600));
 		
@@ -74,7 +73,7 @@ public class InfluenceGraphView extends ViewPart
 				}
 				
 				// Schedule a time that will
-				// run the cmap resize event. 
+				// run the igraph resize event. 
 				timer.schedule(new TimerTask()
 				{
 					@Override 
@@ -100,12 +99,12 @@ public class InfluenceGraphView extends ViewPart
 	}
 
 	/**
-	 * Sets a new contact map in the view
-	 * @param d a prefuse.Display object to use as the contact map.
+	 * Sets a new influence graph in the view
+	 * @param d a prefuse.Display object to use as the influence graph.
 	 */
-	public void setCMap(prefuse.Display d)
+	public void setIGraph(prefuse.Display d)
 	{
-		layeredPane.setCMap(d);
+		layeredPane.setDisplay(d);
 	}
 	
 	public void tempRefresh() 

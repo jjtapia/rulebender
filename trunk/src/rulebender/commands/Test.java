@@ -20,6 +20,7 @@ import org.eclipse.ui.console.MessageConsole;
 import org.eclipse.ui.console.MessageConsoleStream;
 
 import rulebender.views.ContactMapView;
+import rulebender.views.InfluenceGraphView;
 
 public class Test extends AbstractHandler
 {
@@ -37,17 +38,23 @@ public class Test extends AbstractHandler
   
 		ConsolePlugin.getDefault().getConsoleManager().addConsoles(  
 				new IConsole[] { messageConsole });  
-  
 		msgConsoleStream.println("Rebuilding Contact Map");
 		
-		
+		/*
+		 * Update a view
+		 */
 		IViewReference[] views = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getViewReferences();
 		
 		for(IViewReference view : views)
 		{
 			if(view.getView(true) instanceof ContactMapView)
 			{
-				//((ContactMapView) view.getView(true)).tempRefresh();
+				((ContactMapView)view.getView(true)).tempRefresh();
+			}
+			
+			else if(view.getView(true) instanceof InfluenceGraphView)
+			{
+				((InfluenceGraphView) view.getView(true)).tempRefresh();
 			}
 		}
 	

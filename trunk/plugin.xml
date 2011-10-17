@@ -49,12 +49,6 @@
             restorable="true">
       </view>
       <view
-            class="rulebender.views.InfluenceGraphView"
-            id="rulebender.views.PrefuseTestView"
-            name="Influence Graph"
-            restorable="true">
-      </view>
-      <view
             class="rulebender.views.ContactMapView"
             id="rulebender.views.ContactMapView"
             name="Contact Map"

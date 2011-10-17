@@ -25,14 +25,16 @@ import prefuse.util.ColorLib;
 import prefuse.util.FontLib;
 import prefuse.util.StrokeLib;
 import prefuse.visual.VisualItem;
-import rulebender.models.influencegraph.IMapModel;
+import rulebender.models.contactmap.CMapModel;
+import rulebender.models.influencegraph.IGraphModel;
 import rulebender.prefuse.networkviewer.CustomizedZoomToFitControl;
 import rulebender.prefuse.networkviewer.contactmap.ReverseWheelZoomControl;
 import rulebender.prefuse.networkviewer.influencegraph.IMAPLayout;
 import rulebender.prefuse.networkviewer.influencegraph.RuleInfluenceRenderer;
 import rulebender.prefuse.overview.FitOverviewListener;
 
-public class IMapVisual {
+public class IGraphVisual 
+{
 	// Graph structure
 	Graph iGraph;
 
@@ -42,12 +44,12 @@ public class IMapVisual {
 	// Arraylist to hold all of the node objects for creating edges.
 	ArrayList<Node> nodeList = new ArrayList<Node>();
 
-	IMapModel model;
+	IGraphModel model;
 
 	Display mainDisplay;
-	Display overviewDisplay;
 
-	public IMapVisual(IMapModel model_in, Dimension mainDisplaySize_in, Dimension overviewDisplaySize_in) {
+	public IGraphVisual(IGraphModel model_in, Dimension mainDisplaySize_in) 
+	{
 		model = model_in;
 		// directed graph
 		iGraph = new Graph(true);
@@ -63,7 +65,6 @@ public class IMapVisual {
 		setUpRenderers();
 		setUpActions();
 		setUpMainDisplay(mainDisplaySize_in);
-		setUpOverviewDisplay(overviewDisplaySize_in);
 	}
 
 	private void setUpGraph() {
@@ -366,19 +367,7 @@ public class IMapVisual {
 		vis.run("layout");
 	}
 
-	public void setUpOverviewDisplay(Dimension overviewDisplaySize_in) 
-	{
-		overviewDisplay = new Display(vis);
-		overviewDisplay.setHighQuality(true);
-		overviewDisplay.setSize(overviewDisplaySize_in);
-		overviewDisplay.addItemBoundsListener(new FitOverviewListener());
-	}
-
 	public Display getDisplay() {
 		return mainDisplay;
-	}
-
-	public Display getOverviewDisplay() {
-		return overviewDisplay;
 	}
 }

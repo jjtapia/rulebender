@@ -30,7 +30,6 @@ import rulebender.models.contactmap.MoleculePattern;
 import rulebender.models.contactmap.Rule;
 import rulebender.models.contactmap.RulePattern;
 import rulebender.models.contactmap.State;
-import rulebender.prefuse.overview.FitOverviewListener;
 import rulebender.prefuse.networkviewer.contactmap.CMAPNetworkViewer;
 import rulebender.prefuse.networkviewer.contactmap.VisualRule;
 
@@ -91,7 +90,7 @@ public class CMapVisual
 	
 	CMapModel model;
 	
-	Dimension mainDisplaySize, overviewDisplaySize;
+	Dimension mainDisplaySize;
 	
 	 // This is an index to the Node objects so that I can retrieve them 
     // based on the string value "<parent molecule index>.<component index>.<state index>".

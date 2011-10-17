@@ -6,7 +6,6 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
-import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.ui.IEditorDescriptor;
@@ -25,56 +24,70 @@ public class NavigatorDoubleClickListener implements IDoubleClickListener
 
 	public void doubleClick(DoubleClickEvent event) 
 	{
-		TreeViewer viewer = (TreeViewer) event.getViewer();
+		//TreeViewer viewer = (TreeViewer) event.getViewer();
+		
+		// Get a reference to the selection.
 		IStructuredSelection selection = (IStructuredSelection) event.getSelection();
 	
 		//System.out.println("Double click on " + ((FileBrowserTreeNodeInterface) selection).getName());
 		
 		//viewer.setExpandedState((FileBrowserTreeNodeInterface) selection, !viewer.getExpandedState((FileBrowserTreeNodeInterface)selection));
 	
+		// Don't do anything for an empty selection.
 		if (selection.isEmpty()) 
 		{
 			return;
 		}
 
+		// Get the selected objects as an Object array.
 		Object[] selections = selection.toArray();
 		
+		// For each selected Object in the array.
 		for (int sel = 0; sel < selections.length; sel++) 
 		{
+			// Get the tree node that was selected.
 			TreeNode node = (TreeNode) selections[sel];
 			
+			// If it is a folder node, then skip it. 
 			if (node.getNodeType().equalsIgnoreCase("FolderNode")) 
 			{
 				continue;
 			}
 			
-			FileNode fNode = (FileNode) node;
-			
-			System.out.println("Opening File: " + fNode.getPath());
-			
-			File file = new File(fNode.getPath());
-			
-			// Get an IEditorInput object for the File object.
-			IEditorInput input = createEditorInput(file);
-			
-			// Get the String ID for the editor that should be used to open 
-			// the file. 
-			String editorId = getEditorId(file);
-			
-			// Get the workbench page that is active so that we can access 
-			// the editor that is in it. 
-			IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
-			
-			// If the editor view is not initialized correctly then an error
-			// can be thrown. 
-			try 
+			// If it is a file node  
+			if(node.getNodeType().equalsIgnoreCase("FileNode"))
 			{
-				// Open the input with the specific editor.
-				page.openEditor(input, editorId);
-			}
-			catch (PartInitException e) 
-			{
-				e.printStackTrace();
+				// Get a reference. 
+				FileNode fNode = (FileNode) node;
+				
+				// DEBUG
+				System.out.println("Opening File: " + fNode.getPath());
+				
+				// Get a reference to the file
+				File file = new File(fNode.getPath());
+				
+				// Get an IEditorInput object for the File object.
+				IEditorInput input = createEditorInput(file);
+				
+				// Get the String ID for the editor that should be used to open 
+				// the file. 
+				String editorId = getEditorId(file);
+				
+				// Get the workbench page that is active so that we can access 
+				// the editor that is in it. 
+				IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
+				
+				// If the editor view is not initialized correctly then an error
+				// can be thrown. 
+				try 
+				{
+					// Open the input with the specific editor.
+					page.openEditor(input, editorId);
+				}
+				catch (PartInitException e) 
+				{
+					e.printStackTrace();
+				}
 			}
 		}
 	}

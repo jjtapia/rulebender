@@ -6,6 +6,8 @@ import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import rulebender.models.contactmap.CMapModel;
+
 
 /******************************************
  * 
@@ -13,10 +15,15 @@ import java.util.regex.Pattern;
  *
  ******************************************/
 
-public class IMapModel
+public class IGraphModel
 {	
+	// An ArrayList of molecules that are in the model.  
 	ArrayList<IMolecule> molecules = new ArrayList<IMolecule>();
+	
+	// An ArrayList of bonds that are in the model, but not from a rule?
 	ArrayList<IBond> bonds = new ArrayList<IBond>();
+	
+	// Arraylist of IRule information
 	ArrayList<IRule> rules = new ArrayList<IRule>();
 	ArrayList<IRuleNode> rulenodes = new ArrayList<IRuleNode>();
 	ArrayList<Influence> influences = new ArrayList<Influence>();
@@ -25,247 +32,30 @@ public class IMapModel
 	private ArrayList<IPotentialBond> pbonds = new ArrayList<IPotentialBond>();
 	private boolean flexiblestate = false;
 	
-	public IMapModel(String molestr, String rulestr, boolean moleculetype)
+	public IGraphModel(String molestr, String rulestr, boolean moleculetype)
 	{
 		/*
-		if(moleculetype)
-			parsemoleculetypes(molestr);
-		else
-		{
-			flexiblestate = true;
-			parsespecies(molestr);
-		}
 		parserules(rulestr);
+		
 		for(int i=0; i<rules.size(); i++)
 			getreactioncenter(rules.get(i));
+		
 		generateImap();
 	// */
 	}
 	
-	/*
-	void parsemoleculetypes(String molestr)
-	{
-		Scanner scan = new Scanner(molestr);
-		String tempstr1;
-		while(scan.hasNext())
-		{
-			String TBProcessed = scan.nextLine().trim();
-			if(TBProcessed.length()==0)
-				continue;
-			if(TBProcessed.charAt(0)=='#')
-				continue;
-			if(TBProcessed.indexOf('#')!=-1)
-				TBProcessed = TBProcessed.substring(0, TBProcessed.indexOf('#')).trim();
-			while (TBProcessed.charAt(TBProcessed.length()-1) == '\\')
-			{
-				if(scan.hasNext())
-					TBProcessed = TBProcessed.substring(0, TBProcessed.length()-1) + ' ' + scan.nextLine().trim();
-				else
-					TBProcessed = TBProcessed.substring(0, TBProcessed.length()-1);
-		        if(TBProcessed.indexOf('#')>=0)
-		        	TBProcessed=TBProcessed.substring(0, TBProcessed.indexOf('#')).trim();
-			}
-			if(TBProcessed.indexOf(' ')!=-1)
-			{
-				tempstr1 = TBProcessed.substring(0,TBProcessed.indexOf(' ')).trim();
-				try
-				{Integer.parseInt(tempstr1);
-				parsemolecule(TBProcessed.substring(TBProcessed.indexOf(' ')+1,TBProcessed.length()).trim());}
-				catch(NumberFormatException e){}	
-			}
-			parsemolecule(TBProcessed);
-		}
-	}
-	
-	void parsespecies(String molestr)
-	{
-		Scanner scan = new Scanner(molestr);
-		String tempstr1;
-		while(scan.hasNext())
-		{
-			String TBProcessed = scan.nextLine().trim();
-			if(TBProcessed.length()==0)
-				continue;
-			if(TBProcessed.charAt(0)=='#')
-				continue;
-			if(TBProcessed.indexOf('#')!=-1)
-				TBProcessed = TBProcessed.substring(0, TBProcessed.indexOf('#')).trim();
-			while (TBProcessed.charAt(TBProcessed.length()-1) == '\\')
-			{
-				if(scan.hasNext())
-					TBProcessed = TBProcessed.substring(0, TBProcessed.length()-1) + ' ' + scan.nextLine().trim();
-				else
-					TBProcessed = TBProcessed.substring(0, TBProcessed.length()-1);
-		        if(TBProcessed.indexOf('#')>=0)
-		        	TBProcessed=TBProcessed.substring(0, TBProcessed.indexOf('#')).trim();
-			}
-			if(TBProcessed.indexOf(' ')!=-1)
-			{
-				tempstr1 = TBProcessed.substring(0,TBProcessed.indexOf(' ')).trim();
-				try
-				{Integer.parseInt(tempstr1);
-				TBProcessed = TBProcessed.substring(TBProcessed.indexOf(' ')+1,TBProcessed.length()).trim();}
-				catch(NumberFormatException e){}
-			}
-			while(TBProcessed.lastIndexOf(' ')!=-1)
-			{
-				tempstr1 = TBProcessed.substring(TBProcessed.lastIndexOf(' ')+1, TBProcessed.length()).trim();
-				if(tempstr1.indexOf('(')==-1 && tempstr1.indexOf(')')==-1 && tempstr1.indexOf(',')==-1 && tempstr1.indexOf('.')==-1 && tempstr1.indexOf('!')==-1 && tempstr1.indexOf('+')==-1 && tempstr1.indexOf('?')==-1 && tempstr1.indexOf('~')==-1 && tempstr1.indexOf('{')==-1 && tempstr1.indexOf('}')==-1)
-					TBProcessed = TBProcessed.substring(0, TBProcessed.lastIndexOf(' ')).trim();
-				else
-					break;
-			}
-			while(TBProcessed.indexOf('.')!=-1)
-			{
-				parsemolecule(TBProcessed.substring(0, TBProcessed.indexOf('.')).trim());
-				TBProcessed = TBProcessed.substring(TBProcessed.indexOf('.')+1, TBProcessed.length()).trim();
-			}
-			parsemolecule(TBProcessed);
-		}
-	}
-	
-	void parsemolecule(String molecule)
-	{
-		boolean leftparenthis = false;
-		boolean rightparenthis = false;
-		IMolecule tempmole = new IMolecule();
-		String component = "";
-		
-		if(molecule.trim().length() == 0)
-			return;
-		
-		if(molecule.indexOf('(')!=-1)
-			leftparenthis = true;
-		
-		if(molecule.indexOf(')')!=-1)
-			rightparenthis = true;
-		
-		if(leftparenthis && rightparenthis)
-		{
-			tempmole.setName(molecule.substring(0, molecule.indexOf('(')).trim());
-			component = molecule.substring(molecule.indexOf('(')+1, molecule.indexOf(')')).trim();
-		}
-		
-		if(leftparenthis && !rightparenthis)
-		{
-			tempmole.setName(molecule.substring(0, molecule.indexOf('(')).trim());
-			component = molecule.substring(molecule.indexOf('(')+1, molecule.length()).trim();
-		}
-		
-		if(!leftparenthis && !rightparenthis)
-		{
-			tempmole.setName(molecule);
-		}
-		
-		if(!leftparenthis && rightparenthis)
-		{
-			BNGEditor.displayOutput("\nError parsing molecule : "+molecule+" , molecule not added !");
-			return;
-		}
-		
-		while(component.indexOf(',')!=-1)
-		{
-			parsecomponent(tempmole,component.substring(0,component.indexOf(',')).trim());
-			component = component.substring(component.indexOf(',')+1, component.length()).trim();
-		}
-		
-		parsecomponent(tempmole,component);
-		
-		if(validatemole(tempmole))
-			molecules.add(tempmole);
-		else
-			BNGEditor.displayOutput("\nError parsing molecule : "+molecule+" , molecule not added !");
-	}
-	
-	void parsecomponent(IMolecule tempmole, String component)
-	{
-		if(component.trim().length() == 0)
-			return;
-		IComponent tempcomp = new IComponent();
-		IState tempstate;
-		String state;
-		String tempstr1;
-		if(component.indexOf('~')==-1)
-		{
-			if(component.indexOf('!')!=-1)
-				component = component.substring(0,component.indexOf('!')).trim();
-			tempcomp.setName(component);
-			tempmole.getComponents().add(tempcomp);
-			return;
-		}
-		else
-		{
-			state = component.substring(component.indexOf('~')+1, component.length()).trim();
-			component = component.substring(0,component.indexOf('~'));
-			if(component.indexOf('!')!=-1)
-				component = component.substring(0,component.indexOf('!')).trim();
-			tempcomp.setName(component);
-			while(state.indexOf('~')!=-1)
-			{
-				tempstr1 = state.substring(0, state.indexOf('~'));
-				if(tempstr1.indexOf('!')!=-1)
-					tempstr1 = tempstr1.substring(0,tempstr1.indexOf('!')).trim();
-				tempstate = new IState();
-				tempstate.setName(tempstr1);
-				tempcomp.getStates().add(tempstate);
-				state = state.substring(state.indexOf('~')+1, state.length()).trim();
-			}
-			tempstr1 = state;
-			if(tempstr1.indexOf('!')!=-1)
-				tempstr1 = tempstr1.substring(0,tempstr1.indexOf('!')).trim();
-			tempstate = new IState();
-			tempstate.setName(tempstr1);
-			tempcomp.getStates().add(tempstate);
-			tempmole.getComponents().add(tempcomp);
-		}
-	}
-	
-	boolean validatemole(IMolecule tempmole)
-	{
-		for(int i = 0; i < tempmole.getComponents().size(); i++)//delete the entries with empty string names
-		{
-			if(tempmole.getComponents().get(i).getName().trim().length()==0)
-			{
-				tempmole.getComponents().remove(i);
-				i--;
-			}
-			else
-			{
-				for(int j = 0; j < tempmole.getComponents().get(i).getStates().size(); j++)
-					if(tempmole.getComponents().get(i).getStates().get(j).getName().trim().length() == 0)
-					{
-						tempmole.getComponents().get(i).getStates().remove(j);
-						j--;
-					}
-			}
-		}
-		if(!validatename(tempmole.getName()))
-			return false;
-		for(int i = 0; i < tempmole.getComponents().size(); i++)
-			if(!validatename(tempmole.getComponents().get(i).getName()))
-				return false;
-			else
-				for(int j = 0; j < tempmole.getComponents().get(i).getStates().size(); j++)
-					if(!validatename(tempmole.getComponents().get(i).getStates().get(j).getName()))
-						return false;
-		return true;
-	}
-	
-	boolean validatename(String name)
-	{
-		name = name.trim();
-		if(name.indexOf('+')!=-1 || name.indexOf('(')!=-1 || name.indexOf(')')!=-1 || name.indexOf('.')!=-1 || name.indexOf(',')!=-1 || name.indexOf('!')!=-1  || name.indexOf('?')!=-1 || name.indexOf('~')!=-1 || name.indexOf(' ')!=-1 || name.indexOf('\t')!=-1 || name.indexOf('{')!=-1 || name.indexOf('}')!=-1 || name.indexOf('<')!=-1 || name.indexOf('>')!=-1 || name.indexOf('-')!=-1)
-			return false;
-		return true;
-	}
 	
 	void parserules(String rulestr)
 	{
 		Scanner scan = new Scanner(rulestr);
 		String tempstr1;
-		Pattern pattern1 = Pattern.compile("\\{.*\\}");
-		Pattern pattern2 = Pattern.compile("\\s+DeleteMolecules\\s+");
-		Matcher m;
+		
+		// regular expression for anything in curly braces?
+		Pattern curlyBracePattern = Pattern.compile("\\{.*\\}");
+		
+		// regular expression for 'DeleteMolecules' with any spaces on the outside
+		Pattern deleteMoleculesPattern = Pattern.compile("\\s+DeleteMolecules\\s+");
+		Matcher matcher;
 		IRule temprule;
 		while(scan.hasNext())
 		{
@@ -333,26 +123,31 @@ public class IMapModel
 				}	
 			}
 			
+			// TBProcessed is now probably without a space and does not contain comments.
+			
 			ruleparsevalid = true;
+			
+			//create a rule and set the name
 			temprule = new IRule();
 			temprule.setName(TBProcessed);
-			m = pattern1.matcher(TBProcessed);//delete
+			matcher = curlyBracePattern.matcher(TBProcessed);//delete
 			
-			// removing whatever is matched in pattern1
-			while(m.find())
+			// removing the text in curly braces.
+			while(matcher.find())
 			{
-				TBProcessed = TBProcessed.substring(0,m.start()).trim()+" "+TBProcessed.substring(m.end(), TBProcessed.length()).trim();
-				m = pattern1.matcher(TBProcessed);
+				TBProcessed = TBProcessed.substring(0,matcher.start()).trim()+" "+TBProcessed.substring(matcher.end(), TBProcessed.length()).trim();
+				matcher = curlyBracePattern.matcher(TBProcessed);
 			}
 			
+			// Add a space
 			TBProcessed = TBProcessed + " ";
-			m = pattern2.matcher(TBProcessed);
+			matcher = deleteMoleculesPattern.matcher(TBProcessed);
 			
-			// removing whatever is matched in pattern2.
-			while(m.find())
+			// removing the 'DeleteMolecule'. pattern
+			while(matcher.find())
 			{
-				TBProcessed = TBProcessed.substring(0,m.start()).trim()+ " " + TBProcessed.substring(m.end(),TBProcessed.length()).trim() + " ";
-				m = pattern2.matcher(TBProcessed);
+				TBProcessed = TBProcessed.substring(0,matcher.start()).trim()+ " " + TBProcessed.substring(matcher.end(),TBProcessed.length()).trim() + " ";
+				matcher = deleteMoleculesPattern.matcher(TBProcessed);
 			}
 			
 			TBProcessed = TBProcessed.trim();
@@ -365,19 +160,23 @@ public class IMapModel
 			if(TBProcessed.contains("exclude_products"))
 				TBProcessed = TBProcessed.substring(0,TBProcessed.indexOf("exclude_products")).trim();
 			
-			parserule(temprule,TBProcessed);	
+			
+			// Everything up to here is just text processing.
+			
+			parserule(temprule,TBProcessed);
+			
 			if(ruleparsevalid)
 				rules.add(temprule);
-			else
-				BNGEditor.displayOutput("\nError parsing rule : "+TBProcessed+" , rule not added !");
+			//else
+				//BNGEditor.displayOutput("\nError parsing rule : "+TBProcessed+" , rule not added !");
 		}
 	}
 	
 	void parserule(IRule temprule,String rulestr)
 	{
 		
-		Pattern pattern1 = Pattern.compile("\\-\\s*>");
-		Matcher m = pattern1.matcher(rulestr);
+		Pattern rightarrowpattern = Pattern.compile("\\-\\s*>");
+		Matcher m = rightarrowpattern.matcher(rulestr);
 		String tempstr1,tempstr2;
 		if(!m.find())
 		{
@@ -543,7 +342,7 @@ public class IMapModel
 	 * @return
 	 */
 	
-	/*
+	
 	boolean validaterate(String rate)
 	{
 		// Removes white space from beginning and end.
@@ -580,24 +379,23 @@ public class IMapModel
 		// The molecule is valid if flow reaches here.
 		return true;
 	}
-	*/
+	
 	/**
 	 * 
 	 * @param temprule
 	 * @param rulestr
 	 */
-	/*
+	
 	void parserule2pattern(IRule temprule, String rulestr)
 	{
 		// Declare reactants and products strings.
 		String reactants,products;
 		
-		// Create a regular expression that matches (I think) an exclamation 
-		// point followed by any number of spaces and k0,0then a plus sign...  
-		Pattern pattern1 = Pattern.compile("!\\s*\\+");
+		// Create a regular expression that matches !+  
+		Pattern wildcardPattern = Pattern.compile("!\\s*\\+");
 		
 		// Match the regexp to the rule string.
-		Matcher m = pattern1.matcher(rulestr);
+		Matcher m = wildcardPattern.matcher(rulestr);
 		
 		// Replace all strings that match the regexp with !$
 		while(m.find())
@@ -606,7 +404,7 @@ public class IMapModel
 			rulestr = rulestr.substring(0, m.start()).trim()+"!$"+rulestr.substring(m.end(), rulestr.length()).trim();
 			
 			// match the regexp to the string again.
-			m = pattern1.matcher(rulestr);
+			m = wildcardPattern.matcher(rulestr);
 		}
 		
 		// Set the reactants for bidirectional rules as the text from the 
@@ -615,8 +413,7 @@ public class IMapModel
 			reactants = rulestr.substring(0, rulestr.indexOf('<')).trim();
 		
 		// Set the reactants for a single directional rule as the text from
-		// the beginning to the '-'.  It looks like there are no reverse
-		// rules that use '<-'
+		// the beginning to the '-'.  
 		else
 			reactants = rulestr.substring(0, rulestr.indexOf('-')).trim();
 		
@@ -647,7 +444,7 @@ public class IMapModel
 		}
 		
 		parsepatterns(temprule.getProductpatterns(), products);
-		//determine bondaction & bond Cangenerate
+		//determine bondaction & bond Can generate
 		if(ruleparsevalid)
 		{
 			for(int i=0; i<temprule.getReactantpatterns().size(); i++)
@@ -746,7 +543,7 @@ public class IMapModel
 							}
 				}
 		}
-		/*
+		
 		//for(int j = 0; j<temprp.getMolepatterns().size(); j++)
 			//for(int k=0; k<temprp.getMolepatterns().get(j).getComppatterns().size(); k++)
 			//	temprp.getMolepatterns().get(j).getComppatterns().get(k).getPbondlist().clear();
@@ -826,7 +623,7 @@ public class IMapModel
 		
 		if(tempmp.getMoleindex() == -1)
 		{
-			BNGEditor.displayOutput("\nError! Molecule: " + molename + " NOT declared!");
+			//BNGEditor.displayOutput("\nError! Molecule: " + molename + " NOT declared!");
 			ruleparsevalid = false;
 			return;
 		}
@@ -875,7 +672,7 @@ public class IMapModel
 		}
 		if(tempcp.getCompindex() == -1)
 		{
-			BNGEditor.displayOutput("\nError! Molecule: " + molecules.get(tempmp.getMoleindex()).getName() + ", Component: "+ compstr + " NOT declared!");
+			//BNGEditor.displayOutput("\nError! Molecule: " + molecules.get(tempmp.getMoleindex()).getName() + ", Component: "+ compstr + " NOT declared!");
 			ruleparsevalid = false;
 			return;
 		}
@@ -900,7 +697,7 @@ public class IMapModel
 			{
 				if(!flexiblestate)
 				{
-					BNGEditor.displayOutput("\nError! Molecule: " + molecules.get(tempmp.getMoleindex()).getName() + ", Component: "+ compstr + ", State: " + statestr + " NOT declared!");
+					//BNGEditor.displayOutput("\nError! Molecule: " + molecules.get(tempmp.getMoleindex()).getName() + ", Component: "+ compstr + ", State: " + statestr + " NOT declared!");
 					ruleparsevalid = false;
 					return;
 				}
@@ -929,7 +726,7 @@ public class IMapModel
 						tempcp.setWildcards(1);
 					else
 					{
-						BNGEditor.displayOutput("\nError! Molecule: " + molecules.get(tempmp.getMoleindex()).getName() + ", Component: "+ compstr + ", State: " + statestr + " has multiple bond status!");
+						//BNGEditor.displayOutput("\nError! Molecule: " + molecules.get(tempmp.getMoleindex()).getName() + ", Component: "+ compstr + ", State: " + statestr + " has multiple bond status!");
 						ruleparsevalid = false;
 						return;
 					}
@@ -940,7 +737,7 @@ public class IMapModel
 						tempcp.setWildcards(0);
 					else
 					{
-						BNGEditor.displayOutput("\nError! Molecule: " + molecules.get(tempmp.getMoleindex()).getName() + ", Component: "+ compstr + ", State: " + statestr + " has multiple bond status!");
+						//BNGEditor.displayOutput("\nError! Molecule: " + molecules.get(tempmp.getMoleindex()).getName() + ", Component: "+ compstr + ", State: " + statestr + " has multiple bond status!");
 						ruleparsevalid = false;
 						return;
 					}
@@ -960,7 +757,7 @@ public class IMapModel
 					tempcp.setWildcards(1);
 				else
 				{
-					BNGEditor.displayOutput("\nError! Molecule: " + molecules.get(tempmp.getMoleindex()).getName() + ", Component: "+ compstr + ", State: " + statestr + " has multiple bond status!");
+					//BNGEditor.displayOutput("\nError! Molecule: " + molecules.get(tempmp.getMoleindex()).getName() + ", Component: "+ compstr + ", State: " + statestr + " has multiple bond status!");
 					ruleparsevalid = false;
 					return;
 				}
@@ -971,7 +768,7 @@ public class IMapModel
 					tempcp.setWildcards(0);
 				else
 				{
-					BNGEditor.displayOutput("\nError! Molecule: " + molecules.get(tempmp.getMoleindex()).getName() + ", Component: "+ compstr + ", State: " + statestr + " has multiple bond status!");
+					//BNGEditor.displayOutput("\nError! Molecule: " + molecules.get(tempmp.getMoleindex()).getName() + ", Component: "+ compstr + ", State: " + statestr + " has multiple bond status!");
 					ruleparsevalid = false;
 					return;
 				}
@@ -996,7 +793,7 @@ public class IMapModel
 						tempcp.setWildcards(1);
 					else
 					{
-						BNGEditor.displayOutput("\nError! Molecule: " + molecules.get(tempmp.getMoleindex()).getName() + ", Component: "+ compstr + ", State: " + statestr + " has multiple bond status!");
+						//BNGEditor.displayOutput("\nError! Molecule: " + molecules.get(tempmp.getMoleindex()).getName() + ", Component: "+ compstr + ", State: " + statestr + " has multiple bond status!");
 						ruleparsevalid = false;
 						return;
 					}
@@ -1007,7 +804,7 @@ public class IMapModel
 						tempcp.setWildcards(0);
 					else
 					{
-						BNGEditor.displayOutput("\nError! Molecule: " + molecules.get(tempmp.getMoleindex()).getName() + ", Component: "+ compstr + ", State: " + statestr + " has multiple bond status!");
+						//BNGEditor.displayOutput("\nError! Molecule: " + molecules.get(tempmp.getMoleindex()).getName() + ", Component: "+ compstr + ", State: " + statestr + " has multiple bond status!");
 						ruleparsevalid = false;
 						return;
 					}
@@ -1027,7 +824,7 @@ public class IMapModel
 					tempcp.setWildcards(1);
 				else
 				{
-					BNGEditor.displayOutput("\nError! Molecule: " + molecules.get(tempmp.getMoleindex()).getName() + ", Component: "+ compstr + ", State: " + statestr + " has multiple bond status!");
+					//BNGEditor.displayOutput("\nError! Molecule: " + molecules.get(tempmp.getMoleindex()).getName() + ", Component: "+ compstr + ", State: " + statestr + " has multiple bond status!");
 					ruleparsevalid = false;
 					return;
 				}
@@ -1038,7 +835,7 @@ public class IMapModel
 					tempcp.setWildcards(0);
 				else
 				{
-					BNGEditor.displayOutput("\nError! Molecule: " + molecules.get(tempmp.getMoleindex()).getName() + ", Component: "+ compstr + ", State: " + statestr + " has multiple bond status!");
+					//BNGEditor.displayOutput("\nError! Molecule: " + molecules.get(tempmp.getMoleindex()).getName() + ", Component: "+ compstr + ", State: " + statestr + " has multiple bond status!");
 					ruleparsevalid = false;
 					return;
 				}
@@ -1537,7 +1334,7 @@ public class IMapModel
 			}
 		}
 	}
-	*/
+	
 	
 	public ArrayList<IRuleNode> getRuleNodes()
 	{

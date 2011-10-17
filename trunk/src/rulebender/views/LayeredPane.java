@@ -8,7 +8,7 @@
  * overall size of the window is set in the constructor and can
  * be changed with a method call after instantiation. 
  */
-package rulebender.views.contactmap;
+package rulebender.views;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -85,7 +85,7 @@ public class LayeredPane extends JLayeredPane
 	 * 
 	 * @param d - The prefuse.Display object for the visualization. 
 	 */
-	public void setCMap(Display d)
+	public void setDisplay(Display d)
 	{
 		if(mainJPanel.getComponentCount() > 0)
 		{
@@ -109,7 +109,7 @@ public class LayeredPane extends JLayeredPane
 			// absolute layout
 			overviewJPanel.setLayout(null);
 			
-			Display dis_focus = (Display) mainJPanel.getComponent(0);
+		//	Display dis_focus = (Display) mainJPanel.getComponent(0);
 			
 	     	// add overview display to panel
 			overviewJPanel.add(new Overview(d));
