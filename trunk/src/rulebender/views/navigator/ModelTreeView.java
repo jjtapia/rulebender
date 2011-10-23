@@ -2,33 +2,24 @@ package rulebender.views.navigator;
 
 import java.io.File;
 
-import org.eclipse.jface.action.Action;
-import org.eclipse.jface.action.IAction;
-import org.eclipse.jface.action.IContributionItem;
-import org.eclipse.jface.action.IMenuCreator;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
-import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.jface.util.IPropertyChangeListener;
-import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.HelpListener;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.ui.part.ViewPart;
 
 import rulebender.dialog.PickWorkspaceDialog;
-import rulebender.models.filebrowser.BNGModelCollection;
-import rulebender.models.filebrowser.FileBrowserTreeBuilder;
 import rulebender.models.filebrowser2.FolderNode;
 import rulebender.models.filebrowser2.TreeContentProvider;
 import rulebender.models.filebrowser2.TreeLabelProvider;
 import rulebender.models.filebrowser2.TreeNode;
+import rulebender.views.navigator.actions.DeleteFileAction;
 import rulebender.views.navigator.actions.NewFolderAction;
+import rulebender.views.navigator.actions.RefreshAction;
 
 public class ModelTreeView extends ViewPart 
 {
@@ -85,7 +76,7 @@ public class ModelTreeView extends ViewPart
 		// Create a MenuManager object.  
 		MenuManager menuMgr = new MenuManager();
 		
-		// TODO I think this rebuilds the menu every time it is loaded, so you can 
+		// I think this rebuilds the menu every time it is loaded, so you can 
 		// have dynamic menus depending on which object is selected. 
 	    menuMgr.setRemoveAllWhenShown(true);
 	    
@@ -114,39 +105,75 @@ public class ModelTreeView extends ViewPart
 	{
 		IStructuredSelection selection = (IStructuredSelection) getSite().getSelectionProvider().getSelection();
 		
+		// Create the 'new' submenu
+		MenuManager newMenu = new MenuManager("New...");
+		
+		manager.add(newMenu);
+		
+		// If nothing is selected
 		if(selection.isEmpty())
 		{
-			manager.add(new NewFolderAction(new File(PickWorkspaceDialog.getLastSetWorkspaceDirectory()), m_treeViewer));
-			
+			// Add the option to create a new folder.
+			newMenu.add(new NewFolderAction(new File(PickWorkspaceDialog.getLastSetWorkspaceDirectory()), this));	
 		}
 		
-		else
+		// If only 1 thing was selected
+		else if(selection.size() == 1)
 		{
-			if(selection.size() == 1 && ((TreeNode) selection.getFirstElement()).getNodeType().equals("FolderNode"))
+			// If it is a folder node
+			if(((TreeNode) selection.getFirstElement()).getNodeType().equals("FolderNode"))
 			{
-				manager.add(new NewFolderAction(new File(((FolderNode) selection.getFirstElement()).getPath()), m_treeViewer));
+				newMenu.add(new NewFolderAction(new File(((FolderNode) selection.getFirstElement()).getPath()), this));
 			}
-		}
-		
-		//TODO Why won't this work?
-		manager.add(new Action()
-		{
-			public String getText()
+			else
 			{
-				return "Refresh";
+				// TODO Add something for each type file selection (.bng, .net, .net, scan)
 			}
 			
-			public void run()
-			{
-				m_treeViewer.refresh();
-			}
-		});
+			// For both folders and files
+			manager.add(new DeleteFileAction(selection, this));
+		 
+		}
+		
+		// If multiple things are selected
+		else if(selection.size() > 1)
+		{
+			// For both folders and files
+			manager.add(new DeleteFileAction(selection, this));
+		}
+		
+		// No matter what add the things below.
+		
+		// Add a simple action for refreshing the tree.  Used when 
+		// the file system has been changed outside of the tool.
+		manager.add(new RefreshAction(this));
 	}
 
 	@Override
 	public void setFocus() 
 	{
 		// TODO Auto-generated method stub
+	}
+
+	/**
+	 * Saves the state of the expanded nodes and refreshes the tree.  
+	 * Used when the directories are changed.
+	 *
+	 */
+	public void rebuildWholeTree() 
+	{
+		Object[] expanded = m_treeViewer.getExpandedElements();
+		
+		// Get the path of the workspace
+		String rootDirPath = PickWorkspaceDialog.getLastSetWorkspaceDirectory();
+	
+		// Create the root node of the tree using the workspace.
+		FolderNode rootNode = new FolderNode(new File(rootDirPath));
+			
+		// Set the input to the tree as the root node. 
+		m_treeViewer.setInput(rootNode);
+		
+		m_treeViewer.setExpandedElements(expanded);			
 	}
 
 }

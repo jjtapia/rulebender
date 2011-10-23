@@ -65,12 +65,12 @@ public class LayeredPane extends JLayeredPane
 		overviewJPanel = new JPanel(new BorderLayout()); 
 	    overviewJPanel.setBorder(border);
 	    
-	    overviewJPanel.setBackground(Color.RED);
+	    overviewJPanel.setBackground(Color.WHITE);
 	    
 	    // Instantiate the JPanel for the main visualization and set its border.
 	    mainJPanel = new JPanel(new BorderLayout());
 		mainJPanel.setBorder(border);
-		mainJPanel.setBackground(Color.BLACK);
+		mainJPanel.setBackground(Color.WHITE);
 		
 		// Add the JPanels to the JLayeredPane (this object)
 		this.add(mainJPanel, new Integer(0));		

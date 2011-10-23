@@ -3,10 +3,11 @@ package rulebender.views.navigator.actions;
 import java.io.File;
 
 import org.eclipse.jface.action.Action;
-import org.eclipse.jface.viewers.TreeViewer;
+import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.MouseListener;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -15,17 +16,19 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
-import org.eclipse.ui.internal.Workbench;
+import org.eclipse.ui.plugin.AbstractUIPlugin;
 
 import rulebender.views.navigator.ModelTreeView;
 
 
 public class NewFolderAction extends Action
 {
+	private static final ImageDescriptor m_newFolderImage = ImageDescriptor.createFromImage(AbstractUIPlugin.imageDescriptorFromPlugin ("rulebender","/icons/newfolder_wiz.gif").createImage());
+	
 	private File m_parent;
-	private TreeViewer m_view;
+	private ModelTreeView m_view;
 
-	public NewFolderAction(File parent, TreeViewer view)
+	public NewFolderAction(File parent, ModelTreeView view)
 	{
 		setDirToMake(parent);
 		setView(view);
@@ -108,7 +111,7 @@ public class NewFolderAction extends Action
 					return;
 				}
 				
-				// Cannot contain 
+				// Cannot contain special characters 
 				if(newFileText.getText().contains("/") || 
 						newFileText.getText().contains("\\") ||
 						newFileText.getText().contains("?") ||
@@ -146,7 +149,7 @@ public class NewFolderAction extends Action
 				
 				// refresh the tree
 				// TODO optimize: We could pass in the ISelection and only refresh the subtree
-				m_view.refresh();
+				m_view.rebuildWholeTree();
 				
 				//Dispose of the name box.
 				nameBox.dispose();
@@ -162,15 +165,19 @@ public class NewFolderAction extends Action
 		m_parent = parent;
 	}
 
-	private void setView(TreeViewer view)
+	private void setView(ModelTreeView view)
 	{
 		m_view = view;
+	}
+	
+	public ImageDescriptor getImageDescriptor()
+	{
+		return m_newFolderImage;
 	}
 	
 	public String getText()
 	{
 		return "New Folder";
 	}
-
 }
 
