@@ -79,7 +79,8 @@ public class FolderNode extends TreeNode {
 		for (int i = 0; i < childFiles.length; i++) {
 			File childFile = childFiles[i];
 			// directory
-			if (childFile.isDirectory()) {
+			if (childFile.isDirectory()) 
+			{
 				if (acceptFolder(childFile.getName())) {
 					children.add(new FolderNode(this, childFile));
 				}
@@ -99,7 +100,13 @@ public class FolderNode extends TreeNode {
 	 * @param foldername
 	 * @return
 	 */
-	private boolean acceptFolder(String foldername) {
+	private boolean acceptFolder(String foldername) 
+	{
+		if(foldername.substring(0, 1).equals("."))
+		{
+			return false;
+		}
+		
 		return true;
 	}
 
