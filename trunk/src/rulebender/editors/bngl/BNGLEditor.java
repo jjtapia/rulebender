@@ -7,10 +7,13 @@ import rulebender.editors.bngl.BNGLDocumentProvider;
 
 public class BNGLEditor extends TextEditor {
 	
+	private BNGLColorManager m_colorManager;
+	
 	public BNGLEditor() 
 	{
 		super();
-		setSourceViewerConfiguration(new BNGLConfiguration());
+		m_colorManager = new BNGLColorManager();
+		setSourceViewerConfiguration(new BNGLConfiguration(m_colorManager));
 		setDocumentProvider(new BNGLDocumentProvider());
 	}
 

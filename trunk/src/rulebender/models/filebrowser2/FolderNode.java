@@ -14,7 +14,8 @@ import org.eclipse.ui.plugin.AbstractUIPlugin;
  * Contains FileNode children.
  * 
  */
-public class FolderNode extends TreeNode {
+public class FolderNode extends TreeNode 
+{	
 	private File fFolder; // actual data object
 
 	private static final Image folderImage = AbstractUIPlugin.imageDescriptorFromPlugin ("rulebender","/icons/fldr_obj.gif").createImage();

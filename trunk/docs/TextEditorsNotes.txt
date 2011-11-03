@@ -1,0 +1,11 @@
+Documentation for creating text editors with jface.  
+
+TextEditor subclasses need DocumentProvider objecst (that can use partitioners) and can optionally have configurers. 
+
+Partitioners separate the file into non-overlapping sections using ITokens and IRules. 
+
+Configureres add color, annotation, etc to text with rules for each partition.  
+
+See this for examples ->  http://www.realsolve.co.uk/site/tech/jface-text.php
+
+ 

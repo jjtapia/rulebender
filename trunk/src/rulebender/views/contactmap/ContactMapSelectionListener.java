@@ -111,7 +111,7 @@ public class ContactMapSelectionListener implements ISelectionListener
 		else
 		{
 			// print it out if it is good.
-			System.out.println(ast.toString()+"\n\n================================================================");
+			//System.out.println(ast.toString()+"\n\n================================================================");
 		}
 		
 		// Set a dimension TODO get the correct dimension

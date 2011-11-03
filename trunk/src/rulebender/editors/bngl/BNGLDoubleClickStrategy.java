@@ -5,9 +5,6 @@ import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.ITextDoubleClickStrategy;
 import org.eclipse.jface.text.ITextViewer;
 
-//import org.eclipse.jface.text.*;
-
-
 public class BNGLDoubleClickStrategy implements ITextDoubleClickStrategy 
 {
 	protected ITextViewer fText;

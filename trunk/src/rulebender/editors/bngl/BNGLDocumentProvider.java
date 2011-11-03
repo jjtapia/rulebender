@@ -18,6 +18,7 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.operation.IRunnableContext;
 import org.eclipse.jface.text.Document;
 import org.eclipse.jface.text.IDocument;
+import org.eclipse.jface.text.IDocumentPartitioner;
 import org.eclipse.jface.text.source.IAnnotationModel;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IPathEditorInput;
@@ -47,7 +48,18 @@ public class BNGLDocumentProvider extends AbstractDocumentProvider
 	 */
 	protected void setupDocument(IDocument document) 
 	{
-		// This is where all of the scanning and what not occurs I think.
+		// --------------- Setup the partitioner --------------------------
+		IDocumentPartitioner partitioner =
+				new BNGLPartitioner(
+					new BNGLPartitionScanner(),
+					new String[] {
+						BNGLPartitionScanner.BNGL_COMMENT,
+						});
+		
+			//DEBUG
+			System.out.println("About to Connect**********************");
+			partitioner.connect(document);
+			document.setDocumentPartitioner(partitioner);
 	}
 	
 	/**

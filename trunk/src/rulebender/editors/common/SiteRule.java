@@ -26,7 +26,7 @@ public class SiteRule implements IRule {
 
 			do {
 				c = scanner.read();
-			} while ((char) c != ')');
+			} while ((char) c != ')' && (char) c != '\n');
 			c = scanner.read();
 			scanner.unread();
 			return fToken;
