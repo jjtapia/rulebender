@@ -31,7 +31,7 @@
       </view>
       <view
       		allowMultiple="false"
-            class="rulebender.views.navigator.ModelTreeView"
+            class="rulebender.navigator.views.ModelTreeView"
             id="rulebender.views.Navigator"
             name="Navigator"
             restorable="true">
@@ -43,13 +43,13 @@
             restorable="true">
       </view>
       <view
-            class="rulebender.views.ContactMapView"
+            class="rulebender.contactmap.view.ContactMapView"
             id="rulebender.views.contactmap.ContactMapView"
             name="Contact Map"
             restorable="true">
       </view>
       <view
-            class="rulebender.views.ContactMapView"
+            class="rulebender.contactmap.view.ContactMapView"
             id="rulebender.views.ContactMapView"
             name="Contact Map"
             restorable="true">
@@ -221,57 +221,57 @@
    <extension
          point="org.eclipse.ui.commands">
       <command
-            defaultHandler="rulebender.commands.ExitHandler"
+            defaultHandler="rulebender.core.commands.ExitHandler"
             id="rulebender.commands.Exit"
             name="Exit">
       </command>
       <command
-            defaultHandler="rulebender.commands.NewFileHandler"
+            defaultHandler="rulebender.core.commands.NewFileHandler"
             id="rulebender.commands.NewFile"
             name="NewFile">
       </command>
       <command
-            defaultHandler="rulebender.commands.SaveHandler"
+            defaultHandler="rulebender.core.commands.SaveHandler"
             id="rulebender.commands.Save"
             name="Save">
       </command>
       <command
-            defaultHandler="rulebender.commands.SaveAllHandler"
+            defaultHandler="rulebender.core.commands.SaveAllHandler"
             id="rulebender.commands.SaveAll"
             name="SaveAll">
       </command>
       <command
-            defaultHandler="rulebender.commands.SaveAsHandler"
+            defaultHandler="rulebender.core.commands.SaveAsHandler"
             id="rulebender.commands.SaveAs"
             name="SaveAs">
       </command>
       <command
-            defaultHandler="rulebender.commands.OpenFileHandler"
+            defaultHandler="rulebender.core.commands.OpenFileHandler"
             id="rulebender.commands.OpenFile"
             name="OpenFile">
       </command>
       <command
-            defaultHandler="rulebender.commands.PrintFileHandler"
+            defaultHandler="rulebender.core.commands.PrintFileHandler"
             id="rulebender.commands.PrintFile"
             name="Print">
       </command>
       <command
-            defaultHandler="rulebender.commands.FindHandler"
+            defaultHandler="rulebender.core.commands.FindHandler"
             id="rulebender.commands.Find"
             name="Find">
       </command>
       <command
-            defaultHandler="rulebender.commands.ReplaceHandler"
+            defaultHandler="rulebender.core.commands.ReplaceHandler"
             id="rulebender.commands.Replace"
             name="Replace">
       </command>
       <command
-            defaultHandler="rulebender.commands.Test"
+            defaultHandler="rulebender.core.commands.Test"
             id="rulebender.commands.Test"
             name="Test">
       </command>
       <command
-            defaultHandler="rulebender.commands.SwitchWorkspace"
+            defaultHandler="rulebender.core.commands.SwitchWorkspace"
             id="rulebender.commands.SwitchWorkspace"
             name="Switch Workspace">
       </command>
@@ -279,7 +279,7 @@
    <extension
          point="org.eclipse.ui.preferencePages">
       <page
-            class="rulebender.views.preferences.MyFieldEditorPreferencePage"
+            class="rulebender.preferences.views.MyFieldEditorPreferencePage"
             id="rulebender.views.preferences.preferencePage"
             name="My Preference Page">
       </page>
