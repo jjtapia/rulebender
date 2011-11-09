@@ -47,6 +47,10 @@ public class BNGLConfiguration extends SourceViewerConfiguration
 		return new String[] {
 				IDocument.DEFAULT_CONTENT_TYPE, 
 				BNGLPartitionScanner.BNGL_COMMENT
+			//	BNGLPartitionScanner.BNGL_MOLECULE_TYPES_BLOCK,
+			//	BNGLPartitionScanner.BNGL_PARAMETERS_BLOCK,
+			//	BNGLPartitionScanner.BNGL_SPECIES_BLOCK,
+			//	BNGLPartitionScanner.BNGL_REACTION_RULES_BLOCK
 				};
 	}
 	
@@ -110,6 +114,8 @@ public class BNGLConfiguration extends SourceViewerConfiguration
 		m_reconciler.setDamager(dr, IDocument.DEFAULT_CONTENT_TYPE);
 		m_reconciler.setRepairer(dr, IDocument.DEFAULT_CONTENT_TYPE);
 
+		
+		// For the comments.
 		NonRuleBasedDamagerRepairer ndr =
 				new NonRuleBasedDamagerRepairer(
 					new TextAttribute(

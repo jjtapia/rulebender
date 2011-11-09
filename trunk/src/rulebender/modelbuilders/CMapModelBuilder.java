@@ -2,19 +2,19 @@ package rulebender.modelbuilders;
 
 import java.util.HashMap;
 
+import rulebender.contactmap.models.Bond;
+import rulebender.contactmap.models.BondAction;
+import rulebender.contactmap.models.CMapModel;
+import rulebender.contactmap.models.Compartment;
+import rulebender.contactmap.models.Molecule;
+import rulebender.contactmap.models.MoleculePattern;
+import rulebender.contactmap.models.Rule;
+import rulebender.contactmap.models.RulePattern;
 import rulebender.modelbuilders.ruledata.BondActionData;
 import rulebender.modelbuilders.ruledata.ComponentData;
 import rulebender.modelbuilders.ruledata.MoleculePatternData;
 import rulebender.modelbuilders.ruledata.RuleData;
 import rulebender.modelbuilders.ruledata.RulePatternData;
-import rulebender.models.contactmap.CMapModel;
-import rulebender.models.contactmap.Bond;
-import rulebender.models.contactmap.BondAction;
-import rulebender.models.contactmap.Compartment;
-import rulebender.models.contactmap.Molecule;
-import rulebender.models.contactmap.MoleculePattern;
-import rulebender.models.contactmap.Rule;
-import rulebender.models.contactmap.RulePattern;
 
 
 /**

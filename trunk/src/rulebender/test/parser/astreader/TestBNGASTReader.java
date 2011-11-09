@@ -8,6 +8,8 @@ import org.antlr.runtime.RecognitionException;
 import org.junit.Before;
 import org.junit.Test;
 
+import rulebender.contactmap.models.Component;
+import rulebender.contactmap.models.Molecule;
 import rulebender.modelbuilders.BNGASTReader;
 import rulebender.modelbuilders.ModelBuilderInterface;
 import rulebender.modelbuilders.ruledata.BondActionData;
@@ -15,8 +17,6 @@ import rulebender.modelbuilders.ruledata.ComponentData;
 import rulebender.modelbuilders.ruledata.MoleculePatternData;
 import rulebender.modelbuilders.ruledata.RuleData;
 import rulebender.modelbuilders.ruledata.RulePatternData;
-import rulebender.models.contactmap.Component;
-import rulebender.models.contactmap.Molecule;
 import rulebender.utility.BNGParserCommands;
 import bngparser.grammars.BNGGrammar.prog_return;
 

@@ -1,10 +1,10 @@
 package rulebender.modelbuilders;
 
+import rulebender.contactmap.models.Molecule;
 import rulebender.modelbuilders.ruledata.RuleData;
 
 import org.jdom.Attribute;
 
-import rulebender.models.contactmap.Molecule;
 
 /**
  * This interface is for objects that want to be used for building 

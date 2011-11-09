@@ -18,7 +18,7 @@ public class BNGLPartitioner extends FastPartitioner
 	public void connect(IDocument document, boolean delayInitialise)
 	{
 	    super.connect(document, delayInitialise);
-	    printPartitions(document);
+	  //  printPartitions(document);
 	}
 
 	public void printPartitions(IDocument document)

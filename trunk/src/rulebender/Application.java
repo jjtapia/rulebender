@@ -15,7 +15,7 @@ import org.eclipse.ui.IFileEditorMapping;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.PlatformUI;
 
-import rulebender.dialog.PickWorkspaceDialog;
+import rulebender.core.workspace.PickWorkspaceDialog;
 
 /**
  * This class controls all aspects of the application's execution

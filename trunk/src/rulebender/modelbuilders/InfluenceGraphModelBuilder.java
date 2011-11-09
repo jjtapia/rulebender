@@ -1,9 +1,9 @@
 package rulebender.modelbuilders;
 
+import rulebender.contactmap.models.CMapModel;
+import rulebender.contactmap.models.Molecule;
+import rulebender.influencegraph.models.IGraphModel;
 import rulebender.modelbuilders.ruledata.RuleData;
-import rulebender.models.contactmap.CMapModel;
-import rulebender.models.contactmap.Molecule;
-import rulebender.models.influencegraph.IGraphModel;
 
 public class InfluenceGraphModelBuilder implements ModelBuilderInterface 
 {

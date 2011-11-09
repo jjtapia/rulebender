@@ -24,6 +24,8 @@ import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IPathEditorInput;
 import org.eclipse.ui.texteditor.AbstractDocumentProvider;
 
+// TODO Try the TextFileDocumentProvider
+
 public class BNGLDocumentProvider extends AbstractDocumentProvider 
 {
 
@@ -56,8 +58,6 @@ public class BNGLDocumentProvider extends AbstractDocumentProvider
 						BNGLPartitionScanner.BNGL_COMMENT,
 						});
 		
-			//DEBUG
-			System.out.println("About to Connect**********************");
 			partitioner.connect(document);
 			document.setDocumentPartitioner(partitioner);
 	}
