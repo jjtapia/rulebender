@@ -21,6 +21,7 @@ import org.eclipse.ui.console.MessageConsoleStream;
 
 import rulebender.contactmap.view.ContactMapView;
 import rulebender.influencegraph.view.InfluenceGraphView;
+import rulebender.utility.Console;
 
 public class Test extends AbstractHandler
 {
@@ -30,15 +31,8 @@ public class Test extends AbstractHandler
 	public Object execute(ExecutionEvent event) throws ExecutionException
 	{
 		  
-		/*
-		 * Console Output
-		 */
-		messageConsole = getMessageConsole();  
-		MessageConsoleStream msgConsoleStream = messageConsole.newMessageStream();  
-  
-		ConsolePlugin.getDefault().getConsoleManager().addConsoles(  
-				new IConsole[] { messageConsole });  
-		msgConsoleStream.println("Rebuilding Contact Map");
+		
+		Console.displayOutput("Rebuilding Contact Map");
 		
 		/*
 		 * Update a view

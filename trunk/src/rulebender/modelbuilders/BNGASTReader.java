@@ -47,6 +47,9 @@ public class BNGASTReader
 		
 	public void buildWithAST(prog_return ast)
 	{
+		//Debug
+		System.out.println("**AST is " + (ast == null ? "null" : "not null**"));
+		
 		// Get the XML Document.
 		Document doc = getDocument(ast);
 		
