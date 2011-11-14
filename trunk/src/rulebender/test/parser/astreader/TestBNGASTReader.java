@@ -13,11 +13,11 @@ import rulebender.contactmap.models.Molecule;
 import rulebender.core.utility.BNGParserCommands;
 import rulebender.editors.bngl.model.BNGASTReader;
 import rulebender.editors.bngl.model.BNGLModelBuilderInterface;
-import rulebender.modelbuilders.ruledata.BondActionData;
-import rulebender.modelbuilders.ruledata.ComponentData;
-import rulebender.modelbuilders.ruledata.MoleculePatternData;
-import rulebender.modelbuilders.ruledata.RuleData;
-import rulebender.modelbuilders.ruledata.RulePatternData;
+import rulebender.editors.bngl.model.ruledata.BondActionData;
+import rulebender.editors.bngl.model.ruledata.ComponentData;
+import rulebender.editors.bngl.model.ruledata.MoleculePatternData;
+import rulebender.editors.bngl.model.ruledata.RuleData;
+import rulebender.editors.bngl.model.ruledata.RulePatternData;
 import bngparser.grammars.BNGGrammar.prog_return;
 
 /**

@@ -3,11 +3,11 @@ package rulebender.contactmap.models;
 import java.util.HashMap;
 
 import rulebender.editors.bngl.model.BNGLModelBuilderInterface;
-import rulebender.modelbuilders.ruledata.BondActionData;
-import rulebender.modelbuilders.ruledata.ComponentData;
-import rulebender.modelbuilders.ruledata.MoleculePatternData;
-import rulebender.modelbuilders.ruledata.RuleData;
-import rulebender.modelbuilders.ruledata.RulePatternData;
+import rulebender.editors.bngl.model.ruledata.BondActionData;
+import rulebender.editors.bngl.model.ruledata.ComponentData;
+import rulebender.editors.bngl.model.ruledata.MoleculePatternData;
+import rulebender.editors.bngl.model.ruledata.RuleData;
+import rulebender.editors.bngl.model.ruledata.RulePatternData;
 
 
 /**

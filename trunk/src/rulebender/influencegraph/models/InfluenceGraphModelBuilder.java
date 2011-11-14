@@ -3,7 +3,7 @@ package rulebender.influencegraph.models;
 import rulebender.contactmap.models.CMapModel;
 import rulebender.contactmap.models.Molecule;
 import rulebender.editors.bngl.model.BNGLModelBuilderInterface;
-import rulebender.modelbuilders.ruledata.RuleData;
+import rulebender.editors.bngl.model.ruledata.RuleData;
 
 public class InfluenceGraphModelBuilder implements BNGLModelBuilderInterface 
 {

@@ -1,4 +1,4 @@
-package rulebender.modelbuilders.ruledata;
+package rulebender.editors.bngl.model.ruledata;
 
 import java.util.ArrayList;
 

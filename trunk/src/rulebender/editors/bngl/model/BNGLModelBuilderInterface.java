@@ -1,7 +1,7 @@
 package rulebender.editors.bngl.model;
 
 import rulebender.contactmap.models.Molecule;
-import rulebender.modelbuilders.ruledata.RuleData;
+import rulebender.editors.bngl.model.ruledata.RuleData;
 
 import org.jdom.Attribute;
 

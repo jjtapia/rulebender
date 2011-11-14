@@ -6,9 +6,9 @@ import java.util.List;
 
 import rulebender.contactmap.models.Component;
 import rulebender.contactmap.models.Molecule;
-import rulebender.modelbuilders.ruledata.ComponentData;
-import rulebender.modelbuilders.ruledata.RuleData;
-import rulebender.modelbuilders.ruledata.RulePatternData;
+import rulebender.editors.bngl.model.ruledata.ComponentData;
+import rulebender.editors.bngl.model.ruledata.RuleData;
+import rulebender.editors.bngl.model.ruledata.RulePatternData;
 
 import org.jdom.DataConversionException;
 import org.jdom.Document;

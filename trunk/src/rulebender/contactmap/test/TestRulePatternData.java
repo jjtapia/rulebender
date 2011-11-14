@@ -4,8 +4,8 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
-import rulebender.modelbuilders.ruledata.ComponentData;
-import rulebender.modelbuilders.ruledata.RulePatternData;
+import rulebender.editors.bngl.model.ruledata.ComponentData;
+import rulebender.editors.bngl.model.ruledata.RulePatternData;
 
 public class TestRulePatternData 
 {
