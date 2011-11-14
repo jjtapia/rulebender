@@ -3,7 +3,7 @@ package rulebender.navigator.views;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 
-import rulebender.filebrowser.models.*;
+import rulebender.navigator.model2.*;
 
 public class ModelTreeContentProvider extends ArrayContentProvider implements
 		ITreeContentProvider {

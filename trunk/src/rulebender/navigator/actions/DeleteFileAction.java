@@ -21,9 +21,9 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 
-import rulebender.filebrowser2.models.FileNode;
-import rulebender.filebrowser2.models.FolderNode;
-import rulebender.filebrowser2.models.TreeNode;
+import rulebender.navigator.model.FileNode;
+import rulebender.navigator.model.FolderNode;
+import rulebender.navigator.model.TreeNode;
 import rulebender.navigator.views.ModelTreeView;
 
 

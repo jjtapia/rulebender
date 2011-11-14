@@ -1,4 +1,4 @@
-package rulebender.filebrowser2.models;
+package rulebender.navigator.model;
 
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;

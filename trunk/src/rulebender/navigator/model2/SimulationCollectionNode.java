@@ -1,4 +1,4 @@
-package rulebender.filebrowser.models;
+package rulebender.navigator.model2;
 
 import org.eclipse.swt.graphics.Image;
 import java.util.ArrayList;

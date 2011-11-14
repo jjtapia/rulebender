@@ -4,7 +4,7 @@ import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.swt.graphics.Image;
 
-import rulebender.filebrowser.models.FileBrowserTreeNodeInterface;
+import rulebender.navigator.model2.FileBrowserTreeNodeInterface;
 
 public class ModelTreeLabelProvider implements ILabelProvider 
 {

@@ -16,8 +16,8 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 
 import rulebender.editors.common.PathEditorInput;
-import rulebender.filebrowser2.models.FileNode;
-import rulebender.filebrowser2.models.TreeNode;
+import rulebender.navigator.model.FileNode;
+import rulebender.navigator.model.TreeNode;
 
 public class NavigatorDoubleClickListener implements IDoubleClickListener
 {

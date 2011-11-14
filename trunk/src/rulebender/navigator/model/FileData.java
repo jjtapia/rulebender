@@ -1,4 +1,4 @@
-package rulebender.filebrowser2.models;
+package rulebender.navigator.model;
 
 import java.io.File;
 

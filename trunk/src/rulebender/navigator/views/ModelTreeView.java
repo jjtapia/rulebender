@@ -13,13 +13,13 @@ import org.eclipse.swt.widgets.Menu;
 import org.eclipse.ui.part.ViewPart;
 
 import rulebender.core.workspace.PickWorkspaceDialog;
-import rulebender.filebrowser2.models.FolderNode;
-import rulebender.filebrowser2.models.TreeContentProvider;
-import rulebender.filebrowser2.models.TreeLabelProvider;
-import rulebender.filebrowser2.models.TreeNode;
 import rulebender.navigator.actions.DeleteFileAction;
 import rulebender.navigator.actions.NewFolderAction;
 import rulebender.navigator.actions.RefreshAction;
+import rulebender.navigator.model.FolderNode;
+import rulebender.navigator.model.TreeContentProvider;
+import rulebender.navigator.model.TreeLabelProvider;
+import rulebender.navigator.model.TreeNode;
 
 public class ModelTreeView extends ViewPart 
 {
