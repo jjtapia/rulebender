@@ -5,7 +5,7 @@
  * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
  */
 
-package rulebender.j15support.java.awt.geom;
+package rulebender.core.j15support.java.awt.geom;
 
 import java.awt.Shape;
 import java.awt.Rectangle;
@@ -19,7 +19,7 @@ import java.awt.geom.Rectangle2D;
 //import java.io.Serializable;
 import java.util.Arrays;
 
-import rulebender.j15support.sun.awt.geom.Curve;
+import rulebender.core.j15support.sun.awt.geom.Curve;
 
 /**
  * The {@code Path2D} class provides a simple, yet flexible

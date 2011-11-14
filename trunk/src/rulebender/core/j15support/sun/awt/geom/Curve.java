@@ -1,4 +1,4 @@
-package rulebender.j15support.sun.awt.geom;
+package rulebender.core.j15support.sun.awt.geom;
 /*
  * @(#)Curve.java	1.15 10/03/23
  *

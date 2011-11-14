@@ -43,9 +43,9 @@ import prefuse.visual.NodeItem;
 import prefuse.visual.VisualItem;
 import prefuse.visual.expression.InGroupPredicate;
 import prefuse.visual.expression.VisiblePredicate;
+import rulebender.core.j15support.java.awt.geom.Path2D;
 import rulebender.core.prefuse.collinsbubbleset.layout.BubbleSetLayout.Intersection.State;
 import rulebender.core.prefuse.collinsbubbleset.lib.MathLib;
-import rulebender.j15support.java.awt.geom.Path2D;
 
 /**
  * Layout algorithm that computes the isocontour surrounding
