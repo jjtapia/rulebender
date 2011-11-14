@@ -1,4 +1,4 @@
-package rulebender.modelbuilders;
+package rulebender.editors.bngl.model;
 
 import java.io.StringReader;
 import java.util.HashMap;
@@ -38,22 +38,20 @@ import bngparser.grammars.BNGGrammar.prog_return;
  */
 public class BNGASTReader 
 {
-	ModelBuilderInterface m_builder;
+	BNGLModelBuilderInterface m_builder;
 	
-	public BNGASTReader(ModelBuilderInterface builder)
+	public BNGASTReader(BNGLModelBuilderInterface builder)
 	{
 		setBuilder(builder);
 	}
 		
 	public void buildWithAST(prog_return ast)
 	{
-		//Debug
-		System.out.println("**AST is " + (ast == null ? "null" : "not null**"));
-		
 		// Get the XML Document.
 		Document doc = getDocument(ast);
 		
-		System.out.println(ast.toString());
+		// DEBUG
+		//System.out.println(ast.toString());
 		
         // The root of the document is the sbml tag.  Get the Model node.
 		Element model = doc.getRootElement().getChild("Model", doc.getRootElement().getNamespace());
@@ -906,7 +904,7 @@ public class BNGASTReader
 		return null;
 	}
 	
-	public void setBuilder(ModelBuilderInterface builder)
+	public void setBuilder(BNGLModelBuilderInterface builder)
 	{
 		m_builder = builder;
 	}

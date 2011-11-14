@@ -12,13 +12,13 @@ import org.eclipse.ui.IWorkbenchPart;
 import bngparser.grammars.BNGGrammar.prog_return;
 
 import rulebender.contactmap.models.CMapModel;
+import rulebender.contactmap.models.CMapModelBuilder;
 import rulebender.contactmap.prefuse.CMapVisual;
 import rulebender.contactmap.view.ContactMapView;
+import rulebender.editors.bngl.model.BNGASTReader;
 import rulebender.influencegraph.models.IGraphModel;
+import rulebender.influencegraph.models.InfluenceGraphModelBuilder;
 import rulebender.influencegraph.prefuse.IGraphVisual;
-import rulebender.modelbuilders.BNGASTReader;
-import rulebender.modelbuilders.CMapModelBuilder;
-import rulebender.modelbuilders.InfluenceGraphModelBuilder;
 import rulebender.utility.BNGParserCommands;
 
 public class InfluenceGraphSelectionListener implements ISelectionListener 

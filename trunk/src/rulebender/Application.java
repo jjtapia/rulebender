@@ -31,6 +31,7 @@ public class Application implements IApplication {
 	    // the old Eclipse generated code 
         Display display = PlatformUI.createDisplay(); 
     
+        // Set the standard error 
         // Get the workspace and only continue if it is set correctly.
 	    if(!selectWorkspace(display))
 	    {

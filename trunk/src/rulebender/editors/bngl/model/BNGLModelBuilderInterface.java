@@ -1,4 +1,4 @@
-package rulebender.modelbuilders;
+package rulebender.editors.bngl.model;
 
 import rulebender.contactmap.models.Molecule;
 import rulebender.modelbuilders.ruledata.RuleData;
@@ -13,7 +13,7 @@ import org.jdom.Attribute;
  * @author mr_smith22586
  *
  */
-public interface ModelBuilderInterface {
+public interface BNGLModelBuilderInterface {
 
 	/**
 	 * Called when a parameter is encountered while reading the parameters block.

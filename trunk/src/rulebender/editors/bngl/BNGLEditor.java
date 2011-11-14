@@ -1,17 +1,10 @@
 package rulebender.editors.bngl;
 
-import java.io.FileReader;
-
-import org.antlr.runtime.ANTLRStringStream;
-import org.antlr.runtime.CharStream;
-import org.antlr.stringtemplate.StringTemplateGroup;
-import org.antlr.stringtemplate.language.AngleBracketTemplateLexer;
 import org.eclipse.ui.editors.text.TextEditor;
 
+import bngparser.BNGParseData;
 import bngparser.BNGParserUtility;
-import bngparser.dataType.ChangeableChannelTokenStream;
 import bngparser.grammars.BNGGrammar;
-import bngparser.grammars.BNGLexer;
 import bngparser.grammars.BNGGrammar.prog_return;
 
 import rulebender.editors.bngl.BNGLConfiguration;
@@ -47,26 +40,31 @@ public class BNGLEditor extends TextEditor
 	@Override
 	public void editorSaved()
 	{
-		// DEBUG
-		System.out.println("Title: " + getTitle());
+		BNGParseData data = produceParseData();
+		BNGGrammar parser = data.getParser();
 		
 		try
 		{
-			setAST(produceAST());
+			setAST(data.getParser().prog());
 		}
 		catch(Exception e)
 		{
-			Console.displayOutput("PARSING ERRORS: *********");
-			Console.displayOutput(e.getStackTrace().toString());
+			e.printStackTrace();
+			
+			//DEBUG
+			System.out.println("Number of syntax errors: " + parser.getNumberOfSyntaxErrors()); 
+			Console.displayOutput(getTitle() + " Errors:");
+			
+			m_model.setAST(null);
 		}
 	}	
 	
-	private prog_return produceAST() throws Exception
+	private BNGParseData produceParseData()
 	{
 		//  Get the text in the document.
 		String text = this.getSourceViewer().getDocument().get();
 		
-		return BNGParserUtility.produceASTForBNGLText(text);
+		return BNGParserUtility.produceParserInfoForBNGLText(text);
 		
 	}
 	
@@ -94,13 +92,15 @@ public class BNGLEditor extends TextEditor
 		{
 			try
 			{
-				m_model = new BNGLModel(getTitle(), produceAST());
+				m_model = new BNGLModel(getTitle(), produceParseData().getParser().prog());
 			}
 			catch (Exception e)
 			{
-				e.printStackTrace();
-				
-				Console.displayOutput("PARSING ERRORS: *********");
+				Console.displayOutput("Errors:");
+				for(StackTraceElement ste : e.getStackTrace())
+				{
+					Console.displayOutput(ste.toString());
+				}
 				
 				m_model = new BNGLModel(getTitle(), null);
 			}

@@ -1,11 +1,11 @@
-package rulebender.modelbuilders;
+package rulebender.influencegraph.models;
 
 import rulebender.contactmap.models.CMapModel;
 import rulebender.contactmap.models.Molecule;
-import rulebender.influencegraph.models.IGraphModel;
+import rulebender.editors.bngl.model.BNGLModelBuilderInterface;
 import rulebender.modelbuilders.ruledata.RuleData;
 
-public class InfluenceGraphModelBuilder implements ModelBuilderInterface 
+public class InfluenceGraphModelBuilder implements BNGLModelBuilderInterface 
 {
 	
 	private IGraphModel model;

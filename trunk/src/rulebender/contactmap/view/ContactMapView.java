@@ -7,9 +7,9 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import rulebender.contactmap.models.CMapModel;
+import rulebender.contactmap.models.CMapModelBuilder;
 import rulebender.contactmap.prefuse.CMapVisual;
-import rulebender.modelbuilders.BNGASTReader;
-import rulebender.modelbuilders.CMapModelBuilder;
+import rulebender.editors.bngl.model.BNGASTReader;
 
 import org.antlr.runtime.RecognitionException;
 import org.eclipse.jface.viewers.ISelection;

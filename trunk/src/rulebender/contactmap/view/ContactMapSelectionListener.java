@@ -12,10 +12,10 @@ import org.eclipse.ui.IWorkbenchPart;
 import bngparser.grammars.BNGGrammar.prog_return;
 
 import rulebender.contactmap.models.CMapModel;
+import rulebender.contactmap.models.CMapModelBuilder;
 import rulebender.contactmap.prefuse.CMapVisual;
-import rulebender.modelbuilders.BNGASTReader;
-import rulebender.modelbuilders.CMapModelBuilder;
 import rulebender.editors.bngl.BNGLEditor;
+import rulebender.editors.bngl.model.BNGASTReader;
 import rulebender.editors.bngl.model.BNGLModel;
 
 public class ContactMapSelectionListener implements ISelectionListener 

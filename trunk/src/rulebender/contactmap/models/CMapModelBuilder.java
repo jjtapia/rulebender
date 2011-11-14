@@ -1,15 +1,8 @@
-package rulebender.modelbuilders;
+package rulebender.contactmap.models;
 
 import java.util.HashMap;
 
-import rulebender.contactmap.models.Bond;
-import rulebender.contactmap.models.BondAction;
-import rulebender.contactmap.models.CMapModel;
-import rulebender.contactmap.models.Compartment;
-import rulebender.contactmap.models.Molecule;
-import rulebender.contactmap.models.MoleculePattern;
-import rulebender.contactmap.models.Rule;
-import rulebender.contactmap.models.RulePattern;
+import rulebender.editors.bngl.model.BNGLModelBuilderInterface;
 import rulebender.modelbuilders.ruledata.BondActionData;
 import rulebender.modelbuilders.ruledata.ComponentData;
 import rulebender.modelbuilders.ruledata.MoleculePatternData;
@@ -69,7 +62,7 @@ import rulebender.modelbuilders.ruledata.RulePatternData;
  * @author mr_smith22586
  *
  */
-public class CMapModelBuilder implements ModelBuilderInterface 
+public class CMapModelBuilder implements BNGLModelBuilderInterface 
 {
 	CMapModel model;
 	
@@ -160,8 +153,9 @@ public class CMapModelBuilder implements ModelBuilderInterface
 	private int addBondToModel(String moleName1, String compName1, int compID1,
 			String state1, String moleName2, String compName2, int compID2, String state2)
 	{
-		System.out.println("Adding Bond:" + moleName1 + "(" + compName1 + "~" + state1 +
-							")." + moleName2 + "(" + compName2 + "~" + state2 + ")");
+		//DEBUG
+		//System.out.println("Adding Bond:" + moleName1 + "(" + compName1 + "~" + state1 +
+		//					")." + moleName2 + "(" + compName2 + "~" + state2 + ")");
 		
 
 		//TODO this is the problem.  All of the state indices are -1.
@@ -172,14 +166,14 @@ public class CMapModelBuilder implements ModelBuilderInterface
 		int compIndex1 = model.getMolecules().get(moleIndex1).getComponentIndex(compName1, compID1);
 		int stateIndex1 = (model.getMolecules().get(moleIndex1).getComponents().get(compIndex1)).getStateIndex(state1);
 		
-		System.out.println("State index 1: " + stateIndex1);
+		//System.out.println("State index 1: " + stateIndex1);
 		
 		//Need ints for all of these strings
 		int moleIndex2 = moleculeIDForName.get(moleName2);
 		int compIndex2 = model.getMolecules().get(moleIndex2).getComponentIndex(compName2, compID2);
 		int stateIndex2 = (model.getMolecules().get(moleIndex2).getComponents().get(compIndex2)).getStateIndex(state2);
 		
-		System.out.println("State index 2: " + stateIndex2);
+		//System.out.println("State index 2: " + stateIndex2);
 		
 		return model.addBond(new Bond(moleIndex1, compIndex1, stateIndex1, moleIndex2, compIndex2, stateIndex2));
 	}

@@ -10,8 +10,8 @@ import org.junit.Test;
 
 import rulebender.contactmap.models.Component;
 import rulebender.contactmap.models.Molecule;
-import rulebender.modelbuilders.BNGASTReader;
-import rulebender.modelbuilders.ModelBuilderInterface;
+import rulebender.editors.bngl.model.BNGASTReader;
+import rulebender.editors.bngl.model.BNGLModelBuilderInterface;
 import rulebender.modelbuilders.ruledata.BondActionData;
 import rulebender.modelbuilders.ruledata.ComponentData;
 import rulebender.modelbuilders.ruledata.MoleculePatternData;
@@ -53,7 +53,7 @@ public class TestBNGASTReader
 	public void testMoleculeType()
 	{	
 		// Create the builder for the cmap
-		ModelBuilderInterface mockBuilder = new ModelBuilderInterface()
+		BNGLModelBuilderInterface mockBuilder = new BNGLModelBuilderInterface()
 		{
 
 			public void parameterFound(String id, String type, String value){}
@@ -158,7 +158,7 @@ public class TestBNGASTReader
 	public void testSpeciesBlock()
 	{
 	// Create the builder for the cmap
-			ModelBuilderInterface mockBuilder = new ModelBuilderInterface()
+			BNGLModelBuilderInterface mockBuilder = new BNGLModelBuilderInterface()
 			{
 
 				public void parameterFound(String id, String type, String value) 
@@ -234,7 +234,7 @@ public class TestBNGASTReader
 	public void testRuleStates() 
 	{
 		// Create the builder for the cmap
-		ModelBuilderInterface mockBuilder = new ModelBuilderInterface()
+		BNGLModelBuilderInterface mockBuilder = new BNGLModelBuilderInterface()
 		{
 
 			public void parameterFound(String id, String type, String value){}
