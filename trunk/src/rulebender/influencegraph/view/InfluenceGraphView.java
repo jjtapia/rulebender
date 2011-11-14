@@ -14,7 +14,7 @@ import org.eclipse.swt.widgets.Composite;
 //import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.part.ViewPart;
 
-import rulebender.views.LayeredPane;
+import rulebender.prefuse.LayeredPane;
 
 public class InfluenceGraphView extends ViewPart  
 {

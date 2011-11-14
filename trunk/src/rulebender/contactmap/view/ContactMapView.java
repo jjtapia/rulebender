@@ -26,8 +26,8 @@ import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.part.ViewPart;
 
 import bngparser.grammars.BNGGrammar.prog_return;
+import rulebender.prefuse.LayeredPane;
 import rulebender.utility.BNGParserCommands;
-import rulebender.views.LayeredPane;
 
 public class ContactMapView extends ViewPart  
 {

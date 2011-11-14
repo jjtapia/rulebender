@@ -8,7 +8,7 @@
  * overall size of the window is set in the constructor and can
  * be changed with a method call after instantiation. 
  */
-package rulebender.views;
+package rulebender.prefuse;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
