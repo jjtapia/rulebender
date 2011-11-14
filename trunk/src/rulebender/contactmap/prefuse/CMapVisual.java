@@ -30,8 +30,8 @@ import rulebender.contactmap.models.MoleculePattern;
 import rulebender.contactmap.models.Rule;
 import rulebender.contactmap.models.RulePattern;
 import rulebender.contactmap.models.State;
-import rulebender.prefuse.networkviewer.contactmap.CMAPNetworkViewer;
-import rulebender.prefuse.networkviewer.contactmap.VisualRule;
+import rulebender.core.prefuse.networkviewer.contactmap.CMAPNetworkViewer;
+import rulebender.core.prefuse.networkviewer.contactmap.VisualRule;
 
 
 

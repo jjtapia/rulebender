@@ -32,10 +32,10 @@ import prefuse.util.StrokeLib;
 import prefuse.visual.EdgeItem;
 import prefuse.visual.NodeItem;
 import prefuse.visual.VisualItem;
-import rulebender.prefuse.PngSaveFilter;
-import rulebender.prefuse.networkviewer.PrefuseTooltip;
-import rulebender.prefuse.networkviewer.contactmap.VisualRule;
-import rulebender.prefuse.networkviewer.influencegraph.RuleTooltip;
+import rulebender.core.prefuse.PngSaveFilter;
+import rulebender.core.prefuse.networkviewer.PrefuseTooltip;
+import rulebender.core.prefuse.networkviewer.contactmap.VisualRule;
+import rulebender.core.prefuse.networkviewer.influencegraph.RuleTooltip;
 
 //import visualizationviewer.annotation.AnnotationTableModel;
 

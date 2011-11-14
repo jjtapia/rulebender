@@ -16,11 +16,12 @@ import javax.swing.JFileChooser;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 
-import rulebender.prefuse.collinsbubbleset.layout.BubbleSetLayout;
-import rulebender.prefuse.networkviewer.PrefuseTooltip;
-import rulebender.prefuse.networkviewer.contactmap.ComponentTooltip;
-import rulebender.prefuse.networkviewer.contactmap.JMenuItemRuleHolder;
-import rulebender.prefuse.networkviewer.contactmap.VisualRule;
+import rulebender.core.prefuse.PngSaveFilter;
+import rulebender.core.prefuse.collinsbubbleset.layout.BubbleSetLayout;
+import rulebender.core.prefuse.networkviewer.PrefuseTooltip;
+import rulebender.core.prefuse.networkviewer.contactmap.ComponentTooltip;
+import rulebender.core.prefuse.networkviewer.contactmap.JMenuItemRuleHolder;
+import rulebender.core.prefuse.networkviewer.contactmap.VisualRule;
 
 
 import prefuse.Constants;
@@ -42,8 +43,6 @@ import prefuse.visual.AggregateTable;
 import prefuse.visual.EdgeItem;
 import prefuse.visual.NodeItem;
 import prefuse.visual.VisualItem;
-import rulebender.prefuse.PngSaveFilter;
-//import visualizationviewer.VisualizationViewerController;
 
 public class CMapClickControlDelegate extends ControlAdapter 
 {

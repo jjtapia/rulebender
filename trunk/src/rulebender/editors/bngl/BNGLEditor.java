@@ -7,10 +7,10 @@ import bngparser.BNGParserUtility;
 import bngparser.grammars.BNGGrammar;
 import bngparser.grammars.BNGGrammar.prog_return;
 
+import rulebender.core.utility.Console;
 import rulebender.editors.bngl.BNGLConfiguration;
 import rulebender.editors.bngl.BNGLDocumentProvider;
 import rulebender.editors.bngl.model.BNGLModel;
-import rulebender.utility.Console;
 
 public class BNGLEditor extends TextEditor 
 {

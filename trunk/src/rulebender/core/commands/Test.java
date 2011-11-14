@@ -20,8 +20,8 @@ import org.eclipse.ui.console.MessageConsole;
 import org.eclipse.ui.console.MessageConsoleStream;
 
 import rulebender.contactmap.view.ContactMapView;
+import rulebender.core.utility.Console;
 import rulebender.influencegraph.view.InfluenceGraphView;
-import rulebender.utility.Console;
 
 public class Test extends AbstractHandler
 {

@@ -15,11 +15,11 @@ import rulebender.contactmap.models.CMapModel;
 import rulebender.contactmap.models.CMapModelBuilder;
 import rulebender.contactmap.prefuse.CMapVisual;
 import rulebender.contactmap.view.ContactMapView;
+import rulebender.core.utility.BNGParserCommands;
 import rulebender.editors.bngl.model.BNGASTReader;
 import rulebender.influencegraph.models.IGraphModel;
 import rulebender.influencegraph.models.InfluenceGraphModelBuilder;
 import rulebender.influencegraph.prefuse.IGraphVisual;
-import rulebender.utility.BNGParserCommands;
 
 public class InfluenceGraphSelectionListener implements ISelectionListener 
 {

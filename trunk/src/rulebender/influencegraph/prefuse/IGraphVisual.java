@@ -26,12 +26,12 @@ import prefuse.util.FontLib;
 import prefuse.util.StrokeLib;
 import prefuse.visual.VisualItem;
 import rulebender.contactmap.models.CMapModel;
+import rulebender.core.prefuse.networkviewer.CustomizedZoomToFitControl;
+import rulebender.core.prefuse.networkviewer.contactmap.ReverseWheelZoomControl;
+import rulebender.core.prefuse.networkviewer.influencegraph.IMAPLayout;
+import rulebender.core.prefuse.networkviewer.influencegraph.RuleInfluenceRenderer;
+import rulebender.core.prefuse.overview.FitOverviewListener;
 import rulebender.influencegraph.models.IGraphModel;
-import rulebender.prefuse.networkviewer.CustomizedZoomToFitControl;
-import rulebender.prefuse.networkviewer.contactmap.ReverseWheelZoomControl;
-import rulebender.prefuse.networkviewer.influencegraph.IMAPLayout;
-import rulebender.prefuse.networkviewer.influencegraph.RuleInfluenceRenderer;
-import rulebender.prefuse.overview.FitOverviewListener;
 
 public class IGraphVisual 
 {

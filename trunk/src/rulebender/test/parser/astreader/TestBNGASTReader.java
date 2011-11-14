@@ -10,6 +10,7 @@ import org.junit.Test;
 
 import rulebender.contactmap.models.Component;
 import rulebender.contactmap.models.Molecule;
+import rulebender.core.utility.BNGParserCommands;
 import rulebender.editors.bngl.model.BNGASTReader;
 import rulebender.editors.bngl.model.BNGLModelBuilderInterface;
 import rulebender.modelbuilders.ruledata.BondActionData;
@@ -17,7 +18,6 @@ import rulebender.modelbuilders.ruledata.ComponentData;
 import rulebender.modelbuilders.ruledata.MoleculePatternData;
 import rulebender.modelbuilders.ruledata.RuleData;
 import rulebender.modelbuilders.ruledata.RulePatternData;
-import rulebender.utility.BNGParserCommands;
 import bngparser.grammars.BNGGrammar.prog_return;
 
 /**

@@ -9,6 +9,8 @@ import java.util.TimerTask;
 import rulebender.contactmap.models.CMapModel;
 import rulebender.contactmap.models.CMapModelBuilder;
 import rulebender.contactmap.prefuse.CMapVisual;
+import rulebender.core.prefuse.LayeredPane;
+import rulebender.core.utility.BNGParserCommands;
 import rulebender.editors.bngl.model.BNGASTReader;
 
 import org.antlr.runtime.RecognitionException;
@@ -26,8 +28,6 @@ import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.part.ViewPart;
 
 import bngparser.grammars.BNGGrammar.prog_return;
-import rulebender.prefuse.LayeredPane;
-import rulebender.utility.BNGParserCommands;
 
 public class ContactMapView extends ViewPart  
 {
