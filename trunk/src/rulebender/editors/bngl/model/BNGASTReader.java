@@ -51,7 +51,7 @@ public class BNGASTReader
 		Document doc = getDocument(ast);
 		
 		// DEBUG
-		//System.out.println(ast.toString());
+		System.out.println(ast.toString());
 		
         // The root of the document is the sbml tag.  Get the Model node.
 		Element model = doc.getRootElement().getChild("Model", doc.getRootElement().getNamespace());
@@ -456,15 +456,22 @@ public class BNGASTReader
 		// For each of the reaction rules.
 		for(Element reactionRule : reactionRulesList)
 		{
-			System.out.println("***************************  RULE  ***************************\nname:"
-							   + reactionRule.getAttributeValue("name"));
+			// DEBUG
+			//System.out.println("***************************  RULE  ***************************\nname:"
+				//			   + reactionRule.getAttributeValue("name"));
 			
 			RuleData ruleData = new RuleData(reactionRule.getAttributeValue("name"));
 			
+			// Get the expression and clean out the '&gt;' and '&lt;' place holders.
+			String expression = reactionRule.getAttributeValue("expression");
+			expression.replace("&gt;", ">");
+			expression.replace("&lt;", "<");
+			
+			// Set the expression.
+			ruleData.setExpression(expression);
+			
 			HashMap<String, String> moleculeNameForID = new HashMap<String, String>();
 			HashMap<String, ComponentData> componentDataForID = new HashMap<String, ComponentData>();
-			
-			//TODO need the expression.
 			
 			// Get the Reactant Patterns
 			Element reactantPatternsNode = reactionRule.getChild("ListOfReactantPatterns", reactionRule.getNamespace());

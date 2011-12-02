@@ -15,10 +15,184 @@
    <extension
          point="org.eclipse.ui.perspectives">
       <perspective
-            name="Perspective"
+            name="Model"
             class="rulebender.Perspective"
             id="rulebender.perspective">
       </perspective>
+      <perspective
+            class="rulebender.ResultsPerspective"
+            id="rulebender.ResultsPerspective"
+            name="Results">
+      </perspective>
+      <perspective
+            class="rulebender.SimulationPerspective"
+            id="rulebender.simulate.SimulatePerspective"
+            name="Simulation">
+      </perspective>
+   </extension>
+   <extension
+         point="org.eclipse.ui.perspectiveExtensions">
+      <perspectiveExtension
+            targetID="rulebender.perspective">
+         <view
+               id="rulebender.views.Console"
+               minimized="false"
+               ratio="0.8f"
+               relationship="bottom"
+               relative="org.eclipse.ui.editorss"
+               visible="true">
+         </view>
+         <view
+               closeable="false"
+               id="rulebender.views.Navigator"
+               minimized="true"
+               ratio="0.2f"
+               relationship="left"
+               relative="org.eclipse.ui.editorss"
+               visible="true">
+         </view>
+         <view
+               id="rulebender.contactmap.view.ContactMapView"
+               minimized="false"
+               moveable="true"
+               relationship="right"
+               relative="org.eclipse.ui.editorss"
+               visible="true">
+         </view>
+         <view
+               closeable="true"
+               id="rulebender.influencegraph.view.InfluenceGraphView"
+               minimized="false"
+               moveable="true"
+               relationship="stack"
+               relative="rulebender.contactmap.view.ContactMapView"
+               visible="true">
+         </view>
+         <view
+               closeable="true"
+               id="rulebender.properties.view.PropertiesSheetView"
+               minimized="false"
+               moveable="true"
+               relationship="right"
+               relative="rulebender.views.Console"
+               visible="true">
+         </view>
+      </perspectiveExtension>
+      <perspectiveExtension
+            targetID="rulebender.ResultsPerspective">
+         <view
+               closeable="false"
+               id="rulebender.results.view.ResultsView"
+               minimized="false"
+               moveable="true"
+               relationship="left"
+               relative="org.eclipse.ui.editorss"
+               visible="true">
+         </view>
+         <view
+               closeable="false"
+               id="rulebender.speciesgraph.SpeciesGraphView"
+               minimized="false"
+               moveable="true"
+               relationship="right"
+               relative="org.eclipse.ui.editorss"
+               visible="true">
+         </view>
+         <view
+               closeable="false"
+               id="rulebender.specieslist.view.SpeciesListView"
+               minimized="false"
+               moveable="true"
+               relationship="bottom"
+               relative="rulebender.speciesgraph.SpeciesGraphView"
+               visible="true">
+         </view>
+         <view
+               closeable="false"
+               id="rulebender.views.Navigator"
+               minimized="false"
+               ratio="0.2f"
+               relationship="left"
+               relative="rulebender.results.view.ResultsView"
+               visible="true">
+         </view>
+         <view
+               closeable="true"
+               id="rulebender.properties.view.PropertiesSheetView"
+               minimized="false"
+               moveable="true"
+               relationship="bottom"
+               relative="rulebender.results.view.ResultsView"
+               visible="true">
+         </view>
+      </perspectiveExtension>
+      <perspectiveExtension
+            targetID="rulebender.simulate.SimulatePerspective">
+         <view
+               closeable="true"
+               id="rulebender.simulate.view.SimulateView"
+               minimized="false"
+               moveable="true"
+               relationship="left"
+               relative="org.eclipse.ui.editorss"
+               showTitle="true"
+               standalone="false"
+               visible="true">
+         </view>
+         <view
+               id="rulebender.views.Console"
+               minimized="false"
+               ratio="0.8f"
+               relationship="bottom"
+               relative="rulebender.simulate.view.SimulateView"
+               visible="true">
+         </view>
+         <view
+               closeable="false"
+               id="rulebender.speciesgraph.SpeciesGraphView"
+               minimized="false"
+               moveable="true"
+               relationship="right"
+               relative="rulebender.simulate.view.SimulateView"
+               visible="true">
+         </view>
+         <view
+               closeable="false"
+               id="rulebender.specieslist.view.SpeciesListView"
+               minimized="false"
+               moveable="true"
+               relationship="bottom"
+               relative="rulebender.speciesgraph.SpeciesGraphView"
+               visible="true">
+         </view>
+         <view
+               closeable="true"
+               id="rulebender.properties.view.PropertiesSheetView"
+               minimized="false"
+               moveable="true"
+               relationship="stack"
+               relative="rulebender.views.Console"
+               visible="true">
+         </view>
+         <view
+               closeable="false"
+               id="org.eclipse.ui.views.ProgressView"
+               minimized="false"
+               moveable="true"
+               relationship="stack"
+               relative="rulebender.views.Console"
+               visible="true">
+         </view>
+         <view
+               closeable="false"
+               id="rulebender.views.Navigator"
+               minimized="false"
+               ratio="0.2f"
+               relationship="left"
+               relative="rulebender.simulate.view.SimulateView"
+               visible="true">
+         </view>
+      </perspectiveExtension>
    </extension>
    <extension
          point="org.eclipse.ui.views">
@@ -44,45 +218,46 @@
       </view>
       <view
             class="rulebender.contactmap.view.ContactMapView"
-            id="rulebender.views.contactmap.ContactMapView"
+            id="rulebender.contactmap.view.ContactMapView"
             name="Contact Map"
             restorable="true">
       </view>
       <view
-            class="rulebender.contactmap.view.ContactMapView"
-            id="rulebender.views.ContactMapView"
-            name="Contact Map"
+            class="rulebender.speciesgraph.SpeciesGraphView"
+            id="rulebender.speciesgraph.SpeciesGraphView"
+            name="Species Graph"
             restorable="true">
       </view>
-   </extension>
-   <extension
-         point="org.eclipse.ui.perspectiveExtensions">
-      <perspectiveExtension
-            targetID="rulebender.perspective">
-         <view
-               id="rulebender.views.Console"
-               minimized="false"
-               ratio="0.8f"
-               relationship="bottom"
-               relative="org.eclipse.ui.editorss"
-               visible="true">
-         </view>
-         <view
-               id="rulebender.views.Navigator"
-               minimized="false"
-               ratio="0.2f"
-               relationship="left"
-               relative="org.eclipse.ui.editorss">
-         </view>
-         <view
-               id="rulebender.views.ContactMapView"
-               minimized="false"
-               moveable="true"
-               relationship="right"
-               relative="org.eclipse.ui.editorss"
-               visible="true">
-         </view>
-      </perspectiveExtension>
+      <view
+            class="rulebender.results.view.ResultsView"
+            id="rulebender.results.view.ResultsView"
+            name="Results"
+            restorable="true">
+      </view>
+      <view
+            class="rulebender.specieslist.view.SpeciesListView"
+            id="rulebender.specieslist.view.SpeciesListView"
+            name="Species List"
+            restorable="true">
+      </view>
+      <view
+            class="rulebender.influencegraph.view.InfluenceGraphView"
+            id="rulebender.influencegraph.view.InfluenceGraphView"
+            name="InfluenceGraph"
+            restorable="true">
+      </view>
+      <view
+            class="org.eclipse.ui.views.properties.PropertySheet"
+            id="rulebender.properties.view.PropertiesSheetView"
+            name="Properties"
+            restorable="true">
+      </view>
+      <view
+            class="rulebender.simulate.view.SimulateView"
+            id="rulebender.simulate.view.SimulateView"
+            name="Simulation"
+            restorable="true">
+      </view>
    </extension>
    <extension
          point="org.eclipse.ui.menus">
@@ -275,6 +450,11 @@
             id="rulebender.commands.SwitchWorkspace"
             name="Switch Workspace">
       </command>
+      <command
+            defaultHandler="rulebender.simulate.commands.SimulateCommandHandler"
+            id="rulebender.simulate.commands.SimulateCommand"
+            name="Simulate">
+      </command>
    </extension>
    <extension
          point="org.eclipse.ui.preferencePages">
@@ -311,5 +491,16 @@
             name="NET File Editor">
       </editor>
    </extension>
+   <extension
+      point="org.eclipse.ui.views">
+   <view
+         name="Progress View"
+         icon="icons/pview.gif"
+         category="org.eclipse.ui"
+         class="org.eclipse.ui.ExtensionFactory:progressView"
+         id="org.eclipse.ui.views.ProgressView">
+   </view>
+</extension>
+
 
 </plugin>

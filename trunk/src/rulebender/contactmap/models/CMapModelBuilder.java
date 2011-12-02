@@ -203,9 +203,8 @@ public class CMapModelBuilder implements BNGLModelBuilderInterface
 		// Set the label of the rule.
 		rule.setLabel(ruleData.getName());
 		
-		// Set the expression of the rule. TODO
-		//rule.setName(ruleData.getExpression());
-		rule.setName("EXPRESSION FOR " + ruleData.getName());
+		// Set the expression for the rule. 
+		rule.setName(ruleData.getExpression());
 		
 		// Set the rate
 		rule.setRate1(ruleData.getRate());
