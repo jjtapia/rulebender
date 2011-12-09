@@ -2,12 +2,11 @@ package rulebender.simulate;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 
-import editor.ConfigurationManager;
-import editor.simulate.CommandInterface;
+import rulebender.preferences.OS;
+import rulebender.preferences.PreferencesClerk;
 
 public class SimulateCommand implements CommandInterface
 {
@@ -17,7 +16,7 @@ public class SimulateCommand implements CommandInterface
 	private String[] m_command;
 		
 	/**
-	 * Constructor for a Simulatino Command.  Create the object, and then call the
+	 * Constructor for a Simulation Command.  Create the object, and then call the
 	 * getCommand() method to get the string of the command to execute. 
 	 * 
 	 * @param bngFile - The string location of the file to run the scan on.
@@ -34,7 +33,7 @@ public class SimulateCommand implements CommandInterface
 	public String[] getCommand() 
 	{
 		// Windows
-		if (ConfigurationManager.getConfigurationManager().getOSType() == 1) 
+		if (PreferencesClerk.getOS() == OS.WINDOWS) 
 		{
 			return getWindowsCommand();
 		}
@@ -53,9 +52,9 @@ public class SimulateCommand implements CommandInterface
 		// Add the perl instruction
 		instructionAL.add("perl");
 		
-		instructionAL.add(ConfigurationManager.getConfigurationManager().getBNGFPath()+
-				ConfigurationManager.getConfigurationManager().getSlash()+
-				ConfigurationManager.getConfigurationManager().getBNGFName());
+		instructionAL.add(PreferencesClerk.getBNGPath()+
+				System.getProperty("file.separator")+
+				PreferencesClerk.getBNGName());
 
 		if (m_viewResults == false) {
 			// Check model, not run
@@ -100,9 +99,9 @@ public class SimulateCommand implements CommandInterface
 			
 			pw.write(modelDisk + ":\n");
 			pw.write("cd " + modelDisk + ":\\" + "\n");
-			String cmd_bng = ConfigurationManager.getConfigurationManager().getBNGFPath()+
-					ConfigurationManager.getConfigurationManager().getSlash()+
-					ConfigurationManager.getConfigurationManager().getBNGFName();
+			String cmd_bng = PreferencesClerk.getBNGPath()+
+					System.getProperty("file.separator")+
+					PreferencesClerk.getBNGName();
 			
 			String check="";
 			if(!m_viewResults)

@@ -2,10 +2,14 @@ package rulebender.simulate;
 import java.io.File;
 import java.io.IOException;
 
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.Job;
 
 import org.eclipse.swt.widgets.Display;
 
-public class CommandRunner<T extends CommandInterface> implements Runnable 
+public class CommandRunner<T extends CommandInterface> extends Job 
 {
 	private T m_command;
 	private File m_workingDirectory;
@@ -17,16 +21,15 @@ public class CommandRunner<T extends CommandInterface> implements Runnable
 	 * @param command The CommandInterface object that should be executed.
 	 * @param workingDirectory The working directory where it should be executed.
 	 */
-	public CommandRunner(T command, File workingDirectory)
+	public CommandRunner(String name, T command, File workingDirectory)
 	{
+		super(name);
 		m_command = command;
 		m_workingDirectory = workingDirectory;
 	}
-	
-	/**
-	 * Runs the parameter scan
-	 */
-	public void run()
+
+	@Override
+	protected IStatus run(IProgressMonitor monitor) 
 	{
 		m_fullLog = "";
 		Process scanProc = null;
@@ -75,6 +78,8 @@ public class CommandRunner<T extends CommandInterface> implements Runnable
 		
 		// DEBUG
 		System.out.println("Done running command.");
+		
+		return Status.OK_STATUS;
 				
 	}
 

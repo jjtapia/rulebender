@@ -5,7 +5,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
-import editor.BNGEditor;
+import rulebender.core.utility.Console;
 
 public class StreamDisplayThread extends Thread 
 {
@@ -30,9 +30,9 @@ public class StreamDisplayThread extends Thread
 			while ((line = buffer.readLine()) != null) 
 			{
 				if(!m_printNow)
-					BNGEditor.displayOutput(line + BNGEditor.getConsoleLineDelimeter());
+					Console.displayOutput(line + Console.getConsoleLineDelimeter());
 				
-				m_log += line + BNGEditor.getConsoleLineDelimeter();
+				m_log += line + Console.getConsoleLineDelimeter();
 			}
 		} 
 		catch (IOException e) 
