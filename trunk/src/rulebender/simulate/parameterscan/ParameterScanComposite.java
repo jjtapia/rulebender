@@ -1,5 +1,10 @@
 package rulebender.simulate.parameterscan;
 
+import java.io.File;
+
+import rulebender.Activator;
+
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
@@ -12,7 +17,12 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Text;
 
-public class ParameterScanView extends Composite
+import rulebender.core.utility.Console;
+import rulebender.preferences.PreferencesClerk;
+import rulebender.simulate.BioNetGenUtility;
+import rulebender.simulate.view.SimulateView;
+
+public class ParameterScanComposite extends Composite
 {	
 	// A static Composite object that is the form itself. 
 	//private static Composite parScanForm;
@@ -26,18 +36,22 @@ public class ParameterScanView extends Composite
 	final Button steadyStateInput;
 	final Text simTimeInput;
 	final Text timePointsInput;
+		
 	
+	private SimulateView m_parentView;
 	/**
 	 * 
 	 * @param parent
 	 */
-	public ParameterScanView(final Composite parent)
+	public ParameterScanComposite(final Composite parent, SimulateView view)
 	{
 		// Call the superclass
 		super(parent, SWT.NONE);
 			
+		m_parentView = view;
+		
 		// parameter scan
-		ParameterScanView parScanForm = this;
+		ParameterScanComposite parScanForm = this;
 		
 		// grid layout
 		parScanForm.setLayout(new GridLayout(5, true));
@@ -120,7 +134,7 @@ public class ParameterScanView extends Composite
 		
 		// OK button
 		Button okButton = new Button(parScanForm, SWT.NONE);
-		okButton.setText("OK");
+		okButton.setText("Run");
 		
 		okButton.setLayoutData(gridData);
 
@@ -140,23 +154,56 @@ public class ParameterScanView extends Composite
 				final ParameterScanData scanData = new ParameterScanData();
 				
 				boolean verified = true;
-				
+				String errorMessage = "Errors in Input: \n\t\t";
+				String currentPath = m_parentView.getSelectedFile();
 				try 
-				{
+				{ 
+					if(currentPath.equals("") || !(new File(currentPath)).exists())
+					{
+						verified = false;
+						errorMessage += "Invalid file path.\n\t\t";
+					}
+					
 					if (paramNameInput.getText().trim().length() == 0)
+					{
 						verified = false;
-					if (Float.parseFloat(paramMaxValueInput.getText().trim()) <= Float
-							.parseFloat(paramMinValueInput.getText().trim()))
+						errorMessage += "Must have parameter name.\n\t\t";
+					}
+					if (Float.parseFloat(paramMaxValueInput.getText().trim()) <= Float.parseFloat(paramMinValueInput.getText().trim()))
+					{
 						verified = false;
+						errorMessage += "Max value must be greater than or equal to the min value.\n\t\t";
+					}
+					
 					if (Integer.parseInt(pointsToScanInput.getText().trim()) <= 0)
+					{
 						verified = false;
-					if (Float.parseFloat(paramMinValueInput.getText().trim()) <= 0
-							&& logScaleInput.getSelection())
+						errorMessage += "Points to scan must be non-negative.\n\t\t";
+					}
+					
+					if (Float.parseFloat(paramMinValueInput.getText().trim()) < 0)
+					{
 						verified = false;
+						errorMessage += "Min value cannot be less than 0.\n\t\t";
+					}
+					
+					if (Float.parseFloat(paramMinValueInput.getText().trim()) == 0 && logScaleInput.getSelection())
+					{
+						verified = false;
+						errorMessage += "Min value cannot be 0 when log scale is selected. \n\t\t";
+					}
+					
 					if (Float.parseFloat(simTimeInput.getText().trim()) <= 0)
+					{
 						verified = false;
+						errorMessage += "Simulation time must be positive. \n\t\t";
+					}
+					
 					if (Integer.parseInt(timePointsInput.getText().trim()) <= 0)
+					{
 						verified = false;
+						errorMessage += "Time points must be positive. \n\t\t";
+					}
 				} 
 				catch (NumberFormatException e) 
 				{
@@ -167,7 +214,7 @@ public class ParameterScanView extends Composite
 					MessageBox mb = new MessageBox(Display.getDefault().getActiveShell(),
 							SWT.ICON_INFORMATION);
 					mb.setText("Error Info");
-					mb.setMessage("There exists invalid arguments, please check again !");
+					mb.setMessage(errorMessage);
 					mb.open();
 					return;
 				} 
@@ -197,13 +244,13 @@ public class ParameterScanView extends Composite
 			//TODO  Possibly show console, 
 			
 			// Display console output.
-			//BNGEditor.displayOutput(BNGEditor.getConsoleLineDelimeter() + "Running Parameter Scan...");
-			//BNGEditor.getMainEditorShell().forceFocus();
-			
-			// send the data to the parscan method.
-		//	controller.runParameterScan(scanData);
-				
-				//TODO return this somewhere.
+			Console.displayOutput(Console.getConsoleLineDelimeter() + "Running Parameter Scan...");
+		
+			// Run the parameter scan.  This returns a boolean, but for now I am ignoring it.	
+			BioNetGenUtility.parameterScan(currentPath, 
+										   scanData,
+										   PreferencesClerk.getBNGPath(), 
+										   PreferencesClerk.getBNGPath()+"Perl2/scan_var.pl");
 			}
 		});
 	}

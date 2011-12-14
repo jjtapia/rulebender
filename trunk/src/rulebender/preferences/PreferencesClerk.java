@@ -3,8 +3,7 @@
  */
 package rulebender.preferences;
 
-import org.eclipse.core.runtime.Platform;
-
+import rulebender.Activator;
 import rulebender.core.workspace.PickWorkspaceDialog;
 
 
@@ -14,7 +13,7 @@ public class PreferencesClerk
 	private static String BNGName = "BNG2.pl";
 	
 	// The path from the root directory to the main BNG file.
-	private static String BNGPathFromRoot = "Perl2/";
+	private static String BNGPathFromRoot = "";
 	
 	// Private constructor for static access only.
 	private PreferencesClerk()
@@ -30,8 +29,8 @@ public class PreferencesClerk
 	 */
 	public static String getBNGPath()
 	{
-		return Platform.getPreferencesService().getString("rulebender.views.preferences.preferencePage", "SIM_PATH", "", null)
-			+ BNGPathFromRoot;
+		return Activator.getDefault().getPreferenceStore().getString("SIM_PATH")
+			+ System.getProperty("file.separator") + BNGPathFromRoot;
 	}
 	
 	/**
@@ -53,7 +52,8 @@ public class PreferencesClerk
 	 */
 	public static String getBNGRoot()
 	{
-		return Platform.getPreferencesService().getString("rulebender.views.preferences.preferencePage", "SIM_PATH", "", null);
+		return Activator.getDefault().getPreferenceStore().getString("SIM_PATH") + 
+				System.getProperty("file.separator");
 	}
 	
 	/**
@@ -63,8 +63,8 @@ public class PreferencesClerk
 	 */
 	public static String getFullBNGPath()
 	{
-		return Platform.getPreferencesService().getString("rulebender.views.preferences.preferencePage", "SIM_PATH", "", null)
-				+ BNGPathFromRoot + BNGName;
+		return Activator.getDefault().getPreferenceStore().getString("SIM_PATH")
+				+ System.getProperty("file.separator") + BNGPathFromRoot + BNGName;
 	}
 	
 	public static OS getOS()

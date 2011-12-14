@@ -185,7 +185,7 @@
          </view>
          <view
                closeable="false"
-               id="rulebender.views.Navigator"
+               id="rulebender.simulationfilenavigator.SimulationFileNavigatorView"
                minimized="false"
                ratio="0.2f"
                relationship="left"
@@ -256,6 +256,12 @@
             class="rulebender.simulate.view.SimulateView"
             id="rulebender.simulate.view.SimulateView"
             name="Simulation"
+            restorable="true">
+      </view>
+      <view
+            class="rulebender.simulationfilenavigator.views.SimulationFileNavigatorView"
+            id="rulebender.simulationfilenavigator.SimulationFileNavigatorView"
+            name="Simulation File Navigator"
             restorable="true">
       </view>
    </extension>
@@ -450,18 +456,13 @@
             id="rulebender.commands.SwitchWorkspace"
             name="Switch Workspace">
       </command>
-      <command
-            defaultHandler="rulebender.simulate.commands.SimulateCommandHandler"
-            id="rulebender.simulate.commands.SimulateCommand"
-            name="Simulate">
-      </command>
    </extension>
    <extension
          point="org.eclipse.ui.preferencePages">
       <page
             class="rulebender.preferences.views.MyFieldEditorPreferencePage"
             id="rulebender.views.preferences.preferencePage"
-            name="My Preference Page">
+            name="Simulator">
       </page>
    </extension>
    <extension

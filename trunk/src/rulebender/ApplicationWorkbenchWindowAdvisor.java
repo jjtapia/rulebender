@@ -1,8 +1,8 @@
 package rulebender;
 
+import org.eclipse.jface.preference.IPreferenceNode;
+import org.eclipse.jface.preference.PreferenceManager;
 import org.eclipse.swt.graphics.Point;
-import org.eclipse.swt.widgets.Display;
-import org.eclipse.ui.IFileEditorMapping;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.application.ActionBarAdvisor;
 import org.eclipse.ui.application.IActionBarConfigurer;
@@ -44,5 +44,22 @@ public class ApplicationWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor {
 		
 		// Set the name of the application.
 		configurer.setTitle("RuleBender");
+	}
+	
+	public void postWindowCreate()
+	{
+		
+		PreferenceManager pm = PlatformUI.getWorkbench().getPreferenceManager();
+		
+		pm.remove("org.eclipse.team.ui.TeamPreferences");
+		
+		
+		IPreferenceNode[] arr = pm.getRootSubNodes();
+		
+		
+		for (IPreferenceNode pn : arr)
+		{
+			System.out.println("Label: " + pn.getLabelText() + " ID: " + pn.getId());
+		}
 	}
 }

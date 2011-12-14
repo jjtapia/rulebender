@@ -1,4 +1,4 @@
-package rulebender.simulate;
+package rulebender.simulate.bngexecution;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -7,10 +7,13 @@ import java.util.ArrayList;
 
 import rulebender.preferences.OS;
 import rulebender.preferences.PreferencesClerk;
+import rulebender.simulate.CommandInterface;
 
 public class SimulateCommand implements CommandInterface
 {
-	private String m_bngFile;
+	private String m_bnglFile;
+	private String m_bngFullPath;
+	private String m_resultsDirectory;
 	private boolean m_viewResults;
 		
 	private String[] m_command;
@@ -21,10 +24,12 @@ public class SimulateCommand implements CommandInterface
 	 * 
 	 * @param bngFile - The string location of the file to run the scan on.
 	 */
-	public SimulateCommand(String bngFile, boolean viewResults)
+	public SimulateCommand(String bngFile, String bngFullPath, String resultsDirectory, boolean viewResults)
 	{
-		m_bngFile = bngFile;
+		m_bnglFile = bngFile;
 		m_viewResults = viewResults;
+		m_bngFullPath = bngFullPath;
+		m_resultsDirectory = resultsDirectory;
 	}
 	
 	/**
@@ -52,16 +57,17 @@ public class SimulateCommand implements CommandInterface
 		// Add the perl instruction
 		instructionAL.add("perl");
 		
-		instructionAL.add(PreferencesClerk.getBNGPath()+
-				System.getProperty("file.separator")+
-				PreferencesClerk.getBNGName());
-
+		instructionAL.add(m_bngFullPath);
+		
+		instructionAL.add("-outdir");
+		instructionAL.add(m_resultsDirectory);
+		
 		if (m_viewResults == false) {
 			// Check model, not run
 			instructionAL.add("-check");
 		}
 			
-		instructionAL.add(m_bngFile);		
+		instructionAL.add(m_bnglFile);		
 
 		// Create a template so that the toArray function knows what kind of 
 		// object to return. 
@@ -88,20 +94,21 @@ public class SimulateCommand implements CommandInterface
 			batfile.deleteOnExit();
 			
 			PrintWriter pw = null;
-			try {
+			try 
+			{
 				pw = new PrintWriter(batfile);
-			} catch (FileNotFoundException e1) {
-				// TODO Auto-generated catch block
+			} 
+			catch (FileNotFoundException e1) 
+			{
+			
 				e1.printStackTrace();
 			}
+			
 			// disk name (C, or D, or ...)
-			String modelDisk = m_bngFile.substring(0, 1);
+			String modelDisk = m_bnglFile.substring(0, 1);
 			
 			pw.write(modelDisk + ":\n");
 			pw.write("cd " + modelDisk + ":\\" + "\n");
-			String cmd_bng = PreferencesClerk.getBNGPath()+
-					System.getProperty("file.separator")+
-					PreferencesClerk.getBNGName();
 			
 			String check="";
 			if(!m_viewResults)
@@ -109,14 +116,19 @@ public class SimulateCommand implements CommandInterface
 				check = " -check ";
 			}		
 			
-			String cmd_model = m_bngFile;
+			String cmd_model = m_bnglFile;
 			
 			// eliminate "C:\" three characters
 			cmd_model = cmd_model.substring(3);
 			cmd_model = convertStyleUsingPOSIX(cmd_model);
 			
 			// using " " to support space in directory name
-			pw.write("cmd.exe /c perl " + "\"" + cmd_bng + "\"" + check + " " + "\"" + cmd_model + "\"" + "\n");
+			pw.write("cmd.exe /c perl " +
+					"\"" + m_bngFullPath + "\"" +
+					" -outdir " + m_resultsDirectory +
+					check + " " +
+					"\"" + cmd_model + "\"" +
+					"\n");
 			pw.close();
 			
 			/*

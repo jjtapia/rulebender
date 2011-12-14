@@ -8,8 +8,9 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.ui.progress.IProgressConstants;
 
-public class CommandRunner<T extends CommandInterface> extends Job 
+public class CommandRunner<T extends CommandInterface> 
 {
 	private T m_command;
 	private File m_workingDirectory;
@@ -17,22 +18,22 @@ public class CommandRunner<T extends CommandInterface> extends Job
 	private String m_errorLog;
 	private String m_stdLog;
 	
+	private Process m_scanProc;
+	
 	/**
 	 * @param command The CommandInterface object that should be executed.
 	 * @param workingDirectory The working directory where it should be executed.
 	 */
-	public CommandRunner(String name, T command, File workingDirectory)
+	public CommandRunner(T command, File workingDirectory)
 	{
-		super(name);
 		m_command = command;
 		m_workingDirectory = workingDirectory;
+		
 	}
 
-	@Override
-	protected IStatus run(IProgressMonitor monitor) 
+	public boolean run() 
 	{
 		m_fullLog = "";
-		Process scanProc = null;
 		
 		if(!m_workingDirectory.isDirectory())
 		{
@@ -44,27 +45,27 @@ public class CommandRunner<T extends CommandInterface> extends Job
 		// Run the command
 		try 
 		{
-			scanProc = Runtime.getRuntime().exec(m_command.getCommand(), null, m_workingDirectory);
+			m_scanProc = Runtime.getRuntime().exec(m_command.getCommand(), null, m_workingDirectory);
 		} 
 		catch (IOException e) 
 		{
 			e.printStackTrace();
 		}
 		
-		StreamDisplayThread stdOut = new StreamDisplayThread(scanProc.getInputStream(), false);
-		StreamDisplayThread errOut = new StreamDisplayThread(scanProc.getErrorStream(), true);
+		//StreamDisplayThread stdOut = new StreamDisplayThread(scanProc.getInputStream(), false);
+		//StreamDisplayThread errOut = new StreamDisplayThread(scanProc.getErrorStream(), true);
 		
 		// Start the reading of the inputstream.  This is automatically printed to the console.
-		Display.getDefault().syncExec(stdOut);
+		//Display.getDefault().asyncExec(stdOut);
 		
 		// start the reading of the error stream.  This is saved to the m_log field.
-		Display.getDefault().syncExec(errOut);
+		//Display.getDefault().asyncExec(errOut);
 		
 		// Before we do anything else, wait for the command to finish.
 		// /*
 		try 
 		{
-			scanProc.waitFor();
+			m_scanProc.waitFor();
 		}
 		catch (InterruptedException e) 
 		{
@@ -72,14 +73,14 @@ public class CommandRunner<T extends CommandInterface> extends Job
 		}
 		//*/
 		
-		m_stdLog = stdOut.getLog();
-		m_errorLog = errOut.getLog();
-		m_fullLog = m_stdLog + System.getProperty("line.separator") + System.getProperty("line.separator") + m_errorLog;
+		//m_stdLog = stdOut.getLog();
+		//m_errorLog = errOut.getLog();
+		//m_fullLog = m_stdLog + System.getProperty("line.separator") + System.getProperty("line.separator") + m_errorLog;
 		
 		// DEBUG
 		System.out.println("Done running command.");
 		
-		return Status.OK_STATUS;
+		return true;
 				
 	}
 
@@ -96,5 +97,10 @@ public class CommandRunner<T extends CommandInterface> extends Job
 	public String getFullLog()
 	{
 		return m_fullLog;
+	}
+	
+	public void kill()
+	{
+		m_scanProc.destroy();
 	}
 }

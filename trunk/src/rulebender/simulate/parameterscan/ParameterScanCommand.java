@@ -4,13 +4,16 @@ import java.io.File;
 
 import java.util.ArrayList;
 
+import rulebender.preferences.OS;
+import rulebender.preferences.PreferencesClerk;
 import rulebender.simulate.CommandInterface;
 
 public class ParameterScanCommand implements CommandInterface
 {
-	private String m_bngFile;
+	private String m_bnglFile;
 	private String m_parScanScriptLocation;
 	private String m_resultsDirectory; 
+	private String m_bngFullPath;
 	
 	private ParameterScanData m_data;
 	
@@ -28,13 +31,14 @@ public class ParameterScanCommand implements CommandInterface
 	 * @param resultsDirectory - Where the results will go: used for the construction of the prefix.
 	 * @param data - The object that holds all of the parameterscandata.
 	 */
-	public ParameterScanCommand(String bngFile, String parScanScriptLocation, 
+	public ParameterScanCommand(String bngFile, String bngFullPath, String parScanScriptLocation, 
 								String resultsDirectory, ParameterScanData data)
 	{
-		m_bngFile = bngFile;
+		m_bnglFile = bngFile;
 		m_parScanScriptLocation = parScanScriptLocation;
 		m_data = data;
 		m_resultsDirectory = resultsDirectory;
+		m_bngFullPath = bngFullPath;
 	}
 
 	public String[] getCommand() 
@@ -42,11 +46,8 @@ public class ParameterScanCommand implements CommandInterface
 		// This arraylist will hold the actual command line command
 		ArrayList<String> scanInstructionAL = new ArrayList<String>();
 		
-		// TODO Find out which OS.
-		int tempos = 1;
-		
 		// Windows: use cmd.exe and the /c flag to launch the perl script.
-		if(tempos == 1)
+		if(PreferencesClerk.getOS() == OS.WINDOWS)
 		{
 			 scanInstructionAL.add("cmd.exe");
 			 scanInstructionAL.add("/c"); 
@@ -71,10 +72,13 @@ public class ParameterScanCommand implements CommandInterface
 		scanInstructionAL.add("-prefix");
 		scanInstructionAL.add(constructPrefix());
 		
+		scanInstructionAL.add("-bngPath");
+		scanInstructionAL.add("\"" + m_bngFullPath + "\"");
+		
 		scanInstructionAL.add("-t_end");
 		scanInstructionAL.add(""+m_data.getSimulationTime());
 		
-		scanInstructionAL.add(m_bngFile);
+		scanInstructionAL.add(m_bnglFile);
 		scanInstructionAL.add(m_data.getName());
 		scanInstructionAL.add(""+m_data.getMinValue());
 		scanInstructionAL.add(""+m_data.getMaxValue());
