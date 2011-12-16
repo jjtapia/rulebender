@@ -15,7 +15,7 @@ import rulebender.contactmap.models.CMapModel;
  *
  ******************************************/
 
-public class IGraphModel
+public class InfluenceGraphModel
 {	
 	// An ArrayList of molecules that are in the model.  
 	ArrayList<IMolecule> molecules = new ArrayList<IMolecule>();
@@ -32,7 +32,7 @@ public class IGraphModel
 	private ArrayList<IPotentialBond> pbonds = new ArrayList<IPotentialBond>();
 	private boolean flexiblestate = false;
 	
-	public IGraphModel(String molestr, String rulestr, boolean moleculetype)
+	public InfluenceGraphModel(String molestr, String rulestr, boolean moleculetype)
 	{
 		/*
 		parserules(rulestr);

@@ -149,7 +149,7 @@ public class BNGLEditor extends TextEditor
 			//TODO The errors from parsing need to be printed to the console.
 			
 		}	
-		
+		System.err.flush();
 		System.setErr(old);
 		System.err.println("-----------------------");
 		return toReturn;
