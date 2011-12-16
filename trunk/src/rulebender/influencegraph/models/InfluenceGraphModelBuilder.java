@@ -8,7 +8,7 @@ import rulebender.editors.bngl.model.ruledata.RuleData;
 public class InfluenceGraphModelBuilder implements BNGLModelBuilderInterface 
 {
 	
-	private IGraphModel model;
+	private InfluenceGraphModel model;
 
 	
 	public InfluenceGraphModelBuilder()
@@ -79,7 +79,7 @@ public class InfluenceGraphModelBuilder implements BNGLModelBuilderInterface
 
 	}
 
-	public IGraphModel getIGraphModel() 
+	public InfluenceGraphModel getIGraphModel() 
 	{
 		// TODO Auto-generated method stub
 		return model;

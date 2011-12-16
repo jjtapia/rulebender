@@ -21,7 +21,7 @@ import rulebender.editors.bngl.model.ruledata.RulePatternData;
 		String name;
 		ArrayList<Component>;
 			String name;
-			ArrayList<State> states;
+			ArrayList<State>;
 				String name;
 		ArrayList<String>; // for compartments
 	

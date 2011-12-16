@@ -44,11 +44,11 @@ public class ParameterScanJob extends Job
 		//Console.displayOutput("\tfilePath: " + filePath + "\n\tbng path: " + bngPath + "\n\tscriptFullPath:" + scriptFullPath);
 		
 		// Tell the monitor
-		monitor.beginTask("Validation Files...", 5);
+		monitor.beginTask("Validation Files...", 4);
 		
 		if(!validateBNGLFile(m_filePath) || !validateBNGPath(m_bngPath) || !validateScriptPath(m_scriptFullPath))
 		{
-			Console.displayOutput("Error in file path, script path, or bng path.");
+			Console.displayOutput("Parameter Scan: " + m_filePath, "Error in file path, script path, or bng path.");
 			return Status.CANCEL_STATUS;
 		}
 		
@@ -66,20 +66,6 @@ public class ParameterScanJob extends Job
 		// Make the directory if necessary
 		(new File(resultsDir)).mkdirs();
 		
-		//DEBUG
-		//Console.displayOutput("Results path setup.");
-		
-		//MONITOR
-		monitor.setTaskName("Creating Scripts...");
-		monitor.worked(1);
-				
-//		String modifiedPerlScriptName = "ModifiedParScan.pl";		
-		// Create the perl script.
-		//ParameterScanScriptCreator.produceAndWriteScript(resultsDir, modifiedPerlScriptName, m_bngFullPath, m_scriptFullPath);
-		
-		//DEBUG
-		//Console.displayOutput("Script complete.");
-		
 		//MONITOR
 		monitor.setTaskName("Generating Commands...");
 		monitor.worked(1);
@@ -87,7 +73,6 @@ public class ParameterScanJob extends Job
 		// Get a parameterscan command
 		ParameterScanCommand command = new ParameterScanCommand(m_filePath, 
 																m_bngPath,
-																//resultsDir + modifiedPerlScriptName,
 																m_scriptFullPath,
 																resultsDir,
 																m_data);
@@ -99,7 +84,7 @@ public class ParameterScanJob extends Job
 		monitor.worked(1);
 				
 		// Run it in the commandRunner
-		CommandRunner<ParameterScanCommand> runner = new CommandRunner<ParameterScanCommand>(command, new File(resultsDir));
+		CommandRunner<ParameterScanCommand> runner = new CommandRunner<ParameterScanCommand>(command, new File(resultsDir), "Parameter Scan: " + m_filePath);
 		
 		runner.run();
 		

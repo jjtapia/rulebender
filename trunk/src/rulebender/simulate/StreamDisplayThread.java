@@ -9,14 +9,16 @@ import rulebender.core.utility.Console;
 
 public class StreamDisplayThread extends Thread 
 {
-	InputStream m_stream;
-	boolean m_printNow;
-	String m_log="";
+	private InputStream m_stream;
+	private boolean m_printNow;
+	private String m_log="";
+	private String m_name;
 	
-	public StreamDisplayThread(InputStream stream, boolean printNow)
+	public StreamDisplayThread(String name, InputStream stream, boolean printNow)
 	{
 		m_stream = stream;
 		m_printNow = printNow;
+		m_name = name;
 	}
 	
 	public void run()
@@ -30,7 +32,7 @@ public class StreamDisplayThread extends Thread
 			while ((line = buffer.readLine()) != null) 
 			{
 				if(!m_printNow)
-					Console.displayOutput(line + Console.getConsoleLineDelimeter());
+					Console.displayOutput(m_name, line + Console.getConsoleLineDelimeter());
 				
 				m_log += line + Console.getConsoleLineDelimeter();
 			}

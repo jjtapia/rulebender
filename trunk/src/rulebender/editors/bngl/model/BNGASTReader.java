@@ -51,9 +51,9 @@ public class BNGASTReader
 		Document doc = getDocument(ast);
 		
 		// DEBUG
-		System.out.println(ast.toString());
+		//System.out.println(ast.toString());
 		
-        // The root of the document is the sbml tag.  Get the Model node.
+		// The root of the document is the sbml tag.  Get the Model node.
 		Element model = doc.getRootElement().getChild("Model", doc.getRootElement().getNamespace());
 		
 		// handle the parameters

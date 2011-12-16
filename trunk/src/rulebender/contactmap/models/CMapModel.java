@@ -35,7 +35,7 @@ public class CMapModel
 	ArrayList<Bond> bonds;
 	ArrayList<Rule> rules;
 	
-	private ArrayList<PotentialBond> pbonds;
+	//private ArrayList<PotentialBond> pbonds;
 	private CompartmentTable cmptTable;
 	
 	// Default does nothing.

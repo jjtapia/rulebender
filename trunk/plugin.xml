@@ -61,15 +61,6 @@
          </view>
          <view
                closeable="true"
-               id="rulebender.influencegraph.view.InfluenceGraphView"
-               minimized="false"
-               moveable="true"
-               relationship="stack"
-               relative="rulebender.contactmap.view.ContactMapView"
-               visible="true">
-         </view>
-         <view
-               closeable="true"
                id="rulebender.properties.view.PropertiesSheetView"
                minimized="false"
                moveable="true"
@@ -398,6 +389,15 @@
             </command>
          </toolbar>
       </menuContribution>
+      <menuContribution
+            allPopups="false"
+            locationURI="toolbar:rulebender.views.Console">
+         <command
+               commandId="rulebender.core.commands.CloseTopConsole"
+               icon="icons/progress_rem.gif"
+               style="push">
+         </command>
+      </menuContribution>
    </extension>
    <extension
          point="org.eclipse.ui.commands">
@@ -455,6 +455,11 @@
             defaultHandler="rulebender.core.commands.SwitchWorkspace"
             id="rulebender.commands.SwitchWorkspace"
             name="Switch Workspace">
+      </command>
+      <command
+            defaultHandler="rulebender.core.commands.CloseTopConsole"
+            id="rulebender.core.commands.CloseTopConsole"
+            name="Close Console">
       </command>
    </extension>
    <extension

@@ -244,7 +244,7 @@ public class ParameterScanComposite extends Composite
 			//TODO  Possibly show console, 
 			
 			// Display console output.
-			Console.displayOutput(Console.getConsoleLineDelimeter() + "Running Parameter Scan...");
+			Console.displayOutput("Parameter Scan: " + currentPath, Console.getConsoleLineDelimeter() + "Running Parameter Scan...");
 		
 			// Run the parameter scan.  This returns a boolean, but for now I am ignoring it.	
 			BioNetGenUtility.parameterScan(currentPath, 

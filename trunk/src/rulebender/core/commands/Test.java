@@ -1,23 +1,11 @@
 package rulebender.core.commands;
 
-import java.util.Iterator;
-import java.util.List;
-
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
-import org.eclipse.core.commands.IHandler;
-import org.eclipse.core.commands.IHandlerListener;
-import org.eclipse.jface.action.IStatusLineManager;
-import org.eclipse.jface.viewers.ISelectionProvider;
-import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IViewReference;
 import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.console.ConsolePlugin;
-import org.eclipse.ui.console.IConsole;
 import org.eclipse.ui.console.MessageConsole;
-import org.eclipse.ui.console.MessageConsoleStream;
 
 import rulebender.contactmap.view.ContactMapView;
 import rulebender.core.utility.Console;
@@ -32,7 +20,7 @@ public class Test extends AbstractHandler
 	{
 		  
 		
-		Console.displayOutput("Rebuilding Contact Map");
+		Console.displayOutput("testConsole","Rebuilding Contact Map");
 		
 		/*
 		 * Update a view
@@ -68,18 +56,6 @@ public class Test extends AbstractHandler
 		return null;
 		
 	}
-
-	private MessageConsole getMessageConsole() 
-	{  
-		if (messageConsole == null) 
-		{  
-			messageConsole = new MessageConsole("RuleBender", null);  
-			ConsolePlugin.getDefault().getConsoleManager().addConsoles(  
-					new IConsole[] { messageConsole });  
-		}  
-	  
-		return messageConsole;  
-	}  
 	 
 	public boolean isEnabled() 
 	{

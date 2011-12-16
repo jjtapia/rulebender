@@ -43,14 +43,14 @@ public class ContactMapSelectionListener implements ISelectionListener
 	public void selectionChanged(IWorkbenchPart part, ISelection selection) 
 	{	
 		// DEBUG
-		System.out.println("Selection:\n\t" + "\tpart: " + part.getTitle() +
-				           "\n\tselection: " + selection.toString());
-		System.out.println("\tclass: " + part.getClass().toString());
+		//System.out.println("Selection:\n\t" + "\tpart: " + part.getTitle() +
+		//		           "\n\tselection: " + selection.toString());
+		//System.out.println("\tclass: " + part.getClass().toString());
 		
 		if(part.getClass() == BNGLEditor.class)
 		{
 			//DEBUG 
-			System.out.println("********* SELECTION OF BGNL EDITOR ****************");
+			//System.out.println("********* SELECTION OF BGNL EDITOR ****************");
 			bnglEditorSelection(part, selection);
 		}
 		// If it's not a bngl file
@@ -67,7 +67,7 @@ public class ContactMapSelectionListener implements ISelectionListener
 		if(currentModel != null && part.getTitle().equals(currentModel.getPathID()))
 		{
 			//TODO it could be a text selection.
-			System.out.println("same file");
+			//System.out.println("same file");
 		}
 		// If it's a different file, then call the local private method that 
 		// handles it. 
@@ -94,9 +94,9 @@ public class ContactMapSelectionListener implements ISelectionListener
 				public void propertyChange(PropertyChangeEvent evt) 
 				{
 					//DEBUG
-					System.out.println("PropertyChange Class: " + evt.getClass());
-					System.out.println("Property Changed: " + evt.getPropertyName());
-					System.out.println("Propogation ID: " + evt.getPropagationId());
+					//System.out.println("PropertyChange Class: " + evt.getClass());
+					//System.out.println("Property Changed: " + evt.getPropertyName());
+					//System.out.println("Propogation ID: " + evt.getPropagationId());
 					
 					//Update the display object that is associated with the path and ast. 
 					updateDisplayForPathAndAST(evt.getPropertyName(), (prog_return) evt.getNewValue());

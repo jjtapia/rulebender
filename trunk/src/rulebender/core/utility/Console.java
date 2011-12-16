@@ -1,5 +1,7 @@
 package rulebender.core.utility;
 
+import java.util.HashMap;
+
 import org.eclipse.ui.console.ConsolePlugin;
 import org.eclipse.ui.console.IConsole;
 import org.eclipse.ui.console.MessageConsole;
@@ -7,40 +9,72 @@ import org.eclipse.ui.console.MessageConsoleStream;
 
 public class Console 
 {
-
-	static MessageConsole messageConsole;
+	private static HashMap<String, MessageConsole> m_messageConsoles = new HashMap<String, MessageConsole>();
 	
-	public static void displayOutput(String output)
+	// Private Constructor for static library.
+	private Console()
 	{
-		  
-		/*
-		 * Console Output
-		 */
-		messageConsole = getMessageConsole();
-		
-		MessageConsoleStream msgConsoleStream = messageConsole.newMessageStream();  
-  
-		ConsolePlugin.getDefault().getConsoleManager().addConsoles(  
-				new IConsole[] { messageConsole });  
-  
-		msgConsoleStream.println(output);  
-		
+		throw new AssertionError();
 	}
-
-	private static MessageConsole getMessageConsole() 
-	{  
-		if (messageConsole == null) 
-		{  
-			messageConsole = new MessageConsole("RuleBender", null);  
+	
+	/**
+	 * Display a String directly to a console.
+	 * 
+	 * @param console
+	 * @param output
+	 */
+	public static void displayOutput(String console, String output)
+	{
+		getMessageConsoleStream(console).println(output);
+	}
+	
+	/**
+	 * Get the MessageConsoleStream so that it can be printed to directly. 
+	 * @param console
+	 * @return
+	 */
+	public static MessageConsoleStream getMessageConsoleStream(String console)
+	{
+		
+		// Get the stream
+		return getMessageConsole(console).newMessageStream();    
+	}
+	
+	private static MessageConsole getMessageConsole(String console)
+	{
+		// Try to get it based on the name.
+		MessageConsole messageConsole = m_messageConsoles.get(console);
+		
+		// If it doesn't exist
+		if(messageConsole == null)
+		{
+			// Create it
+			messageConsole = new MessageConsole(console, null);  
+			
+			// Add it to the hashmap.
+			m_messageConsoles.put(console, messageConsole);
+		
+			// Register it. 
 			ConsolePlugin.getDefault().getConsoleManager().addConsoles(  
-					new IConsole[] { messageConsole });  
-		}  
-	  
-		return messageConsole;  
+					new IConsole[] { messageConsole });
+		}
+		
+		return messageConsole; 
 	}
 
 	public static String getConsoleLineDelimeter() 
 	{
 		return "\n";
+	}
+
+	/**
+	 * 
+	 */
+	public static void closeTopConsole() 
+	{
+		MessageConsole toRemove = null;
+		
+		ConsolePlugin.getDefault().getConsoleManager().removeConsoles(new IConsole[] {toRemove});
+		
 	}  
 }

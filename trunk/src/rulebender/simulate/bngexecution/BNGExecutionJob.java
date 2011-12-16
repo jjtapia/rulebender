@@ -12,8 +12,6 @@ import org.eclipse.ui.progress.IProgressConstants;
 
 import rulebender.core.utility.Console;
 import rulebender.simulate.CommandRunner;
-import rulebender.simulate.parameterscan.ParameterScanCommand;
-import rulebender.simulate.parameterscan.ParameterScanScriptCreator;
 
 public class BNGExecutionJob extends Job {
 
@@ -38,7 +36,7 @@ public class BNGExecutionJob extends Job {
 		
 		if(!validateBNGLFile(m_filePath) || !validateBNGPath(m_bngFullPath))
 		{
-			Console.displayOutput("Error in file path, or bng path.");
+			Console.displayOutput("Simulation: " + m_filePath, "Error in file path, or bng path.");
 			return Status.CANCEL_STATUS;
 		}
 		
@@ -66,7 +64,7 @@ public class BNGExecutionJob extends Job {
 		monitor.worked(1);
 				
 		// Run it in the commandRunner
-		CommandRunner<SimulateCommand> runner = new CommandRunner<SimulateCommand>(simCommand, new File(resultsDir));
+		CommandRunner<SimulateCommand> runner = new CommandRunner<SimulateCommand>(simCommand, new File(resultsDir), "Simulation: " + m_filePath);
 		
 		runner.run();
 		

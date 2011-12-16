@@ -1,6 +1,8 @@
 package rulebender.influencegraph.view;
 
 import java.awt.Dimension;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.io.IOException;
 import java.util.HashMap;
 
@@ -16,8 +18,10 @@ import rulebender.contactmap.models.CMapModelBuilder;
 import rulebender.contactmap.prefuse.CMapVisual;
 import rulebender.contactmap.view.ContactMapView;
 import rulebender.core.utility.BNGParserCommands;
+import rulebender.editors.bngl.BNGLEditor;
 import rulebender.editors.bngl.model.BNGASTReader;
-import rulebender.influencegraph.models.IGraphModel;
+import rulebender.editors.bngl.model.BNGLModel;
+import rulebender.influencegraph.models.InfluenceGraphModel;
 import rulebender.influencegraph.models.InfluenceGraphModelBuilder;
 import rulebender.influencegraph.prefuse.IGraphVisual;
 
@@ -26,6 +30,8 @@ public class InfluenceGraphSelectionListener implements ISelectionListener
 	private InfluenceGraphView m_view;
 	
 	private String currentFile;
+	
+	BNGLModel currentModel;
 	
 	private HashMap<String, prefuse.Display> influenceGraphRegistry;
 	
@@ -47,102 +53,90 @@ public class InfluenceGraphSelectionListener implements ISelectionListener
 
 	public void selectionChanged(IWorkbenchPart part, ISelection selection) 
 	{
-		if(part.getClass().toString().contains("rulebender.editors"))
+		if(part.getClass() == BNGLEditor.class)
 		{
-			editorSelection(part, selection);
-		}
-		
-	}
-	
-	private void editorSelection(IWorkbenchPart part, ISelection selection)
-	{
-		// Check to see if it is the editor.
-		// TODO  Right now I am just seeing if the name of the selection is a path to a bngl file. 
-		// There is probably a better way to do this.
-		if(part.getTitle().contains(".") && part.getTitle().substring(part.getTitle().lastIndexOf(".")).equals(".bngl"))
-		{
-			// If it's the same file
-			if(part.getTitle().equals(currentFile))
-			{
-				//TODO it could be a text selection.
-				System.out.println("same file");
-			}
-			// If it's a different file, then call the local private method that 
-			// handles it. 
-			else
-			{
-				newFileSelected(part.getTitle());
-			}
+			//DEBUG 
+			System.out.println("********* SELECTION OF BGNL EDITOR ****************");
+			bnglEditorSelection(part, selection);
 		}
 		// If it's not a bngl file
 		else
 		{
-			currentFile = "";
+			currentModel = null;
 			m_view.setIGraph(null);
 		}
 	}
 	
+	private void bnglEditorSelection(IWorkbenchPart part, ISelection selection)
+	{
+		// If it's the same file
+		if(currentModel != null && part.getTitle().equals(currentModel.getPathID()))
+		{
+			//TODO it could be a text selection.
+			System.out.println("same file");
+		}
+		// If it's a different file, then call the local private method that 
+		// handles it. 
+		else
+		{
+			newBNGLFileSelected(part);
+		}
+}
+	
 	/**
 	 * Private method to handle when a new file is selected. 
 	 */
-	private void newFileSelected(String fileName)
+	private void newBNGLFileSelected(IWorkbenchPart part)
 	{
 		// Set the current file.
-		currentFile = fileName;
+		currentModel = ((BNGLEditor) part).getModel();
+		
+		if(!influenceGraphRegistry.containsKey(currentModel.getPathID()))
+		{
+			// Create a property changed listener for when files are saved.
+			PropertyChangeListener pcl = new PropertyChangeListener()
+			{
+				public void propertyChange(PropertyChangeEvent evt) 
+				{
+					//DEBUG
+					System.out.println("PropertyChange Class: " + evt.getClass());
+					System.out.println("Property Changed: " + evt.getPropertyName());
+					System.out.println("Propogation ID: " + evt.getPropagationId());
+					
+					//Update the display object that is associated with the path and ast. 
+					updateDisplayForPathAndAST(evt.getPropertyName(), (prog_return) evt.getNewValue());
+				}};
+				
+				currentModel.addPropertyChangeListener(pcl); 
+		}
 		
 		// Clear the contact map
 		m_view.setIGraph(null);
 		
-		// Try to get an existing map.
-		prefuse.Display toShow = influenceGraphRegistry.get(currentFile);
-		
-		// If it does not exist yet then generate it and add it to the registry.
-		if(toShow == null)
-		{
-			toShow = generateInfluenceGraph(currentFile);
-			influenceGraphRegistry.put(currentFile, toShow);
-		}
-		
+		// Get an existing map.
+		prefuse.Display toShow = lookupCurrentDisplay();
+				
 		// Set the correct contact map.
 		m_view.setIGraph(toShow);
 	}
 	
 	/**
-	 * Generates a contact map using the antlr parser for a filename. 
+	 * Generates a contact map using the abstract syntax tree. 
 	 * @param fileName
 	 * @return
 	 */
-	private prefuse.Display generateInfluenceGraph(String fileName)
+	
+	//FIXME All of this needs to be rewritten.  Look at the contactmap selection listener to see it. 
+	private prefuse.Display generateInfluenceGraph(prog_return ast)
 	{
-		prog_return ast = null;
 		
-		// Get the ast
-		try 
-		{
-			ast = BNGParserCommands.getASTForFileName(fileName);
-			
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (RecognitionException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		// Null check for the ast
+		// If the ast has not been generated for this model, then 
+		// just return null so there is not contact map displayed.
 		if(ast == null)
 		{
-			System.out.println("The AST is null.\nExiting...");
-		}
-		else
-		{
-			// print it out if it is good.
-			System.out.println(ast.toString()+"\n\n================================================================");
+			return null;
 		}
 		
-		// Set a dimension TODO get the correct dimension
-		Dimension dim = m_view.getSize();
-
 		// Create the builder for the cmap
 		InfluenceGraphModelBuilder iGraphModelBuilder = new InfluenceGraphModelBuilder();
 		// Create the astReader and register the cmapModelBuilder
@@ -150,13 +144,18 @@ public class InfluenceGraphSelectionListener implements ISelectionListener
 		// Use the reader to construct the model for the given ast.
 		astReader.buildWithAST(ast);
 		// Get the model from the builder.		
-		IGraphModel iModel = iGraphModelBuilder.getIGraphModel();
+		InfluenceGraphModel iModel = iGraphModelBuilder.getIGraphModel();
 		
+		// This should never happen. If the ast is not null (already checked)
+		// then a null InfluenceGraphModel indicates a fatal error.
 		if(iModel == null)
 		{
 			System.out.println("The CMapModel is null.\nExiting");
 			System.exit(0);
 		}
+
+		// Set a dimension TODO get the correct dimension
+		Dimension dim = m_view.getSize();
 
 		// Get the CMapVisual object for the CMapModel
 		IGraphVisual iVisual = new IGraphVisual(iModel, dim);
@@ -173,7 +172,40 @@ public class InfluenceGraphSelectionListener implements ISelectionListener
 	public void tempRefresh()
 	{
 		m_view.setIGraph(null);
-		m_view.setIGraph(generateInfluenceGraph(currentFile));
+		m_view.setIGraph(lookupCurrentDisplay());
+	}
+
+	private prefuse.Display lookupCurrentDisplay()
+	{
+		// Try to get an existing display.
+		prefuse.Display toShow = influenceGraphRegistry.get(currentModel.getPathID());
+		
+		// If it does not exist yet then generate it and add it to the registry.
+		if(toShow == null)
+		{
+			toShow = generateInfluenceGraph(currentModel.getAST());
+			influenceGraphRegistry.put(currentModel.getPathID(), toShow);
+		}
+		
+		// This can still be null if there was an error generating the ast.
+		return toShow;
+	}
+
+	private void updateDisplayForPathAndAST(String path, prog_return ast)
+	{
+		System.out.println("Updating:" + path);
+		// Clear the current entry.
+		influenceGraphRegistry.remove(path);
+		
+		prefuse.Display display = generateInfluenceGraph(ast);
+		
+		// Add the new representation.
+		influenceGraphRegistry.put(path, display);
+		
+		if(path.equals(currentModel.getPathID()))
+		{
+			m_view.setIGraph(display);
+		}
 	}
 
 }

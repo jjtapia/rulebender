@@ -10,6 +10,8 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.progress.IProgressConstants;
 
+import rulebender.core.utility.Console;
+
 public class CommandRunner<T extends CommandInterface> 
 {
 	private T m_command;
@@ -17,6 +19,7 @@ public class CommandRunner<T extends CommandInterface>
 	private String m_fullLog;
 	private String m_errorLog;
 	private String m_stdLog;
+	private String m_name;
 	
 	private Process m_scanProc;
 	
@@ -24,10 +27,11 @@ public class CommandRunner<T extends CommandInterface>
 	 * @param command The CommandInterface object that should be executed.
 	 * @param workingDirectory The working directory where it should be executed.
 	 */
-	public CommandRunner(T command, File workingDirectory)
+	public CommandRunner(T command, File workingDirectory, String name)
 	{
 		m_command = command;
 		m_workingDirectory = workingDirectory;
+		m_name = name;
 		
 	}
 
@@ -52,14 +56,11 @@ public class CommandRunner<T extends CommandInterface>
 			e.printStackTrace();
 		}
 		
-		//StreamDisplayThread stdOut = new StreamDisplayThread(scanProc.getInputStream(), false);
-		//StreamDisplayThread errOut = new StreamDisplayThread(scanProc.getErrorStream(), true);
+		StreamDisplayThread stdOut = new StreamDisplayThread(m_name, m_scanProc.getInputStream(), false);
+		StreamDisplayThread errOut = new StreamDisplayThread(m_name, m_scanProc.getErrorStream(), true);
 		
-		// Start the reading of the inputstream.  This is automatically printed to the console.
-		//Display.getDefault().asyncExec(stdOut);
-		
-		// start the reading of the error stream.  This is saved to the m_log field.
-		//Display.getDefault().asyncExec(errOut);
+		stdOut.start();
+		errOut.start();
 		
 		// Before we do anything else, wait for the command to finish.
 		// /*
@@ -73,9 +74,9 @@ public class CommandRunner<T extends CommandInterface>
 		}
 		//*/
 		
-		//m_stdLog = stdOut.getLog();
-		//m_errorLog = errOut.getLog();
-		//m_fullLog = m_stdLog + System.getProperty("line.separator") + System.getProperty("line.separator") + m_errorLog;
+		m_stdLog = stdOut.getLog();
+		m_errorLog = errOut.getLog();
+		m_fullLog = m_stdLog + System.getProperty("line.separator") + System.getProperty("line.separator") + m_errorLog;
 		
 		// DEBUG
 		System.out.println("Done running command.");

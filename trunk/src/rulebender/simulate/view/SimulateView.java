@@ -135,7 +135,7 @@ public class SimulateView extends ViewPart {
 
 			public void widgetSelected(SelectionEvent e) 
 			{
-				Console.displayOutput(Console.getConsoleLineDelimeter() + "Running File...");
+				Console.displayOutput("Simulation:" + getSelectedFile(), Console.getConsoleLineDelimeter() + "Running File...");
 				
 				// Run the parameter scan.  This returns a boolean, but for now I am ignoring it.	
 				BioNetGenUtility.runBNGLFile(getSelectedFile(), PreferencesClerk.getFullBNGPath());	

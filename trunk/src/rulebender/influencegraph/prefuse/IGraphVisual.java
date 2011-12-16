@@ -31,7 +31,7 @@ import rulebender.core.prefuse.networkviewer.contactmap.ReverseWheelZoomControl;
 import rulebender.core.prefuse.networkviewer.influencegraph.IMAPLayout;
 import rulebender.core.prefuse.networkviewer.influencegraph.RuleInfluenceRenderer;
 import rulebender.core.prefuse.overview.FitOverviewListener;
-import rulebender.influencegraph.models.IGraphModel;
+import rulebender.influencegraph.models.InfluenceGraphModel;
 
 public class IGraphVisual 
 {
@@ -44,11 +44,11 @@ public class IGraphVisual
 	// Arraylist to hold all of the node objects for creating edges.
 	ArrayList<Node> nodeList = new ArrayList<Node>();
 
-	IGraphModel model;
+	InfluenceGraphModel model;
 
 	Display mainDisplay;
 
-	public IGraphVisual(IGraphModel model_in, Dimension mainDisplaySize_in) 
+	public IGraphVisual(InfluenceGraphModel model_in, Dimension mainDisplaySize_in) 
 	{
 		model = model_in;
 		// directed graph
