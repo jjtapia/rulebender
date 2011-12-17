@@ -32,7 +32,7 @@ import org.eclipse.ui.texteditor.AbstractDocumentProvider;
  */
 public class NETDocumentProvider extends AbstractDocumentProvider
 {
-	protected IDocument createDocument(Object element) throws CoreException 
+	public IDocument createDocument(Object element) throws CoreException 
 	{
 		if (element instanceof IEditorInput) {
 			IDocument document = new Document();

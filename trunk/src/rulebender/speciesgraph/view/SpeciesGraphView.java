@@ -1,4 +1,4 @@
-package rulebender.speciesgraph;
+package rulebender.speciesgraph.view;
 
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.part.ViewPart;

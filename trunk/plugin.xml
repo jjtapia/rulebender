@@ -91,28 +91,10 @@
          </view>
          <view
                closeable="false"
-               id="rulebender.specieslist.view.SpeciesListView"
-               minimized="false"
-               moveable="true"
-               relationship="bottom"
-               relative="rulebender.speciesgraph.SpeciesGraphView"
-               visible="true">
-         </view>
-         <view
-               closeable="false"
-               id="rulebender.views.Navigator"
+               id="rulebender.results.navigator.view.ResultsNavigatorView"
                minimized="false"
                ratio="0.2f"
                relationship="left"
-               relative="rulebender.results.view.ResultsView"
-               visible="true">
-         </view>
-         <view
-               closeable="true"
-               id="rulebender.properties.view.PropertiesSheetView"
-               minimized="false"
-               moveable="true"
-               relationship="bottom"
                relative="rulebender.results.view.ResultsView"
                visible="true">
          </view>
@@ -140,37 +122,10 @@
          </view>
          <view
                closeable="false"
-               id="rulebender.speciesgraph.SpeciesGraphView"
-               minimized="false"
-               moveable="true"
-               relationship="right"
-               relative="rulebender.simulate.view.SimulateView"
-               visible="true">
-         </view>
-         <view
-               closeable="false"
-               id="rulebender.specieslist.view.SpeciesListView"
-               minimized="false"
-               moveable="true"
-               relationship="bottom"
-               relative="rulebender.speciesgraph.SpeciesGraphView"
-               visible="true">
-         </view>
-         <view
-               closeable="true"
-               id="rulebender.properties.view.PropertiesSheetView"
-               minimized="false"
-               moveable="true"
-               relationship="stack"
-               relative="rulebender.views.Console"
-               visible="true">
-         </view>
-         <view
-               closeable="false"
                id="org.eclipse.ui.views.ProgressView"
                minimized="false"
                moveable="true"
-               relationship="stack"
+               relationship="right"
                relative="rulebender.views.Console"
                visible="true">
          </view>
@@ -214,7 +169,7 @@
             restorable="true">
       </view>
       <view
-            class="rulebender.speciesgraph.SpeciesGraphView"
+            class="rulebender.speciesgraph.view.SpeciesGraphView"
             id="rulebender.speciesgraph.SpeciesGraphView"
             name="Species Graph"
             restorable="true">
@@ -253,6 +208,12 @@
             class="rulebender.simulationfilenavigator.views.SimulationFileNavigatorView"
             id="rulebender.simulationfilenavigator.SimulationFileNavigatorView"
             name="Simulation File Navigator"
+            restorable="true">
+      </view>
+      <view
+            class="rulebender.results.navigator.view.ResultsNavigatorView"
+            id="rulebender.results.navigator.view.ResultsNavigatorView"
+            name="Results Navigator"
             restorable="true">
       </view>
    </extension>

@@ -22,4 +22,8 @@ Bundle-ClassPath: lib/mac/prefuse.jar,
  lib/mac/antlr-3.3-complete.jar,
  lib/mac/BNGParser.jar,
  lib/mac/jdom.jar,
- lib/mac/junit.jar
+ lib/mac/junit.jar,
+ lib/mac/jcommon-1.0.12.jar,
+ lib/mac/jfreechart-1.0.9-experimental.jar,
+ lib/mac/jfreechart-1.0.9-swt.jar,
+ lib/mac/jfreechart-1.0.9.jar
