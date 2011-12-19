@@ -8,7 +8,7 @@ import java.util.TimerTask;
 
 import rulebender.contactmap.models.CMapModel;
 import rulebender.contactmap.models.CMapModelBuilder;
-import rulebender.contactmap.prefuse.CMapVisual;
+import rulebender.contactmap.prefuse.ContactMapVisual;
 import rulebender.core.prefuse.LayeredPane;
 import rulebender.core.utility.BNGParserCommands;
 import rulebender.editors.bngl.model.BNGASTReader;

@@ -3,12 +3,15 @@ package rulebender.results.view;
 import java.util.ArrayList;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.ListenerList;
 import org.eclipse.jface.text.Document;
 import org.eclipse.jface.text.source.SourceViewer;
 import org.eclipse.jface.viewers.CheckStateChangedEvent;
 import org.eclipse.jface.viewers.CheckboxTreeViewer;
 import org.eclipse.jface.viewers.ICheckStateListener;
+import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
+import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.ITreeViewerListener;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
@@ -54,7 +57,7 @@ import rulebender.navigator.model.TreeContentProvider;
 import rulebender.navigator.model.TreeLabelProvider;
 import rulebender.navigator.model.TreeNode;
 
-public class ResultsView extends ViewPart 
+public class ResultsView extends ViewPart implements ISelectionProvider 
 {
 	private static Color color_DarkGoldenrod1 = new Color(null, 255, 185, 15);
 	
@@ -87,8 +90,8 @@ public class ResultsView extends ViewPart
 	private ArrayList<CheckboxTreeViewer> element_tv_compare;
 	private ArrayList<String> chartTypeList; // used for comparing multiple files
 	
-	
-	
+	private ListenerList listeners = new ListenerList();
+	private String selection="";
 	
 	public ResultsView() 
 	{
@@ -109,6 +112,8 @@ public class ResultsView extends ViewPart
 		// Create the CTabFolder that will hold the results.
 		initTextFolder(split);
 		initOutline(split);
+		
+		getSite().setSelectionProvider(this);
 	}
 
 	@Override
@@ -1576,99 +1581,13 @@ public class ResultsView extends ViewPart
 	 * Show the graph for itemList
 	 */
 	// TODO Switch this to using the NetworkViewer
-	private boolean showGraph(ArrayList<String> itemList) {
-	/*
-	  	if (jf == null) {
-			initGraph();
-
-		} else {
-			if (jf.isShowing() == false) {
-				jf.setVisible(true);
-			}
-			jf.getContentPane().removeAll();
-			jf.setPreferredSize(new Dimension(jf.getBounds().width, jf
-					.getBounds().height));
-		}
-
-		panel = new JPanel();
-		panel.setLayout(new BoxLayout(panel, BoxLayout.PAGE_AXIS));
-
-		// scroll panel
-		JScrollPane jscrollP = new JScrollPane(panel);
-//		jscrollP.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
-		jf.add(jscrollP);
-	 */
+	private boolean showGraph(ArrayList<String> itemList) 
+	{
 		// add items to graph
-		for (int i = 0; i < itemList.size(); i++) {
-			String curItem = itemList.get(i);
-			String[] tmp = curItem.split("\t");
-			String type = tmp[0];
-			String itemExp = tmp[1];
-			if (addItemToGraph(type, itemExp) == false) {
-				/*
-				jf.dispose();				 
-				jf = null;
-				*/
-				return false;
-			}
-		}
-
-		//jf.pack();
-		//getShell().setFocus();
+		String curItem = itemList.get(0);
+		setSelection(new StructuredSelection(curItem));
 		return true;
 
-	}
-
-	/*
-	 * Add one item to the graph
-	 */
-	private boolean addItemToGraph(String type, String itemExp) {
-		if (type.equals("species") || type.equals("pattern")) 
-		{
-			// species
-			String[] tmp = itemExp.split(" ");
-			int id = Integer.parseInt(tmp[0]);
-			String expression = "";
-			if (tmp.length > 1) {
-				expression = tmp[1];
-			} else {
-				return false;
-			}
-
-			
-			// TODO Add this label to the window somewhere.
-			/*
-			// label
-			JLabel label = new JLabel(type + ": "
-					+ itemExp.replaceFirst("-1", ""));
-			panel.add(label);
-			 */
-			
-			// display
-			try {
-				/*
-				SpeciesGraph sg = new SpeciesGraph(id, expression,
-						VisualizationViewerController.loadVisualizationViewController().getSpeciesBrowserSize(),
-						VisualizationViewerController.loadVisualizationViewController().getSpeciesBrowserOverviewSize());
-				
-				prefuse.Display dis = sg.getDisplay();
-				
-				prefuse.Display oDis = sg.getOverviewDisplay();
-				//panel.add(dis);
-				VisualizationViewerController.loadVisualizationViewController().updateSpeciesBrowser(dis);
-				VisualizationViewerController.loadVisualizationViewController().updateSpeciesBrowserOverview(oDis);
-				// must be twice because some values are unavailable for the first time
-				VisualizationViewerController.loadVisualizationViewController().updateSpeciesBrowserOverview(null);
-			*/	
-			} catch (Exception e) {
-				e.printStackTrace();
-				return false;
-			}
-
-		} else if (type.equals("rule")) {
-
-		}
-		return true;
 	}
 	
 	/* update element_tv be the treeViewer of the current selected file */
@@ -1851,4 +1770,30 @@ public class ResultsView extends ViewPart
 		}
 	}
 
+	public void addSelectionChangedListener(ISelectionChangedListener listener) 
+	{
+		listeners.add(listener);
+		
+	}
+
+	public ISelection getSelection() 
+	{
+		return new StructuredSelection(selection);
+	}
+
+	public void removeSelectionChangedListener(
+			ISelectionChangedListener listener) 
+	{
+		listeners.remove(listener);
+		
+	}
+
+	public void setSelection(ISelection select) 
+	{		
+		Object[] list = listeners.getListeners();  
+		for (int i = 0; i < list.length; i++) 
+		{  
+			((ISelectionChangedListener) list[i]).selectionChanged(new SelectionChangedEvent(this, select));  
+		 }  
+	}
 }

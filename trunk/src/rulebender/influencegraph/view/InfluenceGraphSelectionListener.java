@@ -15,7 +15,7 @@ import bngparser.grammars.BNGGrammar.prog_return;
 
 import rulebender.contactmap.models.CMapModel;
 import rulebender.contactmap.models.CMapModelBuilder;
-import rulebender.contactmap.prefuse.CMapVisual;
+import rulebender.contactmap.prefuse.ContactMapVisual;
 import rulebender.contactmap.view.ContactMapView;
 import rulebender.core.utility.BNGParserCommands;
 import rulebender.editors.bngl.BNGLEditor;

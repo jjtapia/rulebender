@@ -45,7 +45,7 @@ import rulebender.core.prefuse.networkviewer.contactmap.VisualRule;
  *
  */
 
-public class CMapVisual
+public class ContactMapVisual
 {
 	
 	// To use Prefuse, you first have to construct the data structures that it
@@ -104,7 +104,7 @@ public class CMapVisual
     private Hashtable<Set<Node>, Node> hubNodes;
     
 	
-	public CMapVisual(CMapModel model_in, Dimension cMapSize) 
+	public ContactMapVisual(CMapModel model_in, Dimension cMapSize) 
 	{
 
 		model = model_in;

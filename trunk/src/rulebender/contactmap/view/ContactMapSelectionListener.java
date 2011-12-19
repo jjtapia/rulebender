@@ -13,7 +13,7 @@ import bngparser.grammars.BNGGrammar.prog_return;
 
 import rulebender.contactmap.models.CMapModel;
 import rulebender.contactmap.models.CMapModelBuilder;
-import rulebender.contactmap.prefuse.CMapVisual;
+import rulebender.contactmap.prefuse.ContactMapVisual;
 import rulebender.editors.bngl.BNGLEditor;
 import rulebender.editors.bngl.model.BNGASTReader;
 import rulebender.editors.bngl.model.BNGLModel;
@@ -170,7 +170,7 @@ public class ContactMapSelectionListener implements ISelectionListener
 		Dimension dim = m_view.getSize();
 		
 		// Get the CMapVisual object for the CMapModel
-		CMapVisual cVisual = new CMapVisual(cModel, dim);
+		ContactMapVisual cVisual = new ContactMapVisual(cModel, dim);
 		
 		return cVisual.getDisplay();
 	}
