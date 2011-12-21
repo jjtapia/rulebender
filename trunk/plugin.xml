@@ -15,17 +15,20 @@
    <extension
          point="org.eclipse.ui.perspectives">
       <perspective
-            name="Model"
             class="rulebender.Perspective"
-            id="rulebender.perspective">
+            icon="icons/CMap.gif"
+            id="rulebender.perspective"
+            name="Model">
       </perspective>
       <perspective
             class="rulebender.SimulationPerspective"
+            icon="icons/run.gif"
             id="rulebender.simulate.SimulatePerspective"
             name="Simulation">
       </perspective>
       <perspective
             class="rulebender.ResultsPerspective"
+            icon="icons/Results.gif"
             id="rulebender.ResultsPerspective"
             name="Results">
       </perspective>
@@ -152,25 +155,22 @@
       <view
             allowMultiple="false"
             class="org.eclipse.ui.internal.console.ConsoleView"
+            icon="icons/console_view.gif"
             id="rulebender.views.Console"
             name="Console"
             restorable="true">
       </view>
       <view
-      		allowMultiple="false"
+            allowMultiple="false"
             class="rulebender.navigator.views.ModelTreeView"
+            icon="icons/tree_explorer.gif"
             id="rulebender.views.Navigator"
             name="Navigator"
             restorable="true">
       </view>
       <view
-            class="rulebender.views.View"
-            id="rulebender.views.View"
-            name="View"
-            restorable="true">
-      </view>
-      <view
             class="rulebender.contactmap.view.ContactMapView"
+            icon="icons/CMap.gif"
             id="rulebender.contactmap.view.ContactMapView"
             name="Contact Map"
             restorable="true">
@@ -183,6 +183,7 @@
       </view>
       <view
             class="rulebender.results.view.ResultsView"
+            icon="icons/Results.gif"
             id="rulebender.results.view.ResultsView"
             name="Results"
             restorable="true">
@@ -195,32 +196,23 @@
       </view>
       <view
             class="rulebender.influencegraph.view.InfluenceGraphView"
+            icon="icons/IGraph.gif"
             id="rulebender.influencegraph.view.InfluenceGraphView"
             name="InfluenceGraph"
             restorable="true">
       </view>
       <view
             class="org.eclipse.ui.views.properties.PropertySheet"
+            icon="icons/properties.gif"
             id="rulebender.properties.view.PropertiesSheetView"
             name="Properties"
             restorable="true">
       </view>
       <view
             class="rulebender.simulate.view.SimulateView"
+            icon="icons/run.gif"
             id="rulebender.simulate.view.SimulateView"
             name="Simulation"
-            restorable="true">
-      </view>
-      <view
-            class="rulebender.simulationfilenavigator.views.SimulationFileNavigatorView"
-            id="rulebender.simulationfilenavigator.SimulationFileNavigatorView"
-            name="Simulation File Navigator"
-            restorable="true">
-      </view>
-      <view
-            class="rulebender.results.navigator.view.ResultsNavigatorView"
-            id="rulebender.results.navigator.view.ResultsNavigatorView"
-            name="Results Navigator"
             restorable="true">
       </view>
    </extension>
