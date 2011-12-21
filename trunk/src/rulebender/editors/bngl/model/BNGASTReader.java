@@ -143,40 +143,39 @@ public class BNGASTReader
 		for(Element moleculeType : moleculeTypesList)
 		{
 			
+			// Create the Molecule object.
 			Molecule molecule = new Molecule(moleculeType.getAttributeValue("id"));
 			
 			// Check to see if there are components for this molecule.
-			if(moleculeType.getChild("ListOfComponentTypes", moleculeType.getNamespace()) == null)
+			if(moleculeType.getChild("ListOfComponentTypes", moleculeType.getNamespace()) != null)
 			{
-				// Go to the next moleculeType if there are not any components.
-				continue;
-			}
-			
-			// Get the node and then list for the components
-			Element componentTypeListNode = moleculeType.getChild("ListOfComponentTypes", moleculeType.getNamespace());
-			List<Element> componentTypeList = componentTypeListNode.getChildren();
-			
-			// For each of the components.
-			for(Element componentType : componentTypeList)
-			{
-				molecule.addComponent(new Component(componentType.getAttributeValue("id")));
+				// Get the node and then list for the components
+				Element componentTypeListNode = moleculeType.getChild("ListOfComponentTypes", moleculeType.getNamespace());
+				List<Element> componentTypeList = componentTypeListNode.getChildren();
 				
-				// Skip to the next componentType if there are no states. 
-				if(componentType.getChild("ListOfAllowedStates", componentType.getNamespace()) == null)
+				// For each of the components.
+				for(Element componentType : componentTypeList)
 				{
-					continue;
-				}
-				
-				// Get the list node and then list.
-				Element allowedStatesListNode = componentType.getChild("ListOfAllowedStates", componentType.getNamespace());
-				List<Element> allowedStatesList = allowedStatesListNode.getChildren();
-				
-				for(Element allowedState : allowedStatesList)
-				{
-					molecule.addStateToComponent(allowedState.getAttributeValue("id"), componentType.getAttributeValue("id"));
-				} // done with states
-			} // done with components types
+					molecule.addComponent(new Component(componentType.getAttributeValue("id")));
+					
+					// Skip to the next componentType if there are no states. 
+					if(componentType.getChild("ListOfAllowedStates", componentType.getNamespace()) == null)
+					{
+						continue;
+					}
+					
+					// Get the list node and then list.
+					Element allowedStatesListNode = componentType.getChild("ListOfAllowedStates", componentType.getNamespace());
+					List<Element> allowedStatesList = allowedStatesListNode.getChildren();
+					
+					for(Element allowedState : allowedStatesList)
+					{
+						molecule.addStateToComponent(allowedState.getAttributeValue("id"), componentType.getAttributeValue("id"));
+					} // done with states
+				} // done with components types
+			} // Done with everything related to components 
 			
+			// Tell the builder that we've found a molecule.
 			m_builder.foundMoleculeType(molecule);
 			
 		} // done with molecules types

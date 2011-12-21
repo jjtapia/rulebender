@@ -64,14 +64,14 @@ import rulebender.editors.bngl.model.ruledata.RulePatternData;
  */
 public class CMapModelBuilder implements BNGLModelBuilderInterface 
 {
-	CMapModel model;
+	CMapModel m_model;
 	
-	HashMap<String, Integer> moleculeIDForName;
+	HashMap<String, Integer> m_moleculeIDForName;
 	
 	public CMapModelBuilder()
 	{
-		model = new CMapModel(); 
-		moleculeIDForName = new HashMap<String, Integer>();
+		m_model = new CMapModel(); 
+		m_moleculeIDForName = new HashMap<String, Integer>();
 	}
 
 	public void parameterFound(String id, String type, String value)
@@ -85,10 +85,10 @@ public class CMapModelBuilder implements BNGLModelBuilderInterface
 	public void foundCompartment(String id, String volume, String outside) 
 	{	
 		// Try and get the parent
-		Compartment parent = model.getCompartments().getCompartment(outside);
+		Compartment parent = m_model.getCompartments().getCompartment(outside);
 		
 		// Using the parent (which may be null), add the compartment to the table.
-		model.addCompartment(new Compartment(id, parent));
+		m_model.addCompartment(new Compartment(id, parent));
 	}
 	
 
@@ -98,8 +98,12 @@ public class CMapModelBuilder implements BNGLModelBuilderInterface
 	 */
 	public void foundMoleculeType(Molecule molecule) 
 	{
-		int index = model.addMolecule(molecule);
-		moleculeIDForName.put(molecule.getName(), index);
+		System.out.println("Found Molecule: " + molecule.getName());
+		
+		int index = m_model.addMolecule(molecule);
+		m_moleculeIDForName.put(molecule.getName(), index);
+		
+		System.out.println("index: " + index);
 	}
 
 
@@ -116,9 +120,9 @@ public class CMapModelBuilder implements BNGLModelBuilderInterface
 		
 		Molecule existingMolecule = null;
 		
-		if(moleculeIDForName.get(molecule.getName()) != null)
+		if(m_moleculeIDForName.get(molecule.getName()) != null)
 		{
-			existingMolecule = model.getMolecules().get(moleculeIDForName.get(molecule.getName()));
+			existingMolecule = m_model.getMolecules().get(m_moleculeIDForName.get(molecule.getName()));
 		}
 		
 		// If we have it.
@@ -130,8 +134,8 @@ public class CMapModelBuilder implements BNGLModelBuilderInterface
 		else
 		{
 			// Add it to the model and to the lookup table
-			int index = model.addMolecule(molecule);
-			moleculeIDForName.put(molecule.getName(), index);
+			int index = m_model.addMolecule(molecule);
+			m_moleculeIDForName.put(molecule.getName(), index);
 		}
 	}
 
@@ -162,20 +166,20 @@ public class CMapModelBuilder implements BNGLModelBuilderInterface
 		
 		
 		//Need ints for all of these strings
-		int moleIndex1 = moleculeIDForName.get(moleName1);
-		int compIndex1 = model.getMolecules().get(moleIndex1).getComponentIndex(compName1, compID1);
-		int stateIndex1 = (model.getMolecules().get(moleIndex1).getComponents().get(compIndex1)).getStateIndex(state1);
+		int moleIndex1 = m_moleculeIDForName.get(moleName1);
+		int compIndex1 = m_model.getMolecules().get(moleIndex1).getComponentIndex(compName1, compID1);
+		int stateIndex1 = (m_model.getMolecules().get(moleIndex1).getComponents().get(compIndex1)).getStateIndex(state1);
 		
 		//System.out.println("State index 1: " + stateIndex1);
 		
 		//Need ints for all of these strings
-		int moleIndex2 = moleculeIDForName.get(moleName2);
-		int compIndex2 = model.getMolecules().get(moleIndex2).getComponentIndex(compName2, compID2);
-		int stateIndex2 = (model.getMolecules().get(moleIndex2).getComponents().get(compIndex2)).getStateIndex(state2);
+		int moleIndex2 = m_moleculeIDForName.get(moleName2);
+		int compIndex2 = m_model.getMolecules().get(moleIndex2).getComponentIndex(compName2, compID2);
+		int stateIndex2 = (m_model.getMolecules().get(moleIndex2).getComponents().get(compIndex2)).getStateIndex(state2);
 		
 		//System.out.println("State index 2: " + stateIndex2);
 		
-		return model.addBond(new Bond(moleIndex1, compIndex1, stateIndex1, moleIndex2, compIndex2, stateIndex2));
+		return m_model.addBond(new Bond(moleIndex1, compIndex1, stateIndex1, moleIndex2, compIndex2, stateIndex2));
 	}
 	
 	/**
@@ -189,7 +193,7 @@ public class CMapModelBuilder implements BNGLModelBuilderInterface
 		if(ruleData.getName().contains("(Reverse)"))
 		{
 			// Get the rule, set it to bidirectional, and set the 2nd rate.
-			Rule existingRule = model.getRuleWithName(ruleData.getName().substring(0, ruleData.getName().indexOf("(")));// Get the existing rule.
+			Rule existingRule = m_model.getRuleWithName(ruleData.getName().substring(0, ruleData.getName().indexOf("(")));// Get the existing rule.
 			existingRule.setBidirection(true);
 			existingRule.setRate2(ruleData.getRate());
 		
@@ -221,10 +225,11 @@ public class CMapModelBuilder implements BNGLModelBuilderInterface
 			{
 				// Create the MoleculePattern object based on the id
 				// of the molecule.
-				int moleID = moleculeIDForName.get(mpd.getName());
+				System.out.println("moleculeIDForName.get(mpd.getName()): " + (m_moleculeIDForName.get(mpd.getName()) == null ? "null" : m_moleculeIDForName.get(mpd.getName())));
+				int moleID = m_moleculeIDForName.get(mpd.getName());
 				
 				// Get a reference to the molecule itself for later use.
-				Molecule mole = model.getMolecules().get(moleID);
+				Molecule mole = m_model.getMolecules().get(moleID);
 				
 				// Create a new MoleculePattern.
 				MoleculePattern moleculePattern = new MoleculePattern(moleID);
@@ -263,10 +268,10 @@ public class CMapModelBuilder implements BNGLModelBuilderInterface
 			{
 				// Create the MoleculePattern object based on the id
 				// of the molecule.
-				int moleID = moleculeIDForName.get(mpd.getName());
+				int moleID = m_moleculeIDForName.get(mpd.getName());
 				
 				// Get a reference to the molecule itself for later use.
-				Molecule mole = model.getMolecules().get(moleID);
+				Molecule mole = m_model.getMolecules().get(moleID);
 				
 				// Create a new MoleculePattern.
 				MoleculePattern moleculePattern = new MoleculePattern(moleID);
@@ -311,7 +316,7 @@ public class CMapModelBuilder implements BNGLModelBuilderInterface
 			rule.addBondAction(new BondAction(index, bad.getAction()));
 		}
 		
-		model.addRule(rule);
+		m_model.addRule(rule);
 	}
 
 	public void foundObservable(String observableID, String observableName,
@@ -350,6 +355,6 @@ public class CMapModelBuilder implements BNGLModelBuilderInterface
 	
 	public CMapModel getCMapModel() 
 	{
-		return model;
+		return m_model;
 	}
 }

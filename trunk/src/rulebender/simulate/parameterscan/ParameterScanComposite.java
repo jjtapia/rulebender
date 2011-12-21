@@ -54,7 +54,7 @@ public class ParameterScanComposite extends Composite
 		ParameterScanComposite parScanForm = this;
 		
 		// grid layout
-		parScanForm.setLayout(new GridLayout(5, true));
+		parScanForm.setLayout(new GridLayout(6, true));
 
 		GridData labelGridData = new GridData(GridData.FILL_HORIZONTAL);
 		labelGridData.horizontalSpan = 4;
@@ -130,7 +130,8 @@ public class ParameterScanComposite extends Composite
 		new Label(parScanForm, SWT.NONE).setText("");
 
 		GridData gridData = new GridData();
-		gridData.widthHint = 80;
+		gridData.horizontalSpan = 5;
+		gridData.horizontalAlignment = SWT.FILL;
 		
 		// OK button
 		Button okButton = new Button(parScanForm, SWT.NONE);
@@ -229,17 +230,6 @@ public class ParameterScanComposite extends Composite
 					scanData.setLogScale(logScaleInput.getSelection());
 					scanData.setSteadyState(steadyStateInput.getSelection());
 				}
-	
-				/*
-				 * String[] psresult = new String[1];
-				 * psresult[0]=prefix+".scan"; if(!stemp2.contains("open") &&
-				 * !stemp2.contains("ABORT") && !stemp2.contains("line")) { try
-				 * {
-				 * 
-				 * new Viewer(null,psresult,new String[0]); } catch (IOException
-				 * e) {} }
-				 */
-			
 			
 			//TODO  Possibly show console, 
 			

@@ -1,8 +1,11 @@
 package rulebender;
 
 import org.eclipse.jface.preference.IPreferenceNode;
+import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.preference.PreferenceManager;
+import org.eclipse.swt.custom.CBanner;
 import org.eclipse.swt.graphics.Point;
+import org.eclipse.ui.IWorkbenchPreferenceConstants;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.application.ActionBarAdvisor;
 import org.eclipse.ui.application.IActionBarConfigurer;
@@ -30,7 +33,7 @@ public class ApplicationWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor {
 		configurer.setInitialSize(new Point(1024, 768));
 		
 		// Use the coolbar toolbar?
-		configurer.setShowCoolBar(true);
+		configurer.setShowCoolBar(false);
 		
 		// Use the status line?
 		configurer.setShowStatusLine(true);
@@ -41,9 +44,14 @@ public class ApplicationWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor {
 		
 		// Show the perspectives bar?
 		configurer.setShowPerspectiveBar(true);
-		
+				
 		// Set the name of the application.
 		configurer.setTitle("RuleBender");
+		
+		IPreferenceStore prefStore = PlatformUI.getPreferenceStore();
+
+		prefStore.setValue(IWorkbenchPreferenceConstants.PERSPECTIVE_BAR_EXTRAS, "rulebender.perspective,rulebender.simulate.SimulatePerspective,rulebender.ResultsPerspective");
+		prefStore.setValue(IWorkbenchPreferenceConstants.SHOW_TRADITIONAL_STYLE_TABS, false);
 	}
 	
 	public void postWindowCreate()
@@ -52,14 +60,5 @@ public class ApplicationWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor {
 		PreferenceManager pm = PlatformUI.getWorkbench().getPreferenceManager();
 		
 		pm.remove("org.eclipse.team.ui.TeamPreferences");
-		
-		
-		IPreferenceNode[] arr = pm.getRootSubNodes();
-		
-		
-		for (IPreferenceNode pn : arr)
-		{
-			System.out.println("Label: " + pn.getLabelText() + " ID: " + pn.getId());
-		}
 	}
 }

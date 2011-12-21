@@ -6,7 +6,7 @@ import org.eclipse.ui.ISelectionListener;
 import org.eclipse.ui.IWorkbenchPart;
 import rulebender.navigator.model.FileNode;
 import rulebender.navigator.model.TreeNode;
-import rulebender.simulationfilenavigator.views.SimulationFileNavigatorView;
+import rulebender.navigator.views.ModelTreeView;
 
 public class SimulateViewSelectionListener implements ISelectionListener {
 
@@ -25,7 +25,7 @@ public class SimulateViewSelectionListener implements ISelectionListener {
 	{
 		System.out.println(part.getClass().toString());
 		// Check if it is from the model navigator
-		if(part.getClass() == SimulationFileNavigatorView.class)
+		if(part.getClass() == ModelTreeView.class)
 		{	
 			IStructuredSelection selection = (IStructuredSelection) in_selection;
 			

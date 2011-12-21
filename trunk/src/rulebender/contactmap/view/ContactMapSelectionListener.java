@@ -22,16 +22,16 @@ public class ContactMapSelectionListener implements ISelectionListener
 {
 	private ContactMapView m_view;
 	
-	private BNGLModel currentModel;
+	private BNGLModel m_currentModel;
 	
-	private HashMap<String, prefuse.Display> contactMapRegistry;
+	private HashMap<String, prefuse.Display> m_contactMapRegistry;
 	
 	public ContactMapSelectionListener(ContactMapView view)
 	{
 		setView(view);
 		
 		// Create the registry
-		contactMapRegistry = new HashMap<String, prefuse.Display>();
+		m_contactMapRegistry = new HashMap<String, prefuse.Display>();
 		
 		// Register the view as a listener for workbench selections.
 		m_view.getSite().getPage().addPostSelectionListener(this);		
@@ -42,29 +42,23 @@ public class ContactMapSelectionListener implements ISelectionListener
 	 */
 	public void selectionChanged(IWorkbenchPart part, ISelection selection) 
 	{	
-		// DEBUG
-		//System.out.println("Selection:\n\t" + "\tpart: " + part.getTitle() +
-		//		           "\n\tselection: " + selection.toString());
-		//System.out.println("\tclass: " + part.getClass().toString());
-		
+		// If it's from the BNGLEditor then we want to set the contact map.
 		if(part.getClass() == BNGLEditor.class)
 		{
-			//DEBUG 
-			//System.out.println("********* SELECTION OF BGNL EDITOR ****************");
 			bnglEditorSelection(part, selection);
 		}
 		// If it's not a bngl file
 		else
 		{
-			currentModel = null;
-			m_view.setCMap(null);
+			//m_currentModel = null;
+			//m_view.setCMap(null);
 		}
 	}
 	
 	private void bnglEditorSelection(IWorkbenchPart part, ISelection selection)
 	{
 		// If it's the same file
-		if(currentModel != null && part.getTitle().equals(currentModel.getPathID()))
+		if(m_currentModel != null && part.getTitle().equals(m_currentModel.getPathID()))
 		{
 			//TODO it could be a text selection.
 			//System.out.println("same file");
@@ -84,14 +78,14 @@ public class ContactMapSelectionListener implements ISelectionListener
 	private void newBNGLFileSelected(IWorkbenchPart part)
 	{
 		// Set the current file.
-		currentModel = ((BNGLEditor) part).getModel();
+		m_currentModel = ((BNGLEditor) part).getModel();
 		
-		if(!contactMapRegistry.containsKey(currentModel.getPathID()))
+		if(!m_contactMapRegistry.containsKey(m_currentModel.getPathID()))
 		{
 			// Create a property changed listener for when files are saved.
 			PropertyChangeListener pcl = new PropertyChangeListener()
 			{
-				public void propertyChange(PropertyChangeEvent evt) 
+				public void propertyChange(PropertyChangeEvent propertyChangeEvent) 
 				{
 					//DEBUG
 					//System.out.println("PropertyChange Class: " + evt.getClass());
@@ -99,14 +93,11 @@ public class ContactMapSelectionListener implements ISelectionListener
 					//System.out.println("Propogation ID: " + evt.getPropagationId());
 					
 					//Update the display object that is associated with the path and ast. 
-					updateDisplayForPathAndAST(evt.getPropertyName(), (prog_return) evt.getNewValue());
+					updateDisplayForPathAndAST(propertyChangeEvent.getPropertyName(), (prog_return) propertyChangeEvent.getNewValue());
 				}};
 				
-				currentModel.addPropertyChangeListener(pcl); 
+				m_currentModel.addPropertyChangeListener(pcl); 
 		}
-		
-		// Clear the contact map
-		m_view.setCMap(null);
 		
 		// Get an existing map.
 		prefuse.Display toShow = lookupCurrentDisplay();
@@ -118,20 +109,19 @@ public class ContactMapSelectionListener implements ISelectionListener
 	private prefuse.Display lookupCurrentDisplay()
 	{
 		// Try to get an existing display.
-		prefuse.Display toShow = contactMapRegistry.get(currentModel.getPathID());
+		prefuse.Display toShow = m_contactMapRegistry.get(m_currentModel.getPathID());
 		
 		// If it does not exist yet then generate it and add it to the registry.
 		if(toShow == null)
 		{
-			toShow = generateContactMap(currentModel.getAST());
-			contactMapRegistry.put(currentModel.getPathID(), toShow);
+			toShow = generateContactMap(m_currentModel.getAST());
+			m_contactMapRegistry.put(m_currentModel.getPathID(), toShow);
 		}
 		
 		// This can still be null if there was an error generating the ast.
 		return toShow;
 	}
 
-	
 	/**
 	 * Generates a contact map using the antlr parser for a filename. 
 	 * @param fileName
@@ -199,16 +189,18 @@ public class ContactMapSelectionListener implements ISelectionListener
 	
 	private void updateDisplayForPathAndAST(String path, prog_return ast)
 	{
-		System.out.println("Updating:" + path);
 		// Clear the current entry.
-		contactMapRegistry.remove(path);
+		m_contactMapRegistry.remove(path);
 		
+		// Generate a new display
 		prefuse.Display display = generateContactMap(ast);
 		
 		// Add the new representation.
-		contactMapRegistry.put(path, display);
+		m_contactMapRegistry.put(path, display);
 		
-		if(path.equals(currentModel.getPathID()))
+		// If it is the model that is currently displayed, 
+		// then send the Display object to the view.
+		if(path.equals(m_currentModel.getPathID()))
 		{
 			m_view.setCMap(display);
 		}

@@ -20,14 +20,14 @@
             id="rulebender.perspective">
       </perspective>
       <perspective
-            class="rulebender.ResultsPerspective"
-            id="rulebender.ResultsPerspective"
-            name="Results">
-      </perspective>
-      <perspective
             class="rulebender.SimulationPerspective"
             id="rulebender.simulate.SimulatePerspective"
             name="Simulation">
+      </perspective>
+      <perspective
+            class="rulebender.ResultsPerspective"
+            id="rulebender.ResultsPerspective"
+            name="Results">
       </perspective>
    </extension>
    <extension
@@ -35,9 +35,10 @@
       <perspectiveExtension
             targetID="rulebender.perspective">
          <view
+               closeable="false"
                id="rulebender.views.Console"
                minimized="false"
-               ratio="0.8f"
+               ratio="0.7f"
                relationship="bottom"
                relative="org.eclipse.ui.editorss"
                visible="true">
@@ -52,6 +53,7 @@
                visible="true">
          </view>
          <view
+               closeable="false"
                id="rulebender.contactmap.view.ContactMapView"
                minimized="false"
                moveable="true"
@@ -60,7 +62,7 @@
                visible="true">
          </view>
          <view
-               closeable="true"
+               closeable="false"
                id="rulebender.properties.view.PropertiesSheetView"
                minimized="false"
                moveable="true"
@@ -76,6 +78,7 @@
                id="rulebender.results.view.ResultsView"
                minimized="false"
                moveable="true"
+               ratio="0.6f"
                relationship="left"
                relative="org.eclipse.ui.editorss"
                visible="true">
@@ -85,15 +88,16 @@
                id="rulebender.speciesgraph.SpeciesGraphView"
                minimized="false"
                moveable="true"
+               ratio="0.1f"
                relationship="right"
                relative="org.eclipse.ui.editorss"
                visible="true">
          </view>
          <view
                closeable="false"
-               id="rulebender.results.navigator.view.ResultsNavigatorView"
+               id="rulebender.views.Navigator"
                minimized="false"
-               ratio="0.2f"
+               ratio="0.3f"
                relationship="left"
                relative="rulebender.results.view.ResultsView"
                visible="true">
@@ -102,7 +106,7 @@
       <perspectiveExtension
             targetID="rulebender.simulate.SimulatePerspective">
          <view
-               closeable="true"
+               closeable="false"
                id="rulebender.simulate.view.SimulateView"
                minimized="false"
                moveable="true"
@@ -113,9 +117,11 @@
                visible="true">
          </view>
          <view
+               closeable="false"
                id="rulebender.views.Console"
                minimized="false"
-               ratio="0.8f"
+               moveable="true"
+               ratio="0.7f"
                relationship="bottom"
                relative="rulebender.simulate.view.SimulateView"
                visible="true">
@@ -131,9 +137,10 @@
          </view>
          <view
                closeable="false"
-               id="rulebender.simulationfilenavigator.SimulationFileNavigatorView"
+               id="rulebender.views.Navigator"
                minimized="false"
-               ratio="0.2f"
+               moveable="true"
+               ratio="0.3f"
                relationship="left"
                relative="rulebender.simulate.view.SimulateView"
                visible="true">
@@ -333,21 +340,6 @@
             locationURI="toolbar:org.eclipse.ui.main.toolbar">
          <toolbar
                id="rulebender.toolbars.main">
-            <command
-                  commandId="rulebender.commands.NewFile"
-                  label="New File..."
-                  style="push">
-            </command>
-            <command
-                  commandId="rulebender.commands.OpenFile"
-                  label="Open File..."
-                  style="push">
-            </command>
-            <command
-                  commandId="rulebender.commands.Test"
-                  label="Test"
-                  style="push">
-            </command>
          </toolbar>
       </menuContribution>
       <menuContribution

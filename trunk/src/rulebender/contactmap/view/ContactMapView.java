@@ -40,7 +40,7 @@ public class ContactMapView extends ViewPart
 	// is not regenerated every time the window resize event occurs. 
 	private final static Timer timer = new Timer();
 	private static boolean timerRunning = false;
-	
+		
 	// The awt frame that holds the contact map.
 	private java.awt.Frame frame;
 	
@@ -117,7 +117,14 @@ public class ContactMapView extends ViewPart
 	 */
 	public void setCMap(prefuse.Display d)
 	{
+		// Set the display in the layered pane
 		layeredPane.setDisplay(d);
+
+		// Redraw the parent.  This is my solution to the contact map
+		// not being updated when the contact map view is not in focus. 
+		// The overview was updated, but not the main panel.  So,
+		// There may be a better solution than this, but this works.
+		parentComposite.redraw();
 	}
 	
 	public void tempRefresh() 

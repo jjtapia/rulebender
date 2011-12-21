@@ -12,11 +12,7 @@ package rulebender.core.prefuse;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Component;
 import java.awt.Dimension;
-import java.awt.Insets;
-import java.awt.event.MouseAdapter;
-import java.awt.geom.Rectangle2D;
 
 import javax.swing.JLayeredPane;
 import javax.swing.JPanel;
@@ -24,12 +20,13 @@ import javax.swing.border.Border;
 import javax.swing.border.LineBorder;
 
 import prefuse.Display;
-import prefuse.Visualization;
-import prefuse.visual.VisualItem;
 import rulebender.core.prefuse.overview.Overview;
 
 public class LayeredPane extends JLayeredPane 
 {
+	// Not entirely sure what this does, but having it gets rid of a warning.
+	private static final long serialVersionUID = 1L;
+	
 	// The overview window size
 	private final float OVERVIEW_WIDTH = 0.2f;
 	private final float OVERVIEW_HEIGHT = 0.2f;
@@ -62,13 +59,13 @@ public class LayeredPane extends JLayeredPane
 		border = new LineBorder(Color.GRAY, BORDER_WIDTH);
 		
 		// Instantiate the JPanel for the overview and set its border
-		overviewJPanel = new JPanel(new BorderLayout()); 
+		overviewJPanel = new JPanel(); 
 	    overviewJPanel.setBorder(border);
 	    
 	    overviewJPanel.setBackground(Color.WHITE);
 	    
 	    // Instantiate the JPanel for the main visualization and set its border.
-	    mainJPanel = new JPanel(new BorderLayout());
+	    mainJPanel = new JPanel();
 		mainJPanel.setBorder(border);
 		mainJPanel.setBackground(Color.WHITE);
 		
@@ -87,35 +84,29 @@ public class LayeredPane extends JLayeredPane
 	 */
 	public void setDisplay(Display d)
 	{
+		
+		//DEBUG
+		System.out.println("setDisplay Called: ");
+		
+		// Remove any component children
 		if(mainJPanel.getComponentCount() > 0)
 		{
 			mainJPanel.removeAll();
 		}
-		
-		if(d != null)
-		{
-			mainJPanel.add(d, BorderLayout.CENTER);
-		}
-			
-		//system.out.println("------------------Setting Overview----------------");
-		
 		if(overviewJPanel.getComponentCount() > 0)
 		{
 			overviewJPanel.removeAll();
 		}	
 		
-		if(mainJPanel.getComponentCount() == 1)
+		// If the passed in display is not null.
+		if(d != null)
 		{
-			// absolute layout
-			overviewJPanel.setLayout(null);
-			
-		//	Display dis_focus = (Display) mainJPanel.getComponent(0);
-			
+			// Add the display to the main panel
+			mainJPanel.add(d);
+						
 	     	// add overview display to panel
 			overviewJPanel.add(new Overview(d));
 		}
-	
-		overviewJPanel.revalidate();
 		
 		myResize();
 	}
@@ -139,11 +130,10 @@ public class LayeredPane extends JLayeredPane
 			
 			overviewJPanel.setBounds(0, size.height-overviewHeight, overviewWidth-BORDER_WIDTH, overviewHeight-BORDER_WIDTH);
 			
-			//cMapOverviewJPanel.getComponent(0).setSize(new Dimension(overviewWidth, overviewHeight));
-			
 			if(mainJPanel.getComponentCount() == 1 && overviewJPanel.getComponentCount() == 1)
 			{
-				((Display) mainJPanel.getComponent(0)).setSize(new Dimension(currentSize.width-BORDER_WIDTH*2, currentSize.height-BORDER_WIDTH*2));
+				((Display) mainJPanel.getComponent(0)).setSize(new Dimension(currentSize.width-BORDER_WIDTH*2, currentSize.height-BORDER_WIDTH*2));				
+				((Display) mainJPanel.getComponent(0)).setBounds(BORDER_WIDTH, BORDER_WIDTH, currentSize.width-BORDER_WIDTH*2, currentSize.height-BORDER_WIDTH*2);
 				((Display) overviewJPanel.getComponent(0)).setBounds(BORDER_WIDTH, BORDER_WIDTH, overviewWidth-BORDER_WIDTH*3, overviewHeight-BORDER_WIDTH*2);
 				((Display) overviewJPanel.getComponent(0)).setSize(new Dimension(overviewWidth-BORDER_WIDTH*3, overviewHeight-BORDER_WIDTH*2));
 				
