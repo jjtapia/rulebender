@@ -19,8 +19,6 @@ import rulebender.editors.bngl.model.BNGLModel;
 
 public class BNGLEditor extends TextEditor 
 {
-	
-	private int parsed = 0;
 	// The model for the text
 	private BNGLModel m_model;
 	// The color manager for the syntax highlighting.
@@ -130,14 +128,14 @@ public class BNGLEditor extends TextEditor
 		// Save a link to the orinal error out.
 		PrintStream old = System.err;
 		
-		System.out.println("-----------------------");
+
+		Console.clearConsole(getTitle());
 		
 		// Set the error out to a new printstream that will only display the antlr output.
 		System.setErr(new ANTLRFilteredPrintStream(Console.getMessageConsoleStream(getTitle()), getTitle(), old));
 		
 		try
 		{
-			Console.displayOutput(getTitle(), getTitle() + "Trying to parse!" + ++parsed);
 			toReturn = produceParseData().getParser().prog();
 		}
 		catch(Exception e)
@@ -151,7 +149,7 @@ public class BNGLEditor extends TextEditor
 		}	
 		System.err.flush();
 		System.setErr(old);
-		System.err.println("-----------------------");
+		
 		return toReturn;
 	}
 

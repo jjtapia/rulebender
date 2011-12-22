@@ -32,7 +32,6 @@ import prefuse.visual.VisualTupleSet;
 import prefuse.visual.expression.InGroupPredicate;
 import rulebender.core.prefuse.networkviewer.CustomizedZoomToFitControl;
 
-@SuppressWarnings("serial")
 public class SpeciesViewer 
 {
 	// These strings all define a 'group' that is a part of the visualization.

@@ -177,6 +177,7 @@
       </view>
       <view
             class="rulebender.speciesgraph.view.SpeciesGraphView"
+            icon="icons/speciesGraph.gif"
             id="rulebender.speciesgraph.SpeciesGraphView"
             name="Species Graph"
             restorable="true">

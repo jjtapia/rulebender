@@ -15,7 +15,6 @@ import prefuse.visual.EdgeItem;
 import prefuse.visual.NodeItem;
 import prefuse.visual.VisualItem;
 import rulebender.core.prefuse.networkviewer.contactmap.SpeciesViewer;
-import rulebender.core.prefuse.overview.FitOverviewListener;
 import rulebender.speciesgraph.data.SBond;
 import rulebender.speciesgraph.data.SComponent;
 import rulebender.speciesgraph.data.SMolecule;

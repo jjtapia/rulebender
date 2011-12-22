@@ -35,7 +35,6 @@ public class Console
 	 */
 	public static MessageConsoleStream getMessageConsoleStream(String console)
 	{
-		
 		// Get the stream
 		return getMessageConsole(console).newMessageStream();    
 	}
@@ -75,6 +74,12 @@ public class Console
 		MessageConsole toRemove = null;
 		
 		ConsolePlugin.getDefault().getConsoleManager().removeConsoles(new IConsole[] {toRemove});
+		
+	}
+
+	public static void clearConsole(String title) 
+	{
+		getMessageConsole(title).clearConsole();
 		
 	}  
 }
