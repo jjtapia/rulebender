@@ -3,6 +3,7 @@ package rulebender.navigator.model;
 import java.io.File;
 import java.util.List;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.ui.plugin.AbstractUIPlugin;
 
 /**
  * 
@@ -15,6 +16,10 @@ public class FileNode extends TreeNode {
 	private String fileName;
 	private String filePath;
 
+	private static final Image m_bngImage = AbstractUIPlugin.imageDescriptorFromPlugin ("rulebender","/icons/CMap.gif").createImage();
+	private static final Image m_resultsImage = AbstractUIPlugin.imageDescriptorFromPlugin ("rulebender","/icons/Results.gif").createImage();
+	private static final Image m_defaultImage = AbstractUIPlugin.imageDescriptorFromPlugin ("rulebender","/icons/file_obj.gif").createImage();
+	
 	public FileNode(ITreeNode parent, File file) {
 		super("FileNode", parent);
 		fFile = file;
@@ -85,8 +90,27 @@ public class FileNode extends TreeNode {
 	/**
 	 * @return file image
 	 */
-	public Image getImage() {
-		return null;
+	public Image getImage() 
+	{
+		if (fileName.endsWith(".cdat") ||
+			fileName.endsWith(".gdat") ||
+			fileName.endsWith(".scan"))
+		{
+			return m_resultsImage;
+		}
+			
+			
+		else if (fileName.endsWith(".net") ||
+			fileName.endsWith(".bngl"))
+		{
+			return m_bngImage;
+		}
+		
+		//fileName.endsWith(".log") || fileName.endsWith(".m") ||  fileName.endsWith(".xml"))
+		else
+		{
+			return m_defaultImage;
+		}
 	}
 
 	protected void createChildren(List children) {

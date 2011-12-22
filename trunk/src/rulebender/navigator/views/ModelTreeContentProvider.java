@@ -11,7 +11,7 @@ public class ModelTreeContentProvider extends ArrayContentProvider implements
 	public Object[] getChildren(Object parentElement) 
 	{
 		//DEBUG
-		System.out.println("Calling getChildren on: " + ((FileBrowserTreeNodeInterface) parentElement).getName());
+		//System.out.println("Calling getChildren on: " + ((FileBrowserTreeNodeInterface) parentElement).getName());
 		return ((FileBrowserTreeNodeInterface) parentElement).getChildren();
 	}
 

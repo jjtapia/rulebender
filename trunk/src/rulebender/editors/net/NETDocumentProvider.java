@@ -34,7 +34,8 @@ public class NETDocumentProvider extends AbstractDocumentProvider
 {
 	public IDocument createDocument(Object element) throws CoreException 
 	{
-		if (element instanceof IEditorInput) {
+		if (element instanceof IEditorInput) 
+		{
 			IDocument document = new Document();
 			
 			if (setDocumentContent(document, (IEditorInput) element)) 
@@ -43,7 +44,23 @@ public class NETDocumentProvider extends AbstractDocumentProvider
 			}
 			return document;
 		}
-	
+		
+		// Fro mthe old code
+		/*
+		else if (element instanceof String)
+		{
+			Document document = new Document(element);
+
+			// partitioner
+			IDocumentPartitioner partitioner = new FastPartitioner(
+					new NETPartitionScanner(), new String[] {
+						IDocument.DEFAULT_CONTENT_TYPE, 	
+						NETPartitionScanner.NET_COMMENT});
+			partitioner.connect(document);
+			document.setDocumentPartitioner(partitioner);
+			return document;
+		}
+	*/
 		return null;
 	}
 

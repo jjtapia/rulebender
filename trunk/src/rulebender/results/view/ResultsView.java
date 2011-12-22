@@ -1,9 +1,12 @@
 package rulebender.results.view;
 
+import java.io.File;
 import java.util.ArrayList;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.ListenerList;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.text.Document;
 import org.eclipse.jface.text.source.SourceViewer;
 import org.eclipse.jface.viewers.CheckStateChangedEvent;
@@ -41,9 +44,11 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
+import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.part.ViewPart;
 import org.jfree.chart.JFreeChart;
 
+import rulebender.editors.common.PathEditorInput;
 import rulebender.editors.net.NETConfiguration;
 import rulebender.editors.net.NETDocumentProvider;
 import rulebender.navigator.model.DATFileData;
@@ -1106,8 +1111,8 @@ public class ResultsView extends ViewPart implements ISelectionProvider
 	}
 
 
-	private void openFileItem(FileNode node) {
-		
+	private void openFileItem(FileNode node) 
+	{
 		// convert TreeNode to FileNode
 		curFileNode = (FileNode) node;
 
@@ -1131,11 +1136,13 @@ public class ResultsView extends ViewPart implements ISelectionProvider
 				|| curFileNode.getName().endsWith(".m")
 				|| curFileNode.getName().endsWith(".xml")
 				|| curFileNode.getName().endsWith(".rxn")
-				|| curFileNode.getName().endsWith(".cfg")) {
+				|| curFileNode.getName().endsWith(".cfg")) 
+		{
 			// NET
 			// check if the file has already opened
 			boolean opened = false;
-			for (int i = 0; i < textFolder.getItemCount(); i++) {
+			for (int i = 0; i < textFolder.getItemCount(); i++) 
+			{
 				CTabItem item = textFolder.getItem(i);
 				String path = (String) item.getData("path");
 				if (path.equals(curFileNode.getPath())) {
@@ -1147,8 +1154,10 @@ public class ResultsView extends ViewPart implements ISelectionProvider
 					break;
 				}
 			}
-			if (opened == false) {
-
+			// If it has not been opened
+			if (opened == false) 
+			{
+				// and if it ends with log, pl, m, xml, rxn, or cfg
 				if (curFileNode.getName().endsWith(".log")
 						|| curFileNode.getName().endsWith(".pl")
 						|| curFileNode.getName().endsWith(".m")
@@ -1157,7 +1166,10 @@ public class ResultsView extends ViewPart implements ISelectionProvider
 						|| curFileNode.getName().endsWith(".cfg")) {
 					// create a new LOGItem
 					createLOGItem(curFileNode);
-				} else {
+				} 
+				
+				else 
+				{
 					// create a new netItem
 					createNetItem(curFileNode);
 				}
@@ -1196,7 +1208,8 @@ public class ResultsView extends ViewPart implements ISelectionProvider
 		}
 	}
 	
-	private void createLOGItem(FileNode fNode) {
+	private void createLOGItem(FileNode fNode) 
+	{
 		// open the text with TextViewer
 		CTabItem LOGItem = new CTabItem(textFolder, SWT.CLOSE);
 		LOGItem.setText(fNode.getName());
@@ -1253,6 +1266,8 @@ public class ResultsView extends ViewPart implements ISelectionProvider
 	 */
 	private void createNetItem(FileNode fNode) 
 	{
+		System.out.println("File: " + fNode.getPath());
+		
 		// open the text with TextViewer
 		CTabItem netItem = new CTabItem(textFolder, SWT.CLOSE);
 		netItem.setText(fNode.getName());
@@ -1272,10 +1287,13 @@ public class ResultsView extends ViewPart implements ISelectionProvider
 
 		final NETFileData data = (NETFileData) fNode.getFileData();
 		Document document = null;
-		try {
-			document = (Document) netProvider.createDocument(data.getFileContent());
-		} catch (CoreException e) {
-			// TODO Auto-generated catch block
+		
+		try 
+		{
+			 document = (Document) netProvider.createDocument(createEditorInput(new File(fNode.getPath())));
+		}
+		catch (Exception e) 
+		{
 			e.printStackTrace();
 		}
 		
@@ -1795,5 +1813,23 @@ public class ResultsView extends ViewPart implements ISelectionProvider
 		{  
 			((ISelectionChangedListener) list[i]).selectionChanged(new SelectionChangedEvent(this, select));  
 		 }  
+	}
+	
+	/**
+	 * Create the IEditorInput object from a File.
+	 * 
+	 * @param file The file for which we need an IEditorInput.
+	 * @return The IEditorInput object.
+	 */
+	private IEditorInput createEditorInput(File file) 
+	{
+		// Get the IPath for the file.
+		IPath location= new Path(file.getAbsolutePath());
+		
+		// Get an instance of PathEditorInput based on the IPath 
+		PathEditorInput input= new PathEditorInput(location);
+		
+		// Return it.  (PathEditorInput implements IEditorInput)
+		return input;
 	}
 }
