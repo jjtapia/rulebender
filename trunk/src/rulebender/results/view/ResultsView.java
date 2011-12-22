@@ -41,6 +41,7 @@ import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
@@ -98,6 +99,8 @@ public class ResultsView extends ViewPart implements ISelectionProvider
 	private ListenerList listeners = new ListenerList();
 	private String selection="";
 	
+	private Composite m_parent;
+	
 	public ResultsView() 
 	{
 		// TODO Auto-generated constructor stub
@@ -106,6 +109,8 @@ public class ResultsView extends ViewPart implements ISelectionProvider
 	@Override
 	public void createPartControl(Composite parent) 
 	{
+		m_parent = parent;
+		
 		split = new SashForm(parent, SWT.VERTICAL | SWT.NULL); 
 				
 		netConfig = new NETConfiguration();
@@ -1832,4 +1837,216 @@ public class ResultsView extends ViewPart implements ISelectionProvider
 		// Return it.  (PathEditorInput implements IEditorInput)
 		return input;
 	}
+
+	public boolean isComparable() 
+	{
+		if(curFileNode == null)
+		{
+			return false;
+		}
+		
+		String curFileName = curFileNode.getName();
+		
+		if(curFileName.endsWith(".cdat") || 
+		   curFileName.endsWith(".gdat") || 
+		   curFileName.endsWith(".scan")) 
+		{
+			return true;
+		}
+			
+		return false;
+	}
+	
+	public void compareWith(FileNode node)
+	{
+		
+		String curFileName = curFileNode.getName();
+
+		// get file type
+		String type1 = curFileNode.getName().substring(
+				curFileNode.getName().indexOf(".") + 1);
+		String type2 = node.getName().substring(
+				node.getName().indexOf(".") + 1);
+
+		// get DATFileData
+		DATFileData data1 = (DATFileData) curFileNode.getFileData();
+		DATFileData data2 = (DATFileData) ((FileNode) node)
+				.getFileData();
+
+		// create a compare data object
+		DATComparisonData compData = new DATComparisonData(type1,
+				data1, type2, data2);
+
+		if (compData.isComparable() == false) {
+			MessageBox msgBox = new MessageBox(m_parent.getShell(),
+					SWT.ICON_ERROR | SWT.OK);
+			msgBox.setText("Error");
+			msgBox.setMessage("Different X axis");
+			msgBox.open();
+			return;
+		}
+
+		// create a new compare tab item
+		createComparisonItem(curFileNode, (FileNode) node, compData);
+	}
+	
+	/**
+	 * Creates a comparison chart.
+	 * 
+	 * @auther Wen
+	 * 
+	 * @param fNode1
+	 * @param fNode2
+	 * @param data
+	 */
+	private void createComparisonItem(FileNode fNode1, FileNode fNode2,
+			DATComparisonData data) {
+		curFileNode = new FileNode(null, null);
+		curFileNode.setfData(data);
+		curFileList.add(curFileNode);
+
+		// tab item
+		CTabItem compItem = new CTabItem(textFolder, SWT.CLOSE);
+		String fileName1 = fNode1.getName().substring(
+				fNode1.getName().indexOf(":") + 2);
+		String fileName2 = fNode2.getName().substring(
+				fNode2.getName().indexOf(":") + 2);
+		String fileName = "Compare " + fileName1 + " with " + fileName2;
+		compItem.setText(fileName);
+		curFileNode.setName(fileName);
+		data.setFileName(fileName);
+
+		// set tool tip
+		String filePath1 = fNode1.getPath();
+		String filePath2 = fNode2.getPath();
+		String filePath = "Compare " + filePath1 + " with " + filePath2;
+		compItem.setToolTipText(filePath);
+		curFileNode.setPath(filePath);
+
+		compItem.setData("path", filePath);
+
+		Composite chartCmp = new Composite(textFolder, SWT.NONE);
+		chartCmp.setLayout(new GridLayout(6, false));
+
+		// control options
+		xAxisType = "linear";
+		yAxisType = "linear";
+
+		// x axis scale
+		new Label(chartCmp, SWT.NONE).setText("\tX Axis");
+
+		final Combo xAxisBnt = new Combo(chartCmp, SWT.DROP_DOWN
+				| SWT.READ_ONLY);
+		xAxisBnt.add("linear");
+		xAxisBnt.add("log");
+		xAxisBnt.setText(xAxisType);
+
+		// y axis scale
+		new Label(chartCmp, SWT.NONE).setText("\tY Axis");
+
+		final Combo yAxisBnt = new Combo(chartCmp, SWT.DROP_DOWN
+				| SWT.READ_ONLY);
+		yAxisBnt.add("linear");
+		yAxisBnt.add("log");
+		yAxisBnt.setText(yAxisType);
+
+		xAxisBnt.addSelectionListener(new SelectionAdapter() {
+			public void widgetSelected(SelectionEvent e) {
+				xAxisType = xAxisBnt.getText();
+
+				DATComparisonData data = (DATComparisonData) curFileNode
+						.getFileData(); // plot
+				curChartPanel.setChart(DATComparisonChart.plotChart(data,
+						chartTypeList));
+				curChartPanel.setChart(DATComparisonChart.plotChart(
+						curChartPanel.getChart(), xAxisType, yAxisType));
+				updateOutline();
+			}
+		});
+		yAxisBnt.addSelectionListener(new SelectionAdapter() {
+			public void widgetSelected(SelectionEvent e) {
+
+				yAxisType = yAxisBnt.getText();
+
+				DATComparisonData data = (DATComparisonData) curFileNode
+						.getFileData(); // plot
+				curChartPanel.setChart(DATComparisonChart.plotChart(data,
+						chartTypeList));
+				curChartPanel.setChart(DATComparisonChart.plotChart(
+						curChartPanel.getChart(), xAxisType, yAxisType));
+				updateOutline();
+			}
+		});
+
+		// create the chart using JFreeChart
+		JFreeChart chart = DATComparisonChart.plotChart(data, chartTypeList);
+		CustomizedChartComposite chartPanel = new CustomizedChartComposite(chartCmp, SWT.NONE,
+				chart, true);
+		GridData griddata = new GridData(GridData.FILL_BOTH);
+		griddata.horizontalSpan = 6;
+		chartPanel.setLayoutData(griddata);
+		curChartPanel = chartPanel;
+
+		// set control
+		compItem.setControl(chartCmp);
+		textFolder.setSelection(compItem);
+
+		updateOutline();
+
+		for (int i = 0; i < data.getDATDataCount(); i++) {
+			// update the "check/uncheck all" button
+			data.setAllChecked(i, true);
+			((Button) outlineCmp_compare.getChildren()[2 + 5 * i])
+					.setSelection(true);
+
+			// update checkbox in the tree
+			element_tv_compare.get(i).setAllChecked(true);
+
+			Object[] elements = element_tv_compare.get(i).getCheckedElements();
+
+			for (int j = 0; j < elements.length; j++) {
+				TreeNode node = (TreeNode) elements[j];
+				if (node.getNodeType().equalsIgnoreCase("SpeciesNode")) {
+					// SpeciesNode
+					data.addCheckedSpecies(i, (SpeciesNode) elements[j]);
+				} else if (node.getNodeType()
+						.equalsIgnoreCase("ObservableNode")) {
+					// ObservableNode
+					data.addCheckedObservable(i, (ObservableNode) elements[j]);
+				} else {
+				}
+			}
+		}
+		
+		// set file path for each tree
+		((Text) outlineCmp_compare.getChildren()[0]).setText(fileName1);
+		((Text) outlineCmp_compare.getChildren()[0]).setToolTipText(filePath1);
+		((Text) outlineCmp_compare.getChildren()[5]).setText(fileName2);
+		((Text) outlineCmp_compare.getChildren()[5]).setToolTipText(filePath2);
+
+		// plot chart
+		curChartPanel.setChart(DATComparisonChart
+				.plotChart(data, chartTypeList));
+		curChartPanel.setChart(DATComparisonChart.plotChart(curChartPanel.getChart(), xAxisType, yAxisType));
+
+		// add close listener for tabItem
+		compItem.addDisposeListener(new DisposeListener() {
+
+			public void widgetDisposed(DisposeEvent event) {
+				CTabItem item = (CTabItem) event.getSource();
+
+				String filePath = (String) item.getData("path");
+
+				// remove the fileNode from curFileList
+				removeFileNode(filePath);
+
+				if (curFileList.size() == 0) 
+				{
+					curFileNode = null;
+					
+				}
+			}
+		});
+	}
+
 }

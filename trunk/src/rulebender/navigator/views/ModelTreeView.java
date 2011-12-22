@@ -13,6 +13,7 @@ import org.eclipse.swt.widgets.Menu;
 import org.eclipse.ui.part.ViewPart;
 
 import rulebender.core.workspace.PickWorkspaceDialog;
+import rulebender.navigator.actions.CompareAction;
 import rulebender.navigator.actions.DeleteFileAction;
 import rulebender.navigator.actions.NewFolderAction;
 import rulebender.navigator.actions.RefreshAction;
@@ -125,8 +126,10 @@ public class ModelTreeView extends ViewPart
 			{
 				newMenu.add(new NewFolderAction(new File(((FolderNode) selection.getFirstElement()).getPath()), this));
 			}
-			else
+			else if(((TreeNode) selection.getFirstElement()).getNodeType().equals("FileNode"))
 			{
+				manager.add(new CompareAction(selection));
+				
 				// TODO Add something for each type file selection (.bng, .net, .net, scan)
 			}
 			
