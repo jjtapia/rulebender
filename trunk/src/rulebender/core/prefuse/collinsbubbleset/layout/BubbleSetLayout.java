@@ -24,7 +24,6 @@ import java.util.logging.Logger;
 import prefuse.Visualization;
 import prefuse.action.ItemAction;
 import prefuse.action.layout.Layout;
-import prefuse.data.Edge;
 import prefuse.data.Schema;
 import prefuse.data.Tuple;
 import prefuse.data.expression.AndPredicate;

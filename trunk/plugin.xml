@@ -453,6 +453,34 @@
          id="org.eclipse.ui.views.ProgressView">
    </view>
 </extension>
+   <extension
+         id="product"
+         point="org.eclipse.core.runtime.products">
+      <product
+            application="rulebender.application"
+            name="RuleBender">
+         <property
+               name="startupForegroundColor"
+               value="000000">
+         </property>
+         <property
+               name="startupProgressRect"
+               value="5,275,445,15">
+         </property>
+         <property
+               name="startupMessageRect"
+               value="7,252,445,20">
+         </property>
+         <property
+               name="preferenceCustomization"
+               value="plugin_customization.ini">
+         </property>
+         <property
+               name="appName"
+               value="RuleBender">
+         </property>
+      </product>
+   </extension>
 
 
 </plugin>
