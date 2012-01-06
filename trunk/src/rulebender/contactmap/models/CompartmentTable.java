@@ -3,9 +3,8 @@ package rulebender.contactmap.models;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.Hashtable;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
+
 
 public class CompartmentTable 
 {
@@ -103,7 +102,7 @@ public class CompartmentTable
 	
 	public void print() 
 	{
-		for (Enumeration e = compartments.keys(); e.hasMoreElements();) {
+		for (Enumeration<String> e = compartments.keys(); e.hasMoreElements();) {
 			Compartment cur = (Compartment) compartments.get(e.nextElement());
 			System.out.print("Name: " + cur.getName());
 			if (cur.getParent() != null)

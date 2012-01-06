@@ -1,9 +1,7 @@
 package rulebender;
 
-import org.eclipse.jface.preference.IPreferenceNode;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.preference.PreferenceManager;
-import org.eclipse.swt.custom.CBanner;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.ui.IWorkbenchPreferenceConstants;
 import org.eclipse.ui.PlatformUI;

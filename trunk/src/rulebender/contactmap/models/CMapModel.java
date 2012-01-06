@@ -15,7 +15,6 @@ import rulebender.contactmap.models.Bond;
 import rulebender.contactmap.models.Compartment;
 import rulebender.contactmap.models.CompartmentTable;
 import rulebender.contactmap.models.Molecule;
-import rulebender.contactmap.models.PotentialBond;
 import rulebender.contactmap.models.Rule;
 
 

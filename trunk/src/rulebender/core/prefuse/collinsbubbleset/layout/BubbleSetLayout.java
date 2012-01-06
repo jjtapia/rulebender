@@ -1,12 +1,10 @@
 package rulebender.core.prefuse.collinsbubbleset.layout;
 
 import java.awt.geom.Line2D;
-//import java.awt.geom.Path2D;
+import java.awt.geom.Path2D;
 import java.awt.geom.PathIterator;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
-//import java.util.ArrayDeque;
-//import java.util.Deque;
 
 import java.awt.Font;
 import java.awt.FontMetrics;
@@ -42,7 +40,7 @@ import prefuse.visual.NodeItem;
 import prefuse.visual.VisualItem;
 import prefuse.visual.expression.InGroupPredicate;
 import prefuse.visual.expression.VisiblePredicate;
-import rulebender.core.j15support.java.awt.geom.Path2D;
+
 import rulebender.core.prefuse.collinsbubbleset.layout.BubbleSetLayout.Intersection.State;
 import rulebender.core.prefuse.collinsbubbleset.lib.MathLib;
 

@@ -7,7 +7,6 @@ import org.eclipse.ui.application.IWorkbenchConfigurer;
 import org.eclipse.ui.application.IWorkbenchWindowConfigurer;
 import org.eclipse.ui.application.WorkbenchAdvisor;
 import org.eclipse.ui.application.WorkbenchWindowAdvisor;
-import org.eclipse.ui.internal.ide.model.WorkbenchAdapterBuilder;
 
 public class ApplicationWorkbenchAdvisor extends WorkbenchAdvisor {
 
