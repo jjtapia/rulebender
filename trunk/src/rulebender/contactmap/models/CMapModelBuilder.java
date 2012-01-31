@@ -98,12 +98,12 @@ public class CMapModelBuilder implements BNGLModelBuilderInterface
 	 */
 	public void foundMoleculeType(Molecule molecule) 
 	{
-		System.out.println("Found Molecule: " + molecule.getName());
+		//System.out.println("Found Molecule: " + molecule.getName());
 		
 		int index = m_model.addMolecule(molecule);
 		m_moleculeIDForName.put(molecule.getName(), index);
 		
-		System.out.println("index: " + index);
+		//System.out.println("index: " + index);
 	}
 
 
@@ -225,7 +225,7 @@ public class CMapModelBuilder implements BNGLModelBuilderInterface
 			{
 				// Create the MoleculePattern object based on the id
 				// of the molecule.
-				System.out.println("moleculeIDForName.get(mpd.getName()): " + (m_moleculeIDForName.get(mpd.getName()) == null ? "null" : m_moleculeIDForName.get(mpd.getName())));
+				//System.out.println("moleculeIDForName.get(mpd.getName()): " + (m_moleculeIDForName.get(mpd.getName()) == null ? "null" : m_moleculeIDForName.get(mpd.getName())));
 				int moleID = m_moleculeIDForName.get(mpd.getName());
 				
 				// Get a reference to the molecule itself for later use.

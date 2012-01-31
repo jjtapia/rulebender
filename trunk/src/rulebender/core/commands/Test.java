@@ -18,8 +18,6 @@ public class Test extends AbstractHandler
 	
 	public Object execute(ExecutionEvent event) throws ExecutionException
 	{
-		  
-		
 		Console.displayOutput("testConsole","Rebuilding Contact Map");
 		
 		/*
@@ -31,16 +29,15 @@ public class Test extends AbstractHandler
 		{
 			if(view.getView(true) instanceof ContactMapView)
 			{
-				((ContactMapView)view.getView(true)).tempRefresh();
+		//		((ContactMapView)view.getView(true)).tempRefresh();
 			}
 			
 			else if(view.getView(true) instanceof InfluenceGraphView)
 			{
-				((InfluenceGraphView) view.getView(true)).tempRefresh();
+		//		((InfluenceGraphView) view.getView(true)).tempRefresh();
 			}
 		}
 	
-		
 		/*
 		 * Status Line 
 		 */

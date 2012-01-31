@@ -1,6 +1,5 @@
 package rulebender.core.prefuse.networkviewer.contactmap;
 
-import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 
 import java.util.Iterator;

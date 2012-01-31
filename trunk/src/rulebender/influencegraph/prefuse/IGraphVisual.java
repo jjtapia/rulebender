@@ -14,7 +14,6 @@ import prefuse.action.assignment.FontAction;
 import prefuse.action.assignment.StrokeAction;
 import prefuse.controls.DragControl;
 import prefuse.controls.PanControl;
-import prefuse.controls.WheelZoomControl;
 import prefuse.data.Edge;
 import prefuse.data.Graph;
 import prefuse.data.Node;
@@ -25,12 +24,10 @@ import prefuse.util.ColorLib;
 import prefuse.util.FontLib;
 import prefuse.util.StrokeLib;
 import prefuse.visual.VisualItem;
-import rulebender.contactmap.models.CMapModel;
 import rulebender.core.prefuse.networkviewer.CustomizedZoomToFitControl;
 import rulebender.core.prefuse.networkviewer.contactmap.ReverseWheelZoomControl;
 import rulebender.core.prefuse.networkviewer.influencegraph.IMAPLayout;
 import rulebender.core.prefuse.networkviewer.influencegraph.RuleInfluenceRenderer;
-import rulebender.core.prefuse.overview.FitOverviewListener;
 import rulebender.influencegraph.models.InfluenceGraphModel;
 
 public class IGraphVisual 

@@ -2,13 +2,12 @@ package rulebender.editors.bngl;
 
 
 import java.io.PrintStream;
+import java.util.ArrayList;
 
-import org.antlr.runtime.ANTLRStringStream;
 import org.eclipse.ui.editors.text.TextEditor;
 
 import bngparser.BNGParseData;
 import bngparser.BNGParserUtility;
-import bngparser.grammars.BNGGrammar;
 import bngparser.grammars.BNGGrammar.prog_return;
 
 import rulebender.core.utility.ANTLRFilteredPrintStream;
@@ -16,6 +15,7 @@ import rulebender.core.utility.Console;
 import rulebender.editors.bngl.BNGLConfiguration;
 import rulebender.editors.bngl.BNGLDocumentProvider;
 import rulebender.editors.bngl.model.BNGLModel;
+import rulebender.errorview.model.BNGLError;
 
 public class BNGLEditor extends TextEditor 
 {
@@ -24,7 +24,7 @@ public class BNGLEditor extends TextEditor
 	// The color manager for the syntax highlighting.
 	private BNGLColorManager m_colorManager;
 	
-	private String m_path;
+	//private String m_path;
 	
 	public BNGLEditor() 
 	{
@@ -85,12 +85,12 @@ public class BNGLEditor extends TextEditor
 		
 	}
 	
-	
 	private void setAST(prog_return ast)
 	{	
 		if (m_model == null)
 		{
-			m_model = new BNGLModel(this.getPartName(), ast);
+			m_model = new BNGLModel(this.getPartName());
+			m_model.setAST(ast);
 		}
 		else
 		{
@@ -106,7 +106,9 @@ public class BNGLEditor extends TextEditor
 	{
 		if(m_model == null)
 		{
-			m_model = new BNGLModel(getTitle(), getAST());
+			m_model = new BNGLModel(getTitle());
+			m_model.setAST(getAST());
+			
 		}
 		
 		return m_model;
@@ -132,7 +134,8 @@ public class BNGLEditor extends TextEditor
 		Console.clearConsole(getTitle());
 		
 		// Set the error out to a new printstream that will only display the antlr output.
-		System.setErr(new ANTLRFilteredPrintStream(Console.getMessageConsoleStream(getTitle()), getTitle(), old));
+		ANTLRFilteredPrintStream errorStream = new ANTLRFilteredPrintStream(Console.getMessageConsoleStream(getTitle()), getTitle(), old, getTitle()); 
+		System.setErr(errorStream);
 		
 		try
 		{
@@ -141,17 +144,25 @@ public class BNGLEditor extends TextEditor
 		catch(Exception e)
 		{
 			e.printStackTrace();
+			System.out.println("Caught in the getAST Method.");
 			
 			//DEBUG
 			//Console.displayOutput(getTitle(), getTitle() + " Errors:");
-			//TODO The errors from parsing need to be printed to the console.
-			
 		}	
+		
+		setErrors(errorStream.getErrorList());
+		
 		System.err.flush();
 		System.setErr(old);
 		
 		return toReturn;
 	}
+
+	private void setErrors(ArrayList<BNGLError> errorList) 
+	{
+		m_model.setErrors(errorList);
+	}
+
 
 	public void dispose() 
 	{

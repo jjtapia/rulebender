@@ -6,8 +6,10 @@ import java.beans.PropertyChangeListener;
 import java.util.HashMap;
 
 import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.ui.IPartListener2;
 import org.eclipse.ui.ISelectionListener;
 import org.eclipse.ui.IWorkbenchPart;
+import org.eclipse.ui.IWorkbenchPartReference;
 
 import bngparser.grammars.BNGGrammar.prog_return;
 
@@ -18,7 +20,7 @@ import rulebender.editors.bngl.BNGLEditor;
 import rulebender.editors.bngl.model.BNGASTReader;
 import rulebender.editors.bngl.model.BNGLModel;
 
-public class ContactMapSelectionListener implements ISelectionListener 
+public class ContactMapSelectionListener implements ISelectionListener, IPartListener2
 {
 	private ContactMapView m_view;
 	
@@ -34,7 +36,8 @@ public class ContactMapSelectionListener implements ISelectionListener
 		m_contactMapRegistry = new HashMap<String, prefuse.Display>();
 		
 		// Register the view as a listener for workbench selections.
-		m_view.getSite().getPage().addPostSelectionListener(this);		
+		m_view.getSite().getPage().addPostSelectionListener(this);
+		m_view.getSite().getPage().addPartListener(this);
 	}
 	
 	/**
@@ -50,9 +53,19 @@ public class ContactMapSelectionListener implements ISelectionListener
 		// If it's not a bngl file
 		else
 		{
-			//m_currentModel = null;
-			//m_view.setCMap(null);
+			
 		}
+	}
+	
+	private void setCurrentModel(BNGLModel model)
+	{
+		m_currentModel = model;
+		
+		// Get an existing map.
+		prefuse.Display toShow = lookupDisplay(m_currentModel);
+				
+		// Set the correct contact map.
+		m_view.setCMap(toShow);		
 	}
 	
 	private void bnglEditorSelection(IWorkbenchPart part, ISelection selection)
@@ -61,65 +74,27 @@ public class ContactMapSelectionListener implements ISelectionListener
 		if(m_currentModel != null && part.getTitle().equals(m_currentModel.getPathID()))
 		{
 			//TODO it could be a text selection.
-			//System.out.println("same file");
+			System.out.println("current");
 		}
+
 		// If it's a different file, then call the local private method that 
 		// handles it. 
 		else
 		{
-			newBNGLFileSelected(part);
+			System.out.println("File selected seen in cmap");
+			
+			setCurrentModel(((BNGLEditor) part).getModel());
 		}
 	}
-	
 	
 	/**
-	 * Private method to handle when a new file is selected. 
+	 * Can be null if there is no Display (bngl compile error)
+	 * @param model
+	 * @return
 	 */
-	private void newBNGLFileSelected(IWorkbenchPart part)
-	{
-		// Set the current file.
-		m_currentModel = ((BNGLEditor) part).getModel();
-		
-		if(!m_contactMapRegistry.containsKey(m_currentModel.getPathID()))
-		{
-			// Create a property changed listener for when files are saved.
-			PropertyChangeListener pcl = new PropertyChangeListener()
-			{
-				public void propertyChange(PropertyChangeEvent propertyChangeEvent) 
-				{
-					//DEBUG
-					//System.out.println("PropertyChange Class: " + evt.getClass());
-					//System.out.println("Property Changed: " + evt.getPropertyName());
-					//System.out.println("Propogation ID: " + evt.getPropagationId());
-					
-					//Update the display object that is associated with the path and ast. 
-					updateDisplayForPathAndAST(propertyChangeEvent.getPropertyName(), (prog_return) propertyChangeEvent.getNewValue());
-				}};
-				
-				m_currentModel.addPropertyChangeListener(pcl); 
-		}
-		
-		// Get an existing map.
-		prefuse.Display toShow = lookupCurrentDisplay();
-				
-		// Set the correct contact map.
-		m_view.setCMap(toShow);
-	}
-	
-	private prefuse.Display lookupCurrentDisplay()
-	{
-		// Try to get an existing display.
-		prefuse.Display toShow = m_contactMapRegistry.get(m_currentModel.getPathID());
-		
-		// If it does not exist yet then generate it and add it to the registry.
-		if(toShow == null)
-		{
-			toShow = generateContactMap(m_currentModel.getAST());
-			m_contactMapRegistry.put(m_currentModel.getPathID(), toShow);
-		}
-		
-		// This can still be null if there was an error generating the ast.
-		return toShow;
+	private prefuse.Display lookupDisplay(BNGLModel model)
+	{	
+		return m_contactMapRegistry.get(model.getPathID());
 	}
 
 	/**
@@ -129,6 +104,7 @@ public class ContactMapSelectionListener implements ISelectionListener
 	 */
 	public prefuse.Display generateContactMap(prog_return ast)
 	{
+		System.out.println("GENERATING CMAP***********************************");
 		// If the ast has not been generated for this model, then 
 		// just return null so there is not contact map displayed.
 		if(ast == null)
@@ -143,7 +119,20 @@ public class ContactMapSelectionListener implements ISelectionListener
 		BNGASTReader astReader = new BNGASTReader(cmapModelBuilder);
 		
 		// Use the reader to construct the model for the given ast.
-		astReader.buildWithAST(ast);
+		// Sometimes an ast is not null, but is not complete due to errors. 
+		// This try/catch block catches those situations.
+		try
+		{
+			astReader.buildWithAST(ast);	
+		}
+		catch(NullPointerException e)
+		{
+			// e.printStackTrace();
+
+			//Debug
+			System.out.println("Failed to produce CMapModel on ast:\n" + ast.toString());
+		 	return null;
+		}
 		
 		// Get the model from the builder.		
 		CMapModel cModel = cmapModelBuilder.getCMapModel();
@@ -175,18 +164,6 @@ public class ContactMapSelectionListener implements ISelectionListener
 		m_view = view;
 	}
 	
-	/**
-	 *TODO
-	 * Temporary way to refresh the contact map.
-	 * This will be deleted (or changed) when the editor can
-	 * send the refresh actions. 
-	 */
-	public void tempRefresh()
-	{
-		m_view.setCMap(null);
-		m_view.setCMap(lookupCurrentDisplay());
-	}
-	
 	private void updateDisplayForPathAndAST(String path, prog_return ast)
 	{
 		// Clear the current entry.
@@ -204,6 +181,109 @@ public class ContactMapSelectionListener implements ISelectionListener
 		{
 			m_view.setCMap(display);
 		}
+	}
+
+	@Override
+	public void partOpened(IWorkbenchPartReference partRef) 
+	{
+		
+		if(partRef.getId().equals("rulebender.editors.bngl"))
+		{
+			System.out.println("File opened seen in cmap"+((BNGLEditor)partRef.getPart(false)).getTitle());
+			
+			// Set the current file.
+			setCurrentModel(((BNGLEditor) partRef.getPart(false)).getModel());
+		
+				// Create a property changed listener for when files are saved.
+		PropertyChangeListener pcl = new PropertyChangeListener()
+		{
+			public void propertyChange(PropertyChangeEvent propertyChangeEvent) 
+			{
+				String filePath = ((BNGLModel) propertyChangeEvent.getSource()).getPathID();
+				String propertyName = propertyChangeEvent.getPropertyName();
+				
+				if(propertyName.equals(BNGLModel.AST))
+				{
+					//Update the display object that is associated with the path and ast. 
+					System.out.println("Property Changed on AST");
+					updateDisplayForPathAndAST(filePath, (prog_return) propertyChangeEvent.getNewValue());
+				}
+				else if(propertyName.equals(BNGLModel.ERRORS))
+				{
+					// Don't care.
+				}
+			}
+		};
+			
+		m_currentModel.addPropertyChangeListener(pcl);
+		
+		// generate the display and add the initial cmap to the registry.
+		m_contactMapRegistry.put(m_currentModel.getPathID(), generateContactMap(m_currentModel.getAST()));
+		
+		m_view.setCMap(lookupDisplay(m_currentModel));
+		
+		} // end if it's an editor block
+	}
+
+
+	private void bnglFileClosed(String path)
+	{
+		m_contactMapRegistry.remove(path);
+		if(m_contactMapRegistry.size() == 0)
+		{
+			m_view.setCMap(null);
+		}
+		// The selection of any remaining files occurs before
+		// the close event, don't worry about changing the 
+		// m_currentModel
+		
+	}
+	
+	@Override
+	public void partClosed(IWorkbenchPartReference partRef) 
+	{
+		if(partRef.getId().equals("rulebender.editors.bngl"))
+		{
+			//System.out.println("Part Closed seen in cmap: " + ((BNGLEditor)partRef.getPart(false)).getTitle());
+			
+			bnglFileClosed(((BNGLEditor)partRef.getPart(false)).getTitle());
+		}
+		
+	}
+	@Override
+	public void partActivated(IWorkbenchPartReference partRef) 
+	{
+		
+	}
+
+	@Override
+	public void partBroughtToTop(IWorkbenchPartReference partRef) 
+	{
+		
+	}
+
+	@Override
+	public void partDeactivated(IWorkbenchPartReference partRef) 
+	{
+		
+	}
+
+	@Override
+	public void partHidden(IWorkbenchPartReference partRef) 
+	{
+		
+	}
+
+	@Override
+	public void partVisible(IWorkbenchPartReference partRef) 
+	{
+		
+	}
+
+	@Override
+	public void partInputChanged(IWorkbenchPartReference partRef) 
+	{
+		
 	}
 
 }

@@ -50,8 +50,15 @@ import rulebender.core.prefuse.collinsbubbleset.lib.MathLib;
  */
 public class BubbleSetLayout extends Layout {
 	
-	private enum Direction{N,S,E,W};
-	private Direction direction = Direction.S;
+	//private enum Direction{N,S,E,W};
+	
+	//private Direction direction = Direction.S;
+	
+	//n=1
+	//s=2
+	//e=3
+	//w=4
+	private int direction = 2;
 	
 	/** Merge consecutive edges resulting from edge routing if there is no obstacle blocking merge.*/
 	public boolean doMerge = true;
@@ -576,7 +583,8 @@ public class BubbleSetLayout extends Layout {
     	// find a first point on the contour
         boolean marched = false;
         // set starting direction for conditional states (6 & 9)
-        direction = Direction.S;
+        //direction = Direction.S;
+        direction = 2;
         for (int x = 0; x < potentialArea.length && !marched; x++) {
         	for (int y = 0; y < potentialArea[x].length && !marched; y++) {
         		if (test(potentialArea[x][y])) {
@@ -1661,27 +1669,37 @@ public class BubbleSetLayout extends Layout {
     		case 0:
     		case 3:
     		case 2:
-    		case 7: direction = Direction.E; break;
+    		//case 7: direction = Direction.E; break;
+    		case 7:  direction = 3; break;
     		case 12:
     		case 14:
-    		case 4: direction = Direction.W; break;
-    		case 6: direction = (direction == Direction.N) ? Direction.W : Direction.E; break;   
+    		//case 4: direction = Direction.W; break;
+    		case 4: direction = 4; break;
+    		//case 6: direction = (direction == Direction.N) ? Direction.W : Direction.E; break;   
+    		case 6: direction = (direction == 1) ? 4 : 3; break;
     		case 1:
     		case 13:
-    		case 5: direction = Direction.N; break;
-    		case 9: direction = (direction == Direction.E) ? Direction.N : Direction.S; break;
+    		//case 5: direction = Direction.N; break;
+    		case 5: direction = 1; break;
+    		//case 9: direction = (direction == Direction.E) ? Direction.N : Direction.S; break;
+    		case 9: direction = (direction == 3) ? 1 : 2; break;
     		case 10:
     		case 8:
-    		case 11: direction = Direction.S; break;
+    		//case 11: direction = Direction.S; break;
+    		case 11: direction = 2; break;
 			default:
 				throw new IllegalStateException("Marching squares invalid state: " + state);
     	}
     	
     	switch (direction) {
-    		case N: return march(surface, potentialArea, x, y-1); // up
-    		case S: return march(surface, potentialArea, x, y+1); // down
-    		case W: return march(surface, potentialArea, x-1, y); // left
-    		case E: return march(surface, potentialArea, x+1, y); // right
+    		//case N: return march(surface, potentialArea, x, y-1); // up
+    		//case S: return march(surface, potentialArea, x, y+1); // down
+    		//case W: return march(surface, potentialArea, x-1, y); // left
+    		//case E: return march(surface, potentialArea, x+1, y); // right
+	    	case 1: return march(surface, potentialArea, x, y-1); // up
+			case 2: return march(surface, potentialArea, x, y+1); // down
+			case 4: return march(surface, potentialArea, x-1, y); // left
+			case 3: return march(surface, potentialArea, x+1, y); // right
     		default: 
     			throw new IllegalStateException("Marching squares invalid state: " + state);
     	}

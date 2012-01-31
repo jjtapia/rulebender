@@ -14,7 +14,6 @@ import rulebender.core.utility.BNGParserCommands;
 import rulebender.editors.bngl.model.BNGASTReader;
 import rulebender.editors.bngl.model.BNGLModelBuilderInterface;
 import rulebender.editors.bngl.model.ruledata.BondActionData;
-import rulebender.editors.bngl.model.ruledata.ComponentData;
 import rulebender.editors.bngl.model.ruledata.MoleculePatternData;
 import rulebender.editors.bngl.model.ruledata.RuleData;
 import rulebender.editors.bngl.model.ruledata.RulePatternData;

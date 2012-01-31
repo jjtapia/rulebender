@@ -3,8 +3,6 @@ package rulebender.navigator.model;
 import java.util.List;
 import org.eclipse.swt.graphics.Image;
 
-import prefuse.Display;
-
 /**
  * 
  * NET item node (block label)

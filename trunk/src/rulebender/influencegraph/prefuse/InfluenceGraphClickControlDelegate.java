@@ -15,7 +15,6 @@ import javax.swing.AbstractButton;
 import javax.swing.JFileChooser;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
-import javax.swing.table.TableModel;
 
 import prefuse.Display;
 import prefuse.Visualization;

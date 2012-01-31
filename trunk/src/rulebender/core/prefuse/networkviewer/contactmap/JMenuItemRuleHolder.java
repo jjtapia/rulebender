@@ -2,6 +2,7 @@ package rulebender.core.prefuse.networkviewer.contactmap;
 
 import javax.swing.JMenuItem;
 
+@SuppressWarnings("serial")
 public class JMenuItemRuleHolder extends JMenuItem 
 {
 	private VisualRule rule;

@@ -6,7 +6,6 @@ import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.ui.ISelectionListener;
 import org.eclipse.ui.IWorkbenchPart;
 
-import rulebender.core.utility.Console;
 import rulebender.results.view.ResultsView;
 import rulebender.speciesgraph.prefuse.SpeciesGraphVisual;
 

@@ -29,10 +29,8 @@ public class BNGParserCommands
 		try {
 			ast = getASTForFileName(fileName);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (RecognitionException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		

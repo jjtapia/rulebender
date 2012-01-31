@@ -15,7 +15,9 @@ import org.eclipse.ui.part.ViewPart;
 import rulebender.core.workspace.PickWorkspaceDialog;
 import rulebender.navigator.actions.CompareAction;
 import rulebender.navigator.actions.DeleteFileAction;
+import rulebender.navigator.actions.NewFileAction;
 import rulebender.navigator.actions.NewFolderAction;
+import rulebender.navigator.actions.NewProjectAction;
 import rulebender.navigator.actions.RefreshAction;
 import rulebender.navigator.model.FolderNode;
 import rulebender.navigator.model.TreeContentProvider;
@@ -116,6 +118,7 @@ public class ModelTreeView extends ViewPart
 		{
 			// Add the option to create a new folder.
 			newMenu.add(new NewFolderAction(new File(PickWorkspaceDialog.getLastSetWorkspaceDirectory()), this));	
+			newMenu.add(new NewProjectAction(this));
 		}
 		
 		// If only 1 thing was selected
@@ -125,6 +128,8 @@ public class ModelTreeView extends ViewPart
 			if(((TreeNode) selection.getFirstElement()).getNodeType().equals("FolderNode"))
 			{
 				newMenu.add(new NewFolderAction(new File(((FolderNode) selection.getFirstElement()).getPath()), this));
+				newMenu.add(new NewFileAction(new File(((FolderNode) selection.getFirstElement()).getPath()), this));
+				newMenu.add(new NewProjectAction(this));
 			}
 			else if(((TreeNode) selection.getFirstElement()).getNodeType().equals("FileNode"))
 			{

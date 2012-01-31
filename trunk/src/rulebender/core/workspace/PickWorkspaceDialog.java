@@ -228,8 +228,7 @@ public class PickWorkspaceDialog extends TitleAreaDialog {
 
         buf.append(uHome);
         buf.append(File.separator);
-        buf.append("My App Name");
-        buf.append("_Workspace");
+        buf.append("RuleBender-workspace");
 
         return buf.toString();
     }

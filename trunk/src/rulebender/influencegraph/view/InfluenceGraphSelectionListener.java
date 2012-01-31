@@ -3,21 +3,14 @@ package rulebender.influencegraph.view;
 import java.awt.Dimension;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.io.IOException;
 import java.util.HashMap;
 
-import org.antlr.runtime.RecognitionException;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.ui.ISelectionListener;
 import org.eclipse.ui.IWorkbenchPart;
 
 import bngparser.grammars.BNGGrammar.prog_return;
 
-import rulebender.contactmap.models.CMapModel;
-import rulebender.contactmap.models.CMapModelBuilder;
-import rulebender.contactmap.prefuse.ContactMapVisual;
-import rulebender.contactmap.view.ContactMapView;
-import rulebender.core.utility.BNGParserCommands;
 import rulebender.editors.bngl.BNGLEditor;
 import rulebender.editors.bngl.model.BNGASTReader;
 import rulebender.editors.bngl.model.BNGLModel;
@@ -29,7 +22,7 @@ public class InfluenceGraphSelectionListener implements ISelectionListener
 {
 	private InfluenceGraphView m_view;
 	
-	private String currentFile;
+	//private String currentFile;
 	
 	BNGLModel currentModel;
 	
@@ -96,15 +89,20 @@ public class InfluenceGraphSelectionListener implements ISelectionListener
 			// Create a property changed listener for when files are saved.
 			PropertyChangeListener pcl = new PropertyChangeListener()
 			{
-				public void propertyChange(PropertyChangeEvent evt) 
+				public void propertyChange(PropertyChangeEvent propertyChangeEvent) 
 				{
-					//DEBUG
-					System.out.println("PropertyChange Class: " + evt.getClass());
-					System.out.println("Property Changed: " + evt.getPropertyName());
-					System.out.println("Propogation ID: " + evt.getPropagationId());
+					String filePath = ((BNGLModel) propertyChangeEvent.getSource()).getPathID();
+					String propertyName = propertyChangeEvent.getPropertyName();
 					
-					//Update the display object that is associated with the path and ast. 
-					updateDisplayForPathAndAST(evt.getPropertyName(), (prog_return) evt.getNewValue());
+					if(propertyName.equals(BNGLModel.AST))
+					{
+						//Update the display object that is associated with the path and ast. 
+						updateDisplayForPathAndAST(filePath, (prog_return) propertyChangeEvent.getNewValue());
+					}
+					else if(propertyName.equals(BNGLModel.ERRORS))
+					{
+						// Don't care.
+					}
 				}};
 				
 				currentModel.addPropertyChangeListener(pcl); 

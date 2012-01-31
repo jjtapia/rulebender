@@ -3,9 +3,6 @@ package rulebender.editors.bngl.model;
 import rulebender.contactmap.models.Molecule;
 import rulebender.editors.bngl.model.ruledata.RuleData;
 
-import org.jdom.Attribute;
-
-
 /**
  * This interface is for objects that want to be used for building 
  * models based on the periodic updates from the AST Reader.

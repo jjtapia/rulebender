@@ -1,6 +1,5 @@
 package rulebender.core.prefuse.networkviewer.contactmap;
 
-import java.awt.event.MouseWheelEvent;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 
@@ -18,7 +17,6 @@ import prefuse.action.assignment.FontAction;
 import prefuse.action.assignment.StrokeAction;
 import prefuse.controls.ControlAdapter;
 import prefuse.controls.PanControl;
-import prefuse.controls.WheelZoomControl;
 import prefuse.data.Graph;
 import prefuse.render.DefaultRendererFactory;
 import prefuse.render.LabelRenderer;
@@ -32,7 +30,6 @@ import prefuse.visual.VisualItem;
 import prefuse.visual.VisualTupleSet;
 import prefuse.visual.expression.InGroupPredicate;
 import rulebender.core.prefuse.networkviewer.CustomizedZoomToFitControl;
-import rulebender.core.prefuse.overview.Overview;
 
 public class CMAPNetworkViewer 
 {

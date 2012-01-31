@@ -2,6 +2,7 @@ package rulebender.core.commands;
 
 import java.io.File;
 
+import rulebender.core.utility.Console;
 import rulebender.editors.common.PathEditorInput;
 
 import org.eclipse.core.runtime.IPath;
@@ -15,9 +16,12 @@ import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.ui.IEditorDescriptor;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorRegistry;
+import org.eclipse.ui.IPerspectiveDescriptor;
 import org.eclipse.ui.IWorkbenchPage;
+import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.WorkbenchException;
 
 public class OpenFileHandler extends AbstractHandler 
 {
@@ -44,6 +48,46 @@ public class OpenFileHandler extends AbstractHandler
 			// Get the workbench page that is active so that we can access 
 			// the editor that is in it. 
 			IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
+			
+			try {
+				PlatformUI.getWorkbench().showPerspective("rulebender.perspective", PlatformUI.getWorkbench().getActiveWorkbenchWindow());
+			} catch (WorkbenchException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+			/*
+			final IWorkbenchWindow workbenchWindow = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getppart.getSite().getPage().getWorkbenchWindow();
+			IPerspectiveDescriptor activePerspective = workbenchWindow.getActivePage().getPerspective();
+			
+			System.out.println("Current Page:" + page.getLabel());
+			
+			if(!page.getLabel().equals("Workspace - Model"))
+			{
+				IWorkbenchPage modelPage = null;
+				
+				IWorkbenchPage[] pages = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getPages();
+				
+				System.out.println("pages size: " + pages.length);
+				
+				for(IWorkbenchPage p : pages)
+				{
+					System.out.println("\""+ p.getLabel() +"\"");
+					
+					if(p.getLabel().equals("Workspace - Model"))
+					{
+						System.out.println("Found the model workspace");
+						modelPage = p;
+						break;
+					}
+				}
+				
+				System.out.println(modelPage == null ? "page is null" : "page is not null");
+				
+				PlatformUI.getWorkbench().getActiveWorkbenchWindow().setActivePage(null);
+				PlatformUI.getWorkbench().getActiveWorkbenchWindow().setActivePage(modelPage);
+				
+			}
+			*/
 			
 			// If the editor view is not initialized correctly then an error
 			// can be thrown. 
@@ -145,4 +189,18 @@ public class OpenFileHandler extends AbstractHandler
 		// Return it.  (PathEditorInput implements IEditorInput)
 		return input;
 	}
+	
+	
+	public boolean getEnabled()
+	{
+		IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
+		
+		if(page.getLabel().equals("Workspace - Model"))
+		{
+			return true;
+		}
+		
+		return false;
+	}
+	
 }

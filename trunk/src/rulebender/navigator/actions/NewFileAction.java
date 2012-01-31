@@ -1,6 +1,7 @@
 package rulebender.navigator.actions;
 
 import java.io.File;
+import java.io.IOException;
 
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.resource.ImageDescriptor;
@@ -20,14 +21,14 @@ import org.eclipse.ui.plugin.AbstractUIPlugin;
 import rulebender.navigator.views.ModelTreeView;
 
 
-public class NewFolderAction extends Action
+public class NewFileAction extends Action
 {
-	private static final ImageDescriptor m_newFolderImage = ImageDescriptor.createFromImage(AbstractUIPlugin.imageDescriptorFromPlugin ("rulebender","/icons/newfolder_wiz.gif").createImage());
+	private static final ImageDescriptor m_newFileImage = ImageDescriptor.createFromImage(AbstractUIPlugin.imageDescriptorFromPlugin ("rulebender","/icons/newfile.gif").createImage());
 	
 	private File m_parent;
 	private ModelTreeView m_view;
 
-	public NewFolderAction(File parent, ModelTreeView view)
+	public NewFileAction(File parent, ModelTreeView view)
 	{
 		setDirToMake(parent);
 		setView(view);
@@ -40,7 +41,7 @@ public class NewFolderAction extends Action
 		        | SWT.DIALOG_TRIM);
 				
 		// Set the text in the title bar
-		nameBox.setText("Set Folder Name");
+		nameBox.setText("Set File Name");
 		
 		// set grid layout
 		nameBox.setLayout(new GridLayout(3, true));
@@ -51,12 +52,12 @@ public class NewFolderAction extends Action
 		
 		// file name
 		Label label1 = new Label(nameBox, SWT.NONE);
-		label1.setText("Folder name:");
+		label1.setText("File name:");
 				
 		// Set the text inside of the new file textbox.
 		final Text newFileText = new Text(nameBox, SWT.BORDER);
 		newFileText.setLayoutData(gridData);
-		newFileText.setText("New Folder");
+		newFileText.setText("New File");
 				
 		// cancel button
 		Button cancelbutton = new Button(nameBox, SWT.NONE);
@@ -104,7 +105,7 @@ public class NewFolderAction extends Action
 				if(newFileText.getText().trim().equals(""))
 				{
 					MessageBox mb = new MessageBox(Display.getDefault().getActiveShell(), SWT.ICON_INFORMATION);
-					mb.setMessage("Folder name can not be empty!");
+					mb.setMessage("File name can not be empty!");
 					mb.setText("Error");
 					mb.open();
 					return;
@@ -120,8 +121,7 @@ public class NewFolderAction extends Action
 						newFileText.getText().contains("|") ||
 						newFileText.getText().contains("\"") ||
 						newFileText.getText().contains("<") ||
-						newFileText.getText().contains(">") ||
-						newFileText.getText().contains("."))
+						newFileText.getText().contains(">"))
 				{
 					MessageBox mb = new MessageBox(Display.getDefault().getActiveShell(), SWT.ICON_INFORMATION);
 					mb.setMessage("Illegal Character! (/ \\ ? % * : | \" < > . )");
@@ -130,21 +130,29 @@ public class NewFolderAction extends Action
 					return;
 				}
 				
-				// Now check to make sure there is not an existing folder of that name.
+				// Now check to make sure there is not an existing file of that name.
 				for(String file : m_parent.list())
 				{
 					if(file.equals(newFileText.getText()))
 					{
 						MessageBox mb = new MessageBox(Display.getDefault().getActiveShell(), SWT.ICON_INFORMATION);
-						mb.setMessage("Cannot have duplicate directory names!");
+						mb.setMessage("Cannot have duplicate file names!");
 						mb.setText("Error");
 						mb.open();
 						return;
 					}
 				}
 				
-				// All is well so create the directory
-				(new File(m_parent.getPath() + System.getProperty("file.separator") + newFileText.getText())).mkdir();
+				// All is well so create the file
+				try 
+				{
+					(new File(m_parent.getPath() + System.getProperty("file.separator") + newFileText.getText())).createNewFile();
+				} 
+				catch (IOException e) 
+				{
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 				
 				// refresh the tree
 				// TODO optimize: We could pass in the ISelection and only refresh the subtree
@@ -171,12 +179,12 @@ public class NewFolderAction extends Action
 	
 	public ImageDescriptor getImageDescriptor()
 	{
-		return m_newFolderImage;
+		return m_newFileImage;
 	}
 	
 	public String getText()
 	{
-		return "New Folder";
+		return "New File";
 	}
 }
 

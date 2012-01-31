@@ -67,7 +67,7 @@ public class Console
 	}
 
 	/**
-	 * 
+	 * FIXME need to find out which one is on the top before this works.
 	 */
 	public static void closeTopConsole() 
 	{

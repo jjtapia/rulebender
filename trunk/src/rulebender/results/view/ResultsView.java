@@ -3,7 +3,6 @@ package rulebender.results.view;
 import java.io.File;
 import java.util.ArrayList;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.ListenerList;
 import org.eclipse.core.runtime.Path;

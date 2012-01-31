@@ -39,15 +39,6 @@
             targetID="rulebender.perspective">
          <view
                closeable="false"
-               id="rulebender.views.Console"
-               minimized="false"
-               ratio="0.7f"
-               relationship="bottom"
-               relative="org.eclipse.ui.editorss"
-               visible="true">
-         </view>
-         <view
-               closeable="false"
                id="rulebender.views.Navigator"
                minimized="true"
                ratio="0.2f"
@@ -69,8 +60,17 @@
                id="rulebender.properties.view.PropertiesSheetView"
                minimized="false"
                moveable="true"
-               relationship="right"
-               relative="rulebender.views.Console"
+               relationship="bottom"
+               relative="rulebender.contactmap.view.ContactMapView"
+               visible="true">
+         </view>
+         <view
+               closeable="false"
+               id="rulebender.errorview.view.ErrorView"
+               minimized="false"
+               moveable="true"
+               relationship="bottom"
+               relative="org.eclipse.ui.editorss"
                visible="true">
          </view>
       </perspectiveExtension>
@@ -216,6 +216,13 @@
             name="Simulation"
             restorable="true">
       </view>
+      <view
+            allowMultiple="false"
+            class="rulebender.errorview.view.ErrorView"
+            id="rulebender.errorview.view.ErrorView"
+            name="Errors"
+            restorable="true">
+      </view>
    </extension>
    <extension
          point="org.eclipse.ui.menus">
@@ -223,11 +230,6 @@
             locationURI="menu:org.eclipse.ui.main.menu">
          <menu
                label="File">
-            <command
-                  commandId="rulebender.commands.NewFile"
-                  label="New"
-                  mnemonic="n">
-            </command>
             <command
                   commandId="rulebender.commands.OpenFile"
                   label="Open"
@@ -238,24 +240,19 @@
                   visible="true">
             </separator>
             <command
-                  commandId="rulebender.commands.Save"
+                  commandId="org.eclipse.ui.file.save"
                   label="Save"
                   mnemonic="s">
             </command>
             <command
-                  commandId="rulebender.commands.SaveAs"
-                  label="Save As">
-            </command>
-            <command
-                  commandId="rulebender.commands.SaveAll"
+                  commandId="org.eclipse.ui.file.saveAll"
                   label="Save All">
             </command>
             <separator
-                  name="rulebender.separator2"
-                  visible="true">
+                  name="rulebender.separator2">
             </separator>
             <command
-                  commandId="rulebender.commands.PrintFile"
+                  commandId="org.eclipse.ui.file.print"
                   label="Print"
                   style="push">
             </command>
@@ -307,15 +304,9 @@
                   name="rulebender.separator2">
             </separator>
             <command
-                  commandId="rulebender.commands.Find"
-                  label="Find"
+                  commandId="org.eclipse.ui.edit.findReplace"
+                  label="Find &amp; Replace..."
                   mnemonic="f"
-                  style="push">
-            </command>
-            <command
-                  commandId="rulebender.commands.Replace"
-                  label="Replace"
-                  mnemonic="r"
                   style="push">
             </command>
             <separator
@@ -351,11 +342,6 @@
             defaultHandler="rulebender.core.commands.ExitHandler"
             id="rulebender.commands.Exit"
             name="Exit">
-      </command>
-      <command
-            defaultHandler="rulebender.core.commands.NewFileHandler"
-            id="rulebender.commands.NewFile"
-            name="NewFile">
       </command>
       <command
             defaultHandler="rulebender.core.commands.SaveHandler"
@@ -460,16 +446,8 @@
             application="rulebender.application"
             name="RuleBender">
          <property
-               name="startupForegroundColor"
-               value="000000">
-         </property>
-         <property
                name="startupProgressRect"
                value="5,275,445,15">
-         </property>
-         <property
-               name="startupMessageRect"
-               value="7,252,445,20">
          </property>
          <property
                name="preferenceCustomization"

@@ -13,7 +13,8 @@ import org.eclipse.ui.progress.IProgressConstants;
 import rulebender.core.utility.Console;
 import rulebender.simulate.CommandRunner;
 
-public class BNGExecutionJob extends Job {
+public class BNGExecutionJob extends Job 
+{
 
 	private String m_filePath;
 	private String m_bngFullPath;

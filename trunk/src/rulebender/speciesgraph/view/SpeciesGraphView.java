@@ -11,7 +11,6 @@ import org.eclipse.swt.events.ControlEvent;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.part.ViewPart;
 
-import rulebender.contactmap.view.ContactMapSelectionListener;
 import rulebender.core.prefuse.LayeredPane;
 
 public class SpeciesGraphView extends ViewPart 

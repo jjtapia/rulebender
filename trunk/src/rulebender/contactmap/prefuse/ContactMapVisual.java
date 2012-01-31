@@ -620,7 +620,7 @@ public class ContactMapVisual
 	    // Add it to the hashtable
 	    nodes.put(moleIndex+"."+compIndex , n);
 	    
-	    System.out.println("Molecule: (" + tmole.getName() + "," + moleIndex + ")\t\tComponent: (" + tcomp.getName() + "," + compIndex +")");
+	   // System.out.println("Molecule: (" + tmole.getName() + "," + moleIndex + ")\t\tComponent: (" + tcomp.getName() + "," + compIndex +")");
 	    
 	    return n;
 	}
@@ -683,13 +683,13 @@ public class ContactMapVisual
 			e_comp.set("displaymode", "both");
 			e_comp.set("type", "componentVisible_edge");
 			
-			System.out.println("Check " + tbond.getMolecule1() + "." + tbond.getComponent1());
+			//System.out.println("Check " + tbond.getMolecule1() + "." + tbond.getComponent1());
 			
 			// If the state of the first component is not -1 (there is one)
 			if (tbond.getState1() != -1) 
 			{
 				//DEBUG
-				System.out.println("Has State: " + tbond.getState1());
+				//System.out.println("Has State: " + tbond.getState1());
 				
 				// Set the leftparentNode as the leftnode.  The leftnode is the component level.
 				leftparentnode = leftnode; 
@@ -700,29 +700,29 @@ public class ContactMapVisual
 				// If there is a state node, then set the node as having an edge.
 				if (leftnode != null)
 				{
-					System.out.println("\t left node not null: " + tbond.getMolecule1()+"."+tbond.getComponent1()+"."+tbond.getState1());
+					//System.out.println("\t left node not null: " + tbond.getMolecule1()+"."+tbond.getComponent1()+"."+tbond.getState1());
 					leftnode.set("hasedge", true);
 					
 				}
 				// Do nothing. 
 				else
 				{
-					System.out.println("\tleft node null: " + tbond.getMolecule1()+"."+tbond.getComponent1()+"."+tbond.getState1());
+					//System.out.println("\tleft node null: " + tbond.getMolecule1()+"."+tbond.getComponent1()+"."+tbond.getState1());
 				}
 			}
 			else
 			{
-				System.out.println("\tDid not consider " + tbond.getMolecule1() + "." + tbond.getComponent1() + "(no state)");
+				//System.out.println("\tDid not consider " + tbond.getMolecule1() + "." + tbond.getComponent1() + "(no state)");
 			}
 	
 			
-			System.out.println("Check " + tbond.getMolecule2() + "." + tbond.getComponent2());
+			//System.out.println("Check " + tbond.getMolecule2() + "." + tbond.getComponent2());
 			
 			// if the right node has a state 
 			if (tbond.getState2() != -1) 
 			{
 				//DEBUG
-				System.out.println("Has State: " + tbond.getState2());
+				//System.out.println("Has State: " + tbond.getState2());
 				
 				// Set the parent node as the component level node.
 				rightparentnode = rightnode; 
@@ -734,18 +734,18 @@ public class ContactMapVisual
 				if (rightnode != null)
 				{
 					rightnode.set("hasedge", true);
-					System.out.println("\tright node not null: " + tbond.getMolecule2()+"."+tbond.getComponent2()+"."+tbond.getState2());
+					//System.out.println("\tright node not null: " + tbond.getMolecule2()+"."+tbond.getComponent2()+"."+tbond.getState2());
 				}
 				// Do nothing if there is no state level.
 				else
 				{
-					System.out.println("\tright node null: " + tbond.getMolecule2()+"."+tbond.getComponent2()+"."+tbond.getState2());
+					//System.out.println("\tright node null: " + tbond.getMolecule2()+"."+tbond.getComponent2()+"."+tbond.getState2());
 				}
 			}
 			// Do nothing if there is no state associated with the node.
 			else
 			{
-				System.out.println("\tDid not consider " + tbond.getMolecule2() + "." + tbond.getComponent2() + "(no state)");
+				//System.out.println("\tDid not consider " + tbond.getMolecule2() + "." + tbond.getComponent2() + "(no state)");
 			}
 			
 			// If either of the parent nodes are not null, then there is a bond that 
@@ -971,7 +971,7 @@ public class ContactMapVisual
 	
 	private void identifyMoleLevelReaction(Rule thisRule, VisualRule r_comp) {
 		// DEBUG
-		System.out.println("Mole-level: " + thisRule.getName());
+		//System.out.println("Mole-level: " + thisRule.getName());
 		
 		// hub node
 		Node n;

@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.swt.graphics.Image;
 
-import prefuse.Display;
-
 /**
  * 
  * Observable node. Contains one SpeciesFolderNode child.

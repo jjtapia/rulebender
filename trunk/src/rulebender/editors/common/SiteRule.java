@@ -12,7 +12,7 @@ import org.eclipse.jface.text.rules.Token;
  * 
  */
 public class SiteRule implements IRule {
-	private static final int UNDEFINED = -1;
+	//private static final int UNDEFINED = -1;
 	private IToken fToken;
 
 	public SiteRule(IToken token) {

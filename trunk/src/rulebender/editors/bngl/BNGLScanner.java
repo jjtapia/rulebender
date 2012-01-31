@@ -9,7 +9,7 @@ import org.eclipse.jface.text.rules.Token;
 import org.eclipse.jface.text.rules.WhitespaceRule;
 import org.eclipse.jface.text.rules.WordRule;
 
-import rulebender.editors.common.SiteRule;
+//import rulebender.editors.common.SiteRule;
 import rulebender.editors.common.VariableRule;
 
 
@@ -72,7 +72,7 @@ public class BNGLScanner extends RuleBasedScanner
 		rules[2] = variableRule;
 		
 		//site
-		SiteRule siteRule = new SiteRule(new Token(new TextAttribute(manager.getColor(IBNGLColorConstants.SITE_RULE))));
+		//SiteRule siteRule = new SiteRule(new Token(new TextAttribute(manager.getColor(IBNGLColorConstants.SITE_RULE))));
 		//rules[3] = siteRule;
 		
 		setRules(rules);

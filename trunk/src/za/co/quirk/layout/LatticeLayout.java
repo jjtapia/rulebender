@@ -1567,6 +1567,7 @@ public class LatticeLayout extends Layout implements LatticeConstants
       try
       {
         LatticeData data = (LatticeData)children[counter].getLayoutData();
+       
         if( data == null )
         {
           data = new LatticeData();
@@ -1576,7 +1577,7 @@ public class LatticeLayout extends Layout implements LatticeConstants
         // Skip any widgets that have not been place in a specific cell
         if( data == null )
         {
-          break;
+        	break;
         }
 
         // Does the entry occupy a single cell

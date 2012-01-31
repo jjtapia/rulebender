@@ -1,10 +1,6 @@
 package rulebender.simulate.parameterscan;
 
 import java.io.File;
-
-import rulebender.Activator;
-
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;

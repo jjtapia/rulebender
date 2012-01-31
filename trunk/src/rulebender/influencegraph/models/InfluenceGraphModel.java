@@ -6,9 +6,6 @@ import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import rulebender.contactmap.models.CMapModel;
-
-
 /******************************************
  * 
  * 1. This version works only with models without duplicate components
@@ -576,7 +573,8 @@ public class InfluenceGraphModel
 		IMoleculePattern tempmp = new IMoleculePattern();
 		String molename = "";
 		String component = "";
-		String compartment = "";
+		// This value is set later, but never actually used. 
+		//String compartment = "";
 		
 		if(molestr.trim().length() == 0)
 		{
@@ -591,11 +589,11 @@ public class InfluenceGraphModel
 		// delete compartment info
 		if (molestr.indexOf("@") != -1) {
 			if( molestr.indexOf(":") > molestr.indexOf("@")) {
-				compartment = molestr.substring(molestr.indexOf("@")+1, molestr.indexOf(":"));
+				//compartment = molestr.substring(molestr.indexOf("@")+1, molestr.indexOf(":"));
 				molestr = molestr.substring(molestr.indexOf(":") + 1);
 			}
 			else {
-				compartment = molestr.substring(molestr.indexOf("@")+1);
+				//compartment = molestr.substring(molestr.indexOf("@")+1);
 				molestr = molestr.substring(0, molestr.indexOf("@"));
 			}
 		}

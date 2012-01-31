@@ -1,7 +1,6 @@
 package rulebender.editors.net;
 
 import org.eclipse.jface.text.IDocument;
-import org.eclipse.jface.text.ITextDoubleClickStrategy;
 import org.eclipse.jface.text.presentation.IPresentationReconciler;
 import org.eclipse.jface.text.presentation.PresentationReconciler;
 import org.eclipse.jface.text.rules.DefaultDamagerRepairer;

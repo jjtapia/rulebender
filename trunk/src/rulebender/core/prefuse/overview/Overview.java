@@ -6,7 +6,6 @@ package rulebender.core.prefuse.overview;
 
 
 import java.awt.Color;
-import javax.swing.BorderFactory;
 import prefuse.Display;
 import prefuse.Visualization;
 import prefuse.util.display.DisplayLib;
@@ -18,7 +17,12 @@ import prefuse.util.display.DisplayLib;
 public class Overview extends Display 
 {
 
-    public Overview(Display display) {
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+	public Overview(Display display) {
         super(display.getVisualization());
 
         setBackground(Color.WHITE);

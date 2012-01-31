@@ -1,33 +1,20 @@
 package rulebender.contactmap.view;
 
 import java.awt.Dimension;
-import java.io.IOException;
-import java.util.HashMap;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import rulebender.contactmap.models.CMapModel;
-import rulebender.contactmap.models.CMapModelBuilder;
-import rulebender.contactmap.prefuse.ContactMapVisual;
 import rulebender.core.prefuse.LayeredPane;
-import rulebender.core.utility.BNGParserCommands;
-import rulebender.editors.bngl.model.BNGASTReader;
-
-import org.antlr.runtime.RecognitionException;
-import org.eclipse.jface.viewers.ISelection;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ControlAdapter;
 import org.eclipse.swt.events.ControlEvent;
 import org.eclipse.swt.awt.SWT_AWT;
 import org.eclipse.swt.widgets.Composite;
+
 // Use explicitly
 //import org.eclipse.swt.widgets.Display;
-import org.eclipse.ui.ISelectionListener;
-import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.part.ViewPart;
-
-import bngparser.grammars.BNGGrammar.prog_return;
 
 public class ContactMapView extends ViewPart  
 {
@@ -127,11 +114,12 @@ public class ContactMapView extends ViewPart
 		parentComposite.redraw();
 	}
 	
+	/*
 	public void tempRefresh() 
 	{
 		listener.tempRefresh();
 	}
-
+	 */
 	@Override
 	public void setFocus() 
 	{
