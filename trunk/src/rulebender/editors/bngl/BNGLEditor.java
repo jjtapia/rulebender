@@ -1,10 +1,21 @@
 package rulebender.editors.bngl;
 
 
+import java.io.File;
 import java.io.PrintStream;
 import java.util.ArrayList;
 
+import org.eclipse.jface.text.BadLocationException;
+import org.eclipse.jface.text.IDocument;
+import org.eclipse.jface.text.IRegion;
+import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.ui.ISelectionListener;
+import org.eclipse.ui.IWorkbenchPart;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.editors.text.TextEditor;
+import org.eclipse.ui.texteditor.IDocumentProvider;
+import org.eclipse.ui.texteditor.ITextEditor;
 
 import bngparser.BNGParseData;
 import bngparser.BNGParserUtility;
@@ -12,12 +23,14 @@ import bngparser.grammars.BNGGrammar.prog_return;
 
 import rulebender.core.utility.ANTLRFilteredPrintStream;
 import rulebender.core.utility.Console;
+import rulebender.core.utility.FileInputUtility;
 import rulebender.editors.bngl.BNGLConfiguration;
 import rulebender.editors.bngl.BNGLDocumentProvider;
 import rulebender.editors.bngl.model.BNGLModel;
 import rulebender.errorview.model.BNGLError;
+import rulebender.errorview.view.ErrorView;
 
-public class BNGLEditor extends TextEditor 
+public class BNGLEditor extends TextEditor implements ISelectionListener 
 {
 	// The model for the text
 	private BNGLModel m_model;
@@ -44,8 +57,9 @@ public class BNGLEditor extends TextEditor
 		
 		// Can't create the m_model here because we need the part name,
 		// and the part name is not set until after the constructor.  
-		// So i used a lazy load in the getter. 
+		// So i used a lazy load in the getter.
 		
+		PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().addPostSelectionListener(this);
   	}
 	
 	
@@ -185,4 +199,65 @@ public class BNGLEditor extends TextEditor
 	    return false;
 	}
 
+
+	@Override
+	public void selectionChanged(IWorkbenchPart part, ISelection selection) 
+	{
+		// If it's from the BNGLEditor then we want to set the contact map.
+		if(part.getClass() == ErrorView.class)
+		{
+			IStructuredSelection iSSelection = (IStructuredSelection) selection;
+			System.out.println("Part Title: " + part.getTitle());
+			BNGLError error = (BNGLError) iSSelection.getFirstElement();
+			
+			System.out.println("Path: " + error.getFilePath());
+			System.out.println("Line: " + error.getLineNumber());
+			System.out.println("Message: " + error.getMessage());
+			
+			selectALine(error.getFilePath(), error.getLineNumber());
+		}
+		// If it's not a bngl file
+		else
+		{
+			
+		}	
+	}
+	
+	public void selectALine(String path, int num)
+	{	
+		
+		// CORRECTION:  Weird, but the num is always 1 too great...
+		// 1 less would make sense (0 indexing in parser)...
+		num--;
+		
+		/*
+		 * First make sure that the file is open.
+		 */
+
+		// Get a reference to the file
+		File file = new File(path);
+		
+		FileInputUtility.openFileInEditor(file);
+		
+		/*
+		 * Now we select the line. 
+		 */
+		ITextEditor editor = (ITextEditor) this.getAdapter(ITextEditor.class);
+		
+		IDocumentProvider provider = editor.getDocumentProvider();
+		IDocument document = provider.getDocument(this.getEditorInput());
+		//IDocument document = provider.getDocument(path);
+		
+		IRegion region = null;
+		
+		try 
+		{
+			region = document.getLineInformation(num);
+		} catch (BadLocationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		selectAndReveal(region.getOffset(), region.getLength());	
+	}
 }

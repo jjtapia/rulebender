@@ -39,6 +39,7 @@ public class BNGLError
 	
 	public String toString()
 	{
+		System.out.println("toString called");
 		return "Path: " + m_filePath + "\n" +
 			   "Line: " + m_lineNumber + "\n" +
 			   "Message: " + m_message;

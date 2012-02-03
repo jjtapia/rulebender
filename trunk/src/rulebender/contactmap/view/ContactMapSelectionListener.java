@@ -6,6 +6,7 @@ import java.beans.PropertyChangeListener;
 import java.util.HashMap;
 
 import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.IPartListener2;
 import org.eclipse.ui.ISelectionListener;
 import org.eclipse.ui.IWorkbenchPart;
@@ -19,6 +20,7 @@ import rulebender.contactmap.prefuse.ContactMapVisual;
 import rulebender.editors.bngl.BNGLEditor;
 import rulebender.editors.bngl.model.BNGASTReader;
 import rulebender.editors.bngl.model.BNGLModel;
+import rulebender.errorview.model.BNGLError;
 
 public class ContactMapSelectionListener implements ISelectionListener, IPartListener2
 {
@@ -53,7 +55,6 @@ public class ContactMapSelectionListener implements ISelectionListener, IPartLis
 		// If it's not a bngl file
 		else
 		{
-			
 		}
 	}
 	
