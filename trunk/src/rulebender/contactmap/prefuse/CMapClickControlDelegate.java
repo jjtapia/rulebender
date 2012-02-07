@@ -16,6 +16,21 @@ import javax.swing.JFileChooser;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 
+import org.eclipse.core.runtime.ListenerList;
+import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.ISelectionChangedListener;
+import org.eclipse.jface.viewers.ISelectionProvider;
+import org.eclipse.jface.viewers.SelectionChangedEvent;
+import org.eclipse.jface.viewers.StructuredSelection;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.views.properties.IPropertyDescriptor;
+import org.eclipse.ui.views.properties.IPropertySource;
+import org.eclipse.ui.views.properties.PropertyDescriptor;
+
+import rulebender.contactmap.properties.ComponentPropertySource;
+import rulebender.contactmap.properties.StatePropertySource;
+import rulebender.contactmap.view.ContactMapView;
 import rulebender.core.prefuse.PngSaveFilter;
 import rulebender.core.prefuse.collinsbubbleset.layout.BubbleSetLayout;
 import rulebender.core.prefuse.networkviewer.PrefuseTooltip;
@@ -25,7 +40,6 @@ import rulebender.core.prefuse.networkviewer.contactmap.VisualRule;
 
 
 import prefuse.Constants;
-import prefuse.Display;
 import prefuse.Visualization;
 import prefuse.action.ActionList;
 import prefuse.action.RepaintAction;
@@ -44,34 +58,39 @@ import prefuse.visual.EdgeItem;
 import prefuse.visual.NodeItem;
 import prefuse.visual.VisualItem;
 
-public class CMapClickControlDelegate extends ControlAdapter 
+public class CMapClickControlDelegate extends ControlAdapter implements ISelectionProvider
 {
+	private ISelection m_selection;
+	private ListenerList m_listeners;
+	
 	public static final String AGG_CAT_LABEL = "molecule";
 	
 	// For the node tooltips.
 	PrefuseTooltip activeTooltip;
 
 	private AggregateTable bubbleTable;
-	private Visualization vis;
+	private Visualization m_vis;
 
 	private VisualRule activeRule;
 
 	private String displaymode_states = "Show States";
 	private String displaymode_compartments = "Show Compartments";
 
+	ContactMapView m_view;
+	
 //	private VisualizationViewerController visviewer;
 
-	public CMapClickControlDelegate(Visualization v) 
+	public CMapClickControlDelegate(ContactMapView view, Visualization v) 
 	{
 		
-	//	visviewer = VisualizationViewerController.loadVisualizationViewController();
+		m_view = view;
 		
 		// Set the local reference to the visualization that this controller is
 		// attached to.
-		vis = v;
+		m_vis = v;
 
 		// Create the bubbletable that is going to be used for aggregates.
-		bubbleTable = vis.addAggregates("bubbles");
+		bubbleTable = m_vis.addAggregates("bubbles");
 
 		// Add the shape column to the table.
 		bubbleTable.addColumn(VisualItem.POLYGON, float[].class);
@@ -122,11 +141,16 @@ public class CMapClickControlDelegate extends ControlAdapter
 		layout.add(new BubbleSetLayout("bubbles", "component_graph"));
 		layout.add(new RepaintAction());
 
-		vis.putAction("bubbleLayout", layout);
-		vis.putAction("bubbleColor", color);
+		m_vis.putAction("bubbleLayout", layout);
+		m_vis.putAction("bubbleColor", color);
 		
 		// Tell the linkHub to let us know when a rule is selected.
 		//LinkHub.getLinkHub().registerLinkedViewsListener(this);
+	
+		// Selections
+		m_listeners = new ListenerList();
+		
+		m_view.getSite().setSelectionProvider(this);
 	
 	}
 
@@ -172,7 +196,7 @@ public class CMapClickControlDelegate extends ControlAdapter
 							try {
 								output = new FileOutputStream(theFileToSave);
 								// save png
-								vis.getDisplay(0).saveImage(output, "PNG", 1.0);
+								m_vis.getDisplay(0).saveImage(output, "PNG", 1.0);
 							} catch (FileNotFoundException e1) {
 								e1.printStackTrace();
 							}
@@ -189,7 +213,7 @@ public class CMapClickControlDelegate extends ControlAdapter
 				public void actionPerformed(ActionEvent e) {
 					AbstractButton aButton = (AbstractButton) e.getSource();
 
-					Iterator iter = vis.items("component_graph");
+					Iterator iter = m_vis.items("component_graph");
 
 					// show states
 					if (aButton.getText().equals("Show States")) {
@@ -255,11 +279,11 @@ public class CMapClickControlDelegate extends ControlAdapter
 					}
 
 					// apply actions
-					vis.run("color");
-					vis.run("complayout");
-					vis.run("compartmentlayout");
-					vis.run("bubbleColor");
-					vis.run("bubbleLayout");
+					m_vis.run("color");
+					m_vis.run("complayout");
+					m_vis.run("compartmentlayout");
+					m_vis.run("bubbleColor");
+					m_vis.run("bubbleLayout");
 
 				}
 			});
@@ -271,7 +295,7 @@ public class CMapClickControlDelegate extends ControlAdapter
 				public void actionPerformed(ActionEvent e) {
 					AbstractButton aButton = (AbstractButton) e.getSource();
 
-					Iterator iter = vis.items("compartments");
+					Iterator iter = m_vis.items("compartments");
 
 					// show states
 					if (aButton.getText().equals("Show Compartments")) {
@@ -290,11 +314,11 @@ public class CMapClickControlDelegate extends ControlAdapter
 					}
 
 					// apply actions
-					vis.run("color");
-					vis.run("complayout");
-					vis.run("compartmentlayout");
-					vis.run("bubbleColor");
-					vis.run("bubbleLayout");
+					m_vis.run("color");
+					m_vis.run("complayout");
+					m_vis.run("compartmentlayout");
+					m_vis.run("bubbleColor");
+					m_vis.run("bubbleLayout");
 
 				}
 			});
@@ -306,6 +330,7 @@ public class CMapClickControlDelegate extends ControlAdapter
 		{
 			// Clear the selections.  
 			//clearSelection();
+			//TODO add this to the iselectionservice 
 			//LinkHub.getLinkHub().clearSelectionFromContactMap();
 		} 
 	}
@@ -364,10 +389,56 @@ public class CMapClickControlDelegate extends ControlAdapter
 		if(item.getString("type").equals("state"))
 		{
 			////LinkHub.getLinkHub().stateSelectedInContactMap(item);
+			
+			ArrayList<IPropertySource> list = new ArrayList<IPropertySource>();
+			list.add(new StatePropertySource(item));
+			list.add(new IPropertySource(){
+
+				@Override
+				public Object getEditableValue() {
+					// TODO Auto-generated method stub
+					return null;
+				}
+
+				@Override
+				public IPropertyDescriptor[] getPropertyDescriptors() {
+					return new IPropertyDescriptor[] {new PropertyDescriptor("mult","MULT")};
+				}
+
+				@Override
+				public Object getPropertyValue(Object id) {
+					if(id.equals("mult"))
+					{
+						return "It Worked!!!!!";
+					}
+					return null;
+				}
+
+				@Override
+				public boolean isPropertySet(Object id) {
+					// TODO Auto-generated method stub
+					return false;
+				}
+
+				@Override
+				public void resetPropertyValue(Object id) {
+					// TODO Auto-generated method stub
+					
+				}
+
+				@Override
+				public void setPropertyValue(Object id, Object value) {
+					// TODO Auto-generated method stub
+					
+				}});
+			
+			StructuredSelection test = new StructuredSelection(list);
+			setSelection(test);
 		}
 		else if(item.getString("type").equals("component"))
 		{
 			//LinkHub.getLinkHub().componentSelectedInContactMap(item);
+			setSelection(new StructuredSelection(new ComponentPropertySource(item)));
 		}
 		else if(item.getString("type").equals("hub"))
 		{
@@ -396,7 +467,7 @@ public class CMapClickControlDelegate extends ControlAdapter
 
 			if (rules == null || rules.size() == 0) {
 					
-				showTooltip(new ComponentTooltip((Display) event.getSource(),
+				showTooltip(new ComponentTooltip((prefuse.Display) event.getSource(),
 						"State: " + (String) item.get(VisualItem.LABEL),
 						""), item,
 						event);			
@@ -482,7 +553,7 @@ public class CMapClickControlDelegate extends ControlAdapter
 				statesStr = "States: " + states;
 			}	
 			
-			showTooltip(new ComponentTooltip((Display) event.getSource(),
+			showTooltip(new ComponentTooltip((prefuse.Display) event.getSource(),
 					"Component:" + (String) item.get(VisualItem.LABEL),
 					statesStr), item, event);
 			
@@ -647,18 +718,18 @@ public class CMapClickControlDelegate extends ControlAdapter
 		}
 		
 		// Clear any selected visual items.
-		TupleSet selectedSet = vis.getFocusGroup("selected");
+		TupleSet selectedSet = m_vis.getFocusGroup("selected");
 		if(selectedSet != null)
 		{	selectedSet.clear();
-			vis.run("color");
+			m_vis.run("color");
 		}
 		
 		// Run the actions. Apparently the layout does not need
 		// to be run here...
 		if (refresh)
 		{
-			vis.run("bubbleLayout");
-			vis.run("bubbleColor");
+			m_vis.run("bubbleLayout");
+			m_vis.run("bubbleColor");
 		}
 	}
 	
@@ -687,8 +758,8 @@ public class CMapClickControlDelegate extends ControlAdapter
 
 		// Run the actions. Apparently the layout does not need
 		// to be run here...
-		vis.run("bubbleLayout");
-		vis.run("bubbleColor");
+		m_vis.run("bubbleLayout");
+		m_vis.run("bubbleColor");
 		
 		//if(passingOn)
 			//LinkHub.getLinkHub().ruleSelectedInContactMap(activeRule);
@@ -759,7 +830,7 @@ public class CMapClickControlDelegate extends ControlAdapter
 			activeTooltip.stopShowing();
 		}
 		
-		vis.run("color");
+		m_vis.run("color");
 	}
 
 	/**
@@ -779,35 +850,25 @@ public class CMapClickControlDelegate extends ControlAdapter
 
 		activeTooltip.startShowing((int) e.getX() + 10, (int) e.getY());
 	}
-
-	// The overview window is updated automatically since the Display objects comes from
-	// the same Visualization object. 
+ 
 	public void mouseDragged(MouseEvent e) 
 	{
-		//visviewer.updateCMapSelectBox();
     }
 	
 	public void mouseWheelMoved(MouseWheelEvent e) 
 	{
-		
-		// System.out.println("----------------------ZOOM--------------------------");
-		//visviewer.updateCMapSelectBox();
-		//visviewer.updateIGraphSelectBox();
     }
 
 	public void itemDragged(VisualItem item, MouseEvent e) 
 	{
-		//visviewer.updateCMapSelectBox();
 	}
 
 	public void itemMoved(VisualItem item, MouseEvent e) 
 	{
-		//visviewer.updateCMapSelectBox();
 	}
 
 	public void itemWheelMoved(VisualItem item, MouseWheelEvent e) 
 	{
-		//visviewer.updateCMapSelectBox();
 	}
 
 	/**
@@ -818,13 +879,13 @@ public class CMapClickControlDelegate extends ControlAdapter
 	{
 		// System.out.println("Changing selected item");
 		
-		TupleSet focused = vis.getFocusGroup("selected");
+		TupleSet focused = m_vis.getFocusGroup("selected");
 		
 		focused.clear();
 		
 		focused.addTuple(item);
 		
-		vis.run("color");
+		m_vis.run("color");
 	}
 		
 	/**
@@ -871,7 +932,7 @@ public class CMapClickControlDelegate extends ControlAdapter
 		//System.out.println("bi <-\"" + bi_reverse+"\"");
 		
 		// Now we have to get the visual rule by looking in each edge.
-		Iterator<VisualItem> iter = vis.items("component_graph");
+		Iterator<VisualItem> iter = m_vis.items("component_graph");
 		
 		// For each VisualItem
 		while (iter.hasNext()) 
@@ -950,43 +1011,13 @@ public class CMapClickControlDelegate extends ControlAdapter
 		clearSelection(true);
 	}
 
-	public void moleculeSelectedInContactMap(VisualItem moleculeItem) 
-	{
-		// Do Handled Locally.
-	}
-
-	public void ruleSelectedInContactMap(VisualRule ruleItem) 
-	{
-		// Handled Locally	
-	}
-
-	public void componentSelectedInContactMap(VisualItem moleculeItem) 
-	{
-		// Handled Locally
-	}
-
-	public void edgeSelectedInContactMap(VisualItem edge) 
-	{
-		// Handled Locally		
-	}
-
-	public void stateSelectedInContactMap(VisualItem stateItem) 
-	{
-		// Handled Locally	
-	}
-	
-	public void hubSelectedInContactMap(VisualItem hubItem) 
-	{
-		// Handled Locally
-	}
-
 	//TODO doesn't work
 	public void moleculeSelectedInText(String moleculeText) 
 	{
 		clearSelection(true);
 		
 		// Now we have to get the visual rule by looking in each edge.
-		Iterator<VisualItem> iter = vis.items("component_graph");
+		Iterator<VisualItem> iter = m_vis.items("component_graph");
 		
 		// For each VisualItem
 		while (iter.hasNext()) 
@@ -1042,5 +1073,55 @@ public class CMapClickControlDelegate extends ControlAdapter
 	public void compartmentSelectedInText(VisualItem compartment) 
 	{
 		// TODO Auto-generated method stub	
+	}
+
+	
+	/*
+	 * ---------------------------------------------------------
+	 * ISelectionProvider stuff below.
+	 * 
+	 */
+	
+	@Override
+	public void addSelectionChangedListener(ISelectionChangedListener listener) 
+	{
+		m_listeners.add(listener);
+	}
+	
+	@Override
+	public ISelection getSelection() 
+	{
+		return m_selection;
+	}
+
+	@Override
+	public void removeSelectionChangedListener(ISelectionChangedListener listener) 
+	{
+		m_listeners.remove(listener);
+	}
+
+	@Override
+	public void setSelection(ISelection selection) 
+	{
+		m_selection = selection;
+		final CMapClickControlDelegate thisInstance = this;
+		
+		Object[] listeners = m_listeners.getListeners();
+
+		System.out.println("Listeners: " + listeners.length);
+		
+		for(int i = 0; i < listeners.length; i++)
+		{
+			final ISelectionChangedListener scl = (ISelectionChangedListener) listeners[i];
+			
+			Display.getDefault().syncExec(new Runnable(){
+				@Override
+				public void run() {
+					scl.selectionChanged(new SelectionChangedEvent(thisInstance, m_selection));
+				}
+				});
+			
+
+		}
 	}
 }

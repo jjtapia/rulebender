@@ -30,6 +30,7 @@ import rulebender.contactmap.models.MoleculePattern;
 import rulebender.contactmap.models.Rule;
 import rulebender.contactmap.models.RulePattern;
 import rulebender.contactmap.models.State;
+import rulebender.contactmap.view.ContactMapView;
 import rulebender.core.prefuse.networkviewer.contactmap.CMAPNetworkViewer;
 import rulebender.core.prefuse.networkviewer.contactmap.VisualRule;
 
@@ -104,7 +105,7 @@ public class ContactMapVisual
     private Hashtable<Set<Node>, Node> hubNodes;
     
 	
-	public ContactMapVisual(CMapModel model_in, Dimension cMapSize) 
+	public ContactMapVisual(ContactMapView view, CMapModel model_in, Dimension cMapSize) 
 	{
 
 		model = model_in;
@@ -244,7 +245,7 @@ public class ContactMapVisual
         // If you do not want interactions, simply do not add a
         // clickcontroldelegate.  See the editor.contactmap.CMapClickControlDelegate
         // for how to implement it.
-        CMapClickControlDelegate cctrldelegate = new CMapClickControlDelegate(nv.getVisualization());
+        CMapClickControlDelegate cctrldelegate = new CMapClickControlDelegate(view , nv.getVisualization());
         nv.setClickControl(cctrldelegate);
 
         // This is an index to the Node objects so that I can retrieve them 

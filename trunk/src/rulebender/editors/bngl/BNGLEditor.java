@@ -1,6 +1,5 @@
 package rulebender.editors.bngl;
 
-
 import java.io.File;
 import java.io.PrintStream;
 import java.util.ArrayList;
@@ -21,6 +20,8 @@ import bngparser.BNGParseData;
 import bngparser.BNGParserUtility;
 import bngparser.grammars.BNGGrammar.prog_return;
 
+import rulebender.contactmap.prefuse.CMapClickControlDelegate;
+import rulebender.contactmap.view.ContactMapView;
 import rulebender.core.utility.ANTLRFilteredPrintStream;
 import rulebender.core.utility.Console;
 import rulebender.core.utility.FileInputUtility;
@@ -204,19 +205,20 @@ public class BNGLEditor extends TextEditor implements ISelectionListener
 	public void selectionChanged(IWorkbenchPart part, ISelection selection) 
 	{
 		// If it's from the BNGLEditor then we want to set the contact map.
-		if(part.getClass() == ErrorView.class)
+		if(part.getClass() == ErrorView.class && !selection.isEmpty())
 		{
 			IStructuredSelection iSSelection = (IStructuredSelection) selection;
-			System.out.println("Part Title: " + part.getTitle());
 			BNGLError error = (BNGLError) iSSelection.getFirstElement();
-			
-			System.out.println("Path: " + error.getFilePath());
-			System.out.println("Line: " + error.getLineNumber());
-			System.out.println("Message: " + error.getMessage());
 			
 			selectALine(error.getFilePath(), error.getLineNumber());
 		}
-		// If it's not a bngl file
+		// If it's from the contact map.
+		else if (part.getClass() == ContactMapView.class)
+		{
+			System.out.println("Part Title: " + part.getTitle());
+			System.out.println("toString: " + selection.toString());
+			
+		}
 		else
 		{
 			
@@ -253,8 +255,9 @@ public class BNGLEditor extends TextEditor implements ISelectionListener
 		try 
 		{
 			region = document.getLineInformation(num);
-		} catch (BadLocationException e) {
-			// TODO Auto-generated catch block
+		}
+		catch (BadLocationException e) 
+		{
 			e.printStackTrace();
 		}
 		

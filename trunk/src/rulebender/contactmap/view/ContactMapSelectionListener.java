@@ -150,7 +150,7 @@ public class ContactMapSelectionListener implements ISelectionListener, IPartLis
 		Dimension dim = m_view.getSize();
 		
 		// Get the CMapVisual object for the CMapModel
-		ContactMapVisual cVisual = new ContactMapVisual(cModel, dim);
+		ContactMapVisual cVisual = new ContactMapVisual(m_view, cModel, dim);
 		
 		return cVisual.getDisplay();
 	}
