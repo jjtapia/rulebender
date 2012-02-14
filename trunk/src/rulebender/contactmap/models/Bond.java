@@ -77,4 +77,33 @@ public class Bond
 	public int getComponent2() {
 		return component2;
 	}
+	
+	public boolean equals(Bond in)
+	{
+		// Check in one direction
+		if(this.getMolecule1() == in.getMolecule1() 
+				&& this.getMolecule2() == in.getMolecule2() 
+				&& this.getComponent1() == in.getComponent1() 
+				&& this.getComponent2() == in.getComponent2() 
+				&& this.getState1() == in.getState1() 
+				&& this.getState2() == in.getState2())
+		{
+			return true;
+		}
+		
+		// Check in the other direction
+		else if(this.getMolecule1() == in.getMolecule2() 
+				&& this.getMolecule2() == in.getMolecule1()
+				&& this.getComponent1() == in.getComponent2()
+				&& this.getComponent2() == in.getComponent1()
+				&& this.getState1() == in.getState2()
+				&& this.getState2() == in.getState1())
+		{
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+	}
 }

@@ -252,7 +252,7 @@ public class TestBNGASTReader
 			public void foundRule(RuleData ruleData)
 			{
 				// For the rule with the name "SuperR1"
-				if(ruleData.getName().equals("SuperR1"))
+				if(ruleData.getLabel().equals("SuperR1"))
 				{
 					/* ----- Reactant Patterns ----- */
 					
@@ -357,7 +357,7 @@ public class TestBNGASTReader
 				
 				
 				// For the rule with the name "R3"
-				if(ruleData.getName().equals("R3"))
+				if(ruleData.getLabel().equals("R3"))
 				{
 					/* ----- Reactant Patterns ----- */
 					

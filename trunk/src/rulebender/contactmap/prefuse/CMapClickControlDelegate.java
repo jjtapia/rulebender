@@ -23,12 +23,11 @@ import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.views.properties.IPropertyDescriptor;
-import org.eclipse.ui.views.properties.IPropertySource;
-import org.eclipse.ui.views.properties.PropertyDescriptor;
 
+import rulebender.contactmap.properties.CompartmentPropertySource;
 import rulebender.contactmap.properties.ComponentPropertySource;
+import rulebender.contactmap.properties.EdgePropertySource;
+import rulebender.contactmap.properties.MoleculePropertySource;
 import rulebender.contactmap.properties.StatePropertySource;
 import rulebender.contactmap.view.ContactMapView;
 import rulebender.core.prefuse.PngSaveFilter;
@@ -158,7 +157,9 @@ public class CMapClickControlDelegate extends ControlAdapter implements ISelecti
 	 * Called when no VisualItem is hit.
 	 */
 	public void mouseClicked(MouseEvent e) 
-	{
+	{			
+		setSelection(new StructuredSelection());
+		
 		// super.mouseClicked(e);
 
 		// Right click
@@ -329,7 +330,7 @@ public class CMapClickControlDelegate extends ControlAdapter implements ISelecti
 		else if (e.getButton() == MouseEvent.BUTTON1) 
 		{
 			// Clear the selections.  
-			//clearSelection();
+			clearSelection(true);
 			//TODO add this to the iselectionservice 
 			//LinkHub.getLinkHub().clearSelectionFromContactMap();
 		} 
@@ -388,52 +389,8 @@ public class CMapClickControlDelegate extends ControlAdapter implements ISelecti
 		
 		if(item.getString("type").equals("state"))
 		{
-			////LinkHub.getLinkHub().stateSelectedInContactMap(item);
-			
-			ArrayList<IPropertySource> list = new ArrayList<IPropertySource>();
-			list.add(new StatePropertySource(item));
-			list.add(new IPropertySource(){
-
-				@Override
-				public Object getEditableValue() {
-					// TODO Auto-generated method stub
-					return null;
-				}
-
-				@Override
-				public IPropertyDescriptor[] getPropertyDescriptors() {
-					return new IPropertyDescriptor[] {new PropertyDescriptor("mult","MULT")};
-				}
-
-				@Override
-				public Object getPropertyValue(Object id) {
-					if(id.equals("mult"))
-					{
-						return "It Worked!!!!!";
-					}
-					return null;
-				}
-
-				@Override
-				public boolean isPropertySet(Object id) {
-					// TODO Auto-generated method stub
-					return false;
-				}
-
-				@Override
-				public void resetPropertyValue(Object id) {
-					// TODO Auto-generated method stub
-					
-				}
-
-				@Override
-				public void setPropertyValue(Object id, Object value) {
-					// TODO Auto-generated method stub
-					
-				}});
-			
-			StructuredSelection test = new StructuredSelection(list);
-			setSelection(test);
+			//LinkHub.getLinkHub().stateSelectedInContactMap(item);
+			setSelection(new StructuredSelection(new StatePropertySource(item)));
 		}
 		else if(item.getString("type").equals("component"))
 		{
@@ -640,10 +597,9 @@ public class CMapClickControlDelegate extends ControlAdapter implements ISelecti
 	{	
 		//TODO organize clear selections.
 		clearSelection(true);
-		//LinkHub.getLinkHub().clearSelectionFromContactMap();
 		setVisualItemAsSelected(item);
 		
-		//LinkHub.getLinkHub().edgeSelectedInContactMap(item);
+		setSelection(new StructuredSelection(new EdgePropertySource(item)));
 	}
 	
 	/**
@@ -772,13 +728,27 @@ public class CMapClickControlDelegate extends ControlAdapter implements ISelecti
 	 */
 	private void aggregateLeftClicked(VisualItem item, MouseEvent event) 
 	{
-		// TODO This is kind of messy.  The rule is cleared here, and needs to be
-		// cleared elsewhere, but other visualizations should do it from the 
-		// moleculeSelected event.
-		clearSelection(true);
+		// TODO clearing/setting selections can be done better. low priority though.
 		
-		// Set the aggregate as selected. 
+		//clearSelection(true);	
+		
 		setVisualItemAsSelected(item);
+		
+		// Molecule
+		if(item.getString("type").equals("molecule"))
+		{
+			setSelection(new StructuredSelection(new MoleculePropertySource(item)));
+		}
+		// Compartment
+		else if(item.getString("type").equals("compartment"))
+		{
+			setSelection(new StructuredSelection(new CompartmentPropertySource(item)));
+		}
+		else
+		{
+			System.out.println("SOMETHING ELSE");
+		}
+		
 		
 		// if it is a molecule
 		// System.out.println("Type: " + item.get("compartment"));
@@ -899,8 +869,7 @@ public class CMapClickControlDelegate extends ControlAdapter implements ISelecti
 		
 		String ruleText = ruleItem.getString("rulename");
 		
-		selectRuleFromText(ruleText);
-		
+		selectRuleFromText(ruleText);	
 	}
 
 	private void selectRuleFromText(String ruleText)
@@ -1011,7 +980,7 @@ public class CMapClickControlDelegate extends ControlAdapter implements ISelecti
 		clearSelection(true);
 	}
 
-	//TODO doesn't work
+	//FIXME doesn't work
 	public void moleculeSelectedInText(String moleculeText) 
 	{
 		clearSelection(true);
@@ -1097,7 +1066,12 @@ public class CMapClickControlDelegate extends ControlAdapter implements ISelecti
 	@Override
 	public void removeSelectionChangedListener(ISelectionChangedListener listener) 
 	{
-		m_listeners.remove(listener);
+		// This is commented out because for some reason all of the listeners are removed
+		// when a new file is opened...
+		// Commenting this out does not let the listeners ever be removed, but it does not matter
+		// since the CMapClickControlDelegates are created and destroyed so frequently. 
+		
+		//m_listeners.remove(listener);
 	}
 
 	@Override
@@ -1116,12 +1090,11 @@ public class CMapClickControlDelegate extends ControlAdapter implements ISelecti
 			
 			Display.getDefault().syncExec(new Runnable(){
 				@Override
-				public void run() {
+				public void run() 
+				{
 					scl.selectionChanged(new SelectionChangedEvent(thisInstance, m_selection));
 				}
-				});
-			
-
+			});
 		}
 	}
 }

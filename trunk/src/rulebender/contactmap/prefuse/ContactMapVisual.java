@@ -20,7 +20,7 @@ import prefuse.visual.NodeItem;
 import prefuse.visual.VisualItem;
 import rulebender.contactmap.models.Bond;
 import rulebender.contactmap.models.BondAction;
-import rulebender.contactmap.models.CMapModel;
+import rulebender.contactmap.models.ContactMapModel;
 import rulebender.contactmap.models.Compartment;
 import rulebender.contactmap.models.CompartmentTable;
 import rulebender.contactmap.models.Component;
@@ -53,7 +53,7 @@ public class ContactMapVisual
 	// uses for visualization e.g. the Graph object. This Graph object will 
 	// hold the nodes and edges for our graph visualization.
 	//
-	Graph comp_graph;
+	Graph m_componentGraph;
 
 	// Prefuse uses string identifiers for data structures and 
 	// their data fields.  These Strings variables are all used 
@@ -80,39 +80,39 @@ public class ContactMapVisual
 	// The visualization object is a primary data structure for prefuse.
 	// We will give our Graph object to it, and also use it to access
 	// and change properties of the visualization.
-	Visualization vis;
+	Visualization m_vis;
 	
 	// The NetworkViewer is an object I created to encapsulate most of 
 	// prefuse nastiness.  You will interact with this mostly.  I plan
 	// on making it much easier to use once I get back.
 	// NetworkViewer is a subclass of prefuse.Display which is a 
 	// Component and can be added to a JPanel.
-	CMAPNetworkViewer nv;
+	CMAPNetworkViewer m_networkViewer;
 	
-	CMapModel model;
+	ContactMapModel m_model;
 	
-	Dimension mainDisplaySize;
+	Dimension m_mainDisplaySize;
 	
 	 // This is an index to the Node objects so that I can retrieve them 
     // based on the string value "<parent molecule index>.<component index>.<state index>".
-    private Hashtable<String, Node> nodes;
+    private Hashtable<String, Node> m_nodes;
     
-    // This is so I can get an edge, based on an string value: bondID.type(component, state)
-    private Hashtable<String, Edge> edges;
+    // This is so I can get an edge, based on an string value: bondID.<type> (either component or state)
+    private Hashtable<String, Edge> m_edges;
     
     // Hash table for all the hub nodes of molecule-level rules.
     // The set contains all the involved nodes in a rule.
-    private Hashtable<Set<Node>, Node> hubNodes;
+    private Hashtable<Set<Node>, Node> m_hubNodes;
     
 	
-	public ContactMapVisual(ContactMapView view, CMapModel model_in, Dimension cMapSize) 
+	public ContactMapVisual(ContactMapView view, ContactMapModel model_in, Dimension cMapSize) 
 	{
 
-		model = model_in;
-		mainDisplaySize = cMapSize;
+		m_model = model_in;
+		m_mainDisplaySize = cMapSize;
 		
 		// Instantiate the NetworkViewer object.
-		nv = new CMAPNetworkViewer(mainDisplaySize); 
+		m_networkViewer = new CMAPNetworkViewer(m_mainDisplaySize); 
 		
 		// Instantiate the Graph
 		/*
@@ -120,11 +120,11 @@ public class ContactMapVisual
 		 *  |   'states'     |
 		 * 
 		 */
-		comp_graph = new Graph();
+		m_componentGraph = new Graph();
 		
 		// Ideally I wanted to remove all interaction with the Visualization object,
 		// but I didn't quite finish it yet.  
-		vis = nv.getVisualization();
+		m_vis = m_networkViewer.getVisualization();
 				
 		// Graphs (and all other data structures in prefuse) are table-based data structures.  Each node is a row in the
 		// table and the columns hold data about the node.  Here we add a 
@@ -132,76 +132,78 @@ public class ContactMapVisual
 		// molecule of which the node is a member.
         
 		// The Label for a node.  Constant value int from VisualItem
-		comp_graph.addColumn(VisualItem.LABEL, String.class);
+		m_componentGraph.addColumn(VisualItem.LABEL, String.class);
 		
         // Node type: component, state
-        comp_graph.addColumn("type", String.class);
+        m_componentGraph.addColumn("type", String.class);
         
         // Node id: moleculeIndex.componentIndex<.stateIndex>
-        comp_graph.addColumn("ID", String.class);
+        m_componentGraph.addColumn("ID", String.class);
 		
 		// The parent (molecule) for a node.  String.
-        comp_graph.addColumn(COMP_PARENT_LABEL, String.class);
+        m_componentGraph.addColumn(COMP_PARENT_LABEL, String.class);
         
         // The molecule expression for a node.  String.
-        comp_graph.addColumn("molecule_expression", String.class);
+        m_componentGraph.addColumn("molecule_expression", String.class);
         
         // The parent (component) for a state node.  String.
-        comp_graph.addColumn(STATE_PARENT_LABEL, String.class);
+        m_componentGraph.addColumn(STATE_PARENT_LABEL, String.class);
         
         // The VisualRule object that can create an edge.  Arraylist of VisualRule objects.
-        comp_graph.addColumn("rules", ArrayList.class);
+        m_componentGraph.addColumn("rules", ArrayList.class);
         
         // The states that the component can be in.  ArrayList of Strings.
-        comp_graph.addColumn("states", ArrayList.class);
+        m_componentGraph.addColumn("states", ArrayList.class);
         
         // State nodes
-        comp_graph.addColumn("state_nodes", ArrayList.class);
+        m_componentGraph.addColumn("state_nodes", ArrayList.class);
         
         //store the parent component node for a state node
-        comp_graph.addColumn("stateparent", Node.class);
+        m_componentGraph.addColumn("stateparent", Node.class);
         
         // Store the parent component nodes for sourcenode and targetnode of an edge
         // if they are state nodes
-        comp_graph.addColumn("leftparent", Node.class);
-        comp_graph.addColumn("rightparent", Node.class);
+        m_componentGraph.addColumn("leftparent", Node.class);
+        m_componentGraph.addColumn("rightparent", Node.class);
         
         // add a column to decide which edge to show in different display mode (show states)
-        comp_graph.addColumn("displaymode", String.class);
+        m_componentGraph.addColumn("displaymode", String.class);
         
         // add a column to check if the node has edge linked to it
-        comp_graph.addColumn("hasedge", boolean.class);
+        m_componentGraph.addColumn("hasedge", boolean.class);
         
         // add a column to indicate a component has state change
-        comp_graph.addColumn("statechange", boolean.class);
+        m_componentGraph.addColumn("statechange", boolean.class);
         
         // add a column to store annotation
-        comp_graph.addColumn("annotation", TableModel.class);
+        m_componentGraph.addColumn("annotation", TableModel.class);
+        
+        m_componentGraph.addColumn("model", Object.class);
         
         // Aggregate table for compartments
-		AggregateTable at_compartment = nv.addAggregateTable("compartments");
+		AggregateTable at_compartment = m_networkViewer.addAggregateTable("compartments");
 
 		// Aggregate tables are created by adding an aggregator group to the
 		// NetworkViewer. This is also a table data structure and will be
 		// used to keep track of the shape of the molecules.
-		AggregateTable at = nv.addAggregateTable(AGG);
+		AggregateTable at = m_networkViewer.addAggregateTable(AGG);
 
 		// Aggregate tables for components with states
-		AggregateTable at_comp = nv.addAggregateTable(AGG_COMP);
+		AggregateTable at_comp = m_networkViewer.addAggregateTable(AGG_COMP);
 		
 		// Add the graph to the visualization
 		// Pass the Graph object, and the string label for it.
-        nv.addGraph(comp_graph, COMPONENT_GRAPH);
+        m_networkViewer.addGraph(m_componentGraph, COMPONENT_GRAPH);
     	
         // Add the decorators to the visualization
         // Decorators are a way to add labels to objects.
         // Pass the string label for the decorators, and
         // the string value for the objects that they decorate.
-		nv.addDecorators(AGG_DEC, AGG);
+		m_networkViewer.addDecorators(AGG_DEC, AGG);
 		
 		// This sets the decorator objects as not interactive.
-		vis.setInteractive(AGG_DEC, null, false);
-		vis.setInteractive(COMPONENT_GRAPH+".edges", null, false);
+		m_vis.setInteractive(AGG_DEC, null, false);
+		m_vis.setInteractive(COMPONENT_GRAPH+".edges", null, false);
 		
         // Create the aggregate table and add it to the visualization
         //at = vis.addAggregates(AGG);
@@ -213,13 +215,14 @@ public class ContactMapVisual
 		// For collins
 		at_compartment.addColumn("SURFACE", ArrayList.class);
 		at_compartment.addColumn("aggregate_threshold", double.class);
-		at_compartment.addColumn("aggreagate_negativeEdgeInfluenceFactor",
-				double.class);
+		at_compartment.addColumn("aggreagate_negativeEdgeInfluenceFactor", double.class);
 		at_compartment.addColumn("aggregate_nodeInfluenceFactor", double.class);
-		at_compartment.addColumn("aggreagate_negativeNodeInfluenceFactor",
-				double.class);
+		at_compartment.addColumn("aggreagate_negativeNodeInfluenceFactor", double.class);
 		at_compartment.addColumn("aggregate_edgeInfluenceFactor", double.class);
-		 // add a column to store annotation
+		
+		at_compartment.addColumn("type", String.class);
+
+		// add a column to store annotation
 		at_compartment.addColumn("annotation", TableModel.class);
 		
         // Add a column to the table to hold the polygon information
@@ -234,7 +237,9 @@ public class ContactMapVisual
         at.addColumn("compartment", String.class);  
         // add a column to store annotation
 		at.addColumn("annotation", TableModel.class);
-        
+		
+		at.addColumn("type", String.class);
+		
         // Add a column to the talbe to hold the polygon information
         at_comp.addColumn(VisualItem.POLYGON, float[].class);
         // Add a column that will keep track of the types of aggregates. 
@@ -245,18 +250,18 @@ public class ContactMapVisual
         // If you do not want interactions, simply do not add a
         // clickcontroldelegate.  See the editor.contactmap.CMapClickControlDelegate
         // for how to implement it.
-        CMapClickControlDelegate cctrldelegate = new CMapClickControlDelegate(view , nv.getVisualization());
-        nv.setClickControl(cctrldelegate);
+        CMapClickControlDelegate cctrldelegate = new CMapClickControlDelegate(view , m_networkViewer.getVisualization());
+        m_networkViewer.setClickControl(cctrldelegate);
 
         // This is an index to the Node objects so that I can retrieve them 
         // based on the string value "<parent molecule index>.<component index>".
-        nodes = new Hashtable<String, Node>();
+        m_nodes = new Hashtable<String, Node>();
         
         // This is so I can get an edge, based on an string value: bondID.type(component, state)
-        edges = new Hashtable<String, Edge>();
+        m_edges = new Hashtable<String, Edge>();
         
         // This is how to get a hub node based on a Node set (all the involved nodes in a rule)
-        hubNodes = new Hashtable<Set<Node>, Node>();
+        m_hubNodes = new Hashtable<Set<Node>, Node>();
         
         // Now begins the construction of the data structure.  I am not sure
         // if you will be able to use Yao's parser and get the same structure,
@@ -283,36 +288,47 @@ public class ContactMapVisual
 		initCompartmentAggregates(at_compartment, cmptAggList);
 		
 		// For each molecule.
-		for(int i=0; i<model.getMolecules().size(); i++)
+		for(int i=0; i<m_model.getMolecules().size(); i++)
 		{			
 			// Get the molecule
-			tmole = model.getMolecules().get(i);
+			tmole = m_model.getMolecules().get(i);
 			
 			// If there are no components in the molecule, then the molecule
-			// is rendered as a component.
+			// is rendered as if it were a component.
 			if(tmole.getComponents().size()==0)
 			{
-				Node n = comp_graph.addNode();
+				// Create the node
+				Node n = m_componentGraph.addNode();
+				
+				// Set the label to some blank space to give the node some size.
 				n.setString(VisualItem.LABEL, "       ");
+
+				// Set the type as a component node.
 				n.setString("type", "component");
+				
 				// Set its ID
 			    n.setString("ID", ""+i);
+			    
+			    // Set the expression of the molecule
 			    n.setString("molecule_expression", tmole.getExpression());
-			    // Add it to the hashtable
-			    nodes.put(""+i, n);
+
+			    // Add it to the hashtable for future reference.
+			    m_nodes.put(""+i, n);
 			
 			    // Set its compartment
 				String compartment = tmole.getFirstCompartment();
-				if (compartment != null) {
+				if (compartment != null) 
+				{
 					addItemToCompartmentAgg(cmptAggList, n, compartment);
 				}
 			    
-				// add aggregates
-				AggregateItem agg = (AggregateItem) at.addItem(); 
+				// Create the aggregate that forms the molecule.
+				AggregateItem agg = (AggregateItem) at.addItem();
+				agg.setString("type", "molecule");
 				agg.setString(AGG_CAT_LABEL, tmole.getName());
 				agg.setString("molecule_expression", tmole.getExpression());
 				agg.setString("compartment", compartment);
-				agg.addItem(vis.getVisualItem(COMPONENT_GRAPH, n));
+				agg.addItem(m_vis.getVisualItem(COMPONENT_GRAPH, n));
 				
 				// add invisible edge inside compartment to control layout
 				if (compartment != null) {
@@ -320,9 +336,9 @@ public class ContactMapVisual
 						Node cfn = compartmentsFirstNode.get(compartment);
 
 						// add invisible edge
-						Edge te = comp_graph.addEdge(cfn, n);
+						Edge te = m_componentGraph.addEdge(cfn, n);
 						te.set("type", "compartment_edge");
-						EdgeItem ei = (EdgeItem) vis.getVisualItem(
+						EdgeItem ei = (EdgeItem) m_vis.getVisualItem(
 								COMPONENT_GRAPH + ".edges", te);
 						ei.setVisible(false);
 					}
@@ -341,29 +357,38 @@ public class ContactMapVisual
 				
 				// Get the aggregate so you can add nodes to it.
 				AggregateItem aggregateForMolecule = (AggregateItem) at.addItem();
+				aggregateForMolecule.setString("type", "molecule");
 				aggregateForMolecule.setString(AGG_CAT_LABEL, tmole.getName());
 				aggregateForMolecule.setString("molecule_expression", tmole.getExpression());
 				// Set its compartment
 				String compartment = tmole.getFirstCompartment();
 				aggregateForMolecule.setString("compartment", compartment);
 				
+				//TODO I do not see the point of this at_compartment table....
+				// Originally Wen added the convex hull compartments, but these are only
+				// containing a single molecule and are named after it....
+				
+				
 				// add another same aggregate in table at_compartment
 				// Get the aggregate so you can add nodes to it.
 				AggregateItem aggregateForMoleculeCompartment = (AggregateItem) at_compartment.addItem();
+				aggregateForMoleculeCompartment.setString("type", "compartment");
+				//DEBUG
+				//System.out.println("365: Setting compartment POSSIBLE MOLE NAME: " + tmole.getName());
 				aggregateForMoleculeCompartment.setString("compartment", tmole.getName());
 				aggregateForMoleculeCompartment.setVisible(false);			
 				
 				// special component node represent Molecule()
-				Node specialCompNode = comp_graph.addNode();
+				Node specialCompNode = m_componentGraph.addNode();
 				specialCompNode.setString(VisualItem.LABEL, " ");
 				specialCompNode.setString("type", "component");
 				// Set its ID
 				specialCompNode.setString("ID", ""+i);
 			    // Add it to the hashtable
-			    nodes.put(""+i, specialCompNode);
+			    m_nodes.put(""+i, specialCompNode);
 			    
 			    // set invisible
-			    VisualItem nItem = vis.getVisualItem(COMPONENT_GRAPH, specialCompNode);
+			    VisualItem nItem = m_vis.getVisualItem(COMPONENT_GRAPH, specialCompNode);
 			    nItem.setVisible(false);
 				
 			    // Add it to the compartment
@@ -391,8 +416,8 @@ public class ContactMapVisual
 						addItemToCompartmentAgg(cmptAggList, n, compartment);
 					}
 				    // Add it to the aggregate
-				    aggregateForMolecule.addItem(vis.getVisualItem(COMPONENT_GRAPH,n));
-				    aggregateForMoleculeCompartment.addItem(vis.getVisualItem(COMPONENT_GRAPH,n));
+				    aggregateForMolecule.addItem(m_vis.getVisualItem(COMPONENT_GRAPH,n));
+				    aggregateForMoleculeCompartment.addItem(m_vis.getVisualItem(COMPONENT_GRAPH,n));
 				    
 		
 				    // add invisible edge inside compartment to control layout
@@ -406,9 +431,9 @@ public class ContactMapVisual
 							// then add a invisible edge to control layout
 							if (!cfn.getString("ID").contains(".")) {
 								// add invisible edge
-								Edge te = comp_graph.addEdge(cfn, n);
+								Edge te = m_componentGraph.addEdge(cfn, n);
 								te.set("type", "compartment_edge");
-								EdgeItem ei = (EdgeItem) vis.getVisualItem(
+								EdgeItem ei = (EdgeItem) m_vis.getVisualItem(
 										COMPONENT_GRAPH + ".edges", te);
 								ei.setVisible(false);
 							}
@@ -428,7 +453,7 @@ public class ContactMapVisual
 						// set aggregates for component with states
 						AggregateItem aggregateForComponent = (AggregateItem) at_comp.addItem();
 						aggregateForComponent.setString(AGG_COMP_LABEL, tmole.getName()+"."+tcomp.getName());
-						aggregateForComponent.addItem(vis.getVisualItem(COMPONENT_GRAPH,n));
+						aggregateForComponent.addItem(m_vis.getVisualItem(COMPONENT_GRAPH,n));
 						
 						for(int k = 0; k < tcomp.getStates().size(); k++)
 						{
@@ -445,21 +470,21 @@ public class ContactMapVisual
 								addItemToCompartmentAgg(cmptAggList, n_state, compartment);
 							}
 							// add it to the molecule
-							aggregateForMolecule.addItem(vis.getVisualItem(COMPONENT_GRAPH,n_state));
-							aggregateForMoleculeCompartment.addItem(vis.getVisualItem(COMPONENT_GRAPH,n_state));
+							aggregateForMolecule.addItem(m_vis.getVisualItem(COMPONENT_GRAPH,n_state));
+							aggregateForMoleculeCompartment.addItem(m_vis.getVisualItem(COMPONENT_GRAPH,n_state));
 							// add it to the component
-							aggregateForComponent.addItem(vis.getVisualItem(COMPONENT_GRAPH,n_state));
+							aggregateForComponent.addItem(m_vis.getVisualItem(COMPONENT_GRAPH,n_state));
 							
 							((ArrayList<Node>) n.get("state_nodes")).add(n_state);
 							
 							//set invisible
-							NodeItem nitem = (NodeItem) vis.getVisualItem(COMPONENT_GRAPH+".nodes", n_state);
+							NodeItem nitem = (NodeItem) m_vis.getVisualItem(COMPONENT_GRAPH+".nodes", n_state);
 							nitem.setVisible(false);
 							
 							// add invisible edges connected to component
-							Edge te = comp_graph.addEdge(n, n_state);
+							Edge te = m_componentGraph.addEdge(n, n_state);
 							te.set("type", "stateInvisible_edge");
-					    	EdgeItem ei = (EdgeItem) vis.getVisualItem(COMPONENT_GRAPH+".edges", te);
+					    	EdgeItem ei = (EdgeItem) m_vis.getVisualItem(COMPONENT_GRAPH+".edges", te);
 								
 					    	ei.setVisible(false);
 						}  
@@ -468,9 +493,9 @@ public class ContactMapVisual
 				    // Add invisible edges for the force directed layout.
 				    for(Node on : otherCompsInMol)
 				    {
-				    	Edge te = comp_graph.addEdge(n, on);
+				    	Edge te = m_componentGraph.addEdge(n, on);
 				    	te.set("type", "componentInvisible_edge");
-				    	EdgeItem ei = (EdgeItem) vis.getVisualItem(COMPONENT_GRAPH+".edges", te);
+				    	EdgeItem ei = (EdgeItem) m_vis.getVisualItem(COMPONENT_GRAPH+".edges", te);
 							
 				    	ei.setVisible(false);
 				    }
@@ -484,19 +509,27 @@ public class ContactMapVisual
 		// create edge for each bond
 		createEdgesForBonds();
 		
+		String previousRuleText="";
+		
 		// map rules
-		for(int l = 0; l<model.getRules().size();l++)
+		for(int l = 0; l < m_model.getRules().size(); l++)
 		{	
-			
 			// Get a reference to the rule
-			Rule thisRule = model.getRules().get(l);
+			Rule thisRule = m_model.getRules().get(l);
 			
 			// Create a visual rule.  Used for interaction.  (See editor.contactmap.CMapClickControlDelegate.java)
-			VisualRule r_comp = new VisualRule(thisRule.getLabel(), thisRule.getName());
-			VisualRule r_state = new VisualRule(thisRule.getLabel(), thisRule.getName());
+			VisualRule r_comp = new VisualRule(thisRule.getLabel(), thisRule.getExpression());
+			VisualRule r_state = new VisualRule(thisRule.getLabel(), thisRule.getExpression());
 			
-			// map rules to bonds
-			identifyBonds(thisRule, r_comp, r_state);
+			
+			// Perform a check to see if this is the reverse rule for a bidirection.
+			// This is a quick hack to fix this problem, but it works for now.  
+			// The old parser did not produce
+			if(!thisRule.getExpression().equals(previousRuleText))
+			{
+				// map rules to bonds
+				identifyBonds(thisRule, r_comp, r_state);
+			}
 			
 			// reactants, products, changed states
 			identifyStateChange(thisRule, r_state);
@@ -522,92 +555,16 @@ public class ContactMapVisual
 			
 			// map the rest of rules which can not be mapped to bonds or changed state
 			identifyMoleLevelReaction(thisRule, r_comp);
+			
+			previousRuleText = thisRule.getExpression();
 		}
 					
-			//TODO  I'm not sure what this is for, but I'm going to ignore it for now.
-			//if(tbond.CanGenerate == true)
-			//{
-				/*if(tbond.state1 != -1)
-				{
-					outfile.print("struct"+model.getMolecules().get(tbond.molecule1).name+"_"+model.getMolecules().get(tbond.molecule1).components.get(tbond.component1).name+tbond.component1+":"+model.getMolecules().get(tbond.molecule1).components.get(tbond.component1).states.get(tbond.state1).name+"->");
-				}
-				else
-				{
-					outfile.print("struct"+model.getMolecules().get(tbond.molecule1).name+"_"+model.getMolecules().get(tbond.molecule1).components.get(tbond.component1).name+tbond.component1+"->");
-				}
-				if(tbond.state2 != -1)
-				{
-					outfile.println("struct"+model.getMolecules().get(tbond.molecule2).name+"_"+model.getMolecules().get(tbond.molecule2).components.get(tbond.component2).name+tbond.component2+":"+model.getMolecules().get(tbond.molecule2).components.get(tbond.component2).states.get(tbond.state2).name+"[arrowhead=none];");
-				}
-				else
-				{
-					outfile.println("struct"+model.getMolecules().get(tbond.molecule2).name+"_"+model.getMolecules().get(tbond.molecule2).components.get(tbond.component2).name+tbond.component2+"[arrowhead=none];");
-				}*/
-			
-			// Add an edge between the nodes in the bond.
-			
-		//	comp_graph.addEdge(arg0, arg1)
-			
-		/*	}
-			else
-			{
-				if(tbond.state1 != -1)
-				{
-					outfile.print("struct"+model.getMolecules().get(tbond.molecule1).name+"_"+model.getMolecules().get(tbond.molecule1).components.get(tbond.component1).name+tbond.component1+":"+model.getMolecules().get(tbond.molecule1).components.get(tbond.component1).states.get(tbond.state1).name+"->");
-				}
-				else
-				{
-					outfile.print("struct"+molecules.get(tbond.molecule1).name+"_"+molecules.get(tbond.molecule1).components.get(tbond.component1).name+tbond.component1+"->");
-				}
-				if(tbond.state2 != -1)
-				{
-					outfile.println("struct"+molecules.get(tbond.molecule2).name+"_"+molecules.get(tbond.molecule2).components.get(tbond.component2).name+tbond.component2+":"+molecules.get(tbond.molecule2).components.get(tbond.component2).states.get(tbond.state2).name+"[arrowhead=none,color=grey];");
-				}
-				else
-				{
-					outfile.println("struct"+molecules.get(tbond.molecule2).name+"_"+molecules.get(tbond.molecule2).components.get(tbond.component2).name+tbond.component2+"[arrowhead=none,color=grey];");
-				}
-			}*/
-		
-		nv.build();
-		
-		// initialize annotation
-		//CMapAnnotationController cmapAnnotation = new CMapAnnotationController();	
-		
-		// This is where all of those updates are coming from when a visualization is loaded.
-		// The only reason that this is necessary would be if there are initializations that
-		// have to happen.
-		// nodes and edges
-		
-		/*
-		Iterator iter = vis.items(COMPONENT_GRAPH);
-		 
-		
-		while (iter.hasNext()) {
-			VisualItem item = (VisualItem) iter.next();
-			if (item instanceof NodeItem) {
-				cmapAnnotation.setAnnotationForNode(item);
-			}
-			else if (item instanceof EdgeItem) {
-				cmapAnnotation.setAnnotationForEdge(item);
-			}
-		}
-		
-		
-		// aggregates
-		iter = vis.items(AGG);
-		while (iter.hasNext()) {
-			VisualItem item = (VisualItem) iter.next();
-			if (item instanceof AggregateItem) {
-				cmapAnnotation.setAnnotationForAggregate(item);
-			}
-		}
-		*/
+		m_networkViewer.build();
 	}
 	
 	private Node makeComponentNode(Molecule tmole, Component tcomp, int moleIndex, int compIndex) 
 	{
-		Node n = comp_graph.addNode();
+		Node n = m_componentGraph.addNode();
 		// Set its name
 	    n.setString(VisualItem.LABEL, " " + tcomp.getName() + " ");
 	    // Set its parent
@@ -619,7 +576,7 @@ public class ContactMapVisual
 	    // Set its ID
 	    n.setString("ID", moleIndex+"."+compIndex);
 	    // Add it to the hashtable
-	    nodes.put(moleIndex+"."+compIndex , n);
+	    m_nodes.put(moleIndex+"."+compIndex , n);
 	    
 	   // System.out.println("Molecule: (" + tmole.getName() + "," + moleIndex + ")\t\tComponent: (" + tcomp.getName() + "," + compIndex +")");
 	    
@@ -629,7 +586,7 @@ public class ContactMapVisual
 	private Node makeStateNode(Molecule tmole, Component tcomp, State tstate,
 			int moleIndex, int compIndex, int stateIndex, Node compNode) 
 	{
-		Node n_state = comp_graph.addNode();
+		Node n_state = m_componentGraph.addNode();
 		// set its name
 		n_state.setString(VisualItem.LABEL, tstate.getName());
 		// set its type
@@ -645,7 +602,7 @@ public class ContactMapVisual
 		// set its parent component node
 		n_state.set("stateparent", compNode);
 		// add it to the hashtable
-		nodes.put(moleIndex + "." + compIndex + "." + stateIndex, n_state);
+		m_nodes.put(moleIndex + "." + compIndex + "." + stateIndex, n_state);
 
 		return n_state;
 	}
@@ -653,18 +610,18 @@ public class ContactMapVisual
 	private void createEdgesForBonds() 
 	{
 		// Create an edge for each bond.
-		for(int b = 0; b < model.getBonds().size(); b++)
+		for(int currentBondIndex = 0; currentBondIndex < m_model.getBonds().size(); currentBondIndex++)
 		{
 			// Declare two type of Edges, to show the CMAP in two mode: no states, with states
 			Edge e_comp, e_state;
 			
 			// Get the bond
-			Bond tbond = model.getBonds().get(b);
+			Bond tbond = m_model.getBonds().get(currentBondIndex);
 
 			// create left and right nodes of the bond edge
 			// both left and right components have no state strict
-			Node leftnode = nodes.get(tbond.getMolecule1()+"."+tbond.getComponent1());
-			Node rightnode = nodes.get(tbond.getMolecule2()+"."+tbond.getComponent2());
+			Node leftnode = m_nodes.get(tbond.getMolecule1()+"."+tbond.getComponent1());
+			Node rightnode = m_nodes.get(tbond.getMolecule2()+"."+tbond.getComponent2());
 			
 			leftnode.set("hasedge", true);
 			rightnode.set("hasedge", true);
@@ -675,9 +632,9 @@ public class ContactMapVisual
 			// We use the bonds that are in the data structure so I am pretty sure that it is in the parser.
 			
 			// Create the edge linking component
-			e_comp = comp_graph.addEdge(leftnode, rightnode);
+			e_comp = m_componentGraph.addEdge(leftnode, rightnode);
 			// Put the edge into the hashtable.
-			edges.put(Integer.toString(b) + "." + "component", e_comp);
+			m_edges.put(Integer.toString(currentBondIndex) + "." + "component", e_comp);
 			// instantiate the ArrayList of Rule objects that will be stored with the edge.
 			e_comp.set("rules", new ArrayList<VisualRule>());
 			// show this edge in "show states" mode
@@ -689,21 +646,16 @@ public class ContactMapVisual
 			// If the state of the first component is not -1 (there is one)
 			if (tbond.getState1() != -1) 
 			{
-				//DEBUG
-				//System.out.println("Has State: " + tbond.getState1());
-				
 				// Set the leftparentNode as the leftnode.  The leftnode is the component level.
 				leftparentnode = leftnode; 
 				
 				// Set the the leftnode as the state level node.
-				leftnode = nodes.get(tbond.getMolecule1()+"."+tbond.getComponent1()+"."+tbond.getState1());
+				leftnode = m_nodes.get(tbond.getMolecule1()+"."+tbond.getComponent1()+"."+tbond.getState1());
 				
 				// If there is a state node, then set the node as having an edge.
 				if (leftnode != null)
 				{
-					//System.out.println("\t left node not null: " + tbond.getMolecule1()+"."+tbond.getComponent1()+"."+tbond.getState1());
-					leftnode.set("hasedge", true);
-					
+					leftnode.set("hasedge", true);	
 				}
 				// Do nothing. 
 				else
@@ -722,25 +674,20 @@ public class ContactMapVisual
 			// if the right node has a state 
 			if (tbond.getState2() != -1) 
 			{
-				//DEBUG
-				//System.out.println("Has State: " + tbond.getState2());
-				
 				// Set the parent node as the component level node.
 				rightparentnode = rightnode; 
 				
 				// Set the rightnode as the state level.
-				rightnode = nodes.get(tbond.getMolecule2()+"."+tbond.getComponent2()+"."+tbond.getState2()); // state node
+				rightnode = m_nodes.get(tbond.getMolecule2()+"."+tbond.getComponent2()+"."+tbond.getState2()); // state node
 				
 				// If there is a state level, then set the node as having an edge.
 				if (rightnode != null)
 				{
 					rightnode.set("hasedge", true);
-					//System.out.println("\tright node not null: " + tbond.getMolecule2()+"."+tbond.getComponent2()+"."+tbond.getState2());
 				}
 				// Do nothing if there is no state level.
 				else
 				{
-					//System.out.println("\tright node null: " + tbond.getMolecule2()+"."+tbond.getComponent2()+"."+tbond.getState2());
 				}
 			}
 			// Do nothing if there is no state associated with the node.
@@ -756,14 +703,14 @@ public class ContactMapVisual
 				// Create the node between the left and right state nodes. 
 				// If there was state information for the node, then that node
 				// is a state level node.  
-				e_state = comp_graph.addEdge(leftnode, rightnode);
+				e_state = m_componentGraph.addEdge(leftnode, rightnode);
 				
 				// add component information
 				e_state.set("leftparent", leftparentnode);
 				e_state.set("rightparent", rightparentnode);
 					
 				// Put the edge into the hashtable.
-				edges.put(Integer.toString(b) + "." + "state", e_state);
+				m_edges.put(Integer.toString(currentBondIndex) + "." + "state", e_state);
 				
 				// instantiate the ArrayList of Rule objects that will be stored with the edge.
 				e_state.set("rules", new ArrayList<VisualRule>());
@@ -774,23 +721,32 @@ public class ContactMapVisual
 				e_comp.set("displaymode", "component");
 				
 				// set invisible
-				EdgeItem eitem = (EdgeItem) vis.getVisualItem(COMPONENT_GRAPH+".edges", e_state);
+				EdgeItem eitem = (EdgeItem) m_vis.getVisualItem(COMPONENT_GRAPH+".edges", e_state);
 				eitem.setVisible(false);
 			}				
 		}
 	}
 	
-	private void identifyBonds(Rule thisRule, VisualRule r_comp, VisualRule r_state) {
+	private void identifyBonds(Rule thisRule, VisualRule r_comp, VisualRule r_state)
+	{
+		//DEBUG
+		System.out.println("Processing Rule: " + thisRule.getLabel());
+		System.out.println("Bond Actions: " + thisRule.getBondactions().size());
+		
 		// For the bonds created or destroyed by the rule
 		for(BondAction ba : thisRule.getBondactions())
 		{
 			String bondid = Integer.toString(ba.getBondIndex());
+			
+			//DEBUG
+			System.out.println("Bond ID: " + bondid);
+			
 			// Get the edge for this bond.
-			Edge e_state = edges.get(bondid + "." + "state");
-			Edge e_comp = edges.get(bondid + "." + "component");
+			Edge e_state = m_edges.get(bondid + "." + "state");
+			Edge e_comp = m_edges.get(bondid + "." + "component");
 
-			if (e_state != null) {
-
+			if (e_state != null) 
+			{
 				// Add the bond to the rule as either created or
 				// destroyed by the rule.
 				if (ba.getAction() > 0)
@@ -799,10 +755,21 @@ public class ContactMapVisual
 					r_state.addRemoveBond(e_state);
 
 				// Add the Visual rule to the Edge.
-				((ArrayList<VisualRule>) e_state.get("rules")).add(r_state);
+				//DEBUG
+				System.out.println("\tAdding Visual Rule: " + r_state.getLabel());
+				ArrayList<VisualRule> e_state_rules =  (ArrayList<VisualRule>) e_state.get("rules");
+				System.out.println("\t\tExisting Visual Rules: " + e_state_rules.size());
+				e_state_rules.add(r_state);
+				System.out.println("\t\tNow Visual Rules: " + ((ArrayList<VisualRule>) e_state.get("rules")).size());
+			}
+			else
+			{
+				//DEBUG
+				System.out.println("\te_state was null");
 			}
 			
-			if (e_comp != null) {
+			if (e_comp != null) 
+			{
 				// Add the bond to the rule as either created or
 				// destroyed by the rule.
 				if (ba.getAction() > 0)
@@ -810,8 +777,19 @@ public class ContactMapVisual
 				else
 					r_comp.addRemoveBond(e_comp);
 
+				//DEBUG
+				System.out.println("\tAdding Visual Rule: " + r_comp.getLabel());
+				
 				// Add the Visual rule to the Edge.
-				((ArrayList<VisualRule>) e_comp.get("rules")).add(r_comp);
+				ArrayList<VisualRule> e_comp_rules =  (ArrayList<VisualRule>) e_comp.get("rules");
+				System.out.println("\t\tExisting Visual Rules: " + e_comp_rules.size());
+				e_comp_rules.add(r_state);	
+				System.out.println("\t\tNow Visual Rules: " + ((ArrayList<VisualRule>) e_comp.get("rules")).size());
+			}
+			else
+			{
+				//DEBUG
+				System.out.println("\te_state was null");
 			}
 		}
 	}
@@ -822,27 +800,27 @@ public class ContactMapVisual
 		{
 			for(Integer i : rp.getBonds())
 			{
-				r_comp.addReactantBond(edges.get(i+"."+"component"));
-				r_state.addReactantBond(edges.get(i+"."+"state"));
+				r_comp.addReactantBond(m_edges.get(i+"."+"component"));
+				r_state.addReactantBond(m_edges.get(i+"."+"state"));
 			}
 			
 			for(MoleculePattern mp : rp.getMolepatterns()) {
 				
 				// molecule level, no components
 				if (mp.getComppatterns().size() == 0) {
-					r_comp.addReactantMoleNode(nodes.get(""+mp.getMoleIndex()));
-					r_state.addReactantMoleNode(nodes.get(""+mp.getMoleIndex()));
+					r_comp.addReactantMoleNode(m_nodes.get(""+mp.getMoleIndex()));
+					r_state.addReactantMoleNode(m_nodes.get(""+mp.getMoleIndex()));
 				}
 				
 				// component level
 				for(ComponentPattern cp : mp.getComppatterns()) {
 					if (cp.getStateindex() != -1) {
 						// has certain state
-						r_state.addReactantCompNode(nodes.get(mp.getMoleIndex()+"."+cp.getCompIndex()+"."+cp.getStateindex()));
+						r_state.addReactantCompNode(m_nodes.get(mp.getMoleIndex()+"."+cp.getCompIndex()+"."+cp.getStateindex()));
 					}							
 
-					r_comp.addReactantCompNode(nodes.get(mp.getMoleIndex()+"."+cp.getCompIndex()));
-					r_state.addReactantCompNode(nodes.get(mp.getMoleIndex()+"."+cp.getCompIndex()));
+					r_comp.addReactantCompNode(m_nodes.get(mp.getMoleIndex()+"."+cp.getCompIndex()));
+					r_state.addReactantCompNode(m_nodes.get(mp.getMoleIndex()+"."+cp.getCompIndex()));
 				}
 
 			}
@@ -855,26 +833,26 @@ public class ContactMapVisual
 		{
 			for(Integer i : pp.getBonds())
 			{
-				r_comp.addProductBond(edges.get(i+"."+"component"));
-				r_state.addProductBond(edges.get(i+"."+"state"));
+				r_comp.addProductBond(m_edges.get(i+"."+"component"));
+				r_state.addProductBond(m_edges.get(i+"."+"state"));
 			}
 			
 			for(MoleculePattern mp : pp.getMolepatterns()) {
 				// molecule level, no components
 				if (mp.getComppatterns().size() == 0) {
-					r_comp.addProductMoleNode(nodes.get(""+mp.getMoleIndex()));
-					r_state.addProductMoleNode(nodes.get(""+mp.getMoleIndex()));
+					r_comp.addProductMoleNode(m_nodes.get(""+mp.getMoleIndex()));
+					r_state.addProductMoleNode(m_nodes.get(""+mp.getMoleIndex()));
 				}
 				
 				// component level
 				for(ComponentPattern cp : mp.getComppatterns()) {
 					if (cp.getStateindex() != -1) {
 						// has certain state
-						r_state.addProductCompNode(nodes.get(mp.getMoleIndex()+"."+cp.getCompIndex()+"."+cp.getStateindex()));
+						r_state.addProductCompNode(m_nodes.get(mp.getMoleIndex()+"."+cp.getCompIndex()+"."+cp.getStateindex()));
 					}						
 					
-					r_comp.addProductCompNode(nodes.get(mp.getMoleIndex()+"."+cp.getCompIndex()));
-					r_state.addProductCompNode(nodes.get(mp.getMoleIndex()+"."+cp.getCompIndex()));
+					r_comp.addProductCompNode(m_nodes.get(mp.getMoleIndex()+"."+cp.getCompIndex()));
+					r_state.addProductCompNode(m_nodes.get(mp.getMoleIndex()+"."+cp.getCompIndex()));
 				}
 			}
 		}
@@ -914,8 +892,8 @@ public class ContactMapVisual
 										// different state
 										if (rstateId != pstateId) 
 										{
-											Node pstateNode = nodes.get(pmp.getMoleIndex()+"."+pcp.getCompIndex()+"."+pcp.getStateindex());
-											Node rstateNode = nodes.get(rmp.getMoleIndex()+"."+rcp.getCompIndex()+"."+rcp.getStateindex());
+											Node pstateNode = m_nodes.get(pmp.getMoleIndex()+"."+pcp.getCompIndex()+"."+pcp.getStateindex());
+											Node rstateNode = m_nodes.get(rmp.getMoleIndex()+"."+rcp.getCompIndex()+"."+rcp.getStateindex());
 											
 											// rule direction includes forward
 											if (r_state.getName().indexOf(">") != -1) 	
@@ -954,11 +932,8 @@ public class ContactMapVisual
 											pstateNode.set("statechange", true);
 											
 											// set component "statechange" = true
-											Node compNode = nodes.get(pmp.getMoleIndex()+"."+pcp.getCompIndex());
+											Node compNode = m_nodes.get(pmp.getMoleIndex()+"."+pcp.getCompIndex());
 											compNode.set("statechange", true);
-											
-											// DEBUG
-											//System.out.println("state change: " + thisRule.getName());
 										}
 									}
 								}
@@ -970,10 +945,8 @@ public class ContactMapVisual
 		}
 	}
 	
-	private void identifyMoleLevelReaction(Rule thisRule, VisualRule r_comp) {
-		// DEBUG
-		//System.out.println("Mole-level: " + thisRule.getName());
-		
+	private void identifyMoleLevelReaction(Rule thisRule, VisualRule r_comp) 
+	{
 		// hub node
 		Node n;
 		// get the hub node if already exists
@@ -993,7 +966,7 @@ public class ContactMapVisual
 				for (MoleculePattern mp : rp.getMolepatterns()) {
 					if (mp.getComppatterns().size() != 1) {
 						// molecule-level node
-						Node moleNode = nodes.get("" + mp.getMoleIndex());
+						Node moleNode = m_nodes.get("" + mp.getMoleIndex());
 						if (moleNode != null) {
 							moleSet.add(moleNode);
 						}
@@ -1002,10 +975,10 @@ public class ContactMapVisual
 						ComponentPattern cp = mp.getComppatterns().get(0);
 						Node compNode = null, stateNode = null;
 						// component node
-						compNode = nodes.get("" + mp.getMoleIndex() + "." + cp.getCompIndex());
+						compNode = m_nodes.get("" + mp.getMoleIndex() + "." + cp.getCompIndex());
 						if (cp.getStateindex() != -1) {
 							// state node
-							stateNode = nodes.get(mp.getMoleIndex()+"."+cp.getCompIndex()+"."+cp.getStateindex());
+							stateNode = m_nodes.get(mp.getMoleIndex()+"."+cp.getCompIndex()+"."+cp.getStateindex());
 							if (stateNode != null) {
 								moleSet.add(stateNode);
 							}
@@ -1021,13 +994,13 @@ public class ContactMapVisual
 		}
 		
 		// get the hub node from hash table if exists
-		n = hubNodes.get(moleSet);
+		n = m_hubNodes.get(moleSet);
 
 		// node does not exist in hash table, create a new one
 		if (n == null) {
 
 			// make connection node
-			n = comp_graph.addNode();
+			n = m_componentGraph.addNode();
 			// set its name
 			n.setString(VisualItem.LABEL, " ");
 			// set its type
@@ -1036,7 +1009,7 @@ public class ContactMapVisual
 			ArrayList<VisualRule> tmplist = new ArrayList<VisualRule>();
 			tmplist.add(r_comp);
 			n.set("rules", tmplist);
-			hubNodes.put(moleSet, n);
+			m_hubNodes.put(moleSet, n);
 		}
 		// exists, add current rule to the hub node
 		else {
@@ -1052,14 +1025,14 @@ public class ContactMapVisual
 					// molecule level, no components or more than one components
 					if (mp.getComppatterns().size() != 1) {
 
-						Node moleNode = nodes.get("" + mp.getMoleIndex());
+						Node moleNode = m_nodes.get("" + mp.getMoleIndex());
 						// set visible
-						VisualItem nItem = vis.getVisualItem(COMPONENT_GRAPH, moleNode);
+						VisualItem nItem = m_vis.getVisualItem(COMPONENT_GRAPH, moleNode);
 						
 					    nItem.setVisible(true);
 						if (moleNode != null) {
 							// create edge
-							Edge e = comp_graph.addEdge(n, moleNode);
+							Edge e = m_componentGraph.addEdge(n, moleNode);
 							e.set("type", "moleConnection");
 						}
 
@@ -1068,30 +1041,30 @@ public class ContactMapVisual
 						
 						ComponentPattern cp = mp.getComppatterns().get(0);
 						Node compNode = null, stateNode = null;
-						compNode = nodes.get("" + mp.getMoleIndex() + "." + cp.getCompIndex());
+						compNode = m_nodes.get("" + mp.getMoleIndex() + "." + cp.getCompIndex());
 						boolean hasState = false;
 						
 						if (cp.getStateindex() != -1) {
 							// has certain state
-							stateNode = nodes.get(mp.getMoleIndex()+"."+cp.getCompIndex()+"."+cp.getStateindex());
+							stateNode = m_nodes.get(mp.getMoleIndex()+"."+cp.getCompIndex()+"."+cp.getStateindex());
 							hasState = true;
 						}						
 						
 						if (compNode != null) {
 							// connect to component node
-							Edge e_comp = comp_graph.addEdge(n, compNode);
+							Edge e_comp = m_componentGraph.addEdge(n, compNode);
 							e_comp.set("type", "moleConnection");
 							e_comp.set("displaymode", "component");
 							
 							// connect to state node
 							if (hasState && stateNode != null) {
-								Edge e_state = comp_graph.addEdge(n, stateNode);
+								Edge e_state = m_componentGraph.addEdge(n, stateNode);
 								e_state.set("type", "moleConnection");
 								e_state.set("displaymode", "state");
 								stateNode.set("hasedge", true);
 								
 								// set invisible
-								EdgeItem eitem = (EdgeItem) vis.getVisualItem(COMPONENT_GRAPH+".edges", e_state);
+								EdgeItem eitem = (EdgeItem) m_vis.getVisualItem(COMPONENT_GRAPH+".edges", e_state);
 								eitem.setVisible(false);
 								
 							}
@@ -1107,7 +1080,7 @@ public class ContactMapVisual
 	
 	private void initCompartmentAggregates(AggregateTable at_compartment,  ArrayList<AggregateItem> aggList) {
 		   
-        CompartmentTable cmptTable = model.getCompartments();
+        CompartmentTable cmptTable = m_model.getCompartments();
         ArrayList<Compartment> cmptList = (ArrayList<Compartment>)cmptTable.getCompartmentsList(true);
         
         // no compartment info
@@ -1118,35 +1091,57 @@ public class ContactMapVisual
         // create aggregate items for compartments
         for (int i = 0; i < cmptList.size(); i++) {
         	AggregateItem agg = (AggregateItem) at_compartment.addItem();
+        	agg.setString("type", "compartment");
         	agg.set("compartment", cmptList.get(i).getName());
         	agg.setVisible(false);
         	aggList.add(agg);
         }
 	}
 	
-	private void addItemToCompartmentAgg(ArrayList<AggregateItem> aggList, Node node, String cmptStr) {
-		CompartmentTable cmptTable = model.getCompartments();
-		ArrayList<Compartment> cmptList = (ArrayList<Compartment>)cmptTable.getCompartmentsList(false);
-		for (int i = cmptList.size() - 1; i >= 0; i--) {
+	/**
+	 * Adds a visual item to a compartment aggregate.
+	 * @param aggList
+	 * @param node
+	 * @param cmptStr
+	 */
+	private void addItemToCompartmentAgg(ArrayList<AggregateItem> aggList, Node node, String cmptStr) 
+	{
+		// Get the a table of information about the compartments in the model.
+		CompartmentTable cmptTable = m_model.getCompartments();
+		
+		// Get a list of all of the compartments.
+		ArrayList<Compartment> cmptList = (ArrayList<Compartment>) cmptTable.getCompartmentsList(false);
+		
+		// For each compartment (in reverse order).
+		for (int i = cmptList.size() - 1; i >= 0; i--)
+		{
+			// Get the current aggregate (compartment).
 			AggregateItem agg = aggList.get(i);
+			// Get the name of the compartment.
 			String cmptName = cmptList.get(i).getName();
+			
+			// current molecule belongs to current compartment directly OR indirectly
+			
+			// If the passed in compartment name is the same as the current name, or if
+			// the passed in compartment is a child of the current compartment.
+			if (cmptStr.equals(cmptName) || cmptTable.isChild(cmptStr, cmptName)) 
+			{
+				// Add the node to the aggregate. 
+				//DEBUG
+				System.out.println("ADDING: " + node.getString("molecule"));
+				agg.addItem(m_vis.getVisualItem(COMPONENT_GRAPH, node));
 
-			// current molecule belongs to current compartment directly
-			// OR indirectly
-			if (cmptStr.equals(cmptName) || cmptTable.isChild(cmptStr, cmptName)) {
-//			if (cmptStr.equals(cmptName)) {
-				agg.addItem(vis.getVisualItem(COMPONENT_GRAPH, node));
 			}
 		}
 	}
 
 	public Display getDisplay()
 	{
-		return nv.getDisplay();
+		return m_networkViewer.getDisplay();
 	}
 	
 	public CMAPNetworkViewer getCMAPNetworkViewer() {
-		return this.nv;
+		return this.m_networkViewer;
 	}
 }
 

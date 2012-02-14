@@ -14,7 +14,7 @@ import org.eclipse.ui.IWorkbenchPartReference;
 
 import bngparser.grammars.BNGGrammar.prog_return;
 
-import rulebender.contactmap.models.CMapModel;
+import rulebender.contactmap.models.ContactMapModel;
 import rulebender.contactmap.models.CMapModelBuilder;
 import rulebender.contactmap.prefuse.ContactMapVisual;
 import rulebender.editors.bngl.BNGLEditor;
@@ -136,7 +136,7 @@ public class ContactMapSelectionListener implements ISelectionListener, IPartLis
 		}
 		
 		// Get the model from the builder.		
-		CMapModel cModel = cmapModelBuilder.getCMapModel();
+		ContactMapModel cModel = cmapModelBuilder.getCMapModel();
 		
 		//DEBUG
 		// This should never happen.

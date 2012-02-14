@@ -12,26 +12,24 @@ import rulebender.core.prefuse.networkviewer.contactmap.VisualRule;
 public class StatePropertySource implements IPropertySource 
 {
 
-	private static final String PROPERTY_NAME = "rulebender.contactmap.properties.state";
-	private static final String PROPERTY_COMPONENT = "rulebender.contactmap.properties.state.component";
-	private static final String PROPERTY_MOLECULE = "rulebender.contactmap.properties.state.molecule";
-	private static final String PROPERTY_RULES_PREFIX = "rulebender.contactmap.properties.state.rule";
+	public static final String PROPERTY_NAME = "rulebender.contactmap.properties.state";
+	public static final String PROPERTY_COMPONENT = "rulebender.contactmap.properties.state.component";
+	public static final String PROPERTY_MOLECULE = "rulebender.contactmap.properties.state.molecule";
+	public static final String PROPERTY_RULES_PREFIX = "rulebender.contactmap.properties.state.rule";
 	
 	private String m_name;
 	private String m_component;
 	private String m_molecule;
-	
 	private ArrayList<VisualRule> m_rules;
 	
     private IPropertyDescriptor[] m_propertyDescriptors;
     
 	public StatePropertySource(VisualItem item) 
 	{
-		m_name = ((String) item.get(VisualItem.LABEL)).trim();
-		m_component = item.getString("component").trim();
-		m_molecule = item.getString("molecule");
-		
-		m_rules = (ArrayList<VisualRule>) item.get("rules");
+		setName(((String) item.get(VisualItem.LABEL)).trim());
+		setComponent(item.getString("component").trim());
+		setMolecule(item.getString("molecule"));
+		setRules((ArrayList<VisualRule>) item.get("rules"));
 	}
 
 	@Override
@@ -86,22 +84,22 @@ public class StatePropertySource implements IPropertySource
 	{
 		if(id.equals(PROPERTY_NAME))
 		{
-			return m_name;
+			return getName();
 		}
 		else if(id.equals(PROPERTY_COMPONENT))
 		{
-			return m_component;
+			return getComponent();
 		}
 		else if(id.equals(PROPERTY_MOLECULE))
 		{
-			return m_molecule;
+			return getMolecule();
 		}
 		else if (id instanceof String && ((String) id).contains(PROPERTY_RULES_PREFIX))
 		{
 			String sid = (String) id;
 			int num = Integer.parseInt(sid.substring(sid.indexOf("_")+1));
 			
-			return m_rules.get(num).getName();
+			return getRules().get(num).getName();
 		}
 		return null;
 	}
@@ -122,5 +120,46 @@ public class StatePropertySource implements IPropertySource
 	public void setPropertyValue(Object id, Object value) {
 		// TODO Auto-generated method stub
 		
+	}
+
+	public String getName() 
+	{
+		getPropertyDescriptors();
+		return m_name;
+	}
+
+	private void setName(String m_name) {
+		this.m_name = m_name;
+	}
+
+	public String getComponent() 
+	{
+		getPropertyDescriptors();
+		return m_component;
+	}
+
+	private void setComponent(String m_component) {
+		this.m_component = m_component;
+	}
+
+	public String getMolecule() 
+	{
+		getPropertyDescriptors();
+		return m_molecule;
+	}
+
+	private void setMolecule(String m_molecule) {
+		this.m_molecule = m_molecule;
+	}
+
+	public ArrayList<VisualRule> getRules() 
+	{
+		getPropertyDescriptors();
+		return m_rules;
+	}
+
+	private void setRules(ArrayList<VisualRule> m_rules) 
+	{
+		this.m_rules = m_rules;
 	}
 }

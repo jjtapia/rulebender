@@ -64,13 +64,13 @@ import rulebender.editors.bngl.model.ruledata.RulePatternData;
  */
 public class CMapModelBuilder implements BNGLModelBuilderInterface 
 {
-	CMapModel m_model;
+	ContactMapModel m_model;
 	
 	HashMap<String, Integer> m_moleculeIDForName;
 	
 	public CMapModelBuilder()
 	{
-		m_model = new CMapModel(); 
+		m_model = new ContactMapModel(); 
 		m_moleculeIDForName = new HashMap<String, Integer>();
 	}
 
@@ -84,6 +84,9 @@ public class CMapModelBuilder implements BNGLModelBuilderInterface
 	 */
 	public void foundCompartment(String id, String volume, String outside) 
 	{	
+		//DEBUG
+		//System.out.println("Found compartment:\n\tID: " + id + "\n\tVolume: " + volume + "\n\tOutside: " + outside);
+		
 		// Try and get the parent
 		Compartment parent = m_model.getCompartments().getCompartment(outside);
 		
@@ -98,12 +101,8 @@ public class CMapModelBuilder implements BNGLModelBuilderInterface
 	 */
 	public void foundMoleculeType(Molecule molecule) 
 	{
-		//System.out.println("Found Molecule: " + molecule.getName());
-		
 		int index = m_model.addMolecule(molecule);
 		m_moleculeIDForName.put(molecule.getName(), index);
-		
-		//System.out.println("index: " + index);
 	}
 
 
@@ -189,26 +188,33 @@ public class CMapModelBuilder implements BNGLModelBuilderInterface
 	 */
 	public void foundRule(RuleData ruleData) 
 	{
+		System.out.println(ruleData.getExpression());
+		
+		Rule existingRule = m_model.getRuleWithExpression(ruleData.getExpression());// Get the existing rule.
+		
+		System.out.println("Existing == null: " + (existingRule == null? "yes" : "no"));
+		
 		// If it is a reverse rule
-		if(ruleData.getName().contains("(Reverse)"))
+		if(existingRule != null)
 		{
 			// Get the rule, set it to bidirectional, and set the 2nd rate.
-			Rule existingRule = m_model.getRuleWithName(ruleData.getName().substring(0, ruleData.getName().indexOf("(")));// Get the existing rule.
 			existingRule.setBidirection(true);
 			existingRule.setRate2(ruleData.getRate());
 		
+			System.out.println("REVERSE");
+			
 			//Done
-			return;
+			return;	
 		}
 		
 		// Create a new rule.
 		Rule rule = new Rule();
 		
 		// Set the label of the rule.
-		rule.setLabel(ruleData.getName());
+		rule.setLabel(ruleData.getLabel());
 		
 		// Set the expression for the rule. 
-		rule.setName(ruleData.getExpression());
+		rule.setExpression(ruleData.getExpression());
 		
 		// Set the rate
 		rule.setRate1(ruleData.getRate());
@@ -353,7 +359,7 @@ public class CMapModelBuilder implements BNGLModelBuilderInterface
 			
 	}
 	
-	public CMapModel getCMapModel() 
+	public ContactMapModel getCMapModel() 
 	{
 		return m_model;
 	}

@@ -3,12 +3,18 @@ package rulebender.editors.bngl;
 import java.io.File;
 import java.io.PrintStream;
 import java.util.ArrayList;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.swt.custom.StyleRange;
+import org.eclipse.swt.custom.StyledText;
+import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.ISelectionListener;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PlatformUI;
@@ -16,11 +22,14 @@ import org.eclipse.ui.editors.text.TextEditor;
 import org.eclipse.ui.texteditor.IDocumentProvider;
 import org.eclipse.ui.texteditor.ITextEditor;
 
+import prefuse.visual.VisualItem;
+
 import bngparser.BNGParseData;
 import bngparser.BNGParserUtility;
 import bngparser.grammars.BNGGrammar.prog_return;
 
 import rulebender.contactmap.prefuse.CMapClickControlDelegate;
+import rulebender.contactmap.properties.StatePropertySource;
 import rulebender.contactmap.view.ContactMapView;
 import rulebender.core.utility.ANTLRFilteredPrintStream;
 import rulebender.core.utility.Console;
@@ -56,10 +65,13 @@ public class BNGLEditor extends TextEditor implements ISelectionListener
 		// and how the text is partitioned.
 		setDocumentProvider(new BNGLDocumentProvider());
 		
+		
+		
 		// Can't create the m_model here because we need the part name,
 		// and the part name is not set until after the constructor.  
 		// So i used a lazy load in the getter.
-		
+	
+		// Register with the ISelectionService
 		PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().addPostSelectionListener(this);
   	}
 	
@@ -204,10 +216,11 @@ public class BNGLEditor extends TextEditor implements ISelectionListener
 	@Override
 	public void selectionChanged(IWorkbenchPart part, ISelection selection) 
 	{
+		
 		// If it's from the BNGLEditor then we want to set the contact map.
 		if(part.getClass() == ErrorView.class && !selection.isEmpty())
 		{
-			IStructuredSelection iSSelection = (IStructuredSelection) selection;
+			IStructuredSelection iSSelection = (IStructuredSelection) selection;		
 			BNGLError error = (BNGLError) iSSelection.getFirstElement();
 			
 			selectALine(error.getFilePath(), error.getLineNumber());
@@ -218,6 +231,14 @@ public class BNGLEditor extends TextEditor implements ISelectionListener
 			System.out.println("Part Title: " + part.getTitle());
 			System.out.println("toString: " + selection.toString());
 			
+			IStructuredSelection iSSelection = (IStructuredSelection) selection;
+			Object propertyItem = iSSelection.getFirstElement();
+			
+			if(propertyItem instanceof StatePropertySource)
+			{
+				stateSelected((StatePropertySource) propertyItem);
+			}
+			
 		}
 		else
 		{
@@ -225,6 +246,32 @@ public class BNGLEditor extends TextEditor implements ISelectionListener
 		}	
 	}
 	
+	private void stateSelected(StatePropertySource stateSource) 
+	{
+		//String component = stateSource.getComponent();
+		//String name = stateSource.getName();
+		
+	//	selectFromRegExp(component + "~" + name); 
+	}
+	
+//	private void selectFromRegExp(String regExp)
+//	{
+//
+//		ITextEditor editor = (ITextEditor) this.getAdapter(ITextEditor.class);
+//				
+//		IDocumentProvider provider = editor.getDocumentProvider();
+//		IDocument document = provider.getDocument(this.getEditorInput());
+//			
+//		Pattern p = Pattern.compile(regExp);
+//		Matcher m = p.matcher(document.get());
+//		
+//		
+//		while(m.find()) 
+//        {
+//
+//		} 
+//	}
+//		
 	public void selectALine(String path, int num)
 	{	
 		

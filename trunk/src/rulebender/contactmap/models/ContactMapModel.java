@@ -27,64 +27,77 @@ import rulebender.contactmap.models.Rule;
  *
  ******************************************/
 
-public class CMapModel
+public class ContactMapModel
 {
 	// ArrayLists to hold the necessary CMap data.
-	ArrayList<Molecule> molecules;
-	ArrayList<Bond> bonds;
-	ArrayList<Rule> rules;
+	ArrayList<Molecule> m_molecules;
+	ArrayList<Bond> m_bonds;
+	ArrayList<Rule> m_rules;
 	
 	//private ArrayList<PotentialBond> pbonds;
-	private CompartmentTable cmptTable;
+	private CompartmentTable m_cmptTable;
 	
-	// Default does nothing.
-	public CMapModel() 
+	/**
+	 * Default constructor.  Instantiate the data ArrayLists.
+	 */
+	public ContactMapModel() 
 	{	
-		cmptTable = new CompartmentTable();
-		molecules = new ArrayList<Molecule>();
-		bonds = new ArrayList<Bond>();
-		rules = new ArrayList<Rule>();
+		m_cmptTable = new CompartmentTable();
+		m_molecules = new ArrayList<Molecule>();
+		m_bonds = new ArrayList<Bond>();
+		m_rules = new ArrayList<Rule>();
 	}
 	
 	public ArrayList<Molecule> getMolecules()
 	{
-		return molecules;
+		return m_molecules;
 	}
 	
 	public ArrayList<Bond> getBonds()
 	{
-		return bonds;
+		return m_bonds;
 	}
 	
 	public ArrayList<Rule> getRules()
 	{
-		return rules;
+		return m_rules;
 	}
 	
 	public CompartmentTable getCompartments() 
 	{
-		return cmptTable;
+		return m_cmptTable;
 	}	
 	
 	public int addMolecule(Molecule m)
 	{
-		molecules.add(m);
+		m_molecules.add(m);
 		
-		return (molecules.size() - 1);
+		return (m_molecules.size() - 1);
 	}
 
 	public int addBond(Bond bond) 
 	{	
-		bonds.add(bond);
+		// Make sute that the bond is not already here.
 		
-		return (bonds.size() - 1);
+		// Iterate through existing
+		for(int i=0;i<m_bonds.size();i++)
+		{
+			// A match to the current? 
+			if(m_bonds.get(i).equals(bond))
+			{
+				return i;
+			}
+		}
+		
+		m_bonds.add(bond);
+		return (m_bonds.size() - 1);
 	}
 
-	public Rule getRuleWithName(String substring) 
+	public Rule getRuleWithExpression(String ruleExpression) 
 	{
-		for(Rule rule : rules)
+		for(Rule rule : m_rules)
 		{
-			if(rule.getName().equals(substring))
+			if(rule.getExpression().equals(ruleExpression))
 			{
 				return rule;
 			}
@@ -95,12 +108,12 @@ public class CMapModel
 	
 	public void addCompartment(Compartment c)
 	{
-		cmptTable.addCompartment(c);
+		m_cmptTable.addCompartment(c);
 	}
 
 	public void addRule(Rule rule) 
 	{
-		rules.add(rule);
+		m_rules.add(rule);
 	}
 }
 

@@ -4,8 +4,8 @@ import java.util.ArrayList;
 
 public class Rule 
 {
-	private String label;  // label of the rule, could be empty
-	private String name; // expression of rule, including rates
+	private String m_label;  // label of the rule, could be empty
+	private String m_expression; // expression of rule, including rates
 	private boolean bidirection;
 	private String rate1;
 	private String rate2;
@@ -28,22 +28,23 @@ public class Rule
 	
 	
 	public String getLabel() {
-		return label;
+		return m_label;
 	}
 
 
 	public void setLabel(String label) {
-		this.label = label;
+		this.m_label = label;
 	}
 
 
-	public String getName()
+	public String getExpression()
 	{
-		return name;
+		return m_expression;
 	}
 
-	public void setName(String name) {
-		this.name = name;
+	public void setExpression(String name) 
+	{
+		this.m_expression = name;
 	}
 
 	public void setBidirection(boolean bidirection) {

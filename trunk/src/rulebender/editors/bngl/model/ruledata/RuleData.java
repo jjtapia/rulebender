@@ -4,77 +4,77 @@ import java.util.ArrayList;
 
 public class RuleData 
 {
-	private String expression;
-	private String name;
-	private String rate;
+	private String m_expression;
+	private String m_label;
+	private String m_rate;
 	
 	// Each pattern can be 1 or many molecules (if they are bound)
-	private ArrayList<RulePatternData> reactantPatternData;
-	private ArrayList<RulePatternData> productPatternData;
-	private ArrayList<BondActionData> bondActionData;
+	private ArrayList<RulePatternData> m_reactantPatternData;
+	private ArrayList<RulePatternData> m_productPatternData;
+	private ArrayList<BondActionData> m_bondActionData;
 	
 	public RuleData(String nameIn)
 	{
-		setName(nameIn);
+		setLabel(nameIn);
 		
-		reactantPatternData = new ArrayList<RulePatternData>();
-		productPatternData = new ArrayList<RulePatternData>();
-		bondActionData = new ArrayList<BondActionData>();
+		m_reactantPatternData = new ArrayList<RulePatternData>();
+		m_productPatternData = new ArrayList<RulePatternData>();
+		m_bondActionData = new ArrayList<BondActionData>();
 	}
 
 	public String getRate() {
-		return rate;
+		return m_rate;
 	}
 
 	public void setRate(String rate) {
-		this.rate = rate;
+		this.m_rate = rate;
 	}
 
 	public String getExpression() {
-		return expression;
+		return m_expression;
 	}
 
 	public void setExpression(String expression) {
-		this.expression = expression;
+		this.m_expression = expression;
 	}
 
-	public String getName() {
-		return name;
+	public String getLabel() {
+		return m_label;
 	}
 
-	public void setName(String name) {
-		this.name = name;
+	public void setLabel(String name) {
+		this.m_label = name;
 	}
 
 	public void addReactantPatternData(RulePatternData rpd)
 	{
-		reactantPatternData.add(rpd);
+		m_reactantPatternData.add(rpd);
 	}
 
 	public void addProductPatternData(RulePatternData rpd)
 	{
-		productPatternData.add(rpd);
+		m_productPatternData.add(rpd);
 	}
 	
 	public void addBondData(String sourceMolIn, String sourceCompIn, int compID1, String sourceStateIn, 
 			String targetMolIn, String targetCompIn, int compID2, String targetStateIn, int action)
 	{	
-		bondActionData.add(new BondActionData(new BondData(sourceMolIn, sourceCompIn, compID1, sourceStateIn, 
+		m_bondActionData.add(new BondActionData(new BondData(sourceMolIn, sourceCompIn, compID1, sourceStateIn, 
 				   targetMolIn, targetCompIn, compID2, targetStateIn), action));
 	}
 	
 	public ArrayList<RulePatternData> getProductPatternData() {
-		return productPatternData;
+		return m_productPatternData;
 	}
 
 	public ArrayList<RulePatternData> getReactantPatternData() 
 	{
-		return reactantPatternData;
+		return m_reactantPatternData;
 	}
 
 	public ArrayList<BondActionData> getBondActions() 
 	{
 		
-		return bondActionData;
+		return m_bondActionData;
 	}	
 }

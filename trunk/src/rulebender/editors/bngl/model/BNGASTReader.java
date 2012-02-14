@@ -242,26 +242,30 @@ public class BNGASTReader
 			// because the bond takes place at the component level.  We can 
 			// get the state of the component for the bond from the component object.
 			HashMap<String, Component> componentNameForID = new HashMap<String, Component>(); 
+
+			// Get the compartment that this species is in.
+			String compartment = species.getAttributeValue("name");
+			
+			// Extract the compartment
+			if(compartment.contains("@"))
+			{
+				compartment = compartment.substring(compartment.indexOf("@")+1);
+			}
+			else
+			{
+				compartment = null;
+			}
 			
 			// A species can contain multiple molecules.  Get the molecules list for this species. 
 			Element moleculesNode = species.getChild("ListofMolecules", species.getNamespace());
 			List<Element> moleculesList = moleculesNode.getChildren();
+
 			
 			// For each of the molecules
 			for(Element moleculeEntry : moleculesList)
 			{
 				// Get the molecule name.
 				String moleculeName = moleculeEntry.getAttributeValue("name");
-				
-				// Declare the compartment string.
-				String compartment = null;
-				
-				// Extract the compartment
-				if(moleculeName.contains("@"))
-				{
-					compartment = moleculeName.substring(moleculeName.indexOf("@"));
-					moleculeName.substring(0, moleculeName.indexOf("@"));
-				}
 				
 				// Enter the name into the registry
 				moleculeNameForID.put(moleculeEntry.getAttributeValue("id"), moleculeName);

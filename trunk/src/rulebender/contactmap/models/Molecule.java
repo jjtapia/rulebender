@@ -127,7 +127,7 @@ public class Molecule
 		return components;
 	}
 	
-	public void addCompartment(String compartment) 
+	public void addCompartment(String compartment)
 	{
 		compartments.add(compartment);
 	}
@@ -148,7 +148,7 @@ public class Molecule
 	}
 
 	public void mergeData(Molecule molecule) 
-	{
+	{	
 		// For each new component
 		for(Component component : molecule.getComponents())
 		{
