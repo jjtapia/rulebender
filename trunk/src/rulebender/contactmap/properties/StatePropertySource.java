@@ -99,7 +99,7 @@ public class StatePropertySource implements IPropertySource
 			String sid = (String) id;
 			int num = Integer.parseInt(sid.substring(sid.indexOf("_")+1));
 			
-			return getRules().get(num).getName();
+			return getRules().get(num).getExpression();
 		}
 		return null;
 	}

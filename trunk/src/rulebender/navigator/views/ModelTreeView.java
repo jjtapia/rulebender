@@ -117,7 +117,7 @@ public class ModelTreeView extends ViewPart
 		if(selection.isEmpty())
 		{
 			// Add the option to create a new folder.
-			newMenu.add(new NewFolderAction(new File(PickWorkspaceDialog.getLastSetWorkspaceDirectory()), this));	
+			//newMenu.add(new NewFolderAction(new File(PickWorkspaceDialog.getLastSetWorkspaceDirectory()), this));	
 			newMenu.add(new NewProjectAction(this));
 		}
 		

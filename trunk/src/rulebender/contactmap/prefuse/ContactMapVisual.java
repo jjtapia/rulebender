@@ -896,7 +896,7 @@ public class ContactMapVisual
 											Node rstateNode = m_nodes.get(rmp.getMoleIndex()+"."+rcp.getCompIndex()+"."+rcp.getStateindex());
 											
 											// rule direction includes forward
-											if (r_state.getName().indexOf(">") != -1) 	
+											if (r_state.getExpression().indexOf(">") != -1) 	
 											{
 												if (pstateNode.get("rules") == null) 
 												{
@@ -911,7 +911,7 @@ public class ContactMapVisual
 											}
 											
 											// rule direction includes backward
-											if (r_state.getName().indexOf("<") != -1) 
+											if (r_state.getExpression().indexOf("<") != -1) 
 											{
 												if (rstateNode.get("rules") == null) 
 												{

@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.io.Reader;
 import java.io.Writer;
 
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -155,6 +156,8 @@ public class BNGLDocumentProvider extends AbstractDocumentProvider
 			}
 
 		}
+		
+		//System.out.println("WorkSpace Root???????????:" + ResourcesPlugin.getWorkspace().getRoot().getFile(path));
 	}
 	
 	/**

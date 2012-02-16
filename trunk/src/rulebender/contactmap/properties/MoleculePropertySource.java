@@ -2,6 +2,9 @@ package rulebender.contactmap.properties;
 
 import java.util.ArrayList;
 
+import org.eclipse.jface.viewers.ILabelProvider;
+import org.eclipse.jface.viewers.ILabelProviderListener;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.views.properties.IPropertyDescriptor;
 import org.eclipse.ui.views.properties.IPropertySource;
 import org.eclipse.ui.views.properties.PropertyDescriptor;
@@ -56,6 +59,44 @@ public class MoleculePropertySource implements IPropertySource
 			PropertyDescriptor nameDescriptor = new PropertyDescriptor(PROPERTY_NAME, "Molecule Name");
             nameDescriptor.setCategory("Details");
             propertyDescriptors.add(nameDescriptor);
+            
+            nameDescriptor.setLabelProvider(new ILabelProvider(){
+
+				@Override
+				public void addListener(ILabelProviderListener listener) {
+					// TODO Auto-generated method stub
+					
+				}
+
+				@Override
+				public void dispose() {
+					// TODO Auto-generated method stub
+					
+				}
+
+				@Override
+				public boolean isLabelProperty(Object element, String property) {
+					// TODO Auto-generated method stub
+					return false;
+				}
+
+				@Override
+				public void removeListener(ILabelProviderListener listener) {
+					// TODO Auto-generated method stub
+					
+				}
+
+				@Override
+				public Image getImage(Object element) {
+					// TODO Auto-generated method stub
+					return null;
+				}
+
+				@Override
+				public String getText(Object element) {
+					// TODO Auto-generated method stub
+					return null;
+				}});
             
             PropertyDescriptor moleculeDescriptor = new PropertyDescriptor(PROPERTY_EXPRESSION, "Molecule Expression");
 			moleculeDescriptor.setCategory("Details");

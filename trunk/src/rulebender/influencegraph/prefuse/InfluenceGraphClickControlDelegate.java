@@ -483,7 +483,7 @@ public class InfluenceGraphClickControlDelegate extends ControlAdapter
 		//System.out.println("\n\nInfluence Graph RuleSelected:\nTrying to find edges attached to rule " + ruleText);
 		
 		// Remove the rates.
-		String ruleText = rule.getName();
+		String ruleText = rule.getExpression();
 
 		selectRuleFromText(ruleText, true);
 	}
@@ -609,7 +609,7 @@ public class InfluenceGraphClickControlDelegate extends ControlAdapter
 		 
 		while(ruleIt.hasNext())
 		{
-			selectRuleFromText(ruleIt.next().getName(), false);
+			selectRuleFromText(ruleIt.next().getExpression(), false);
 		}
 	}
 

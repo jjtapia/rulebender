@@ -13,6 +13,7 @@ import java.util.Iterator;
 
 import javax.swing.AbstractButton;
 import javax.swing.JFileChooser;
+import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 
@@ -22,12 +23,14 @@ import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
+import org.eclipse.swt.program.Program;
 import org.eclipse.swt.widgets.Display;
 
 import rulebender.contactmap.properties.CompartmentPropertySource;
 import rulebender.contactmap.properties.ComponentPropertySource;
 import rulebender.contactmap.properties.EdgePropertySource;
 import rulebender.contactmap.properties.MoleculePropertySource;
+import rulebender.contactmap.properties.RulePropertySource;
 import rulebender.contactmap.properties.StatePropertySource;
 import rulebender.contactmap.view.ContactMapView;
 import rulebender.core.prefuse.PngSaveFilter;
@@ -83,7 +86,7 @@ public class CMapClickControlDelegate extends ControlAdapter implements ISelecti
 	{
 		
 		m_view = view;
-		
+				
 		// Set the local reference to the visualization that this controller is
 		// attached to.
 		m_vis = v;
@@ -157,9 +160,7 @@ public class CMapClickControlDelegate extends ControlAdapter implements ISelecti
 	 * Called when no VisualItem is hit.
 	 */
 	public void mouseClicked(MouseEvent e) 
-	{			
-		setSelection(new StructuredSelection());
-		
+	{					
 		// super.mouseClicked(e);
 
 		// Right click
@@ -329,10 +330,10 @@ public class CMapClickControlDelegate extends ControlAdapter implements ISelecti
 		// true in the case of a control click.
 		else if (e.getButton() == MouseEvent.BUTTON1) 
 		{
+			
 			// Clear the selections.  
 			clearSelection(true);
-			//TODO add this to the iselectionservice 
-			//LinkHub.getLinkHub().clearSelectionFromContactMap();
+			setSelection(new StructuredSelection());
 		} 
 	}
 	
@@ -357,18 +358,25 @@ public class CMapClickControlDelegate extends ControlAdapter implements ISelecti
 			{
 				edgeRightClicked(item, e);
 			}
+			else if (item instanceof AggregateItem)
+			{
+				aggregateRightClicked(item, e);
+			}
 		}
 		// left click.  This check has to come after the right click because the condition is also
 		// true in the case of a control click.
 		else if (e.getButton() == MouseEvent.BUTTON1) 
 		{
 			if ((item instanceof NodeItem))
+			{
 				nodeLeftClicked(item, e);
-
+			}
 			else if (item instanceof EdgeItem)
+			{
 				edgeLeftClicked(item, e);
-			
-			else if (item instanceof AggregateItem) {
+			}
+			else if (item instanceof AggregateItem) 
+			{
 				aggregateLeftClicked(item, e);
 			}
 		}
@@ -422,19 +430,23 @@ public class CMapClickControlDelegate extends ControlAdapter implements ISelecti
 			// get the rules that can make that state node.
 			ArrayList<VisualRule> rules = (ArrayList<VisualRule>) state_node.get("rules");
 
-			if (rules == null || rules.size() == 0) {
-					
+			if (rules == null || rules.size() == 0)
+			{		
+			
+				/* FIXME
+				 * Does not work in eclipse, and is redundant.  Possibly remove. 
+				 
 				showTooltip(new ComponentTooltip((prefuse.Display) event.getSource(),
 						"State: " + (String) item.get(VisualItem.LABEL),
 						""), item,
-						event);			
+						event);
+						*/			
 			}
 			else 
 			{
 				JPopupMenu popup = new JPopupMenu();
 				
 				// For each of the rules that could make state node.
-
 				for (VisualRule rule : rules) 
 				{
 					// Create a JMenuItem that corresponds to a rule.
@@ -445,35 +457,9 @@ public class CMapClickControlDelegate extends ControlAdapter implements ISelecti
 						// When the menuItem is clicked, fire this.
 						public void actionPerformed(ActionEvent e) 
 						{
-							//JMenuItemRuleHolder source = (JMenuItemRuleHolder) (e.getSource());
 							VisualRule sourceRule = ((JMenuItemRuleHolder) e.getSource()).getRule();
 
 							selectRule(sourceRule, true);
-							/*
-							 JMenuItemRuleHolder source = (JMenuItemRuleHolder) (e.getSource());
-
-							// Build the rule if it is not built already.
-							if (!(source.getRule().isBuilt()))
-								source.getRule().pack("component_graph",
-										bubbleTable);
-
-							// Clear the current activeRule.
-							if (activeRule != null) {
-								activeRule.setVisible(false);
-								activeRule = null;
-							}
-
-							// Set the active rule
-							activeRule = source.getRule();
-
-							// Set the bubbles to visible
-							activeRule.setVisible(true);
-
-							// Run the actions. Apparently the layout does not need
-							// to be run here...
-							vis.run("bubbleLayout");
-							vis.run("bubbleColor");
-							*/
 						}
 					});
 
@@ -482,11 +468,8 @@ public class CMapClickControlDelegate extends ControlAdapter implements ISelecti
 				}
 
 				// After adding all of the rules, show the popup.
-				popup.show(event.getComponent(), event.getX(), event.getY());
-				
+				popup.show(event.getComponent(), event.getX(), event.getY());	
 			}
-			
-			//LinkHub.getLinkHub().stateSelectedInContactMap(item);
 		}
 		// component node
 		else if (type.equals("component"))
@@ -509,12 +492,14 @@ public class CMapClickControlDelegate extends ControlAdapter implements ISelecti
 			{
 				statesStr = "States: " + states;
 			}	
-			
+		
+			/* FIXME This does not work in eclipse.  Also, it is kind of redundant since
+			 * this information is displayed in the properties view.
+			 * 
 			showTooltip(new ComponentTooltip((prefuse.Display) event.getSource(),
 					"Component:" + (String) item.get(VisualItem.LABEL),
 					statesStr), item, event);
-			
-			//LinkHub.getLinkHub().componentSelectedInContactMap(item);
+					*/
 		} 
 		else if (type.equals("hub")) 
 		{
@@ -540,39 +525,9 @@ public class CMapClickControlDelegate extends ControlAdapter implements ISelecti
 						// When the menuItem is clicked, fire this.
 						public void actionPerformed(ActionEvent e) 
 						{
-							//JMenuItemRuleHolder source = (JMenuItemRuleHolder) (e.getSource());
 							VisualRule sourceRule = ((JMenuItemRuleHolder) e.getSource()).getRule();
 
 							selectRule(sourceRule, true);
-							
-							/*
-							JMenuItemRuleHolder source = (JMenuItemRuleHolder) (e
-									.getSource());
-
-							// Build the rule if it is not built already.
-							if (!(source.getRule().isBuilt()))
-								source.getRule().pack("component_graph",
-										bubbleTable);
-
-							// Clear the current activeRule.
-							if (activeRule != null) {
-								activeRule.setVisible(false);
-								activeRule = null;
-							}
-
-							// Set the active rule
-							activeRule = source.getRule();
-
-							// Set the bubbles to visible
-							activeRule.setVisible(true);
-
-							// Run the actions. Apparently the layout does not
-							// need
-							// to be run here...
-							vis.run("bubbleLayout");
-							vis.run("bubbleColor");
-							
-							*/
 						}
 					});
 
@@ -583,8 +538,6 @@ public class CMapClickControlDelegate extends ControlAdapter implements ISelecti
 				// After adding all of the rules, show the popup.
 				popup.show(event.getComponent(), event.getX(), event.getY());
 			}
-			
-			//LinkHub.getLinkHub().hubSelectedInContactMap(item);
 		}
 	}
 
@@ -718,7 +671,8 @@ public class CMapClickControlDelegate extends ControlAdapter implements ISelecti
 		m_vis.run("bubbleColor");
 		
 		//if(passingOn)
-			//LinkHub.getLinkHub().ruleSelectedInContactMap(activeRule);
+		setSelection(new StructuredSelection(new RulePropertySource(sourceRule)));
+			
 	}
 	
 	/**
@@ -730,7 +684,7 @@ public class CMapClickControlDelegate extends ControlAdapter implements ISelecti
 	{
 		// TODO clearing/setting selections can be done better. low priority though.
 		
-		//clearSelection(true);	
+		clearSelection(true);	
 		
 		setVisualItemAsSelected(item);
 		
@@ -744,21 +698,216 @@ public class CMapClickControlDelegate extends ControlAdapter implements ISelecti
 		{
 			setSelection(new StructuredSelection(new CompartmentPropertySource(item)));
 		}
+		// A context or center object
 		else
 		{
-			System.out.println("SOMETHING ELSE");
+			System.out.println("context or center");
 		}
-		
-		
-		// if it is a molecule
-		// System.out.println("Type: " + item.get("compartment"));
-		
-		//if(item.get("compartment") != null)
-			//LinkHub.getLinkHub().compartmentSelectedInContactMap(item);
-		//else
-			//LinkHub.getLinkHub().moleculeSelectedInContactMap(item);
 	}
 	
+	private void aggregateRightClicked(VisualItem item, MouseEvent event)
+	{
+		// Molecule
+		if(item.getString("type").equals("molecule"))
+		{
+			moleculeRightClicked(item, event);
+		}
+		
+		// Compartment
+		else if(item.getString("type").equals("compartment"))
+		{
+			// do nothing.
+		}
+		
+		// A context or center object
+		else
+		{
+			// do nothing.
+		}
+	}
+	
+	/**
+	 * When a molecule (item) is right clicked, we want to show the options 
+	 * for online searches. 	
+	 * @param item
+	 * @param event
+	 */
+	private void moleculeRightClicked(VisualItem item, MouseEvent event)
+	{
+		// This breaks java 1.5 compatibility and uses awt. 
+		
+				/* 
+				java.net.URI uri;
+
+				try {
+					uri = new java.net.URI(address);
+					java.awt.Desktop.getDesktop().browse(uri);
+				} catch (URISyntaxException e1) {
+					e1.printStackTrace();
+				} catch (IOException e2) {
+					e2.printStackTrace();
+				}
+				*/
+				
+				// This does not break java 1.5 compatibility and uses swt.
+				//Program.launch(address);
+	
+		final String moleculeName = item.getString("molecule");
+		
+		JPopupMenu popup = new JPopupMenu();
+		JMenu searchMenu = new JMenu("Search for \"" + moleculeName + "\" in...");
+		
+		popup.add(searchMenu);
+		
+		//--------------
+		JMenuItem uniProt = new JMenuItem("UniProt");
+		uniProt.addActionListener(new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent arg0) 
+			{
+				String address = "http://www.uniprot.org/uniprot/?query=";
+				address += moleculeName;
+				address += "&sort=score";
+				
+				Program.launch(address);
+			}});
+		
+		searchMenu.add(uniProt);
+		
+		//--------------
+		
+		JMenuItem pathwayCommons = new JMenuItem("Pathway Commons");
+		pathwayCommons.addActionListener(new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent arg0) 
+			{
+				String	address = "http://www.pathwaycommons.org/pc/webservice.do?version=3.0&snapshot_id=GLOBAL_FILTER_SETTINGS&record_type=PATHWAY&q=";
+				address += moleculeName;
+				address += "&format=html&cmd=get_by_keyword";
+				
+				Program.launch(address);
+			}});
+		
+		searchMenu.add(pathwayCommons);
+		
+		//--------------
+		JMenuItem hprd = new JMenuItem("HPRD");
+		hprd.addActionListener(new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent arg0) 
+			{
+				String address = "http://www.hprd.org/resultsQuery?multiplefound=&prot_name=";
+				address += moleculeName;
+				address += "&external=Ref_seq&accession_id=&hprd=&gene_symbol=&chromo_locus=&function=&ptm_type=&localization=&domain=&motif=&expression=&prot_start=&prot_end=&limit=0&mole_start=&mole_end=&disease=&query_submit=Search";	
+				
+				Program.launch(address);
+			}});
+		
+		searchMenu.add(hprd);
+		
+		//--------------
+		JMenuItem reactome = new JMenuItem("Reactome");
+		reactome.addActionListener(new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent arg0) 
+			{
+				String address = "http://www.reactome.org/cgi-bin/search2?OPERATOR=ALL&SPECIES=48887&QUERY=";
+				address += moleculeName;	
+				
+				Program.launch(address);
+			}});
+		
+		searchMenu.add(reactome);
+		
+		//--------------
+		JMenuItem ucsdNature = new JMenuItem("UCSD Nature");
+		ucsdNature.addActionListener(new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent arg0) 
+			{
+				String address = "http://www.signaling-gateway.org/molecule/search?nm=";
+				address += moleculeName;	
+				
+				Program.launch(address);
+			}});
+		
+		searchMenu.add(ucsdNature);
+
+		//--------------
+		JMenuItem interPro = new JMenuItem("InterPro");
+		interPro.addActionListener(new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent arg0) 
+			{
+				String address = "http://www.ebi.ac.uk/interpro/ISearch?query=";
+				address += moleculeName;	
+				
+				Program.launch(address);
+			}});
+		
+		searchMenu.add(interPro);
+
+		//--------------
+		JMenuItem proSite = new JMenuItem("ProSite");
+		proSite.addActionListener(new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent arg0) 
+			{
+				String address = "http://au.expasy.org/cgi-bin/prosite-search-ful?SEARCH=";
+				address += moleculeName;	
+				
+				Program.launch(address);
+			}});
+		
+		searchMenu.add(proSite);		
+		
+		//--------------
+		JMenuItem kegg = new JMenuItem("KEGG");
+		kegg.addActionListener(new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent arg0) 
+			{
+				String address = "http://www.genome.jp/dbget-bin/www_bfind_sub?mode=bfind&max_hit=1000&dbkey=kegg&keywords=";
+				address += moleculeName;	
+				
+				Program.launch(address);
+			}});
+		
+		searchMenu.add(kegg);
+
+		//--------------
+		JMenuItem chebi = new JMenuItem("ChEBI");
+		chebi.addActionListener(new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent arg0) 
+			{
+				String address = "http://www.ebi.ac.uk/chebi/advancedSearchFT.do?searchString=";
+				address += moleculeName;
+				address += "&queryBean.stars=3&queryBean.stars=-1";	
+				
+				Program.launch(address);
+			}});
+		
+		searchMenu.add(chebi);
+		
+		//--------------
+		JMenuItem pubChem = new JMenuItem("PubChem");
+		pubChem.addActionListener(new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent arg0) 
+			{
+				String address = "http://www.ncbi.nlm.nih.gov/sites/entrez?db=pccompound&term=";
+				address += moleculeName;
+				
+				Program.launch(address);
+			}});
+		
+		searchMenu.add(pubChem);
+		
+		
+		// After adding all of the search locations, show the popup.
+		popup.show(event.getComponent(), event.getX(), event.getY());		
+	}
 	
 	/**
 	 * Called when the user enters an item.
@@ -766,8 +915,6 @@ public class CMapClickControlDelegate extends ControlAdapter implements ISelecti
 	 * It creates 3 new EnterColorActionObjects, adds them to a new color list,
 	 * and then adds that new list to the visualization. 
 	 */
-	
-	
 	public void itemEntered(VisualItem item, MouseEvent event) 
 	{
 		/*
@@ -938,7 +1085,7 @@ public class CMapClickControlDelegate extends ControlAdapter implements ISelecti
 				for(VisualRule rule : rules)
 				{
 					// Get the text for the rule
-					String potentialRule = rule.getName();
+					String potentialRule = rule.getExpression();
 					
 					// Strip the rates.
 					potentialRule = potentialRule.substring(0,potentialRule.lastIndexOf(")")+1);

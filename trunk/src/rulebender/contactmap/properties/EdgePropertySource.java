@@ -68,7 +68,7 @@ public class EdgePropertySource implements IPropertySource
 			String sid = (String) id;
 			int num = Integer.parseInt(sid.substring(sid.indexOf("_")+1));
 			
-			return m_rules.get(num).getName();
+			return m_rules.get(num).getExpression();
 		}
 		return null;
 	}

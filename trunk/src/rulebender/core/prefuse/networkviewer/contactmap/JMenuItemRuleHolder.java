@@ -9,7 +9,7 @@ public class JMenuItemRuleHolder extends JMenuItem
 	
 	public JMenuItemRuleHolder(VisualRule ruleIn)
 	{
-		super(ruleIn.getName());
+		super(ruleIn.getExpression());
 		rule = ruleIn;
 	}
 	

@@ -264,6 +264,11 @@
                   label="Switch Workspace (restart required)"
                   style="push">
             </command>
+            <command
+                  commandId="org.eclipse.ui.file.exit"
+                  label="Exit"
+                  style="push">
+            </command>
          </menu>
          <menu
                label="Edit">
@@ -316,6 +321,18 @@
                   commandId="org.eclipse.ui.edit.selectAll"
                   label="Select All"
                   mnemonic="a"
+                  style="push">
+            </command>
+         </menu>
+         <menu
+               label="Window">
+            <command
+                  commandId="org.eclipse.ui.window.preferences"
+                  label="Preferences..."
+                  style="push">
+            </command>
+            <command
+                  commandId="org.eclipse.ui.help.aboutAction"
                   style="push">
             </command>
          </menu>

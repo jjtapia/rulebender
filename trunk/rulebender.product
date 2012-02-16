@@ -3,6 +3,11 @@
 
 <product name="RuleBender" id="rulebender.product" application="rulebender.application" useFeatures="false" includeLaunchers="true">
 
+   <aboutInfo>
+      <text>
+         RuleBender 2.0.
+      </text>
+   </aboutInfo>
 
    <configIni use="default">
    </configIni>
@@ -32,7 +37,6 @@
       <solaris include="false">org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6</solaris>
       <windows include="false">org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6</windows>
    </vm>
-
 
    <plugins>
       <plugin id="com.ibm.icu"/>

@@ -23,10 +23,10 @@ public class VisualRule
 {
 	
 	// The text of the rule
-	private String ruleText;
+	private String m_expression;
 	
 	// The label of the rule
-	private String ruleLabel;
+	private String m_label;
 	
 	// The prefuse Node objects that are in the reactants.
 	private ArrayList<Node> reactantComponents;
@@ -81,8 +81,8 @@ public class VisualRule
 	 */
 	public VisualRule(String label, String text)
 	{
-		ruleLabel = label;
-		ruleText = text;
+		m_label = label;
+		m_expression = text;
 		reactantComponents = new ArrayList<Node>();
 		productComponents = new ArrayList<Node>();
 		changedStates = new ArrayList<Node>();
@@ -181,8 +181,8 @@ public class VisualRule
 	 * 
 	 * @return ruleText
 	 */
-	public String getName() {
-		return ruleText;
+	public String getExpression() {
+		return m_expression;
 	}
 	
 	/**
@@ -190,7 +190,7 @@ public class VisualRule
 	 * @return
 	 */
 	public String getLabel() {
-		return ruleLabel;
+		return m_label;
 	}
 
 	/**
