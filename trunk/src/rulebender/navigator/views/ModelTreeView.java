@@ -19,6 +19,8 @@ import rulebender.navigator.actions.NewFileAction;
 import rulebender.navigator.actions.NewFolderAction;
 import rulebender.navigator.actions.NewProjectAction;
 import rulebender.navigator.actions.RefreshAction;
+import rulebender.navigator.actions.RenameAction;
+import rulebender.navigator.model.FileNode;
 import rulebender.navigator.model.FolderNode;
 import rulebender.navigator.model.TreeContentProvider;
 import rulebender.navigator.model.TreeLabelProvider;
@@ -130,17 +132,18 @@ public class ModelTreeView extends ViewPart
 				newMenu.add(new NewFolderAction(new File(((FolderNode) selection.getFirstElement()).getPath()), this));
 				newMenu.add(new NewFileAction(new File(((FolderNode) selection.getFirstElement()).getPath()), this));
 				newMenu.add(new NewProjectAction(this));
+				manager.add(new RenameAction(new File(((FolderNode)selection.getFirstElement()).getPath()), this));
 			}
 			else if(((TreeNode) selection.getFirstElement()).getNodeType().equals("FileNode"))
 			{
 				manager.add(new CompareAction(selection));
+				manager.add(new RenameAction(new File(((FileNode)selection.getFirstElement()).getPath()), this));
 				
 				// TODO Add something for each type file selection (.bng, .net, .net, scan)
 			}
 			
 			// For both folders and files
 			manager.add(new DeleteFileAction(selection, this));
-		 
 		}
 		
 		// If multiple things are selected

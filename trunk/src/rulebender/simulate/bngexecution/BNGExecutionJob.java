@@ -8,9 +8,15 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.ui.IViewReference;
+import org.eclipse.ui.IWorkbench;
+import org.eclipse.ui.IWorkbenchPart;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.progress.IProgressConstants;
 
 import rulebender.core.utility.Console;
+import rulebender.navigator.views.ModelTreeView;
 import rulebender.simulate.CommandRunner;
 
 public class BNGExecutionJob extends Job 
@@ -73,6 +79,25 @@ public class BNGExecutionJob extends Job
 		monitor.setTaskName("Done.");
 		monitor.worked(1);
 				
+		//FIXME  This is "bad design" that tightly couples the simulation and 
+		// tree view
+		Display.getDefault().syncExec(new Runnable(){
+
+			@Override
+			public void run() {
+				 IViewReference[] views = PlatformUI.getWorkbench().getActiveWorkbenchWindow()
+						 .getActivePage().getActivePart().getSite().getPage()
+						 .getViewReferences();
+					
+				 for(IViewReference view : views)
+					{
+						if(view.getId().equals("rulebender.views.Navigator"))
+						{
+							((ModelTreeView) view.getPart(false)).rebuildWholeTree();
+						}
+					}
+			}});
+		
 		return Status.OK_STATUS;
 	}
 	

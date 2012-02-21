@@ -19,7 +19,7 @@ import rulebender.navigator.views.ModelTreeView;
 public class DeleteFileAction extends Action
 {
 	
-	private static final ImageDescriptor m_deleteImage = ImageDescriptor.createFromImage(AbstractUIPlugin.imageDescriptorFromPlugin ("rulebender","/icons/delete_obj.gif").createImage());
+	private static final ImageDescriptor m_deleteImage = ImageDescriptor.createFromImage(AbstractUIPlugin.imageDescriptorFromPlugin ("rulebender","/icons/views/delete_obj.gif").createImage());
 	
 	private IStructuredSelection m_selectionToDelete;
 	private ModelTreeView m_view;

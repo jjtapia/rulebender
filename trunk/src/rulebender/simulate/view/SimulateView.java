@@ -21,9 +21,11 @@ import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.ui.IViewReference;
 import org.eclipse.ui.part.ViewPart;
 
 import rulebender.core.utility.Console;
+import rulebender.navigator.views.ModelTreeView;
 import rulebender.preferences.PreferencesClerk;
 import rulebender.simulate.BioNetGenUtility;
 import rulebender.simulate.parameterscan.ParameterScanComposite;
@@ -197,6 +199,8 @@ public class SimulateView extends ViewPart
 		buttonData.right = new FormAttachment(100, -10);
 		runButton.setLayoutData(buttonData);
 		
+		final SimulateView instance = this;
+		
 		runButton.addSelectionListener(new SelectionListener()
 		{
 			public void widgetSelected(SelectionEvent e) 
@@ -204,12 +208,11 @@ public class SimulateView extends ViewPart
 				Console.displayOutput("Simulation:" + getSelectedFile(), Console.getConsoleLineDelimeter() + "Running File...");
 				
 				// Run the parameter scan.  This returns a boolean, but for now I am ignoring it.	
-				BioNetGenUtility.runBNGLFile(getSelectedFile(), PreferencesClerk.getFullBNGPath());	
+				BioNetGenUtility.runBNGLFile(getSelectedFile(), PreferencesClerk.getFullBNGPath());
 			}
 
-			public void widgetDefaultSelected(SelectionEvent e) {
-				// TODO Auto-generated method stub
-				
+			public void widgetDefaultSelected(SelectionEvent e) 
+			{				
 			}});
 		
 		
@@ -236,7 +239,6 @@ public class SimulateView extends ViewPart
 	@Override
 	public void setFocus() 
 	{
-		// TODO Auto-generated method stub
 	}
 	
 	public String getSelectedFile()

@@ -67,6 +67,11 @@ public class ContactMapSelectionListener implements ISelectionListener, IPartLis
 				
 		// Set the correct contact map.
 		m_view.setCMap(toShow);		
+		
+		// Activate the part.  This is so the property view will add listeners
+		// to the view.
+		m_view.getViewSite().getPage().activate(m_view.getViewSite().getPart());
+		
 	}
 	
 	private void bnglEditorSelection(IWorkbenchPart part, ISelection selection)
@@ -104,11 +109,12 @@ public class ContactMapSelectionListener implements ISelectionListener, IPartLis
 	 * @return
 	 */
 	public prefuse.Display generateContactMap(prog_return ast)
-	{
-		System.out.println("GENERATING CMAP***********************************");
+	{	
 		// If the ast has not been generated for this model, then 
 		// just return null so there is not contact map displayed.
-		if(ast == null)
+		// Also, an empty file produce a complete ast, so the length
+		// requirement catches that. 
+		if(ast == null || ast.toString().split("\\n").length <= 20)
 		{
 			return null;
 		}
@@ -129,7 +135,6 @@ public class ContactMapSelectionListener implements ISelectionListener, IPartLis
 		catch(NullPointerException e)
 		{
 			// e.printStackTrace();
-
 			//Debug
 			System.out.println("Failed to produce CMapModel on ast:\n" + ast.toString());
 		 	return null;
@@ -219,6 +224,7 @@ public class ContactMapSelectionListener implements ISelectionListener, IPartLis
 		m_currentModel.addPropertyChangeListener(pcl);
 		
 		// generate the display and add the initial cmap to the registry.
+		
 		m_contactMapRegistry.put(m_currentModel.getPathID(), generateContactMap(m_currentModel.getAST()));
 		
 		m_view.setCMap(lookupDisplay(m_currentModel));

@@ -10,7 +10,7 @@ import rulebender.navigator.views.ModelTreeView;
 public class RefreshAction extends Action
 {
 	
-	private static final ImageDescriptor m_refreshImage = ImageDescriptor.createFromImage(AbstractUIPlugin.imageDescriptorFromPlugin ("rulebender","/icons/nav_refresh.gif").createImage());
+	private static final ImageDescriptor m_refreshImage = ImageDescriptor.createFromImage(AbstractUIPlugin.imageDescriptorFromPlugin ("rulebender","/icons/views/nav_refresh.gif").createImage());
 	
 	private ModelTreeView m_view;
 

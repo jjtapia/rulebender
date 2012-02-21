@@ -17,7 +17,7 @@ public class CompareAction extends Action
 	
 	private ResultsView resultsView = (ResultsView) PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().findView("rulebender.results.view.ResultsView");
 	
-	private static final ImageDescriptor m_deleteImage = ImageDescriptor.createFromImage(AbstractUIPlugin.imageDescriptorFromPlugin ("rulebender","/icons/compare.gif").createImage());
+	private static final ImageDescriptor m_deleteImage = ImageDescriptor.createFromImage(AbstractUIPlugin.imageDescriptorFromPlugin ("rulebender","/icons/views/compare.gif").createImage());
 	
 	private IStructuredSelection m_selectionToCompare;
 

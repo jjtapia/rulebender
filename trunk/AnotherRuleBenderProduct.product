@@ -22,27 +22,30 @@ Please send all feedback and questions to help@rulebender.org.
       <vmArgsMac>-XstartOnFirstThread -Dorg.eclipse.swt.internal.carbon.smallFonts -Xdock:icon=../Resources/Eclipse.icns -XstartOnFirstThread -d64</vmArgsMac>
    </launcherArgs>
 
-   <windowImages/>
+   <windowImages i16="/rulebender/RB-16.gif" i32="/rulebender/RB-32.gif" i48="/rulebender/RB-48.gif" i64="/rulebender/RB-64.gif" i128="/rulebender/RB-128.gif"/>
 
    <splash
-      location="rulebender"
-      startupProgressRect="5,275,445,15" />
+      location="rulebender" />
    <launcher name="RuleBender">
+      <linux icon="/rulebender/icons/system/linux/RB-128.xpm"/>
+      <macosx icon="/rulebender/icons/system/osx/RB-128.icns"/>
       <solaris/>
       <win useIco="false">
-         <bmp/>
+         <bmp
+            winSmallHigh="/rulebender/icons/system/win32/RB-16.bmp"
+            winMediumHigh="/rulebender/icons/system/win32/RB-32.bmp"
+            winLargeHigh="/rulebender/icons/system/win32/RB-48.bmp"/>
       </win>
    </launcher>
 
 
    <vm>
-      <linux include="false">org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6</linux>
       <macos include="false">org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6</macos>
-      <solaris include="false">org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6</solaris>
-      <windows include="false">org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6</windows>
    </vm>
 
+
    <plugins>
+      <plugin id="TestCNF"/>
       <plugin id="com.ibm.icu"/>
       <plugin id="javax.servlet"/>
       <plugin id="org.eclipse.ant.core"/>
@@ -85,6 +88,9 @@ Please send all feedback and questions to help@rulebender.org.
       <plugin id="org.eclipse.equinox.security.win32.x86" fragment="true"/>
       <plugin id="org.eclipse.equinox.security.win32.x86_64" fragment="true"/>
       <plugin id="org.eclipse.help"/>
+      <plugin id="org.eclipse.jdt.compiler.apt" fragment="true"/>
+      <plugin id="org.eclipse.jdt.compiler.tool" fragment="true"/>
+      <plugin id="org.eclipse.jdt.core"/>
       <plugin id="org.eclipse.jface"/>
       <plugin id="org.eclipse.jface.databinding"/>
       <plugin id="org.eclipse.jface.text"/>

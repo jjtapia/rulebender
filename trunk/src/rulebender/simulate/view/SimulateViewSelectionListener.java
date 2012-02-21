@@ -24,6 +24,7 @@ public class SimulateViewSelectionListener implements ISelectionListener {
 	public void selectionChanged(IWorkbenchPart part, ISelection in_selection) 
 	{
 		System.out.println(part.getClass().toString());
+		
 		// Check if it is from the model navigator
 		if(part.getClass() == ModelTreeView.class)
 		{	

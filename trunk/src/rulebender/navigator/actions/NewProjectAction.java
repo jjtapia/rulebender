@@ -24,7 +24,7 @@ import rulebender.navigator.views.ModelTreeView;
 
 public class NewProjectAction extends Action
 {
-	private static final ImageDescriptor m_newFileImage = ImageDescriptor.createFromImage(AbstractUIPlugin.imageDescriptorFromPlugin ("rulebender","/icons/newfile.gif").createImage());
+	private static final ImageDescriptor m_newFileImage = ImageDescriptor.createFromImage(AbstractUIPlugin.imageDescriptorFromPlugin ("rulebender","/icons/views/newfile.gif").createImage());
 	
 	private static File m_parent = new File(PickWorkspaceDialog.getLastSetWorkspaceDirectory());
 	private NewFolderAction m_action; 

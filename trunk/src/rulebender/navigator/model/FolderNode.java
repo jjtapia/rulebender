@@ -18,8 +18,8 @@ public class FolderNode extends TreeNode
 {	
 	private File fFolder; // actual data object
 
-	private static final Image folderImage = AbstractUIPlugin.imageDescriptorFromPlugin ("rulebender","/icons/fldr_obj.gif").createImage();
-	private static final Image projectImage = AbstractUIPlugin.imageDescriptorFromPlugin ("rulebender","/icons/prj_obj.gif").createImage();
+	private static final Image folderImage = AbstractUIPlugin.imageDescriptorFromPlugin ("rulebender","/icons/views/fldr_obj.gif").createImage();
+	private static final Image projectImage = AbstractUIPlugin.imageDescriptorFromPlugin ("rulebender","/icons/views/prj_obj.gif").createImage();
 	/**
 	 * 
 	 * @param folder
@@ -82,13 +82,15 @@ public class FolderNode extends TreeNode
 			// directory
 			if (childFile.isDirectory()) 
 			{
+				
 				if (acceptFolder(childFile.getName())) {
 					children.add(new FolderNode(this, childFile));
 				}
 			}
 			// common files
 			else {
-				if (acceptFile(childFile.getName())) {
+				// accept all
+				if (acceptFolder(childFile.getName())) {
 					children.add(new FileNode(this, childFile));
 				}
 			}

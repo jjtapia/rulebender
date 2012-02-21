@@ -16,9 +16,9 @@ public class FileNode extends TreeNode {
 	private String fileName;
 	private String filePath;
 
-	private static final Image m_bngImage = AbstractUIPlugin.imageDescriptorFromPlugin ("rulebender","/icons/CMap.gif").createImage();
-	private static final Image m_resultsImage = AbstractUIPlugin.imageDescriptorFromPlugin ("rulebender","/icons/Results.gif").createImage();
-	private static final Image m_defaultImage = AbstractUIPlugin.imageDescriptorFromPlugin ("rulebender","/icons/file_obj.gif").createImage();
+	private static final Image m_bngImage = AbstractUIPlugin.imageDescriptorFromPlugin ("rulebender","/icons/views/CMap.gif").createImage();
+	private static final Image m_resultsImage = AbstractUIPlugin.imageDescriptorFromPlugin ("rulebender","/icons/views/Results.gif").createImage();
+	private static final Image m_defaultImage = AbstractUIPlugin.imageDescriptorFromPlugin ("rulebender","/icons/views/file_obj.gif").createImage();
 	
 	public FileNode(ITreeNode parent, File file) {
 		super("FileNode", parent);
@@ -61,7 +61,15 @@ public class FileNode extends TreeNode {
 			suffix = "RXN";
 		if (filename.endsWith(".cfg"))
 			suffix = "CFG";
-		this.fileName = (suffix + ": " + filename);
+		
+		if(suffix != null)
+		{
+			this.fileName = (suffix + ": " + filename);
+		}
+		else
+		{
+			this.fileName = (filename);
+		}
 	}
 
 	/**

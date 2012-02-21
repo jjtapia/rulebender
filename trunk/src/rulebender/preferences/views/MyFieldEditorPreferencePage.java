@@ -34,7 +34,7 @@ public class MyFieldEditorPreferencePage extends FieldEditorPreferencePage imple
 
 	public void init(IWorkbench workbench) {
 		setPreferenceStore(Activator.getDefault().getPreferenceStore());
-		setDescription("A demonstration of a preference page implementation");
+		setDescription("RuleBender Preferences");
 	}
 
 }

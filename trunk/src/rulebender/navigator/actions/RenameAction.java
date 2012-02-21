@@ -20,16 +20,16 @@ import org.eclipse.ui.plugin.AbstractUIPlugin;
 import rulebender.navigator.views.ModelTreeView;
 
 
-public class NewFolderAction extends Action
+public class RenameAction extends Action
 {
-	private static final ImageDescriptor m_newFolderImage = ImageDescriptor.createFromImage(AbstractUIPlugin.imageDescriptorFromPlugin ("rulebender","/icons/views/newfolder_wiz.gif").createImage());
+	//private static final ImageDescriptor m_newFolderImage = ImageDescriptor.createFromImage(AbstractUIPlugin.imageDescriptorFromPlugin ("rulebender","/icons/views/newfolder_wiz.gif").createImage());
 	
-	private File m_parent;
+	private File m_current;
 	private ModelTreeView m_view;
 
-	public NewFolderAction(File parent, ModelTreeView view)
+	public RenameAction(File current, ModelTreeView view)
 	{
-		setDirToMake(parent);
+		setDirToMake(current);
 		setView(view);
 	}
 	
@@ -40,7 +40,7 @@ public class NewFolderAction extends Action
 		        | SWT.DIALOG_TRIM);
 				
 		// Set the text in the title bar
-		nameBox.setText("Set Folder Name");
+		nameBox.setText("Set New Name");
 		
 		// set grid layout
 		nameBox.setLayout(new GridLayout(3, true));
@@ -51,12 +51,12 @@ public class NewFolderAction extends Action
 		
 		// file name
 		Label label1 = new Label(nameBox, SWT.NONE);
-		label1.setText("Folder name:");
+		label1.setText("Name:");
 				
 		// Set the text inside of the new file textbox.
 		final Text newFileText = new Text(nameBox, SWT.BORDER);
 		newFileText.setLayoutData(gridData);
-		newFileText.setText("New Folder");
+		newFileText.setText(m_current.getName());
 				
 		// cancel button
 		Button cancelbutton = new Button(nameBox, SWT.NONE);
@@ -90,48 +90,40 @@ public class NewFolderAction extends Action
 			public void mouseDown(MouseEvent arg0) {}
 			public void mouseUp(MouseEvent arg0) 
 			{
-				// Must be < 255 characters
-				if(newFileText.getText().length() >= 255)
+				
+				String error = null;
+				
+				if(m_current.isDirectory())
 				{
-					MessageBox mb = new MessageBox(Display.getDefault().getActiveShell(), SWT.ICON_INFORMATION);
-					mb.setMessage("Too many characters! Used " + newFileText.getText().length() + " of 255");
-					mb.setText("Error");
-					mb.open();
-					return;
+					error = folderFilter(newFileText.getText());
+				}
+				else
+				{
+					error = fileFilter(newFileText.getText());
 				}
 				
-				// Cannot have empty file name			
-				if(newFileText.getText().trim().equals(""))
+				if(!error.equals(""))
 				{
 					MessageBox mb = new MessageBox(Display.getDefault().getActiveShell(), SWT.ICON_INFORMATION);
-					mb.setMessage("Folder name can not be empty!");
-					mb.setText("Error");
-					mb.open();
-					return;
-				}
-				
-				// Cannot contain special characters 
-				if(newFileText.getText().contains("/") || 
-						newFileText.getText().contains("\\") ||
-						newFileText.getText().contains("?") ||
-						newFileText.getText().contains("%") ||
-						newFileText.getText().contains("*") ||
-						newFileText.getText().contains(":") ||
-						newFileText.getText().contains("|") ||
-						newFileText.getText().contains("\"") ||
-						newFileText.getText().contains("<") ||
-						newFileText.getText().contains(">") ||
-						newFileText.getText().contains("."))
-				{
-					MessageBox mb = new MessageBox(Display.getDefault().getActiveShell(), SWT.ICON_INFORMATION);
-					mb.setMessage("Illegal Character! (/ \\ ? % * : | \" < > . )");
+					mb.setMessage(error);
 					mb.setText("Error");
 					mb.open();
 					return;
 				}
 				
 				// Now check to make sure there is not an existing folder of that name.
-				for(String file : m_parent.list())
+				String[] siblings;
+				
+				if(m_current.isDirectory())
+				{
+					siblings = m_current.list();
+				}
+				else
+				{
+					siblings = new File(m_current.getParent()).list();
+				}
+				
+				for(String file : siblings)
 				{
 					if(file.equals(newFileText.getText()))
 					{
@@ -144,8 +136,15 @@ public class NewFolderAction extends Action
 				}
 				
 				// All is well so create the directory
-				(new File(m_parent.getPath() + System.getProperty("file.separator") + newFileText.getText())).mkdir();
 				
+				String abstractPath = m_current.getAbsolutePath();
+				
+				abstractPath = abstractPath.substring(0, abstractPath.lastIndexOf(System.getProperty("file.separator"))+1) 
+					 +  newFileText.getText();	
+				
+				File newName = new File(abstractPath);
+				m_current.renameTo(newName);
+
 				// refresh the tree
 				// TODO optimize: We could pass in the ISelection and only refresh the subtree
 				m_view.rebuildWholeTree();
@@ -161,7 +160,7 @@ public class NewFolderAction extends Action
 	
 	private void setDirToMake(File parent)
 	{
-		m_parent = parent;
+		m_current = parent;
 	}
 
 	private void setView(ModelTreeView view)
@@ -171,12 +170,59 @@ public class NewFolderAction extends Action
 	
 	public ImageDescriptor getImageDescriptor()
 	{
-		return m_newFolderImage;
+		return null; //m_newFolderImage;
 	}
 	
 	public String getText()
 	{
-		return "New Folder";
+		return "Rename...";
+	}
+	
+	private String fileFilter(String name)
+	{
+		String error = "";
+		
+		// Must be < 255 characters
+		if(name.length() >= 255)
+		{
+			error += ("Too many characters! Used " + name.length() + " of 255\n");
+		}
+		
+		// Cannot have empty file name			
+		if(name.trim().equals(""))
+		{
+		
+			error += "Folder name can not be empty!\n";
+		}
+		
+		// Cannot contain special characters 
+		if(name.contains("/") || 
+				name.contains("\\") ||
+				name.contains("?") ||
+				name.contains("%") ||
+				name.contains("*") ||
+				name.contains(":") ||
+				name.contains("|") ||
+				name.contains("\"") ||
+				name.contains("<") ||
+				name.contains(">"))
+		{
+			error += "Illegal Character! (/ \\ ? % * : | \" < >)\n";
+		}
+	
+		return error;	
+	}
+	
+	private String folderFilter(String name)
+	{
+		String error = fileFilter(name);
+		
+		if(name.contains("."))
+		{
+			error += "Folders cannot contain \".\"";
+		}
+		
+		return error;
 	}
 }
 

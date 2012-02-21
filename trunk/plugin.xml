@@ -16,19 +16,19 @@
          point="org.eclipse.ui.perspectives">
       <perspective
             class="rulebender.Perspective"
-            icon="icons/CMap.gif"
+            icon="icons/views/CMap.gif"
             id="rulebender.perspective"
             name="Model">
       </perspective>
       <perspective
             class="rulebender.SimulationPerspective"
-            icon="icons/run.gif"
+            icon="icons/views/run.gif"
             id="rulebender.simulate.SimulatePerspective"
             name="Simulation">
       </perspective>
       <perspective
             class="rulebender.ResultsPerspective"
-            icon="icons/Results.gif"
+            icon="icons/views/Results.gif"
             id="rulebender.ResultsPerspective"
             name="Results">
       </perspective>
@@ -73,6 +73,13 @@
                relative="org.eclipse.ui.editorss"
                visible="true">
          </view>
+         <view
+               id="rulebender.cnf.CommonNavigator"
+               minimized="false"
+               relationship="left"
+               relative="rulebender.views.Navigator"
+               visible="true">
+         </view>
       </perspectiveExtension>
       <perspectiveExtension
             targetID="rulebender.ResultsPerspective">
@@ -103,6 +110,13 @@
                ratio="0.3f"
                relationship="left"
                relative="rulebender.results.view.ResultsView"
+               visible="true">
+         </view>
+         <view
+               id="rulebender.cnf.CommonNavigator"
+               minimized="false"
+               relationship="left"
+               relative="rulebender.views.Navigator"
                visible="true">
          </view>
       </perspectiveExtension>
@@ -148,6 +162,13 @@
                relative="rulebender.simulate.view.SimulateView"
                visible="true">
          </view>
+         <view
+               id="rulebender.cnf.CommonNavigator"
+               minimized="false"
+               relationship="left"
+               relative="rulebender.views.Navigator"
+               visible="true">
+         </view>
       </perspectiveExtension>
    </extension>
    <extension
@@ -155,7 +176,7 @@
       <view
             allowMultiple="false"
             class="org.eclipse.ui.internal.console.ConsoleView"
-            icon="icons/console_view.gif"
+            icon="icons/views/console_view.gif"
             id="rulebender.views.Console"
             name="Console"
             restorable="true">
@@ -163,28 +184,28 @@
       <view
             allowMultiple="false"
             class="rulebender.navigator.views.ModelTreeView"
-            icon="icons/tree_explorer.gif"
+            icon="icons/views/tree_explorer.gif"
             id="rulebender.views.Navigator"
             name="Navigator"
             restorable="true">
       </view>
       <view
             class="rulebender.contactmap.view.ContactMapView"
-            icon="icons/CMap.gif"
+            icon="icons/views/CMap.gif"
             id="rulebender.contactmap.view.ContactMapView"
             name="Contact Map"
             restorable="true">
       </view>
       <view
             class="rulebender.speciesgraph.view.SpeciesGraphView"
-            icon="icons/speciesGraph.gif"
+            icon="icons/views/speciesGraph.gif"
             id="rulebender.speciesgraph.SpeciesGraphView"
             name="Species Graph"
             restorable="true">
       </view>
       <view
             class="rulebender.results.view.ResultsView"
-            icon="icons/Results.gif"
+            icon="icons/views/Results.gif"
             id="rulebender.results.view.ResultsView"
             name="Results"
             restorable="true">
@@ -197,21 +218,21 @@
       </view>
       <view
             class="rulebender.influencegraph.view.InfluenceGraphView"
-            icon="icons/IGraph.gif"
+            icon="icons/views/IGraph.gif"
             id="rulebender.influencegraph.view.InfluenceGraphView"
             name="InfluenceGraph"
             restorable="true">
       </view>
       <view
             class="org.eclipse.ui.views.properties.PropertySheet"
-            icon="icons/properties.gif"
+            icon="icons/views/properties.gif"
             id="rulebender.properties.view.PropertiesSheetView"
             name="Properties"
             restorable="true">
       </view>
       <view
             class="rulebender.simulate.view.SimulateView"
-            icon="icons/run.gif"
+            icon="icons/views/run.gif"
             id="rulebender.simulate.view.SimulateView"
             name="Simulation"
             restorable="true">
@@ -219,8 +240,16 @@
       <view
             allowMultiple="false"
             class="rulebender.errorview.view.ErrorView"
+            icon="icons/views/error_log.gif"
             id="rulebender.errorview.view.ErrorView"
             name="Errors"
+            restorable="true">
+      </view>
+      <view
+            class="org.eclipse.ui.navigator.CommonNavigator"
+            icon="icons/views/tree_explorer.gif"
+            id="rulebender.cnf.CommonNavigator"
+            name="CNF Browser"
             restorable="true">
       </view>
    </extension>
@@ -343,16 +372,32 @@
                id="rulebender.toolbars.main">
          </toolbar>
       </menuContribution>
-      <menuContribution
-            allPopups="false"
-            locationURI="toolbar:rulebender.views.Console">
-         <command
-               commandId="rulebender.core.commands.CloseTopConsole"
-               icon="icons/progress_rem.gif"
-               style="push">
-         </command>
-      </menuContribution>
    </extension>
+       <extension
+         point="org.eclipse.ui.navigator.viewer">
+       <viewerContentBinding 
+            viewerId="rulebender.cnf.CommonNavigator">
+          <includes>
+       	     <contentExtension pattern="org.eclipse.ui.navigator.resourceContent" />		       	      
+	     <contentExtension pattern="org.eclipse.ui.navigator.resources.filters.*"/>
+          </includes>
+       </viewerContentBinding>
+       <viewerActionBinding
+             viewerId="rulebender.cnf.CommonNavigator">
+          <includes>
+             <actionExtension
+                   pattern="org.eclipse.ui.navigator.resources.*">
+             </actionExtension>
+          </includes>
+       </viewerActionBinding>
+   </extension>
+   <extension
+   		point="org.eclipse.ui.startup">
+   		<startup class="de.ralfebert.rcp.tools.preferredperspective.PreferredPerspectivePartListener"/>
+     <startup
+           class="rulebender.core.editorhider.EditorHider">
+     </startup>
+	</extension> 
    <extension
          point="org.eclipse.ui.commands">
       <command
@@ -434,6 +479,7 @@
             contributorClass="org.eclipse.ui.texteditor.BasicTextEditorActionContributor"
             default="false"
             extensions="bngl"
+            icon="/icons/views/CMap.gif"
             id="rulebender.editors.bngl"
             name="BNGL Editor">
       </editor>
@@ -450,7 +496,7 @@
       point="org.eclipse.ui.views">
    <view
          name="Progress View"
-         icon="icons/pview.gif"
+         icon="icons/views/pview.gif"
          category="org.eclipse.ui"
          class="org.eclipse.ui.ExtensionFactory:progressView"
          id="org.eclipse.ui.views.ProgressView">
@@ -463,16 +509,20 @@
             application="rulebender.application"
             name="RuleBender">
          <property
-               name="startupProgressRect"
-               value="5,275,445,15">
-         </property>
-         <property
                name="preferenceCustomization"
                value="plugin_customization.ini">
          </property>
          <property
                name="appName"
                value="RuleBender">
+         </property>
+         <property
+               name="aboutText"
+               value="RuleBender 2.0r63&#x0A;&#x0A;RuleBender is currently developed by Adam M. Smith at the University of Pittsburgh under the direction of James R. Faeder and Elisabeta G. Marai. &#x0A;&#x0A;Please send all feedback and questions to help@rulebender.org.">
+         </property>
+         <property
+               name="windowImages"
+               value="RB-16.gif,RB-32.gif,RB-48.gif,RB-64.gif,RB-128.gif">
          </property>
       </product>
    </extension>

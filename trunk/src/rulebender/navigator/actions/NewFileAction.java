@@ -23,7 +23,7 @@ import rulebender.navigator.views.ModelTreeView;
 
 public class NewFileAction extends Action
 {
-	private static final ImageDescriptor m_newFileImage = ImageDescriptor.createFromImage(AbstractUIPlugin.imageDescriptorFromPlugin ("rulebender","/icons/newfile.gif").createImage());
+	private static final ImageDescriptor m_newFileImage = ImageDescriptor.createFromImage(AbstractUIPlugin.imageDescriptorFromPlugin ("rulebender","/icons/views/newfile.gif").createImage());
 	
 	private File m_parent;
 	private ModelTreeView m_view;
