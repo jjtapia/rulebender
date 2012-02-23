@@ -10,7 +10,7 @@ import java.io.IOException;
 import java.io.Reader;
 import java.io.Writer;
 
-import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -20,16 +20,18 @@ import org.eclipse.jface.operation.IRunnableContext;
 import org.eclipse.jface.text.Document;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IDocumentPartitioner;
+import org.eclipse.jface.text.source.AnnotationModel;
 import org.eclipse.jface.text.source.IAnnotationModel;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IPathEditorInput;
+import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.ui.texteditor.AbstractDocumentProvider;
+import org.eclipse.ui.texteditor.ResourceMarkerAnnotationModel;
 
 // TODO Try the TextFileDocumentProvider
 
 public class BNGLDocumentProvider extends AbstractDocumentProvider 
 {
-
 	@Override
 	protected IDocument createDocument(Object element) throws CoreException 
 	{
@@ -121,12 +123,20 @@ public class BNGLDocumentProvider extends AbstractDocumentProvider
 		}
 	}
 	
+	
 	//TODO
 	@Override
 	protected IAnnotationModel createAnnotationModel(Object element) throws CoreException 
 	{
-		return null;
+		
+		IFile file = ((FileEditorInput) element).getFile();
+		
+		//return null;
+		ResourceMarkerAnnotationModel annotationModel = new ResourceMarkerAnnotationModel(file);
+		return annotationModel;
+		
 	}
+	
 	/*
 	 * @see org.eclipse.ui.texteditor.AbstractDocumentProvider#doSaveDocument(org.eclipse.core.runtime.IProgressMonitor, java.lang.Object, org.eclipse.jface.text.IDocument, boolean)
 	 */

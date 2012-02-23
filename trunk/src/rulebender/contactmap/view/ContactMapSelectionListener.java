@@ -113,8 +113,9 @@ public class ContactMapSelectionListener implements ISelectionListener, IPartLis
 		// If the ast has not been generated for this model, then 
 		// just return null so there is not contact map displayed.
 		// Also, an empty file produce a complete ast, so the length
-		// requirement catches that. 
-		if(ast == null || ast.toString().split("\\n").length <= 20)
+		// requirement catches that.
+		
+		if(ast == null || ast.toString() == null || ast.toString().split("\\n").length <= 20)
 		{
 			return null;
 		}

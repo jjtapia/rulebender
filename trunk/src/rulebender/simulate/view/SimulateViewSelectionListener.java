@@ -1,9 +1,12 @@
 package rulebender.simulate.view;
 
+import org.eclipse.core.resources.IResource;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.ISelectionListener;
 import org.eclipse.ui.IWorkbenchPart;
+import org.eclipse.ui.navigator.CommonNavigator;
+
 import rulebender.navigator.model.FileNode;
 import rulebender.navigator.model.TreeNode;
 import rulebender.navigator.views.ModelTreeView;
@@ -26,7 +29,7 @@ public class SimulateViewSelectionListener implements ISelectionListener {
 		System.out.println(part.getClass().toString());
 		
 		// Check if it is from the model navigator
-		if(part.getClass() == ModelTreeView.class)
+		if(part.getClass() == CommonNavigator.class)
 		{	
 			IStructuredSelection selection = (IStructuredSelection) in_selection;
 			
@@ -35,32 +38,14 @@ public class SimulateViewSelectionListener implements ISelectionListener {
 			{
 				return;
 			}
-
-			// Get the selected objects as an Object array.
-			Object[] selections = selection.toArray();
 			
-			// Get the tree node that was selected. (just the first)
-			TreeNode node = (TreeNode) selections[0];
-				
+			IResource selectedObject = (IResource) selection.getFirstElement();
+			
 			// If it is a folder node, then skip it. 
-			if (node.getNodeType().equalsIgnoreCase("FolderNode")) 
+			if (selectedObject.getFileExtension() != null &&
+					selectedObject.getFileExtension().equals("bngl")) 
 			{
-				return;
-			}
-				
-			// If it is a file node  
-			if(node.getNodeType().equalsIgnoreCase("FileNode"))
-			{
-				// Get a reference. 
-				FileNode fNode = (FileNode) node;
-				
-				String file = fNode.getPath();
-				
-				if(file.endsWith(".bngl"))	
-				{
-					// Tell the view
-					m_view.setSelectedFileText(file);
-				}
+				m_view.setSelectedFileText(selectedObject.getRawLocation().makeAbsolute().toOSString());
 			}
 		}
 	}

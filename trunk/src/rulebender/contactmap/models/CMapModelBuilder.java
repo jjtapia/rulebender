@@ -76,7 +76,7 @@ public class CMapModelBuilder implements BNGLModelBuilderInterface
 
 	public void parameterFound(String id, String type, String value)
 	{
-			// Ignored for contact map.
+		// Ignored for contact map.
 	}
 	
 	/**

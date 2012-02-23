@@ -122,7 +122,7 @@ public class BNGLConfiguration extends SourceViewerConfiguration
 						m_colorManager.getColor(IBNGLColorConstants.BNGL_COMMENT)));
 			m_reconciler.setDamager(ndr, BNGLPartitionScanner.BNGL_COMMENT);
 			m_reconciler.setRepairer(ndr, BNGLPartitionScanner.BNGL_COMMENT);
-		
+			
 		return m_reconciler;
 
 	}

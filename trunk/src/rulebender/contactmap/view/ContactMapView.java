@@ -49,7 +49,7 @@ public class ContactMapView extends ViewPart
 		Composite swtAwtComponent = new Composite(parent, SWT.EMBEDDED);
 		
 		// Create the special swt/awt frame to hold the awt stuff.
-		frame = SWT_AWT.new_Frame( swtAwtComponent);
+		frame = SWT_AWT.new_Frame(swtAwtComponent);
 		
 		// Create the ContactMapLayeredPane.  This is my data type that has a
 		// large jpanel for the cmap, and an overlayed jpanel for the overview
@@ -94,7 +94,9 @@ public class ContactMapView extends ViewPart
 			}
 		});
 		
-		// Set up the selection listener
+		// Set up the selection listener.  The selectionListener basically 
+		// handles everything.  If you're wanting to understand how the contact
+		// map code works, go there next.
 		listener = new ContactMapSelectionListener(this);
 	}
 

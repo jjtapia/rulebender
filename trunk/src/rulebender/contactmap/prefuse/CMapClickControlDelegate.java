@@ -84,7 +84,6 @@ public class CMapClickControlDelegate extends ControlAdapter implements ISelecti
 
 	public CMapClickControlDelegate(ContactMapView view, Visualization v) 
 	{
-		
 		m_view = view;
 				
 		// Set the local reference to the visualization that this controller is
@@ -398,6 +397,8 @@ public class CMapClickControlDelegate extends ControlAdapter implements ISelecti
 		if(item.getString("type").equals("state"))
 		{
 			//LinkHub.getLinkHub().stateSelectedInContactMap(item);
+		//	start here by finding out how to add the current editor path to the visualization so 
+			//that the selection listener can tell the editor which text file needs the selection.
 			setSelection(new StructuredSelection(new StatePropertySource(item)));
 		}
 		else if(item.getString("type").equals("component"))

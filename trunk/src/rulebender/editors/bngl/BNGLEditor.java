@@ -4,15 +4,21 @@ import java.io.File;
 import java.io.PrintStream;
 import java.util.ArrayList;
 
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IMarker;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.ISelectionListener;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.editors.text.TextEditor;
+import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.ui.texteditor.IDocumentProvider;
 import org.eclipse.ui.texteditor.ITextEditor;
 
@@ -30,8 +36,16 @@ import rulebender.editors.bngl.BNGLConfiguration;
 import rulebender.editors.bngl.BNGLDocumentProvider;
 import rulebender.editors.bngl.model.BNGLModel;
 import rulebender.errorview.model.BNGLError;
-import rulebender.errorview.view.ErrorView;
 
+/**
+ * This class defines the editor for bngl. 
+ * 
+ * The ISelectionListener implementation listens for selections in the tool, and 
+ * IPrefersPerspective is for loading a perspective when an editor is loaded (this is not used at the moment).    
+ * IPreferse
+ * @author adammatthewsmith
+ *
+ */
 public class BNGLEditor extends TextEditor implements ISelectionListener, IPrefersPerspective 
 {
 	// The model for the text
@@ -79,17 +93,33 @@ public class BNGLEditor extends TextEditor implements ISelectionListener, IPrefe
 	@Override
 	public void editorSaved()
 	{	
+		clearErrorMarkers();
+				
 		setAST(getAST());
 		
 	}	
 	
+	private void clearErrorMarkers() 
+	{
+		//Get the ifile reference for this editor input.
+		IFile file = ((FileEditorInput) ((IEditorInput) getEditorInput())).getFile();
+	
+		try 
+		{
+			file.deleteMarkers("rulebender.markers.errormarker", true, IResource.DEPTH_INFINITE);
+		} catch (CoreException e) 
+		{
+			e.printStackTrace();
+		}
+	}
+
+
 	private BNGParseData produceParseData()
 	{
 		//  Get the text in the document.
 		String text = this.getSourceViewer().getDocument().get();
 		
 		return BNGParserUtility.produceParserInfoForBNGLText(text);
-		
 	}
 	
 	private void setAST(prog_return ast)
@@ -129,8 +159,7 @@ public class BNGLEditor extends TextEditor implements ISelectionListener, IPrefe
 	 * 
 	 */
 	private prog_return getAST()
-	{
-		
+	{	
 		// The abstract syntax tree that will be returned.  On a failure, it will be null. 
 		prog_return toReturn = null;
 		
@@ -167,12 +196,77 @@ public class BNGLEditor extends TextEditor implements ISelectionListener, IPrefe
 
 	private void setErrors(ArrayList<BNGLError> errorList) 
 	{
+		// Add the error list to the model
 		m_model.setErrors(errorList);
+		
+		// Get the document.
+		IDocument document = getDocumentProvider().getDocument(getEditorInput());
+	
+		// Get the ifile reference for this editor input.
+		IFile file = ((FileEditorInput) ((IEditorInput) getEditorInput())).getFile();
+			
+		// Create a reference to a region that will be used to hold information
+		// about the error location.
+		IRegion region = null;
+		
+		// Set the annotations.
+		for(BNGLError error : errorList)
+		{
+			// Get the information about the location.
+			try 
+			{
+				region = document.getLineInformation(error.getLineNumber()-1);
+			}
+			catch (BadLocationException exception) 
+			{
+				exception.printStackTrace();
+			}
+			
+			//make a marker
+			IMarker marker = null;
+			try
+			{
+				marker = file.createMarker("rulebender.markers.bnglerrormarker");
+				marker.setAttribute(IMarker.SEVERITY, IMarker.SEVERITY_ERROR);
+				marker.setAttribute(IMarker.MESSAGE, error.getMessage());
+				marker.setAttribute(IMarker.LINE_NUMBER, error.getLineNumber()-1);
+				marker.setAttribute(IMarker.CHAR_START, region.getOffset());
+				marker.setAttribute(IMarker.CHAR_END, region.getOffset()+region.getLength());
+				
+				System.out.println("Made the marker!");
+			}
+			catch(Exception exception)
+			{
+				exception.printStackTrace();
+			}
+		}
+		
+		//IFile thisResource = getDocumentProvider().getDocument(getEditorInput());
+		
+		/* This stuff might not be necessary. 
+		//The DocumentProvider enables to get the document currently loaded in the editor
+		IDocumentProvider idp = getDocumentProvider();
+		//This is the document we want to connect to. This is taken from
+		//the current editor input.
+		IDocument document = idp.getDocument(getEditorInput());
+		//The IannotationModel enables to add/remove/change annotation to a Document
+		//loaded in an Editor
+		IAnnotationModel iamf = idp.getAnnotationModel(getEditorInput());
+		//Note: The annotation type id specify that you want to create one of your
+		//annotations
+		SimpleMarkerAnnotation ma = new SimpleMarkerAnnotation(“rulebender.markers.testmarker”, marker);
+		
+		//Finally add the new annotation to the model
+		iamf.connect(document);
+		iamf.addAnnotation(ma, newPosition(selection.ggetOffset(), selection.getLength()));
+		iamf.disconnect(document);
+		*/
 	}
-
 
 	public void dispose() 
 	{
+		clearErrorMarkers();
+		
 		super.dispose();
 	}
 	
@@ -196,29 +290,19 @@ public class BNGLEditor extends TextEditor implements ISelectionListener, IPrefe
 	@Override
 	public void selectionChanged(IWorkbenchPart part, ISelection selection) 
 	{
+		System.out.println(getEditorInput().getName() + " sees it.=================");
 		
-		// If it's from the BNGLEditor then we want to set the contact map.
-		if(part.getClass() == ErrorView.class && !selection.isEmpty())
-		{
-			IStructuredSelection iSSelection = (IStructuredSelection) selection;		
-			BNGLError error = (BNGLError) iSSelection.getFirstElement();
-			
-			selectALine(error.getFilePath(), error.getLineNumber());
-		}
 		// If it's from the contact map.
-		else if (part.getClass() == ContactMapView.class)
+		if (part.getClass() == ContactMapView.class)
 		{
-			System.out.println("Part Title: " + part.getTitle());
-			System.out.println("toString: " + selection.toString());
-			
 			IStructuredSelection iSSelection = (IStructuredSelection) selection;
 			Object propertyItem = iSSelection.getFirstElement();
 			
 			if(propertyItem instanceof StatePropertySource)
 			{
+				
 				stateSelected((StatePropertySource) propertyItem);
-			}
-			
+			}		
 		}
 		else
 		{
@@ -253,21 +337,7 @@ public class BNGLEditor extends TextEditor implements ISelectionListener, IPrefe
 //	}
 //		
 	public void selectALine(String path, int num)
-	{	
-		
-		// CORRECTION:  Weird, but the num is always 1 too great...
-		// 1 less would make sense (0 indexing in parser)...
-		num--;
-		
-		/*
-		 * First make sure that the file is open.
-		 */
-
-		// Get a reference to the file
-		File file = new File(path);
-		
-		FileInputUtility.openFileInEditor(file);
-		
+	{		
 		/*
 		 * Now we select the line. 
 		 */
@@ -275,7 +345,6 @@ public class BNGLEditor extends TextEditor implements ISelectionListener, IPrefe
 		
 		IDocumentProvider provider = editor.getDocumentProvider();
 		IDocument document = provider.getDocument(this.getEditorInput());
-		//IDocument document = provider.getDocument(path);
 		
 		IRegion region = null;
 		

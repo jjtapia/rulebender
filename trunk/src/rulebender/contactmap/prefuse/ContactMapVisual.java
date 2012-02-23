@@ -48,7 +48,6 @@ import rulebender.core.prefuse.networkviewer.contactmap.VisualRule;
 
 public class ContactMapVisual
 {
-	
 	// To use Prefuse, you first have to construct the data structures that it
 	// uses for visualization e.g. the Graph object. This Graph object will 
 	// hold the nodes and edges for our graph visualization.

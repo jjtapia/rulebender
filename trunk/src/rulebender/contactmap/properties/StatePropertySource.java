@@ -8,8 +8,9 @@ import org.eclipse.ui.views.properties.PropertyDescriptor;
 
 import prefuse.visual.VisualItem;
 import rulebender.core.prefuse.networkviewer.contactmap.VisualRule;
+import rulebender.editors.bngl.IBNGLLinkedElement;
 
-public class StatePropertySource implements IPropertySource 
+public class StatePropertySource implements IPropertySource, IBNGLLinkedElement 
 {
 
 	public static final String PROPERTY_NAME = "rulebender.contactmap.properties.state";
@@ -22,19 +23,22 @@ public class StatePropertySource implements IPropertySource
 	private String m_molecule;
 	private ArrayList<VisualRule> m_rules;
 	
+	private String m_BNGLPath; 
+	
     private IPropertyDescriptor[] m_propertyDescriptors;
     
-	public StatePropertySource(VisualItem item) 
+	public StatePropertySource(VisualItem item)//, String bnglPath) 
 	{
 		setName(((String) item.get(VisualItem.LABEL)).trim());
 		setComponent(item.getString("component").trim());
 		setMolecule(item.getString("molecule"));
 		setRules((ArrayList<VisualRule>) item.get("rules"));
+		//m_BNGLPath = bnglPath;
 	}
 
 	@Override
-	public Object getEditableValue() {
-		// TODO Auto-generated method stub
+	public Object getEditableValue() 
+	{
 		return null;
 	}
 
@@ -105,20 +109,20 @@ public class StatePropertySource implements IPropertySource
 	}
 
 	@Override
-	public boolean isPropertySet(Object id) {
-		// TODO Auto-generated method stub
+	public boolean isPropertySet(Object id) 
+	{
 		return false;
 	}
 
 	@Override
-	public void resetPropertyValue(Object id) {
-		// TODO Auto-generated method stub
+	public void resetPropertyValue(Object id) 
+	{
 		
 	}
 
 	@Override
-	public void setPropertyValue(Object id, Object value) {
-		// TODO Auto-generated method stub
+	public void setPropertyValue(Object id, Object value) 
+	{
 		
 	}
 
@@ -161,5 +165,11 @@ public class StatePropertySource implements IPropertySource
 	private void setRules(ArrayList<VisualRule> m_rules) 
 	{
 		this.m_rules = m_rules;
+	}
+
+	@Override
+	public String getLinkedBNGLPath() 
+	{
+		return m_BNGLPath;
 	}
 }
