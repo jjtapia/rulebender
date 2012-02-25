@@ -10,9 +10,9 @@ import org.eclipse.ui.views.properties.IPropertySource;
 import org.eclipse.ui.views.properties.PropertyDescriptor;
 
 import prefuse.visual.VisualItem;
-import rulebender.core.prefuse.networkviewer.contactmap.VisualRule;
+import rulebender.editors.bngl.IBNGLLinkedElement;
 
-public class MoleculePropertySource implements IPropertySource 
+public class MoleculePropertySource implements IPropertySource, IBNGLLinkedElement 
 {
 
 	private static final String PROPERTY_NAME = "rulebender.contactmap.properties.molecule";
@@ -27,12 +27,15 @@ public class MoleculePropertySource implements IPropertySource
 	private ArrayList<String> m_components;
 	
     private IPropertyDescriptor[] m_propertyDescriptors;
+	
+    private String m_sourcePath;
     
-	public MoleculePropertySource(VisualItem item) 
+	public MoleculePropertySource(VisualItem item, String sourcePath) 
 	{
 		m_name = ((String) item.get("molecule")).trim();
 		m_expression = ((String) item.get("molecule_expression")).trim();
 		m_compartment = "None";
+		m_sourcePath = sourcePath;
 		
 		if(item.get("compartment") != null && !item.get("compartment").equals("")) 
 		{
@@ -43,8 +46,8 @@ public class MoleculePropertySource implements IPropertySource
 	}
 
 	@Override
-	public Object getEditableValue() {
-		// TODO Auto-generated method stub
+	public Object getEditableValue() 
+	{
 		return null;
 	}
 
@@ -63,38 +66,38 @@ public class MoleculePropertySource implements IPropertySource
             nameDescriptor.setLabelProvider(new ILabelProvider(){
 
 				@Override
-				public void addListener(ILabelProviderListener listener) {
-					// TODO Auto-generated method stub
+				public void addListener(ILabelProviderListener listener) 
+				{
 					
 				}
 
 				@Override
-				public void dispose() {
-					// TODO Auto-generated method stub
-					
+				public void dispose() 
+				{
+	
 				}
 
 				@Override
-				public boolean isLabelProperty(Object element, String property) {
-					// TODO Auto-generated method stub
+				public boolean isLabelProperty(Object element, String property) 
+				{
 					return false;
 				}
 
 				@Override
-				public void removeListener(ILabelProviderListener listener) {
-					// TODO Auto-generated method stub
+				public void removeListener(ILabelProviderListener listener) 
+				{
 					
 				}
 
 				@Override
-				public Image getImage(Object element) {
-					// TODO Auto-generated method stub
+				public Image getImage(Object element) 
+				{
 					return null;
 				}
 
 				@Override
-				public String getText(Object element) {
-					// TODO Auto-generated method stub
+				public String getText(Object element) 
+				{
 					return null;
 				}});
             
@@ -151,20 +154,32 @@ public class MoleculePropertySource implements IPropertySource
 	}
 
 	@Override
-	public boolean isPropertySet(Object id) {
-		// TODO Auto-generated method stub
+	public boolean isPropertySet(Object id) 
+	{
 		return false;
 	}
 
 	@Override
-	public void resetPropertyValue(Object id) {
-		// TODO Auto-generated method stub
+	public void resetPropertyValue(Object id) 
+	{
+	
+	}
+
+	@Override
+	public void setPropertyValue(Object id, Object value) 
+	{
 		
 	}
 
 	@Override
-	public void setPropertyValue(Object id, Object value) {
-		// TODO Auto-generated method stub
-		
+	public String getLinkedBNGLPath() 
+	{
+		return m_sourcePath;
+	}
+
+	@Override
+	public String getRegex() 
+	{
+		return m_name;
 	}
 }

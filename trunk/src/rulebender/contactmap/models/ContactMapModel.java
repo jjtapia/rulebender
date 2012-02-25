@@ -29,10 +29,13 @@ import rulebender.contactmap.models.Rule;
 
 public class ContactMapModel
 {
+	
+	private String m_sourcePath;
+	
 	// ArrayLists to hold the necessary CMap data.
-	ArrayList<Molecule> m_molecules;
-	ArrayList<Bond> m_bonds;
-	ArrayList<Rule> m_rules;
+	private ArrayList<Molecule> m_molecules;
+	private ArrayList<Bond> m_bonds;
+	private ArrayList<Rule> m_rules;
 	
 	//private ArrayList<PotentialBond> pbonds;
 	private CompartmentTable m_cmptTable;
@@ -114,6 +117,17 @@ public class ContactMapModel
 	public void addRule(Rule rule) 
 	{
 		m_rules.add(rule);
+	}
+
+	public void setSourcePath(String sourcePath) 
+	{
+		m_sourcePath = sourcePath;
+	}
+	
+	public String getSourcePath() 
+	{
+		return m_sourcePath;
+		
 	}
 }
 

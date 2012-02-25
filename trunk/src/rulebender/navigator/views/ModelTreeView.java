@@ -113,14 +113,14 @@ public class ModelTreeView extends ViewPart
 		// Create the 'new' submenu
 		MenuManager newMenu = new MenuManager("New...");
 		
-		manager.add(newMenu);
+		//manager.add(newMenu);
 		
 		// If nothing is selected
 		if(selection.isEmpty())
 		{
 			// Add the option to create a new folder.
 			//newMenu.add(new NewFolderAction(new File(PickWorkspaceDialog.getLastSetWorkspaceDirectory()), this));	
-			newMenu.add(new NewProjectAction(this));
+		//	newMenu.add(new NewProjectAction(this));
 		}
 		
 		// If only 1 thing was selected
@@ -129,28 +129,28 @@ public class ModelTreeView extends ViewPart
 			// If it is a folder node
 			if(((TreeNode) selection.getFirstElement()).getNodeType().equals("FolderNode"))
 			{
-				newMenu.add(new NewFolderAction(new File(((FolderNode) selection.getFirstElement()).getPath()), this));
-				newMenu.add(new NewFileAction(new File(((FolderNode) selection.getFirstElement()).getPath()), this));
-				newMenu.add(new NewProjectAction(this));
-				manager.add(new RenameAction(new File(((FolderNode)selection.getFirstElement()).getPath()), this));
+				//newMenu.add(new NewFolderAction(new File(((FolderNode) selection.getFirstElement()).getPath()), this));
+				//newMenu.add(new NewFileAction(new File(((FolderNode) selection.getFirstElement()).getPath()), this));
+				//newMenu.add(new NewProjectAction(this));
+				//manager.add(new RenameAction(new File(((FolderNode)selection.getFirstElement()).getPath()), this));
 			}
 			else if(((TreeNode) selection.getFirstElement()).getNodeType().equals("FileNode"))
 			{
 				manager.add(new CompareAction(selection));
-				manager.add(new RenameAction(new File(((FileNode)selection.getFirstElement()).getPath()), this));
+				//manager.add(new RenameAction(new File(((FileNode)selection.getFirstElement()).getPath()), this));
 				
 				// TODO Add something for each type file selection (.bng, .net, .net, scan)
 			}
 			
 			// For both folders and files
-			manager.add(new DeleteFileAction(selection, this));
+			//manager.add(new DeleteFileAction(selection, this));
 		}
 		
 		// If multiple things are selected
 		else if(selection.size() > 1)
 		{
 			// For both folders and files
-			manager.add(new DeleteFileAction(selection, this));
+			//manager.add(new DeleteFileAction(selection, this));
 		}
 		
 		// No matter what add the things below.

@@ -8,12 +8,15 @@ import org.eclipse.ui.views.properties.PropertyDescriptor;
 
 import prefuse.visual.VisualItem;
 import rulebender.core.prefuse.networkviewer.contactmap.VisualRule;
+import rulebender.editors.bngl.IBNGLLinkedElement;
 
-public class CompartmentPropertySource implements IPropertySource 
+public class CompartmentPropertySource implements IPropertySource, IBNGLLinkedElement 
 {
 
 	private static final String PROPERTY_NAME = "rulebender.contactmap.properties.compartment";
 	private static final String PROPERTY_MOLECULES_PREFIX = "rulebender.contactmap.properties.compartment.molecule_";
+
+	private String m_sourcePath;
 	
 	private String m_name;
 
@@ -21,14 +24,16 @@ public class CompartmentPropertySource implements IPropertySource
 	
     private IPropertyDescriptor[] m_propertyDescriptors;
     
-	public CompartmentPropertySource(VisualItem item) 
+	public CompartmentPropertySource(VisualItem item, String sourcePath) 
 	{
 		m_name = ((String) item.get("compartment"));
-		
+	
 		if(m_name == null)
 		{
 			m_name = "None";		
 		}
+		
+		m_sourcePath = sourcePath;
 		
 		//m_molecules = (ArrayList) item
 	}
@@ -103,5 +108,17 @@ public class CompartmentPropertySource implements IPropertySource
 	public void setPropertyValue(Object id, Object value) {
 		// TODO Auto-generated method stub
 		
+	}
+
+	@Override
+	public String getLinkedBNGLPath() 
+	{
+		return m_sourcePath;
+	}
+
+	@Override
+	public String getRegex() 
+	{
+		return m_name;
 	}
 }

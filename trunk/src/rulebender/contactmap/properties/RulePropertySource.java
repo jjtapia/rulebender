@@ -1,6 +1,7 @@
 package rulebender.contactmap.properties;
 
 import java.util.ArrayList;
+import java.util.regex.Pattern;
 
 import org.eclipse.ui.views.properties.IPropertyDescriptor;
 import org.eclipse.ui.views.properties.IPropertySource;
@@ -9,8 +10,9 @@ import org.eclipse.ui.views.properties.PropertyDescriptor;
 import prefuse.visual.AggregateItem;
 import prefuse.visual.VisualItem;
 import rulebender.core.prefuse.networkviewer.contactmap.VisualRule;
+import rulebender.editors.bngl.IBNGLLinkedElement;
 
-public class RulePropertySource implements IPropertySource 
+public class RulePropertySource implements IPropertySource, IBNGLLinkedElement 
 {
 
 	private static final String PROPERTY_LABEL = "rulebender.contactmap.properties.rule";
@@ -20,16 +22,19 @@ public class RulePropertySource implements IPropertySource
 	
 	private String m_label;
 	private String m_expression;
+	private String m_sourcePath;
 
 	//private ArrayList<String> m_context;
 	//private ArrayList<String> m_center;
 	
     private IPropertyDescriptor[] m_propertyDescriptors;
     
-	public RulePropertySource(VisualRule sourceRule) 
+	public RulePropertySource(VisualRule sourceRule, String sourcePath) 
 	{
 		m_label = sourceRule.getLabel();
 		m_expression = sourceRule.getExpression();
+		
+		m_sourcePath = sourcePath;
 		
 		int index = m_expression.indexOf(":");
 		if(index >= 0)
@@ -123,5 +128,52 @@ public class RulePropertySource implements IPropertySource
 	@Override
 	public void setPropertyValue(Object id, Object value) 
 	{		
+	}
+
+	@Override
+	public String getLinkedBNGLPath() 
+	{
+		return m_sourcePath;
+	}
+
+	@Override
+	public String getRegex()
+	{
+		String regex = "";
+		
+		if(m_expression.contains(")"));
+		regex = m_expression.substring(0, m_expression.lastIndexOf(")")+1);
+	
+		if(regex.contains("\n"));
+		{
+			regex = regex.replace("\n", "");
+		}
+		
+		String delimiter = System.getProperty("line.separator");
+		
+		// put an optional pair of backslashes between every character.
+		// This has to happen before the other special characters are escaped.
+		regex = regex.replace("", "\\s*\\\\?\\s*"+delimiter+"?");
+		
+		// This makes the rule match for either forward or bidirectional.
+		//regex = regex.replace("<", "<?");
+		
+		// Escape the parentheses
+		regex = regex.replace("(", "\\(");
+		regex = regex.replace(")", "\\)");
+		
+		// Escape the +
+		regex = regex.replace("+", "\\+");
+		
+		// Escape the !
+		regex = regex.replace("!", "\\!");
+		
+		// Escape the ~
+		//regex = regex.replace("~", "\\~");
+		
+		// Escape the .
+		regex = regex.replace(".", "\\.");
+		
+		return regex;
 	}
 }

@@ -78,14 +78,18 @@ public class CMapClickControlDelegate extends ControlAdapter implements ISelecti
 	private String displaymode_states = "Show States";
 	private String displaymode_compartments = "Show Compartments";
 
-	ContactMapView m_view;
+	private ContactMapView m_view;
+	
+	private String m_sourcePath;
 	
 //	private VisualizationViewerController visviewer;
 
-	public CMapClickControlDelegate(ContactMapView view, Visualization v) 
+	public CMapClickControlDelegate(ContactMapView view, String sourcePath, Visualization v) 
 	{
 		m_view = view;
 				
+		m_sourcePath = sourcePath;
+		
 		// Set the local reference to the visualization that this controller is
 		// attached to.
 		m_vis = v;
@@ -399,12 +403,12 @@ public class CMapClickControlDelegate extends ControlAdapter implements ISelecti
 			//LinkHub.getLinkHub().stateSelectedInContactMap(item);
 		//	start here by finding out how to add the current editor path to the visualization so 
 			//that the selection listener can tell the editor which text file needs the selection.
-			setSelection(new StructuredSelection(new StatePropertySource(item)));
+			setSelection(new StructuredSelection(new StatePropertySource(item, m_sourcePath)));
 		}
 		else if(item.getString("type").equals("component"))
 		{
 			//LinkHub.getLinkHub().componentSelectedInContactMap(item);
-			setSelection(new StructuredSelection(new ComponentPropertySource(item)));
+			setSelection(new StructuredSelection(new ComponentPropertySource(item, m_sourcePath)));
 		}
 		else if(item.getString("type").equals("hub"))
 		{
@@ -553,7 +557,7 @@ public class CMapClickControlDelegate extends ControlAdapter implements ISelecti
 		clearSelection(true);
 		setVisualItemAsSelected(item);
 		
-		setSelection(new StructuredSelection(new EdgePropertySource(item)));
+		setSelection(new StructuredSelection(new EdgePropertySource(item, m_sourcePath)));
 	}
 	
 	/**
@@ -672,7 +676,7 @@ public class CMapClickControlDelegate extends ControlAdapter implements ISelecti
 		m_vis.run("bubbleColor");
 		
 		//if(passingOn)
-		setSelection(new StructuredSelection(new RulePropertySource(sourceRule)));
+		setSelection(new StructuredSelection(new RulePropertySource(sourceRule, m_sourcePath)));
 			
 	}
 	
@@ -692,12 +696,12 @@ public class CMapClickControlDelegate extends ControlAdapter implements ISelecti
 		// Molecule
 		if(item.getString("type").equals("molecule"))
 		{
-			setSelection(new StructuredSelection(new MoleculePropertySource(item)));
+			setSelection(new StructuredSelection(new MoleculePropertySource(item, m_sourcePath)));
 		}
 		// Compartment
 		else if(item.getString("type").equals("compartment"))
 		{
-			setSelection(new StructuredSelection(new CompartmentPropertySource(item)));
+			setSelection(new StructuredSelection(new CompartmentPropertySource(item, m_sourcePath)));
 		}
 		// A context or center object
 		else

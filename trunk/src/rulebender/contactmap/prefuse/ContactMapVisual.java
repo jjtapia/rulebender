@@ -249,7 +249,7 @@ public class ContactMapVisual
         // If you do not want interactions, simply do not add a
         // clickcontroldelegate.  See the editor.contactmap.CMapClickControlDelegate
         // for how to implement it.
-        CMapClickControlDelegate cctrldelegate = new CMapClickControlDelegate(view , m_networkViewer.getVisualization());
+        CMapClickControlDelegate cctrldelegate = new CMapClickControlDelegate(view, model_in.getSourcePath(), m_networkViewer.getVisualization());
         m_networkViewer.setClickControl(cctrldelegate);
 
         // This is an index to the Node objects so that I can retrieve them 

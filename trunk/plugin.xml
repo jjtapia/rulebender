@@ -39,15 +39,6 @@
             targetID="rulebender.perspective">
          <view
                closeable="false"
-               id="rulebender.views.Navigator"
-               minimized="true"
-               ratio="0.2f"
-               relationship="left"
-               relative="org.eclipse.ui.editorss"
-               visible="true">
-         </view>
-         <view
-               closeable="false"
                id="rulebender.contactmap.view.ContactMapView"
                minimized="false"
                moveable="true"
@@ -66,7 +57,7 @@
          </view>
          <view
                closeable="false"
-               id="rulebender.errorview.view.ErrorView"
+               id="rulebender.views.problemview"
                minimized="false"
                moveable="true"
                relationship="bottom"
@@ -77,7 +68,7 @@
                id="rulebender.cnf.CommonNavigator"
                minimized="false"
                relationship="left"
-               relative="rulebender.views.Navigator"
+               relative="org.eclipse.ui.editorss"
                visible="true">
          </view>
       </perspectiveExtension>
@@ -110,13 +101,6 @@
                ratio="0.3f"
                relationship="left"
                relative="rulebender.results.view.ResultsView"
-               visible="true">
-         </view>
-         <view
-               id="rulebender.cnf.CommonNavigator"
-               minimized="false"
-               relationship="left"
-               relative="rulebender.views.Navigator"
                visible="true">
          </view>
       </perspectiveExtension>
@@ -153,20 +137,10 @@
                visible="true">
          </view>
          <view
-               closeable="false"
-               id="rulebender.views.Navigator"
-               minimized="false"
-               moveable="true"
-               ratio="0.3f"
-               relationship="left"
-               relative="rulebender.simulate.view.SimulateView"
-               visible="true">
-         </view>
-         <view
                id="rulebender.cnf.CommonNavigator"
                minimized="false"
                relationship="left"
-               relative="rulebender.views.Navigator"
+               relative="rulebender.simulate.view.SimulateView"
                visible="true">
          </view>
       </perspectiveExtension>
@@ -249,7 +223,20 @@
             class="org.eclipse.ui.navigator.CommonNavigator"
             icon="icons/views/tree_explorer.gif"
             id="rulebender.cnf.CommonNavigator"
-            name="CNF Browser"
+            name="Navigator"
+            restorable="true">
+      </view>
+      <view
+            category="org.eclipse.ui"
+            class="org.eclipse.ui.ExtensionFactory:progressView"
+            icon="icons/views/pview.gif"
+            id="org.eclipse.ui.views.ProgressView"
+            name="Progress View">
+      </view>
+      <view
+            class="org.eclipse.ui.internal.views.markers.ProblemsView"
+            id="rulebender.views.problemview"
+            name="Problems"
             restorable="true">
       </view>
    </extension>
@@ -393,10 +380,6 @@
    </extension>
    <extension
    		point="org.eclipse.ui.startup">
-   		<startup class="de.ralfebert.rcp.tools.preferredperspective.PreferredPerspectivePartListener"/>
-     <startup
-           class="rulebender.core.editorhider.EditorHider">
-     </startup>
 	</extension> 
    <extension
          point="org.eclipse.ui.commands">
@@ -493,16 +476,6 @@
       </editor>
    </extension>
    <extension
-      point="org.eclipse.ui.views">
-   <view
-         name="Progress View"
-         icon="icons/views/pview.gif"
-         category="org.eclipse.ui"
-         class="org.eclipse.ui.ExtensionFactory:progressView"
-         id="org.eclipse.ui.views.ProgressView">
-   </view>
-</extension>
-   <extension
          id="product"
          point="org.eclipse.core.runtime.products">
       <product
@@ -526,6 +499,64 @@
          </property>
       </product>
    </extension>
+  
+ <extension 
+ 		id="rulebender.markers.bnglerrormarker"
+ 		name="BNGL Error"
+ 		point= "org.eclipse.core.resources.markers"> 
+	<super
+         type="org.eclipse.core.resources.problemmarker">
+   	</super>
+   <super
+         type="org.eclipse.core.resources.textmarker">
+   </super>
+   <persistent
+         value="false">
+   	</persistent>
+ </extension>
+ 
 
+
+
+  <extension
+        id="rulebender.markers.textinstance"
+        name="Text"
+        point="org.eclipse.core.resources.markers">
+     <persistent
+           value="false">
+     </persistent>
+     <super
+           type="org.eclipse.core.resources.textmarker">
+     </super>
+  </extension>
+  <extension
+        point="org.eclipse.ui.editors.annotationTypes">
+     <type
+           markerType="rulebender.markers.textinstance"
+           name="rulebender.annotations.textinstance">
+     </type>
+  </extension>
+
+<extension
+      point="org.eclipse.ui.editors.markerAnnotationSpecification">
+   <specification
+         annotationType="rulebender.annotations.textinstance"
+         colorPreferenceKey="rulebender.annotations.textinstance.color"
+         colorPreferenceValue="155, 255, 155"
+         contributesToHeader="false"
+         highlightPreferenceKey="rulebender.annotations.textinstance.highlight"
+         highlightPreferenceValue="true"
+         includeOnPreferencePage="true"
+         label="Text Instance Marker"
+         overviewRulerPreferenceKey="rulebender.annotations.textinstance.overview"
+         overviewRulerPreferenceValue="true"
+         presentationLayer="0"
+         textPreferenceKey="rulebender.annotations.textinstance.text"
+         textPreferenceValue="true"
+         textStylePreferenceValue="BOX"
+         verticalRulerPreferenceKey="rulebender.annotations.textinstance.ruler"
+         verticalRulerPreferenceValue="true">
+   </specification>
+</extension>
 
 </plugin>

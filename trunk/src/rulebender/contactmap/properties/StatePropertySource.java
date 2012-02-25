@@ -27,13 +27,13 @@ public class StatePropertySource implements IPropertySource, IBNGLLinkedElement
 	
     private IPropertyDescriptor[] m_propertyDescriptors;
     
-	public StatePropertySource(VisualItem item)//, String bnglPath) 
+	public StatePropertySource(VisualItem item, String sourcePath)//, String bnglPath) 
 	{
 		setName(((String) item.get(VisualItem.LABEL)).trim());
 		setComponent(item.getString("component").trim());
 		setMolecule(item.getString("molecule"));
 		setRules((ArrayList<VisualRule>) item.get("rules"));
-		//m_BNGLPath = bnglPath;
+		m_BNGLPath = sourcePath;
 	}
 
 	@Override
@@ -171,5 +171,10 @@ public class StatePropertySource implements IPropertySource, IBNGLLinkedElement
 	public String getLinkedBNGLPath() 
 	{
 		return m_BNGLPath;
+	}
+
+	@Override
+	public String getRegex() {
+		return m_component+"~"+m_name;
 	}
 }

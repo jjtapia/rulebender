@@ -29,7 +29,7 @@ public class SimulateViewSelectionListener implements ISelectionListener {
 		System.out.println(part.getClass().toString());
 		
 		// Check if it is from the model navigator
-		if(part.getClass() == CommonNavigator.class)
+		if(part instanceof CommonNavigator)
 		{	
 			IStructuredSelection selection = (IStructuredSelection) in_selection;
 			

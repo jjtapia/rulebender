@@ -7,10 +7,12 @@ import java.util.HashMap;
 
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IPartListener2;
 import org.eclipse.ui.ISelectionListener;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.IWorkbenchPartReference;
+import org.eclipse.ui.part.FileEditorInput;
 
 import bngparser.grammars.BNGGrammar.prog_return;
 
@@ -76,8 +78,10 @@ public class ContactMapSelectionListener implements ISelectionListener, IPartLis
 	
 	private void bnglEditorSelection(IWorkbenchPart part, ISelection selection)
 	{
+		String osString = ((FileEditorInput) ((BNGLEditor) part).getEditorInput()).getPath().toOSString();
+		
 		// If it's the same file
-		if(m_currentModel != null && part.getTitle().equals(m_currentModel.getPathID()))
+		if(m_currentModel != null && osString.equals(m_currentModel.getPathID()))
 		{
 			//TODO it could be a text selection.
 			System.out.println("current");
@@ -104,11 +108,14 @@ public class ContactMapSelectionListener implements ISelectionListener, IPartLis
 	}
 
 	/**
-	 * Generates a contact map using the antlr parser for a filename. 
-	 * @param fileName
+	 * Generates a contact map using the abstract syntax tree from 
+	 * the bngl parser.  
+	 *  
+	 * @param sourcePath The path of the resource.  This is used for selection later.   
+	 * @param ast - The abstract syntax tree for the bngl model.
 	 * @return
 	 */
-	public prefuse.Display generateContactMap(prog_return ast)
+	private prefuse.Display generateContactMap(String sourcePath, prog_return ast)
 	{	
 		// If the ast has not been generated for this model, then 
 		// just return null so there is not contact map displayed.
@@ -143,6 +150,7 @@ public class ContactMapSelectionListener implements ISelectionListener, IPartLis
 		
 		// Get the model from the builder.		
 		ContactMapModel cModel = cmapModelBuilder.getCMapModel();
+		cModel.setSourcePath(sourcePath);
 		
 		//DEBUG
 		// This should never happen.
@@ -177,7 +185,7 @@ public class ContactMapSelectionListener implements ISelectionListener, IPartLis
 		m_contactMapRegistry.remove(path);
 		
 		// Generate a new display
-		prefuse.Display display = generateContactMap(ast);
+		prefuse.Display display = generateContactMap(path, ast);
 		
 		// Add the new representation.
 		m_contactMapRegistry.put(path, display);
@@ -195,9 +203,7 @@ public class ContactMapSelectionListener implements ISelectionListener, IPartLis
 	{
 		
 		if(partRef.getId().equals("rulebender.editors.bngl"))
-		{
-			System.out.println("File opened seen in cmap"+((BNGLEditor)partRef.getPart(false)).getTitle());
-			
+		{	
 			// Set the current file.
 			setCurrentModel(((BNGLEditor) partRef.getPart(false)).getModel());
 		
@@ -226,7 +232,7 @@ public class ContactMapSelectionListener implements ISelectionListener, IPartLis
 		
 		// generate the display and add the initial cmap to the registry.
 		
-		m_contactMapRegistry.put(m_currentModel.getPathID(), generateContactMap(m_currentModel.getAST()));
+		m_contactMapRegistry.put(m_currentModel.getPathID(), generateContactMap(m_currentModel.getPathID(), m_currentModel.getAST()));
 		
 		m_view.setCMap(lookupDisplay(m_currentModel));
 		
@@ -251,10 +257,11 @@ public class ContactMapSelectionListener implements ISelectionListener, IPartLis
 	public void partClosed(IWorkbenchPartReference partRef) 
 	{
 		if(partRef.getId().equals("rulebender.editors.bngl"))
-		{
-			//System.out.println("Part Closed seen in cmap: " + ((BNGLEditor)partRef.getPart(false)).getTitle());
+		{			
+			BNGLEditor editor = ((BNGLEditor)partRef.getPart(false));
+			String osString = ((FileEditorInput) editor.getEditorInput()).getPath().toOSString();
 			
-			bnglFileClosed(((BNGLEditor)partRef.getPart(false)).getTitle());
+			bnglFileClosed(osString);
 		}
 		
 	}

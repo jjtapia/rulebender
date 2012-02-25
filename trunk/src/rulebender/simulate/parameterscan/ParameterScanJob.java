@@ -1,9 +1,13 @@
 package rulebender.simulate.parameterscan;
 
+
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -16,6 +20,7 @@ import org.eclipse.ui.progress.IProgressConstants;
 import rulebender.core.utility.Console;
 import rulebender.navigator.views.ModelTreeView;
 import rulebender.simulate.CommandRunner;
+import org.eclipse.ui.navigator.CommonNavigator;
 
 public class ParameterScanJob extends Job 
 {
@@ -70,6 +75,7 @@ public class ParameterScanJob extends Job
 		// Make the directory if necessary
 		(new File(resultsDir)).mkdirs();
 		
+		
 		//MONITOR
 		monitor.setTaskName("Generating Commands...");
 		monitor.worked(1);
@@ -110,12 +116,20 @@ public class ParameterScanJob extends Job
 					{
 						if(view.getId().equals("rulebender.views.Navigator"))
 						{
-							((ModelTreeView) view.getPart(false)).rebuildWholeTree();
+							((ModelTreeView) view.getPart(true)).rebuildWholeTree();
 						}
 					}
 			}});
 
-				
+
+	    // Update the resource tree.
+	       try {
+			ResourcesPlugin.getWorkspace().getRoot().refreshLocal(IResource.DEPTH_INFINITE, null);
+		} catch (CoreException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	       
 		return Status.OK_STATUS;
  	}
 	

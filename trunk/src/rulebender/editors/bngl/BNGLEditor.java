@@ -1,8 +1,9 @@
 package rulebender.editors.bngl;
 
-import java.io.File;
 import java.io.PrintStream;
 import java.util.ArrayList;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
@@ -11,6 +12,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IRegion;
+import org.eclipse.jface.text.ITextSelection;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.IEditorInput;
@@ -27,11 +29,8 @@ import de.ralfebert.rcp.tools.preferredperspective.IPrefersPerspective;
 import bngparser.BNGParseData;
 import bngparser.BNGParserUtility;
 import bngparser.grammars.BNGGrammar.prog_return;
-import rulebender.contactmap.properties.StatePropertySource;
-import rulebender.contactmap.view.ContactMapView;
 import rulebender.core.utility.ANTLRFilteredPrintStream;
 import rulebender.core.utility.Console;
-import rulebender.core.utility.FileInputUtility;
 import rulebender.editors.bngl.BNGLConfiguration;
 import rulebender.editors.bngl.BNGLDocumentProvider;
 import rulebender.editors.bngl.model.BNGLModel;
@@ -84,8 +83,7 @@ public class BNGLEditor extends TextEditor implements ISelectionListener, IPrefe
 	@Override
 	public void initializeEditor()
 	{
-		super.initializeEditor();
-		
+		super.initializeEditor();	
 	}
 	
 	*/
@@ -93,26 +91,25 @@ public class BNGLEditor extends TextEditor implements ISelectionListener, IPrefe
 	@Override
 	public void editorSaved()
 	{	
-		clearErrorMarkers();
+		clearMarkers("rulebender.markers.bnglerrormarker");
 				
 		setAST(getAST());
 		
 	}	
 	
-	private void clearErrorMarkers() 
+	private void clearMarkers(String markerId) 
 	{
 		//Get the ifile reference for this editor input.
 		IFile file = ((FileEditorInput) ((IEditorInput) getEditorInput())).getFile();
 	
 		try 
 		{
-			file.deleteMarkers("rulebender.markers.errormarker", true, IResource.DEPTH_INFINITE);
+			file.deleteMarkers(markerId, true, IResource.DEPTH_INFINITE);
 		} catch (CoreException e) 
 		{
 			e.printStackTrace();
 		}
 	}
-
 
 	private BNGParseData produceParseData()
 	{
@@ -126,7 +123,7 @@ public class BNGLEditor extends TextEditor implements ISelectionListener, IPrefe
 	{	
 		if (m_model == null)
 		{
-			m_model = new BNGLModel(this.getPartName());
+			m_model = new BNGLModel(((FileEditorInput) ((IEditorInput) getEditorInput())).getPath().toOSString());
 			m_model.setAST(ast);
 		}
 		else
@@ -143,9 +140,8 @@ public class BNGLEditor extends TextEditor implements ISelectionListener, IPrefe
 	{
 		if(m_model == null)
 		{
-			m_model = new BNGLModel(getTitle());
+			m_model = new BNGLModel(((FileEditorInput) ((IEditorInput) getEditorInput())).getPath().toOSString());
 			m_model.setAST(getAST());
-			
 		}
 		
 		return m_model;
@@ -167,10 +163,14 @@ public class BNGLEditor extends TextEditor implements ISelectionListener, IPrefe
 		PrintStream old = System.err;
 		
 
-		Console.clearConsole(getTitle());
+		Console.clearConsole(((FileEditorInput) ((IEditorInput) getEditorInput())).getPath().toOSString());
 		
 		// Set the error out to a new printstream that will only display the antlr output.
-		ANTLRFilteredPrintStream errorStream = new ANTLRFilteredPrintStream(Console.getMessageConsoleStream(getTitle()), getTitle(), old, getTitle()); 
+		ANTLRFilteredPrintStream errorStream =
+				new ANTLRFilteredPrintStream(Console.getMessageConsoleStream(((FileEditorInput) ((IEditorInput) getEditorInput())).getPath().toOSString()), 
+											 ((FileEditorInput) ((IEditorInput) getEditorInput())).getPath().toOSString(), 
+											 old, 
+											 ((FileEditorInput) ((IEditorInput) getEditorInput())).getPath().toOSString()); 
 		System.setErr(errorStream);
 		
 		try
@@ -181,9 +181,6 @@ public class BNGLEditor extends TextEditor implements ISelectionListener, IPrefe
 		{
 			e.printStackTrace();
 			System.out.println("Caught in the getAST Method.");
-			
-			//DEBUG
-			//Console.displayOutput(getTitle(), getTitle() + " Errors:");
 		}	
 		
 		setErrors(errorStream.getErrorList());
@@ -240,32 +237,12 @@ public class BNGLEditor extends TextEditor implements ISelectionListener, IPrefe
 				exception.printStackTrace();
 			}
 		}
-		
-		//IFile thisResource = getDocumentProvider().getDocument(getEditorInput());
-		
-		/* This stuff might not be necessary. 
-		//The DocumentProvider enables to get the document currently loaded in the editor
-		IDocumentProvider idp = getDocumentProvider();
-		//This is the document we want to connect to. This is taken from
-		//the current editor input.
-		IDocument document = idp.getDocument(getEditorInput());
-		//The IannotationModel enables to add/remove/change annotation to a Document
-		//loaded in an Editor
-		IAnnotationModel iamf = idp.getAnnotationModel(getEditorInput());
-		//Note: The annotation type id specify that you want to create one of your
-		//annotations
-		SimpleMarkerAnnotation ma = new SimpleMarkerAnnotation(“rulebender.markers.testmarker”, marker);
-		
-		//Finally add the new annotation to the model
-		iamf.connect(document);
-		iamf.addAnnotation(ma, newPosition(selection.ggetOffset(), selection.getLength()));
-		iamf.disconnect(document);
-		*/
 	}
 
 	public void dispose() 
 	{
-		clearErrorMarkers();
+		clearMarkers("rulebender.markers.bnglerrormarker");
+		clearMarkers("rulebender.markers.textinstance");
 		
 		super.dispose();
 	}
@@ -290,77 +267,119 @@ public class BNGLEditor extends TextEditor implements ISelectionListener, IPrefe
 	@Override
 	public void selectionChanged(IWorkbenchPart part, ISelection selection) 
 	{
-		System.out.println(getEditorInput().getName() + " sees it.=================");
+		System.out.println("Part: " + part.getTitle());
+		System.out.println("selection: " + selection.toString());
+		System.out.println("empty selection? " + selection.isEmpty());
+		System.out.println("structured selection? " + (selection instanceof IStructuredSelection));
+		System.out.println("text selection? " + (selection instanceof ITextSelection));
 		
-		// If it's from the contact map.
-		if (part.getClass() == ContactMapView.class)
+		// If it is an IStructuredSelection
+		if(selection instanceof IStructuredSelection)
 		{
-			IStructuredSelection iSSelection = (IStructuredSelection) selection;
-			Object propertyItem = iSSelection.getFirstElement();
-			
-			if(propertyItem instanceof StatePropertySource)
+			if(!selection.isEmpty())
 			{
-				
-				stateSelected((StatePropertySource) propertyItem);
-			}		
+				// Get the object that was selected
+				IStructuredSelection iSSelection = (IStructuredSelection) selection;
+				Object item = iSSelection.getFirstElement();
+			
+				// If it's the object implements IBNLLinkedElement, ie if it 
+				// has methods to get the path of the source file and a regular 
+				// expression for text search.
+				if (item instanceof IBNGLLinkedElement)
+				{
+					// Get the current path that is listening. 
+					String thisPath = ((FileEditorInput) ((IEditorInput) getEditorInput())).getPath().toOSString();
+					
+					// If it is for this file.
+					if(((IBNGLLinkedElement) item).getLinkedBNGLPath().equals(thisPath))
+					{
+						searchableTextObjectSelected((IBNGLLinkedElement) item);
+					}
+				}
+				else if(item instanceof IBNGLLinkedElementCollection)
+				{
+					// Get the current path that is listening. 
+					String thisPath = ((FileEditorInput) ((IEditorInput) getEditorInput())).getPath().toOSString();
+					
+					// If it is for this file.
+					if(((IBNGLLinkedElementCollection) item).getLinkedBNGLPath().equals(thisPath))
+					{
+						searchableTextObjectCollectionSelected((IBNGLLinkedElementCollection) item);
+					}
+				}
+				else
+				{
+					clearMarkers("rulebender.markers.textinstance");
+				}
+			}	
+			
+			else
+			{
+				clearMarkers("rulebender.markers.textinstance");
+			}
+			
+		}
+		else if (selection instanceof ITextSelection)
+		{
+			System.out.println(((ITextSelection) selection).toString());
 		}
 		else
 		{
-			
-		}	
+			clearMarkers("rulebender.markers.textinstance");
+		}
 	}
 	
-	private void stateSelected(StatePropertySource stateSource) 
+	private void searchableTextObjectCollectionSelected(IBNGLLinkedElementCollection collection)
 	{
-		//String component = stateSource.getComponent();
-		//String name = stateSource.getName();
+		clearMarkers("rulebender.markers.textinstance");
 		
-	//	selectFromRegExp(component + "~" + name); 
+		for(IBNGLLinkedElement ele : collection.getCollection())
+		{
+			selectFromRegExp(ele.getRegex());
+		}
 	}
 	
-//	private void selectFromRegExp(String regExp)
-//	{
-//
-//		ITextEditor editor = (ITextEditor) this.getAdapter(ITextEditor.class);
-//				
-//		IDocumentProvider provider = editor.getDocumentProvider();
-//		IDocument document = provider.getDocument(this.getEditorInput());
-//			
-//		Pattern p = Pattern.compile(regExp);
-//		Matcher m = p.matcher(document.get());
-//		
-//		
-//		while(m.find()) 
-//        {
-//
-//		} 
-//	}
-//		
-	public void selectALine(String path, int num)
-	{		
-		/*
-		 * Now we select the line. 
-		 */
-		ITextEditor editor = (ITextEditor) this.getAdapter(ITextEditor.class);
+	private void searchableTextObjectSelected(IBNGLLinkedElement source) 
+	{	
+		clearMarkers("rulebender.markers.textinstance");
+		selectFromRegExp(source.getRegex());
+	}
+	
+	private void selectFromRegExp(String regExp)
+	{
+		System.out.println("Search for regex: " + regExp);
 		
+		//Get the ifile reference for this editor input.
+		IFile file = ((FileEditorInput) ((IEditorInput) getEditorInput())).getFile();
+				
+		ITextEditor editor = (ITextEditor) this.getAdapter(ITextEditor.class);
+				
 		IDocumentProvider provider = editor.getDocumentProvider();
 		IDocument document = provider.getDocument(this.getEditorInput());
+			
+		Pattern p = Pattern.compile(regExp);
+		Matcher m = p.matcher(document.get());		
 		
-		IRegion region = null;
+		IMarker marker = null;
 		
-		try 
-		{
-			region = document.getLineInformation(num);
-		}
-		catch (BadLocationException e) 
-		{
-			e.printStackTrace();
-		}
-		
-		selectAndReveal(region.getOffset(), region.getLength());	
+		while(m.find()) 
+        {	
+			try
+			{
+				marker = file.createMarker("rulebender.markers.textinstance");
+				marker.setAttribute(IMarker.SEVERITY, IMarker.SEVERITY_ERROR);
+				marker.setAttribute(IMarker.CHAR_START, m.start());
+				marker.setAttribute(IMarker.CHAR_END, m.end());
+				
+				System.out.println("Made the text marker!");
+			}
+			catch(Exception exception)
+			{
+				exception.printStackTrace();
+			}
+		} 
 	}
-
-
+		
 	@Override
 	public String getPreferredPerspectiveId() 
 	{

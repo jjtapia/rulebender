@@ -1,6 +1,8 @@
 package rulebender.editors.bngl;
 
-public interface IBNGLLinkedElement 
+import java.util.List;
+
+public interface IBNGLLinkedElementCollection  
 {
 	/**
 	 * This was created so that views that have visualizations that are 
@@ -16,5 +18,5 @@ public interface IBNGLLinkedElement
 	 * in the document.  
 	 * @return
 	 */
-	public String getRegex();
+	public List<IBNGLLinkedElement> getCollection();
 }

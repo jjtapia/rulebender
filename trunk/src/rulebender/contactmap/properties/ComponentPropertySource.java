@@ -8,8 +8,9 @@ import org.eclipse.ui.views.properties.PropertyDescriptor;
 
 import prefuse.visual.VisualItem;
 import rulebender.core.prefuse.networkviewer.contactmap.VisualRule;
+import rulebender.editors.bngl.IBNGLLinkedElement;
 
-public class ComponentPropertySource implements IPropertySource 
+public class ComponentPropertySource implements IPropertySource, IBNGLLinkedElement 
 {
 
 	private static final String PROPERTY_NAME = "rulebender.contactmap.properties.component";
@@ -20,13 +21,16 @@ public class ComponentPropertySource implements IPropertySource
 	private String m_name;
 	private String m_molecule;
 	//private String m_compartment;
+	
+	private String m_sourcePath;
 
 	private ArrayList<String> m_states;
 	
     private IPropertyDescriptor[] m_propertyDescriptors;
     
-	public ComponentPropertySource(VisualItem item) 
+	public ComponentPropertySource(VisualItem item, String sourcePath) 
 	{
+		m_sourcePath = sourcePath;
 		m_name = ((String) item.get(VisualItem.LABEL)).trim();
 		m_molecule = item.getString("molecule_expression").trim();
 		//m_compartment = item.getString("").trim();
@@ -116,6 +120,29 @@ public class ComponentPropertySource implements IPropertySource
 	@Override
 	public void setPropertyValue(Object id, Object value) {
 		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public String getLinkedBNGLPath() 
+	{
+		return m_sourcePath;
+	}
+
+	@Override
+	public String getRegex() 
+	{
+		// only the component from the correct molecule.
+		String moleculeStripped = m_molecule.substring(0, m_molecule.indexOf("("));
+		
+		// if it has all of the molecule information, then strip it. 
+		if(m_molecule.contains("("));
+		{
+			m_molecule.substring(0, m_molecule.indexOf("("));
+		}
+		
+		// Return the formed regular expression.
+		return (moleculeStripped +"\\s*\\((\\s|[^\\)])*"+ m_name + "([^\\)]|\\s)*\\)");
 		
 	}
 }
