@@ -6,8 +6,6 @@ import java.beans.PropertyChangeListener;
 import java.util.HashMap;
 
 import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IPartListener2;
 import org.eclipse.ui.ISelectionListener;
 import org.eclipse.ui.IWorkbenchPart;
@@ -22,7 +20,6 @@ import rulebender.contactmap.prefuse.ContactMapVisual;
 import rulebender.editors.bngl.BNGLEditor;
 import rulebender.editors.bngl.model.BNGASTReader;
 import rulebender.editors.bngl.model.BNGLModel;
-import rulebender.errorview.model.BNGLError;
 
 public class ContactMapSelectionListener implements ISelectionListener, IPartListener2
 {
@@ -50,9 +47,9 @@ public class ContactMapSelectionListener implements ISelectionListener, IPartLis
 	public void selectionChanged(IWorkbenchPart part, ISelection selection) 
 	{	
 		// If it's from the BNGLEditor then we want to set the contact map.
-		if(part.getClass() == BNGLEditor.class)
+		if(part instanceof BNGLEditor)
 		{
-			bnglEditorSelection(part, selection);
+			bnglEditorSelection((BNGLEditor) part, selection);
 		}
 		// If it's not a bngl file
 		else
@@ -76,7 +73,7 @@ public class ContactMapSelectionListener implements ISelectionListener, IPartLis
 		
 	}
 	
-	private void bnglEditorSelection(IWorkbenchPart part, ISelection selection)
+	private void bnglEditorSelection(BNGLEditor part, ISelection selection)
 	{
 		String osString = ((FileEditorInput) ((BNGLEditor) part).getEditorInput()).getPath().toOSString();
 		
@@ -202,7 +199,7 @@ public class ContactMapSelectionListener implements ISelectionListener, IPartLis
 	public void partOpened(IWorkbenchPartReference partRef) 
 	{
 		
-		if(partRef.getId().equals("rulebender.editors.bngl"))
+		if(partRef.getId().equals("rulebender.editors.bngl") && partRef.getPart(false) instanceof BNGLEditor)
 		{	
 			// Set the current file.
 			setCurrentModel(((BNGLEditor) partRef.getPart(false)).getModel());
@@ -231,7 +228,6 @@ public class ContactMapSelectionListener implements ISelectionListener, IPartLis
 		m_currentModel.addPropertyChangeListener(pcl);
 		
 		// generate the display and add the initial cmap to the registry.
-		
 		m_contactMapRegistry.put(m_currentModel.getPathID(), generateContactMap(m_currentModel.getPathID(), m_currentModel.getAST()));
 		
 		m_view.setCMap(lookupDisplay(m_currentModel));
@@ -258,10 +254,14 @@ public class ContactMapSelectionListener implements ISelectionListener, IPartLis
 	{
 		if(partRef.getId().equals("rulebender.editors.bngl"))
 		{			
-			BNGLEditor editor = ((BNGLEditor)partRef.getPart(false));
-			String osString = ((FileEditorInput) editor.getEditorInput()).getPath().toOSString();
+			if(partRef.getPart(false) instanceof BNGLEditor)
+			{
+				BNGLEditor editor = ((BNGLEditor) partRef.getPart(false));
 			
-			bnglFileClosed(osString);
+				String osString = ((FileEditorInput) editor.getEditorInput()).getPath().toOSString();
+				System.out.println("Closing file: " + osString);
+				bnglFileClosed(osString);
+			}
 		}
 		
 	}

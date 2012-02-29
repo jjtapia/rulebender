@@ -2,7 +2,12 @@ package rulebender.simulate;
 import java.io.File;
 import java.io.IOException;
 
-
+/**
+ * 
+ * @author adammatthewsmith
+ *
+ * @param <T>
+ */
 public class CommandRunner<T extends CommandInterface> 
 {
 	private T m_command;

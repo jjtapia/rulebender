@@ -247,8 +247,8 @@
          <menu
                label="File">
             <command
-                  commandId="rulebender.commands.OpenFile"
-                  label="Open"
+                  commandId="org.eclipse.ui.newWizard"
+                  label="New..."
                   style="push">
             </command>
             <separator
@@ -275,11 +275,6 @@
             <separator
                   name="rulebender.separator3">
             </separator>
-            <command
-                  commandId="rulebender.commands.SwitchWorkspace"
-                  label="Switch Workspace (restart required)"
-                  style="push">
-            </command>
             <command
                   commandId="org.eclipse.ui.file.exit"
                   label="Exit"
@@ -348,7 +343,13 @@
                   style="push">
             </command>
             <command
+                  commandId="rulebender.commands.SwitchWorkspace"
+                  label="Switch Workspace (restart required)"
+                  style="push">
+            </command>
+            <command
                   commandId="org.eclipse.ui.help.aboutAction"
+                  label="About..."
                   style="push">
             </command>
          </menu>

@@ -2,8 +2,6 @@ package rulebender.simulate.parameterscan;
 
 
 import java.io.File;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -20,7 +18,6 @@ import org.eclipse.ui.progress.IProgressConstants;
 import rulebender.core.utility.Console;
 import rulebender.navigator.views.ModelTreeView;
 import rulebender.simulate.CommandRunner;
-import org.eclipse.ui.navigator.CommonNavigator;
 
 public class ParameterScanJob extends Job 
 {
@@ -29,12 +26,14 @@ public class ParameterScanJob extends Job
 	private String m_bngPath;
 	private String m_scriptFullPath;
 	private ParameterScanData m_data;
+	private String m_resultsPath;
 	
 	public ParameterScanJob(String name, 
 						    String filePath,
 						    String bngPath, 
 						    String scriptFullPath, 
-						    ParameterScanData data)
+						    ParameterScanData data,
+						    String resultsPath)
 	{
 		super(name);
 		
@@ -42,9 +41,11 @@ public class ParameterScanJob extends Job
 		setBNGPath(bngPath);
 		setScriptFullPath(scriptFullPath);
 		setData(data);
+		setResultsPath(resultsPath);
 		
 		setProperty(IProgressConstants.KEEP_PROPERTY, true);
 	}
+
 
 	@Override
 	protected IStatus run(IProgressMonitor monitor) {
@@ -55,25 +56,30 @@ public class ParameterScanJob extends Job
 		// Tell the monitor
 		monitor.beginTask("Validation Files...", 4);
 		
-		if(!validateBNGLFile(m_filePath) || !validateBNGPath(m_bngPath) || !validateScriptPath(m_scriptFullPath))
+		if(!validateBNGLFile(m_filePath))
 		{
-			Console.displayOutput("Parameter Scan: " + m_filePath, "Error in file path, script path, or bng path.");
+			Console.displayOutput("Parameter Scan: " + m_filePath, "Error in file path.");
 			return Status.CANCEL_STATUS;
 		}
-		
-		String timeStamp = getCurrentDateAndTime();
+		if(!validateBNGPath(m_bngPath) )
+		{
+			Console.displayOutput("Parameter Scan: " + m_filePath, "Error bng path.");
+			return Status.CANCEL_STATUS;
+		}
+		if(!validateScriptPath(m_scriptFullPath))
+		{
+			Console.displayOutput("Parameter Scan: " + m_filePath, "Error in script path.");
+			return Status.CANCEL_STATUS;
+		}
 		
 		//MONITOR
 		monitor.setTaskName("Setting up the results directory");
 		monitor.worked(1);
 		
 		// Set up the results directory
-		String resultsDir = m_filePath.substring(0,m_filePath.indexOf(".bngl")) + 
-				System.getProperty("file.separator") +
-				"results/parascan-" + timeStamp + System.getProperty("file.separator");
 		
 		// Make the directory if necessary
-		(new File(resultsDir)).mkdirs();
+		(new File(m_resultsPath)).mkdirs();
 		
 		
 		//MONITOR
@@ -84,7 +90,7 @@ public class ParameterScanJob extends Job
 		ParameterScanCommand command = new ParameterScanCommand(m_filePath, 
 																m_bngPath,
 																m_scriptFullPath,
-																resultsDir,
+																m_resultsPath,
 																m_data);
 		//DEBUG
 		//Console.displayOutput("Command created.");
@@ -94,7 +100,7 @@ public class ParameterScanJob extends Job
 		monitor.worked(1);
 				
 		// Run it in the commandRunner
-		CommandRunner<ParameterScanCommand> runner = new CommandRunner<ParameterScanCommand>(command, new File(resultsDir), "Parameter Scan: " + m_filePath);
+		CommandRunner<ParameterScanCommand> runner = new CommandRunner<ParameterScanCommand>(command, new File(m_resultsPath), "Parameter Scan: " + m_filePath);
 		
 		runner.run();
 		
@@ -133,20 +139,6 @@ public class ParameterScanJob extends Job
 		return Status.OK_STATUS;
  	}
 	
-	/**
-	 * Used for time-stamping results files.  Returns the date in a
-	 * dd-mm-yy_hh-mm-ss format.
-	 * 
-	 * @return
-	 */
-	private static String getCurrentDateAndTime() 
-	{
-		Date dateNow = new Date();
-		SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MMM-yy_HH-mm-ss");
-		String curTime = dateFormat.format(dateNow);
-		return curTime;
-	}
-	
 	private static boolean validateBNGLFile(String path)
 	{
 		if ((new File(path)).exists())
@@ -171,6 +163,15 @@ public class ParameterScanJob extends Job
 		return false;
 	}
 	
+	private static boolean validateDirectoryPath(String path)
+	{
+		File file = new File(path);
+		if (file.exists() && file.isDirectory())
+			return true;
+		
+		return false;
+	}
+	
 	public void setFilePath(String path)
 	{
 		m_filePath = path;
@@ -190,4 +191,10 @@ public class ParameterScanJob extends Job
 	{
 		m_data = data;
 	}
+
+	private void setResultsPath(String resultsPath) 
+	{
+		m_resultsPath = resultsPath;
+	}
+
 }

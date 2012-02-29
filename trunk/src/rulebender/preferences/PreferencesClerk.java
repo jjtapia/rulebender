@@ -6,7 +6,6 @@ package rulebender.preferences;
 import rulebender.Activator;
 import rulebender.core.workspace.PickWorkspaceDialog;
 
-
 public class PreferencesClerk 
 {
 	// The name of the main BNG file.

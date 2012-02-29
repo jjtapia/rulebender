@@ -17,7 +17,6 @@ import prefuse.action.assignment.FontAction;
 import prefuse.action.assignment.StrokeAction;
 import prefuse.controls.ControlAdapter;
 import prefuse.controls.PanControl;
-import prefuse.controls.WheelZoomControl;
 import prefuse.data.Graph;
 import prefuse.render.DefaultRendererFactory;
 import prefuse.render.LabelRenderer;
@@ -219,7 +218,7 @@ public class SpeciesViewer
 
 		// Zoom with the mouse wheel
 		if (zoomControlEnabled) {
-			mainDisplay.addControlListener(new WheelZoomControl());
+			mainDisplay.addControlListener(new ReverseWheelZoomControl());
 			mainDisplay.addControlListener(new CustomizedZoomToFitControl());
 		}
 		

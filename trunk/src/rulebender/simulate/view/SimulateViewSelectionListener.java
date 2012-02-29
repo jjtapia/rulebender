@@ -1,5 +1,6 @@
 package rulebender.simulate.view;
 
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -42,10 +43,10 @@ public class SimulateViewSelectionListener implements ISelectionListener {
 			IResource selectedObject = (IResource) selection.getFirstElement();
 			
 			// If it is a folder node, then skip it. 
-			if (selectedObject.getFileExtension() != null &&
+			if (selectedObject instanceof IFile &&
 					selectedObject.getFileExtension().equals("bngl")) 
 			{
-				m_view.setSelectedFileText(selectedObject.getRawLocation().makeAbsolute().toOSString());
+				m_view.setSelectedResource((IFile) selectedObject);
 			}
 		}
 	}

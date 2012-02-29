@@ -1,6 +1,5 @@
 package rulebender.simulate.parameterscan;
 
-import java.io.File;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
@@ -16,6 +15,7 @@ import org.eclipse.swt.widgets.Text;
 import rulebender.core.utility.Console;
 import rulebender.preferences.PreferencesClerk;
 import rulebender.simulate.BioNetGenUtility;
+import rulebender.simulate.ResultsFileUtility;
 import rulebender.simulate.view.SimulateView;
 
 public class ParameterScanComposite extends Composite
@@ -152,15 +152,15 @@ public class ParameterScanComposite extends Composite
 				
 				boolean verified = true;
 				String errorMessage = "Errors in Input: \n\t\t";
-				String currentPath = m_parentView.getSelectedFile();
+				//String currentPath = m_parentView.getSelectedFile();
 				try 
 				{ 
-					if(currentPath.equals("") || !(new File(currentPath)).exists())
+					/*if(currentPath.equals("") || !(new File(currentPath)).exists())
 					{
 						verified = false;
 						errorMessage += "Invalid file path.\n\t\t";
 					}
-					
+					*/
 					if (paramNameInput.getText().trim().length() == 0)
 					{
 						verified = false;
@@ -230,13 +230,14 @@ public class ParameterScanComposite extends Composite
 			//TODO  Possibly show console, 
 			
 			// Display console output.
-			Console.displayOutput("Parameter Scan: " + currentPath, Console.getConsoleLineDelimeter() + "Running Parameter Scan...");
+			Console.displayOutput("Parameter Scan: " + m_parentView.getSelectedFile().getRawLocation().makeAbsolute().toOSString(), Console.getConsoleLineDelimeter() + "Running Parameter Scan...");
 		
 			// Run the parameter scan.  This returns a boolean, but for now I am ignoring it.	
-			BioNetGenUtility.parameterScan(currentPath, 
+			BioNetGenUtility.parameterScan(m_parentView.getSelectedFile().getRawLocation().makeAbsolute().toOSString(), 
 										   scanData,
 										   PreferencesClerk.getBNGPath(), 
-										   PreferencesClerk.getBNGPath()+"Perl2/scan_var.pl");
+										   PreferencesClerk.getBNGPath() + "Perl2/scan_var.pl",
+										   ResultsFileUtility.getParameterScanResultsDirectoryForIFile(m_parentView.getSelectedFile()));
 			}
 		});
 	}

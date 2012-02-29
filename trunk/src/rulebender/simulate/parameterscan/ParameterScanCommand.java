@@ -78,6 +78,8 @@ public class ParameterScanCommand implements CommandInterface
 		scanInstructionAL.add("-t_end");
 		scanInstructionAL.add(""+m_data.getSimulationTime());
 		
+		// Adding quotes here breaks stuff...
+		//scanInstructionAL.add("\"" + m_bnglFile + "\"");
 		scanInstructionAL.add(m_bnglFile);
 		scanInstructionAL.add(m_data.getName());
 		scanInstructionAL.add(""+m_data.getMinValue());
@@ -135,8 +137,8 @@ public class ParameterScanCommand implements CommandInterface
 			prefix = prefixBase + prefixIdStr;
 			prefix = prefix.trim();
 			
-			File prefixFolder = new File(m_resultsDirectory + System.getProperty("path.separator") 
-					+ System.getProperty("path.separator") + prefix);
+			File prefixFolder = new File(m_resultsDirectory + System.getProperty("file.separator") 
+					+ System.getProperty("file.separator") + prefix);
 			
 			System.out.println("Checking for folder = " + prefixFolder.getAbsolutePath());
 			

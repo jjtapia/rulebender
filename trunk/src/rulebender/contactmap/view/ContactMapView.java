@@ -112,8 +112,11 @@ public class ContactMapView extends ViewPart
 		// Redraw the parent.  This is my solution to the contact map
 		// not being updated when the contact map view is not in focus. 
 		// The overview was updated, but not the main panel.  So,
-		// There may be a better solution than this, but this works.
+		// there may be a better solution than this, but this works.
 		parentComposite.redraw();
+		
+		// Aparrently the above fix does not work in windows.
+		frame.repaint();
 	}
 	
 	/*

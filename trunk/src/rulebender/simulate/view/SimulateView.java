@@ -1,6 +1,6 @@
 package rulebender.simulate.view;
-import java.io.File;
 
+import org.eclipse.core.resources.IFile;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.custom.StackLayout;
@@ -17,17 +17,14 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Text;
-import org.eclipse.ui.IViewReference;
 import org.eclipse.ui.part.ViewPart;
 
 import rulebender.core.utility.Console;
-import rulebender.navigator.views.ModelTreeView;
 import rulebender.preferences.PreferencesClerk;
 import rulebender.simulate.BioNetGenUtility;
+import rulebender.simulate.ResultsFileUtility;
 import rulebender.simulate.parameterscan.ParameterScanComposite;
 
 public class SimulateView extends ViewPart 
@@ -39,7 +36,7 @@ public class SimulateView extends ViewPart
 	
 	private SimulateViewSelectionListener listener;
 	
-	private String m_selectedFile;
+	private IFile m_selectedFile;
 	
 	private Text fileText;
 	
@@ -109,7 +106,7 @@ public class SimulateView extends ViewPart
 		
 		// Create the Text Box
 		fileText = new Text(actionSelect, SWT.BORDER);
-		fileText.setEditable(true);
+		fileText.setEditable(false);
 		
 		FormData fileTextFormData = new FormData();
 		fileTextFormData.left = new FormAttachment(fileLabel, 10);
@@ -117,7 +114,7 @@ public class SimulateView extends ViewPart
 		fileText.setLayoutData(fileTextFormData);
 		
 		// Add a verifier that makes sure that the text forms a correct file path.
-		fileText.addListener (SWT.Verify, new Listener () {
+		/*fileText.addListener (SWT.Verify, new Listener () {
 			public void handleEvent (Event e) 
 			{
 				String string = e.text;
@@ -132,6 +129,7 @@ public class SimulateView extends ViewPart
 				}
 			}
 		});
+		*/
 		
 		// The model will be selected by either writing the path into the text box,
 		// or selecting the node in the navigator. 
@@ -205,10 +203,10 @@ public class SimulateView extends ViewPart
 		{
 			public void widgetSelected(SelectionEvent e) 
 			{
-				Console.displayOutput("Simulation:" + getSelectedFile(), Console.getConsoleLineDelimeter() + "Running File...");
+				Console.displayOutput("Simulation:" + getSelectedFile().getRawLocation().makeAbsolute().toOSString(), Console.getConsoleLineDelimeter() + "Running File...");
 				
 				// Run the parameter scan.  This returns a boolean, but for now I am ignoring it.	
-				BioNetGenUtility.runBNGLFile(getSelectedFile(), PreferencesClerk.getFullBNGPath());
+				BioNetGenUtility.runBNGLFile(getSelectedFile().getRawLocation().makeAbsolute().toOSString(), PreferencesClerk.getFullBNGPath(), ResultsFileUtility.getSimulationResultsDirectoryForIFile(getSelectedFile()));
 			}
 
 			public void widgetDefaultSelected(SelectionEvent e) 
@@ -241,26 +239,14 @@ public class SimulateView extends ViewPart
 	{
 	}
 	
-	public String getSelectedFile()
+	public IFile getSelectedFile()
 	{
 		return m_selectedFile;
 	}
 	
-	/**
-	 * Sets the text box with the text of a potential bngl file to execute.
-	 * The text validators of the text box call the setSelectedFile private setter
-	 * after the file has been validated.
-	 * @param file
-	 */
-	public void setSelectedFileText(String file)
+	public void setSelectedResource(IFile selectedObject) 
 	{
-		System.out.println("Simulation View informed of bngl file text: " + file);
-		fileText.setText(file);
-	}
-	
-	private void setSelectedFile(String file)
-	{
-		System.out.println("bngl file set: " + file);
-		m_selectedFile = file;
+		fileText.setText(selectedObject.getRawLocation().makeAbsolute().toOSString());
+		m_selectedFile = selectedObject;
 	}
 }
