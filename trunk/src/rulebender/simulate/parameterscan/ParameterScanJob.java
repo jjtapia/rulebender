@@ -2,7 +2,9 @@ package rulebender.simulate.parameterscan;
 
 
 import java.io.File;
+import java.io.FileNotFoundException;
 
+import org.eclipse.core.internal.utils.FileUtil;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
@@ -100,45 +102,82 @@ public class ParameterScanJob extends Job
 		monitor.worked(1);
 				
 		// Run it in the commandRunner
-		CommandRunner<ParameterScanCommand> runner = new CommandRunner<ParameterScanCommand>(command, new File(m_resultsPath), "Parameter Scan: " + m_filePath);
+		CommandRunner<ParameterScanCommand> runner = new CommandRunner<ParameterScanCommand>(command, new File(m_resultsPath), "Parameter Scan: " + m_filePath, monitor);
 		
 		runner.run();
 		
-		//MONITOR
-		monitor.setTaskName("Done.");
-		monitor.worked(1);
+		if(monitor.isCanceled())
+		{
+			undoSimulation();
+			updateTrees();
+			return Status.CANCEL_STATUS;
+		}
+		else
+		{
+			//MONITOR
+			monitor.setTaskName("Done.");
+			monitor.worked(1);
+		}
 		
+		updateTrees();   
+		return Status.OK_STATUS;
+ 	}
+	
+	private void undoSimulation() 
+	{
+		try {
+			deleteRecursive(new File(m_resultsPath));
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		System.out.println("Deleting: " + m_resultsPath);
+		Console.displayOutput("Parameter Scan: " + m_filePath, "Parameter Scan Cancelled!\n\n");
+	}
+	
+	private boolean deleteRecursive(File path) throws FileNotFoundException{
+        if (!path.exists()) throw new FileNotFoundException(path.getAbsolutePath());
+        boolean ret = true;
+        if (path.isDirectory()){
+            for (File f : path.listFiles()){
+                ret = ret && deleteRecursive(f);
+            }
+        }
+        return ret && path.delete();
+    }
+
+	private void updateTrees()
+	{
 		//FIXME  This is "bad design" that tightly couples the simulation and 
 		// tree view
 		Display.getDefault().syncExec(new Runnable(){
-
 			@Override
-			public void run() {
-				 IViewReference[] views = PlatformUI.getWorkbench().getActiveWorkbenchWindow()
+			public void run() 
+			{
+				IViewReference[] views = PlatformUI.getWorkbench().getActiveWorkbenchWindow()
 						 .getActivePage().getActivePart().getSite().getPage()
 						 .getViewReferences();
 					
-				 for(IViewReference view : views)
+				for(IViewReference view : views)
+				{
+					if(view.getId().equals("rulebender.views.Navigator"))
 					{
-						if(view.getId().equals("rulebender.views.Navigator"))
-						{
-							((ModelTreeView) view.getPart(true)).rebuildWholeTree();
-						}
+						((ModelTreeView) view.getPart(true)).rebuildWholeTree();
 					}
+				}
 			}});
-
-
-	    // Update the resource tree.
+		
+		
+		 // Update the resource tree.
 	       try {
 			ResourcesPlugin.getWorkspace().getRoot().refreshLocal(IResource.DEPTH_INFINITE, null);
 		} catch (CoreException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-	       
-		return Status.OK_STATUS;
- 	}
-	
+	      
+	}
 	private static boolean validateBNGLFile(String path)
 	{
 		if ((new File(path)).exists())

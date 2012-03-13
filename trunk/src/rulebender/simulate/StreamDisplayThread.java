@@ -38,8 +38,9 @@ public class StreamDisplayThread extends Thread
 			}
 		} 
 		catch (IOException e) 
-		{			
-			e.printStackTrace();
+		{		
+			// This happens if the simulation/scan is cancelled.  
+			//e.printStackTrace();
 		}
 	}	
 

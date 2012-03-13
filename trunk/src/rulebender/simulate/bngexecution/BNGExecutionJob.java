@@ -1,6 +1,7 @@
 package rulebender.simulate.bngexecution;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -38,7 +39,6 @@ public class BNGExecutionJob extends Job
 	@Override
 	protected IStatus run(IProgressMonitor monitor) 
 	{
-		
 		// Tell the monitor
 		monitor.beginTask("Validation Files...", 4);
 		
@@ -72,14 +72,53 @@ public class BNGExecutionJob extends Job
 		monitor.worked(1);
 				
 		// Run it in the commandRunner
-		CommandRunner<SimulateCommand> runner = new CommandRunner<SimulateCommand>(simCommand, new File(m_resultsPath), "Simulation: " + m_filePath);
+		CommandRunner<SimulateCommand> runner = new CommandRunner<SimulateCommand>(simCommand, new File(m_resultsPath), "Simulation: " + m_filePath, monitor);
 		
 		runner.run();
 		
-		//MONITOR
-		monitor.setTaskName("Done.");
-		monitor.worked(1);
-				
+		if(monitor.isCanceled())
+		{
+			undoSimulation();
+			updateTrees();
+			return Status.CANCEL_STATUS;
+		}
+		else
+		{
+			//MONITOR
+			monitor.setTaskName("Done.");
+			monitor.worked(1);
+		}
+		
+		updateTrees();   
+		return Status.OK_STATUS;
+	}
+
+	private boolean deleteRecursive(File path) throws FileNotFoundException{
+        if (!path.exists()) throw new FileNotFoundException(path.getAbsolutePath());
+        boolean ret = true;
+        if (path.isDirectory()){
+            for (File f : path.listFiles()){
+                ret = ret && deleteRecursive(f);
+            }
+        }
+        return ret && path.delete();
+    }
+
+	private void undoSimulation() 
+	{
+		try {
+			deleteRecursive(new File(m_resultsPath));
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		System.out.println("Deleting: " + m_resultsPath);
+		Console.displayOutput("Simulation: " + m_filePath, "Simulation Cancelled!\n\n");
+	}
+
+	private void updateTrees()
+	{
 		//FIXME  This is "bad design" that tightly couples the simulation and 
 		// tree view
 		Display.getDefault().syncExec(new Runnable(){
@@ -107,9 +146,7 @@ public class BNGExecutionJob extends Job
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-	       
-	       
-		return Status.OK_STATUS;
+	      
 	}
 	
 	private static boolean validateBNGLFile(String path)

@@ -19,6 +19,8 @@ public class ResultsFileUtility
 		// Add the name of the file
 		pathToReturn += selectedFile.getName().substring(0, selectedFile.getName().indexOf(".bngl")) + System.getProperty("file.separator");
 		
+		System.out.println("Returning Path: " + pathToReturn);
+		
 		return pathToReturn;
 	}
 
