@@ -20,11 +20,11 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Import-Package: org.eclipse.core.filesystem
 Bundle-ClassPath: .,
  lib/antlr-3.3-complete.jar,
- lib/BNGParser.jar,
  lib/jcommon-1.0.12.jar,
  lib/jdom.jar,
  lib/jfreechart-1.0.9-experimental.jar,
  lib/jfreechart-1.0.9-swt.jar,
  lib/jfreechart-1.0.9.jar,
  lib/junit.jar,
- lib/prefuse.jar
+ lib/prefuse.jar,
+ lib/BNGParser.jar
