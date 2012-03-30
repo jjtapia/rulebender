@@ -18,6 +18,7 @@ import org.eclipse.ui.progress.IProgressConstants;
 import rulebender.core.utility.Console;
 import rulebender.navigator.views.ModelTreeView;
 import rulebender.simulate.CommandRunner;
+import rulebender.simulate.SimulationErrorException;
 
 public class BNGExecutionJob extends Job 
 {
@@ -60,6 +61,7 @@ public class BNGExecutionJob extends Job
 		// Create the directory if necessary.
 	    (new File(m_resultsPath)).mkdirs();
 	    
+	    //TODO start here by copying the file to be simulated, then use that file for the simulations.
 	       
 		//MONITOR
 		monitor.setTaskName("Generating Scripts...");
@@ -74,7 +76,14 @@ public class BNGExecutionJob extends Job
 		// Run it in the commandRunner
 		CommandRunner<SimulateCommand> runner = new CommandRunner<SimulateCommand>(simCommand, new File(m_resultsPath), "Simulation: " + m_filePath, monitor);
 		
-		runner.run();
+		try 
+		{
+			runner.run();
+		} catch (SimulationErrorException e) 
+		{	
+			updateTrees();
+			return Status.CANCEL_STATUS;
+		}
 		
 		if(monitor.isCanceled())
 		{

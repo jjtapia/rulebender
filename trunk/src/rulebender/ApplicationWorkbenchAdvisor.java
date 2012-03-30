@@ -36,6 +36,6 @@ public class ApplicationWorkbenchAdvisor extends WorkbenchAdvisor {
 	{
 		System.out.println("Registering Adapters");
 		org.eclipse.ui.ide.IDE.registerAdapters();
-		//configurer.setSaveAndRestore(true);
+		configurer.setSaveAndRestore(true);
 	}	
 }

@@ -31,8 +31,10 @@ public class StreamDisplayThread extends Thread
 		{
 			while ((line = buffer.readLine()) != null) 
 			{
-				if(!m_printNow)
+				if(m_printNow)
+				{
 					Console.displayOutput(m_name, line);
+				}
 				
 				m_log += line + Console.getConsoleLineDelimeter();
 			}

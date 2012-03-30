@@ -1,6 +1,9 @@
 package rulebender.simulate;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.Map;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 
@@ -38,7 +41,7 @@ public class CommandRunner<T extends CommandInterface>
 		
 	}
 
-	public boolean run() 
+	public boolean run() throws SimulationErrorException 
 	{
 		m_fullLog = "";
 		
@@ -49,17 +52,25 @@ public class CommandRunner<T extends CommandInterface>
 		
 		System.out.println("Running command in: " + m_workingDirectory);
 		
+		ProcessBuilder pb = new ProcessBuilder(m_command.getCommand());
+		 Map<String, String> env = pb.environment();
+		 env.put("CYGWIN", "nodosfilewarning");
+		 //env.remove("OTHERVAR");
+		 //env.put("VAR2", env.get("VAR1") + "suffix");
+		 pb.directory(m_workingDirectory);
+		// Process p = pb.start();
+		
 		// Run the command
 		try 
 		{
-			m_scanProc = Runtime.getRuntime().exec(m_command.getCommand(), null, m_workingDirectory);
+			m_scanProc = pb.start();
 		} 
 		catch (IOException e) 
 		{
 			e.printStackTrace();
 		}
 		
-		StreamDisplayThread stdOut = new StreamDisplayThread(m_name, m_scanProc.getInputStream(), false);
+		StreamDisplayThread stdOut = new StreamDisplayThread(m_name, m_scanProc.getInputStream(), true);
 		StreamDisplayThread errOut = new StreamDisplayThread(m_name, m_scanProc.getErrorStream(), true);
 		
 		stdOut.start();
@@ -118,13 +129,46 @@ public class CommandRunner<T extends CommandInterface>
 		m_errorLog = errOut.getLog();
 		m_fullLog = m_stdLog + System.getProperty("line.separator") + System.getProperty("line.separator") + m_errorLog;
 		
+		writeLogToResults();
+		
 		// DEBUG
 		System.out.println("Done running command.");
+		System.out.println("Errors: \n" + m_errorLog);
 		
-		return true;
-				
+		if(!m_errorLog.equals(""))
+		{
+			throw new SimulationErrorException(m_errorLog);
+		}
+		
+		return true;		
 	}
 
+	private void writeLogToResults()
+	{
+		System.out.println("Writing log to " + m_workingDirectory);
+		
+		String logFileName = m_workingDirectory + 
+				System.getProperty("file.separator")
+				+ "sim_log.log";
+		
+		File logFile = new File(logFileName);
+		logFile.deleteOnExit();
+		
+		PrintWriter pw = null;
+		try 
+		{
+			pw = new PrintWriter(logFile);
+		} 
+		catch (FileNotFoundException e1) 
+		{
+			e1.printStackTrace();
+		}
+		
+		pw.print(m_fullLog);
+		pw.close();
+		
+	}
+	
 	private void cancelled(StreamDisplayThread stdOut, StreamDisplayThread errOut)
 	{
 		m_scanProc.destroy();

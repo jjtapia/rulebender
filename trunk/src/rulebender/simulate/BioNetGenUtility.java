@@ -45,4 +45,23 @@ public class BioNetGenUtility
 		
 		job.schedule();
 	}	
+
+	/**
+	 * 
+	 * @param actionsFilePath
+	 * @param filePath
+	 * @param bngFullPath
+	 * @param resultsPath
+	 */
+	public static void runSeparateActionsForModel(String actionsFilePath, String filePath, String bngFullPath, String resultsPath)
+	{
+		String name = "Executing file: " + 
+					  filePath.substring(filePath.lastIndexOf(System.getProperty("file.separator"))+1, filePath.indexOf(".bngl")) +
+					  "With actions: " +
+					  actionsFilePath.substring(actionsFilePath.lastIndexOf(System.getProperty("file.separator"))+1, actionsFilePath.indexOf(".bngl"));
+		
+		BNGExecutionJob job = new BNGExecutionJob(name, filePath, bngFullPath, resultsPath);
+		
+		job.schedule();
+	}
 }

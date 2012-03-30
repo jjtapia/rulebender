@@ -45,13 +45,6 @@ public class ParameterScanCommand implements CommandInterface
 	{
 		// This arraylist will hold the actual command line command
 		ArrayList<String> scanInstructionAL = new ArrayList<String>();
-		
-		// Windows: use cmd.exe and the /c flag to launch the perl script.
-		if(PreferencesClerk.getOS() == OS.WINDOWS)
-		{
-			 scanInstructionAL.add("cmd.exe");
-			 scanInstructionAL.add("/c"); 
-		}		
 
 		// Add the perl instruction
 		scanInstructionAL.add("perl");
@@ -73,7 +66,8 @@ public class ParameterScanCommand implements CommandInterface
 		scanInstructionAL.add(constructPrefix());
 		
 		scanInstructionAL.add("-bngPath");
-		scanInstructionAL.add("\"" + m_bngFullPath + "\"");
+		//scanInstructionAL.add("\"" + m_bngFullPath + "\"");
+		scanInstructionAL.add(m_bngFullPath);
 		
 		scanInstructionAL.add("-t_end");
 		scanInstructionAL.add(""+m_data.getSimulationTime());

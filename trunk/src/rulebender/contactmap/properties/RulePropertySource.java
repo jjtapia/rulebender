@@ -144,12 +144,12 @@ public class RulePropertySource implements IPropertySource, IBNGLLinkedElement
 		if(m_expression.contains(")"));
 		regex = m_expression.substring(0, m_expression.lastIndexOf(")")+1);
 	
-		if(regex.contains("\n"));
-		{
-			regex = regex.replace("\n", "");
-		}
-		
 		String delimiter = System.getProperty("line.separator");
+		
+		if(regex.contains(delimiter));
+		{
+			regex = regex.replace(delimiter, "");
+		}
 		
 		// put an optional pair of backslashes between every character.
 		// This has to happen before the other special characters are escaped.

@@ -111,7 +111,7 @@
                id="rulebender.simulate.view.SimulateView"
                minimized="false"
                moveable="true"
-               relationship="left"
+               relationship="right"
                relative="org.eclipse.ui.editorss"
                showTitle="true"
                standalone="false"
@@ -140,7 +140,7 @@
                id="rulebender.cnf.CommonNavigator"
                minimized="false"
                relationship="left"
-               relative="rulebender.simulate.view.SimulateView"
+               relative="org.eclipse.ui.editorss"
                visible="true">
          </view>
       </perspectiveExtension>
@@ -209,14 +209,6 @@
             icon="icons/views/run.gif"
             id="rulebender.simulate.view.SimulateView"
             name="Simulation"
-            restorable="true">
-      </view>
-      <view
-            allowMultiple="false"
-            class="rulebender.errorview.view.ErrorView"
-            icon="icons/views/error_log.gif"
-            id="rulebender.errorview.view.ErrorView"
-            name="Errors"
             restorable="true">
       </view>
       <view
@@ -454,7 +446,7 @@
             class="rulebender.editors.simple.SimpleEditor"
             contributorClass="org.eclipse.ui.texteditor.BasicTextEditorActionContributor"
             default="true"
-            extensions="txt"
+            extensions="txt, log"
             id="rulebender.editors.simple"
             name="Simple Editor">
       </editor>
@@ -474,6 +466,14 @@
             extensions="net"
             id="rulebender.editors.net"
             name="NET File Editor">
+      </editor>
+      <editor
+            class="rulebender.editors.bnga.BNGAMultiPageEditor"
+            contributorClass="rulebender.editors.bnga.BNGAMultiPageEditorContributor"
+            extensions="bnga"
+            icon="icons/sample.gif"
+            id="rulebender.editors.bnga.BNGAMultiPageEditor"
+            name="BioNetGen Actions Editor">
       </editor>
    </extension>
    <extension
@@ -558,6 +558,12 @@
          verticalRulerPreferenceKey="rulebender.annotations.textinstance.ruler"
          verticalRulerPreferenceValue="true">
    </specification>
+</extension>
+<extension
+      point="org.eclipse.ui.startup">
+   <startup
+         class="rulebender.core.editorhider.EditorHider">
+   </startup>
 </extension>
 
 </plugin>

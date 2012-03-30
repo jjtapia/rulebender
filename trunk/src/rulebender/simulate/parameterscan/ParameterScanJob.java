@@ -20,6 +20,7 @@ import org.eclipse.ui.progress.IProgressConstants;
 import rulebender.core.utility.Console;
 import rulebender.navigator.views.ModelTreeView;
 import rulebender.simulate.CommandRunner;
+import rulebender.simulate.SimulationErrorException;
 
 public class ParameterScanJob extends Job 
 {
@@ -104,7 +105,12 @@ public class ParameterScanJob extends Job
 		// Run it in the commandRunner
 		CommandRunner<ParameterScanCommand> runner = new CommandRunner<ParameterScanCommand>(command, new File(m_resultsPath), "Parameter Scan: " + m_filePath, monitor);
 		
-		runner.run();
+		try {
+			runner.run();
+		} catch (SimulationErrorException e) {
+			// TODO Auto-generated catch block
+			return Status.CANCEL_STATUS;
+		}
 		
 		if(monitor.isCanceled())
 		{

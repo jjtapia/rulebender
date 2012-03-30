@@ -13,7 +13,7 @@ public class EditorDoubleClickDelegate
 
 	public void doubleClick(DoubleClickEvent event) 
 	{
-	
+	System.out.println("Double click");
 		//TreeViewer viewer = (TreeViewer) event.getViewer();
 		
 		// Get a reference to the selection.

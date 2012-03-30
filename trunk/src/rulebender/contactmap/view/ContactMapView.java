@@ -128,8 +128,7 @@ public class ContactMapView extends ViewPart
 	@Override
 	public void setFocus() 
 	{
-		// TODO Auto-generated method stub
-		
+		frame.repaint();
 	}
 	
 	public Dimension getSize()

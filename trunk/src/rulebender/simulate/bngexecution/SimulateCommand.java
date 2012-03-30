@@ -37,20 +37,6 @@ public class SimulateCommand implements CommandInterface
 	 */
 	public String[] getCommand() 
 	{
-		// Windows
-		if (PreferencesClerk.getOS() == OS.WINDOWS) 
-		{
-			return getWindowsCommand();
-		}
-		else
-		{
-			return getNonWindowsCommand();
-		}
-	}
-	
-	private String[] getNonWindowsCommand()
-	{
-
 		// This arraylist will hold the actual command line command
 		ArrayList<String> instructionAL = new ArrayList<String>();
 		
@@ -77,85 +63,13 @@ public class SimulateCommand implements CommandInterface
 		// instruction arraylist. 
 		m_command = instructionAL.toArray(template);
 			
-		return m_command;
-
-	}
-	
-	private String[] getWindowsCommand()
-	{
-			// on Windows
-			// write commands to a batch file and then execute the batch file
-		
-			String userHome = System.getProperty("user.home");
-		
-			String batfilename = userHome+"\\callBNG-win.bat";
-			
-			File batfile = new File(batfilename);
-			batfile.deleteOnExit();
-			
-			PrintWriter pw = null;
-			try 
-			{
-				pw = new PrintWriter(batfile);
-			} 
-			catch (FileNotFoundException e1) 
-			{
-			
-				e1.printStackTrace();
-			}
-			
-			// disk name (C, or D, or ...)
-			String modelDisk = m_bnglFile.substring(0, 1);
-			
-			pw.write(modelDisk + ":\n");
-			pw.write("cd " + modelDisk + ":\\" + "\n");
-			
-			String check="";
-			if(!m_viewResults)
-			{
-				check = " -check ";
-			}		
-			
-			String cmd_model = m_bnglFile;
-			
-			// eliminate "C:\" three characters
-			cmd_model = cmd_model.substring(3);
-			cmd_model = convertStyleUsingPOSIX(cmd_model);
-			
-			// using " " to support space in directory name
-			pw.write("cmd.exe /c perl " +
-					"\"" + m_bngFullPath + "\"" +
-					" -outdir " + m_resultsDirectory +
-					check + " " +
-					"\"" + cmd_model + "\"" +
-					"\n");
-			pw.close();
-			
-			/*
-			try {
-				Runtime.getRuntime().exec("attrib +H " + userHome+"\\callBNG-win.bat");
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			//*/
-			String[] command = {"cmd.exe", "/c", batfilename};
-			m_command = command; 
-			
-			return m_command;
-	}
-	
-	
-	private String convertStyleUsingPOSIX(String path) {
-		String results = "";
-		for (int i = 0; i < path.length(); i++) {
-			if (path.charAt(i) == '\\') {
-				results += '/';
-			}
-			else {
-				results += path.charAt(i);
-			}
+		// DEBUG
+		for(String s : m_command)
+		{
+			System.out.print(s + " ");
 		}
-		return results;
+		System.out.println("\n");
+		
+		return m_command;
 	}
 }
