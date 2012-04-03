@@ -1,12 +1,5 @@
 package rulebender.editors.bnga;
 
-
-import java.io.StringWriter;
-import java.text.Collator;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.StringTokenizer;
-
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IResourceChangeEvent;
 import org.eclipse.core.resources.IResourceChangeListener;
@@ -14,18 +7,13 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.graphics.Font;
-import org.eclipse.swt.graphics.FontData;
-import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.FontDialog;
 import org.eclipse.ui.*;
 import org.eclipse.ui.editors.text.TextEditor;
 import org.eclipse.ui.part.FileEditorInput;
@@ -48,11 +36,6 @@ public class BNGAMultiPageEditor extends MultiPageEditorPart implements IResourc
 	/** The text editor used in page 0. */
 	private TextEditor editor;
 
-	/** The font chosen in page 1. */
-	private Font font;
-
-	/** The text widget used in page 2. */
-	private StyledText text;
 	/**
 	 * Creates a multi-page editor example.
 	 */
@@ -64,12 +47,17 @@ public class BNGAMultiPageEditor extends MultiPageEditorPart implements IResourc
 	 * Creates page 0 of the multi-page editor,
 	 * which contains a text editor.
 	 */
-	void createPage0() {
-		try {
+	void createTextEditor() 
+	{
+		try 
+		{
 			editor = new TextEditor();
 			int index = addPage(editor, getEditorInput());
 			setPageText(index, editor.getTitle());
-		} catch (PartInitException e) {
+		}
+		
+		catch (PartInitException e) 
+		{
 			ErrorDialog.openError(
 				getSite().getShell(),
 				"Error creating nested text editor",
@@ -81,7 +69,7 @@ public class BNGAMultiPageEditor extends MultiPageEditorPart implements IResourc
 	 * Creates page 1 of the multi-page editor,
 	 * which allows you to change the font used in page 2.
 	 */
-	void createPage1() {
+	void createEditorGui() {
 
 		Composite composite = new Composite(getContainer(), SWT.NONE);
 		GridLayout layout = new GridLayout();
@@ -96,34 +84,20 @@ public class BNGAMultiPageEditor extends MultiPageEditorPart implements IResourc
 		
 		fontButton.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent event) {
-				setFont();
+				//setFont();
 			}
 		});
 
 		int index = addPage(composite);
 		setPageText(index, "Simulation Cockpit");
 	}
-	/**
-	 * Creates page 2 of the multi-page editor,
-	 * which shows the sorted text.
-	 */
-	void createPage2() {
-		Composite composite = new Composite(getContainer(), SWT.NONE);
-		FillLayout layout = new FillLayout();
-		composite.setLayout(layout);
-		text = new StyledText(composite, SWT.H_SCROLL | SWT.V_SCROLL);
-		text.setEditable(false);
-
-		int index = addPage(composite);
-		setPageText(index, "Preview");
-	}
+	
 	/**
 	 * Creates the pages of the multi-page editor.
 	 */
 	protected void createPages() {
-		createPage1();
-		createPage0();
-		//createPage2();
+		createEditorGui();
+		createTextEditor();
 	}
 	/**
 	 * The <code>MultiPageEditorPart</code> implementation of this 
@@ -180,9 +154,10 @@ public class BNGAMultiPageEditor extends MultiPageEditorPart implements IResourc
 	protected void pageChange(int newPageIndex) {
 		super.pageChange(newPageIndex);
 		if (newPageIndex == 2) {
-			sortWords();
+		
 		}
 	}
+	
 	/**
 	 * Closes all project files on project close.
 	 */
@@ -201,43 +176,7 @@ public class BNGAMultiPageEditor extends MultiPageEditorPart implements IResourc
 			});
 		}
 	}
-	/**
-	 * Sets the font related data to be applied to the text in page 2.
-	 */
-	void setFont() {
-		FontDialog fontDialog = new FontDialog(getSite().getShell());
-		fontDialog.setFontList(text.getFont().getFontData());
-		FontData fontData = fontDialog.open();
-		if (fontData != null) {
-			if (font != null)
-				font.dispose();
-			font = new Font(text.getDisplay(), fontData);
-			text.setFont(font);
-		}
-	}
-	/**
-	 * Sorts the words in page 0, and shows them in page 2.
-	 */
-	void sortWords() {
-
-		String editorText =
-			editor.getDocumentProvider().getDocument(editor.getEditorInput()).get();
-
-		StringTokenizer tokenizer =
-			new StringTokenizer(editorText, " \t\n\r\f!@#\u0024%^&*()-_=+`~[]{};:'\",.<>/?|\\");
-		ArrayList editorWords = new ArrayList();
-		while (tokenizer.hasMoreTokens()) {
-			editorWords.add(tokenizer.nextToken());
-		}
-
-		Collections.sort(editorWords, Collator.getInstance());
-		StringWriter displayText = new StringWriter();
-		for (int i = 0; i < editorWords.size(); i++) {
-			displayText.write(((String) editorWords.get(i)));
-			displayText.write(System.getProperty("line.separator"));
-		}
-		text.setText(displayText.toString());
-	}
+	
 	@Override
 	public String getPreferredPerspectiveId() {
 		return "rulebender.simulate.SimulatePerspective";

@@ -1,4 +1,4 @@
-package rulebender.simulate.parameterscan;
+package rulebender.editors.bnga.model;
 
 public interface ISimulationAction 
 {

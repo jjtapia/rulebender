@@ -1,8 +1,7 @@
-package rulebender.simulate.protocol;
+package rulebender.editors.bnga.model;
 
 import java.util.ArrayList;
 
-import rulebender.simulate.parameterscan.ISimulationAction;
 
 public class SimulationProtocol<T extends ISimulationAction> 
 {

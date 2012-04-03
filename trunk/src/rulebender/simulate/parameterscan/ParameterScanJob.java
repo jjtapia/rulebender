@@ -4,7 +4,6 @@ package rulebender.simulate.parameterscan;
 import java.io.File;
 import java.io.FileNotFoundException;
 
-import org.eclipse.core.internal.utils.FileUtil;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
@@ -203,15 +202,6 @@ public class ParameterScanJob extends Job
 	private static boolean validateScriptPath(String path)
 	{
 		if ((new File(path)).exists())
-			return true;
-		
-		return false;
-	}
-	
-	private static boolean validateDirectoryPath(String path)
-	{
-		File file = new File(path);
-		if (file.exists() && file.isDirectory())
 			return true;
 		
 		return false;

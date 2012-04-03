@@ -1,12 +1,7 @@
 package rulebender.simulate.bngexecution;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.PrintWriter;
 import java.util.ArrayList;
 
-import rulebender.preferences.OS;
-import rulebender.preferences.PreferencesClerk;
 import rulebender.simulate.CommandInterface;
 
 public class SimulateCommand implements CommandInterface
@@ -71,5 +66,11 @@ public class SimulateCommand implements CommandInterface
 		System.out.println("\n");
 		
 		return m_command;
+	}
+
+	@Override
+	public String getBNGFullPath() 
+	{
+		return m_bngFullPath;
 	}
 }

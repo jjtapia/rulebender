@@ -4,8 +4,6 @@ import java.io.File;
 
 import java.util.ArrayList;
 
-import rulebender.preferences.OS;
-import rulebender.preferences.PreferencesClerk;
 import rulebender.simulate.CommandInterface;
 
 public class ParameterScanCommand implements CommandInterface
@@ -38,7 +36,7 @@ public class ParameterScanCommand implements CommandInterface
 		m_parScanScriptLocation = parScanScriptLocation;
 		m_data = data;
 		m_resultsDirectory = resultsDirectory;
-		m_bngFullPath = bngFullPath;
+		setBNGFullPath(bngFullPath);
 	}
 
 	public String[] getCommand() 
@@ -65,9 +63,11 @@ public class ParameterScanCommand implements CommandInterface
 		scanInstructionAL.add("-prefix");
 		scanInstructionAL.add(constructPrefix());
 		
-		scanInstructionAL.add("-bngPath");
+		// This has been replaced by setting the BNGPATH environment variable 
+		// in the ProcessBuilder in the CommandRunner class.
+		//scanInstructionAL.add("-bngPath");
 		//scanInstructionAL.add("\"" + m_bngFullPath + "\"");
-		scanInstructionAL.add(m_bngFullPath);
+		//scanInstructionAL.add(m_bngFullPath);
 		
 		scanInstructionAL.add("-t_end");
 		scanInstructionAL.add(""+m_data.getSimulationTime());
@@ -158,5 +158,13 @@ public class ParameterScanCommand implements CommandInterface
 	public String getPrefix()
 	{
 		return m_prefix;
+	}
+
+	public String getBNGFullPath() {
+		return m_bngFullPath;
+	}
+
+	public void setBNGFullPath(String m_bngFullPath) {
+		this.m_bngFullPath = m_bngFullPath;
 	}
 }

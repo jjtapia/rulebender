@@ -55,6 +55,7 @@ public class CommandRunner<T extends CommandInterface>
 		ProcessBuilder pb = new ProcessBuilder(m_command.getCommand());
 		 Map<String, String> env = pb.environment();
 		 env.put("CYGWIN", "nodosfilewarning");
+		 env.put("BNGPATH", m_command.getBNGFullPath());
 		 //env.remove("OTHERVAR");
 		 //env.put("VAR2", env.get("VAR1") + "suffix");
 		 pb.directory(m_workingDirectory);
