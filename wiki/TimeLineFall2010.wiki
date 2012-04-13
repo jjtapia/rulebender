@@ -2,7 +2,7 @@
 
 == Plan ==
 
-*State*: The BioNetGen IDE project provides a graphical front end to the BioNetGen1 rule-based modeler and simulator. Users create models of molecules and interaction rules that can be executed in the simulator. The simulation produces observables that are of interest to the researchers. A prototype of the contact map has been developed but can be refined in many ways in order to improve layout, interaction, and data on demand. The influence graph also requires modification including adoption of the prefuse visualization library and several scalability adjustments.
+*State*: The !BioNetGen IDE project provides a graphical front end to the !BioNetGen rule-based modeler and simulator. Users create models of molecules and interaction rules that can be executed in the simulator. The simulation produces observables that are of interest to the researchers. A prototype of the contact map has been developed but can be refined in many ways in order to improve layout, interaction, and data on demand. The influence graph also requires modification including adoption of the prefuse visualization library and several scalability adjustments.
 
 *Goals* Dr. James Faeder and his research group will work with us as we continue to develop the IDE with functionality including a cleaner more accessible interface to the editor, improved contact map and influence graph visualization, access to pathway experiment results, and multiple linked views. In addition to the software goals for the semester, I plan to complete the requirements for graduation from the MS program.
  * Editor 
