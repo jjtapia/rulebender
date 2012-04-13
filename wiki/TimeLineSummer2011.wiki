@@ -1,0 +1,64 @@
+=Summer 2011=
+
+==Plan==
+The summer I will be making a few more additions to !RuleBender, but my primary goal is to graduate. The following goals are all future work for the tool, but I will focus on finishing linked views, preparing a release, and graduation. The additional goals will be achieved depending on time availability. After we decide which goals we want to try and include this summer, I will write out the timeline accordingly.
+
+ * Finish Linked Views:	The linked views are complete for interaction in the contact map and influence graph, but the user cannot select text and have it be reflected in the visualizations. Also the annotation table currently does not utilize the linked views framework that the rest of the views do.
+
+ * Bug Fixing and Release: There are a few bugs that I should fix and I’m sure that Dr. Faeder will have a few suggestions for the next release. After these small changes are made we should release the next version of the tool. The main new additions to the tool are the new visualization window and the linked views, but we can push the release back to include any of the other goals of the summer.
+ * Paper Revisions: Our recently submitted conference paper will likely require revisions.
+
+ * Graduate: Dr. Marai and Dr. Feader have already agreed to be on the committee, and I will ask Jingtao Wang to be the third member. My thesis will consist of information from our recently submitted conference paper and also include features that were left out due to space requirements. I will also present my work for my thesis defense.
+
+ * Work with Visiting Undergrad Student: Dr. Faeder’s visiting student would like to help out on the project. We need to decide what aspects of the project he can help with.
+
+ * Advanced Parameter Scan:	We should continue the work discussed with John Sekar involving multiple parameter scanning and classification of concentration curves.
+
+ * Parameter Estimation: We still have the matlab scripts that support parameter estimation, although we have discussed using R instead to keep everything free. Facilitating parameter estimation will require developing the backend parameter estimation support, designing interfaces with !RuleBender, and designing new visualizations for the results.
+
+ * Interface Enhancement: Jingtao gave us materials that can help us develop a better interface for model design histories and multiple simulation environments. Dr. Faeder has suggested also looking at the copasi tool for examples on how to handle the kind of model exploration/simulation that they would like. 
+
+ * To properly make !RuleBender multiple simulation aware will require adding multithreaded simulation.
+
+ * Incorporate !GetBonnie Repository: The !GetBonnie model repository is publicly available. We could include functionality in !RuleBender that allows for !GetBonnie models to be imported to tool and for user defined models to be uploaded.
+
+ * Better Species Browser: Dr. Faeder has mentioned that it would be useful to allow the initial species to be included in the species browser before a simulation is run.
+
+==Evaluation==
+
+My original goals for the summer included several options from which we selected the following goals:
+ * Finish Linked Views Implementation
+ * Bug Fixes
+ * Release of Newest Version
+ * !BioVis Paper Revisions
+ * New Interface Design
+ * Graduation
+
+Each of these goals were completed, with the exception of graduation.  It was agreed that I should wait for graduation since if the R01 is accepted I will continue developing !RuleBender with support from the grant.  
+
+The Interface design is not yet implemented, but I am making progress and will be finished for the October conference presentation.  In addition to the original goals I also 
+ * Published an !InfoVis poster
+ * Contributed to grant writing
+ * Managed visgroup meetings and worked on FAQs for the vis site.
+
+For the last month of the summer I have been making progress in multiple areas related to implementing the new interface and getting ready for the conference.
+ * Implementation: Eclipse Rich Client Platform
+ ** As Jingtao said, the learning curve for RCP is quite high.  I have been reading documentation and example source code in preparation for the implementation of the new version of the tool.  The text editing capabilities of the tool are implemented, and I have the necessary understanding and resources to complete the rest of the implementation with (hopefully) little difficulty. 
+
+ * New Grammar
+ ** I have Jose's implementation of the new grammar and should have it working very soon. 
+
+ * Simulation Journaling
+  ** A novel part of the RCP application will be the combined model browser for models and results.  
+  ** Eventually !RuleBender will facilitate model bookmarking and annotation, but the initial version will link models directly to simulations instead of browsing the simulation results separately.
+
+ * New Species Browser
+  ** With help from Justin Hogg I have sketches for a new species browser that will be more useful for debugging models.
+
+ * New Simulation Builder
+  ** With help from Michael Sneddon I have sketches for the new simulation designer.  Instead of writing text commands, the simulation builder will allow for visual simulation construction.
+
+ * New Website
+  ** I have installed !WordPress and the necessary databases on the server, and will soon begin transferring content to the new site. 
+
+Overall I feel like it was a productive summer.  I would have like to have finished the new interface with plenty of time to spare before the conference, but I think it should still be finished before we need it. 
