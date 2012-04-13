@@ -1,0 +1,56 @@
+= Fall 2010 =
+
+== Plan ==
+
+*State*: The BioNetGen IDE project provides a graphical front end to the BioNetGen1 rule-based modeler and simulator. Users create models of molecules and interaction rules that can be executed in the simulator. The simulation produces observables that are of interest to the researchers. A prototype of the contact map has been developed but can be refined in many ways in order to improve layout, interaction, and data on demand. The influence graph also requires modification including adoption of the prefuse visualization library and several scalability adjustments.
+
+*Goals* Dr. James Faeder and his research group will work with us as we continue to develop the IDE with functionality including a cleaner more accessible interface to the editor, improved contact map and influence graph visualization, access to pathway experiment results, and multiple linked views. In addition to the software goals for the semester, I plan to complete the requirements for graduation from the MS program.
+ * Editor 
+  ** Improvements to the editor interface will attract more users and allow for a more positive expe- rience with the tool. New features will include more syntax highlighting, improved layout, and a UI design that better facilitates the model-simulate-analyze workflow.
+  ** The current main interface window allows for editing the bngl file and then loading separate windows for visualization. We would like to include additional panes in the window that hold the information previously launched in a new frame.
+  ** An additional pane will be introduced to display current literature information about the pathway under simulation. This pane will allow the user to compare simulation results with expected results from real world experiments.
+ * Parameter Estimation
+  ** Dr. Faeder has given us MATLAB scripts that are used for parameter estimation in the models. We will add the ability to run those scripts from java and report the results to the user.
+ * Linked Multiple Views
+  ** User interaction in each of new pane will be reflected in the other panes as well. For example, clicking on a node in the contact map will highlight the text in the bngl file that defines that molecule or component. Full details for these interactions will be developed as part of the work this semester.
+
+== Original Schedule ==
+
+|| *Week*	|| *Description* || *Deliverable* ||
+||September 27 - October 1 || Document existing architecture so that Wen can continue developing the contact map visualization. Also, prepare for vis meeting talk. || Documentation. Vis meeting slides outline.||
+||October 4 - October 8 || Practice vis meeting talk. Find a way to embed the contact map in an swt window. Awt and swt mixing requires some special classes that may not be complete for osx. || Contact map in swt. ||
+|| October 11 - October 15 || Design and sketch the new editor window, including space for bngl, the contact map, parameter estimation, and literature references. || Interface sketch. ||
+|| October 18 - October 22 || Implement the interface. || Basic multiview interface. ||
+|| October 25 - October 29 || Build in parameter estimation scripts to the program and develop ways to show the results in a pane. || Parameter estimation script incorporation. ||
+|| November 1 - November 5 || Design and implement interaction be- tween panes. || Linked multiviews. Second iteration of new interface. ||
+|| November 8 - November 12 || Get feedback from Dr. Feader’s group and make corrections. || Bioinformatics application note. Outline of thesis.||
+|| November 15 - November 19 || Write Bioinformatics applications note. || Bioinformatics application note. Outline of thesis. ||
+|| November 15 - December 31 || Original plan included thesis/graduation but was pushed back to another semester.  The remaining time was spent on new features and bug fixes. ||
+
+== Evaluation ==
+
+*Overview*: In general I think that this was a moderately successful semester. I did not complete all of the goals that we included in the plan, but I also finished some things for which we did not plan and unfortunately encountered a few setbacks with libraries, licensing, and refactoring the older code. Some of these setbacks were unavoidable, but I think that I could have saved some time with more detailed planning and more explicit goals in my semester plan.
+
+ * Editor
+  ** Syntax highlighting, improved layout, and UI design: Mostly Finished: I did redesign and reimplement the UI in a way that decreased the amount of active frames at a given time. Syntax highlighting is still the same as before, but I plan to work on that during the next few days.
+
+ * Additional panes for visualization: Finished:	Originally we wanted to include panes in the main editor frame, however, the union of AWT and SWT is borderline impossible on the OSX. We decided that if we could not put the visualizations in a new pane in the editor frame that we would make a new frame for all of the visualizations.
+
+ * Hypothesis checking pane: Not Finished: This goal (as I understood it) was somewhat included in the adoption of parameter estimation. We did not fully define all of the ways that we could implement hypothesis checking or knowledge discovery, and I expect that the majority of the work next semester will be centered around this goal.
+
+ * Parameter Estimation: Half Finished: After we decided to include parameter estimation, we received matlab scripts that could could complete this task. I updated the scripts and they do work for our models. We have not yet finished including this feature in the tool.
+
+ * Linked Multiple Views: Mostly Finished: We now support basic linked multiple views. The visualization pane is updated whenever the selected file changes, when the model is updated, or when a new observable is selected in the observable browser. Also we have included an overview window in the visualization frame that gives context to the visible area when the user is zoomed in on a model.
+
+ * BioInformatics Application Note: Mostly Finished: We are almost done with the note. 
+
+ * BNGEditor Presentation: Finished: I have a decent set of slides for BNGEditor presentations that were written for my visgroup meeting.
+
+*Unplanned Time Consumption*
+ * Version Checking: The tool checks to see if there is an update when it loads, and informs the user if there is one available.
+ * Refactoring/Debugging: I spent a lot of time refactoring, debugging, and documenting the existing code to better facilitate the current and future changes.
+ * Releases: We encountered some OS specific release bugs that had to be fixed. Also, I implemented a build script that drastically decreased the amount of time required to prepare release files.
+ * MATLAB: We decided that it was faster to have me work with the matlab code instead of letting one of Dr. Faeder’s students write them. We received scripts from Michael Sneddon, but I had to debug and alter the scripts, which required some time spent learning matlab. At this point, we are able to perform a basic parameter estimation task in matlab and will receive our license for the Java builder around Jan. 1. I will still have to update the scripts further to support parameter estimation with more than the NFSim simulator.
+ * MATLAB Builder JA: I was not sure whether or not we could even use the matlab scripts because we needed expensive software to compile the .m files into java classes. I had to look into other options, including open source packages and JNI, just in case we could not acquire the proper license.
+ * SWT vs AWT: It took longer to produce the linked gui frames because of AWT and SWT not being compatible. After realizing that it would not be possible to use the SWT-AWT bridge in OSX, I spent 1 day trying to reimplement the editor in AWT. The features of JFACE for text editing would be very time consuming to reproduce in AWT.
+ * SWT and AWT each have their own even thread, you cannot access SWT thread created objects (eg. parsing newly altered models for cmap and igraph) with the AWT thread. So, I had to rewrite the visualization window update logic in way that prevented improper thread accesses.
