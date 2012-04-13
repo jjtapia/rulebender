@@ -1,4 +1,5 @@
  * [OverviewOfProject Project Goals]
+ * [Specifications]
  * [InterfaceSketches Interface Sketches]
  * [ProjectHistory Timeline and Deliverables]
  * [ProjectInfrastructureAndRequirements Infrastructure]
