@@ -2,8 +2,8 @@
 
 == Purpose == 
 
-The purpose of RuleBender is to assist in the creation, debugging, simulation, and analysis of rule-based biochemical models.  Models are created via a text editor with support for syntax highlighting and error annotation.  Linked interactive visualizations display global views of the model under development and provide data on demand for further exploration.  Simulation execution is integrated into the tool and results analysis is assisted via interactive charts and visualizations of the molecules in a generated network.
+The purpose of !RuleBender is to assist in the creation, debugging, simulation, and analysis of rule-based biochemical models.  Models are created via a text editor with support for syntax highlighting and error annotation.  Linked interactive visualizations display global views of the model under development and provide data on demand for further exploration.  Simulation execution is integrated into the tool and results analysis is assisted via interactive charts and visualizations of the molecules in a generated network.
 
 ==Motivation==
 
-The original workflows for the modelers included editing models with general text editing tools, executing simulations from the command line, and using additional analysis and visualization tools to view the results.  RuleBender alleviates these difficulties with visualizations for debugging and integrated tool features for the workflow tasks. 
+The original workflows for the modelers included editing models with general text editing tools, executing simulations from the command line, and using additional analysis and visualization tools to view the results.  !RuleBender alleviates these difficulties with visualizations for debugging and integrated tool features for the workflow tasks. 
