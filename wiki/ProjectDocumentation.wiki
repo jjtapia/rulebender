@@ -1,7 +1,5 @@
-#Documentation Page
 #sidebar DocumentationSidebar
 
 = Documentation =
 
 This documentation wiki holds information about
-
