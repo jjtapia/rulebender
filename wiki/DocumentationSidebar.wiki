@@ -5,7 +5,7 @@
 * [ProjectArchitecture Architecture Overview]
 * [DetailedDesignDocumentation Detailed Architecture]
 * [ProjectDependencies Dependencies]
-* [WebsiteManagement Web Site Management
+* [WebsiteManagement Web Site Management]
 * [GettingStartedWithCode How To Start Working]
 * [ModificationInstructions Adding to the Project]
 * [ReleasePreparation Release Preparation]
