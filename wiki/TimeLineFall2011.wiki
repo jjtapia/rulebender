@@ -1,0 +1,101 @@
+=Fall 2011=
+
+==Plan==
+
+ * Finish first version of RCP RuleBender:
+  ** New Parser: 	The new parser is now in place, and Jose and I are working on any bugs that we find.
+  ** CMap View: 	The contact map data models must be translated from the output of the new parser.
+  ** IGraph View: 	The influence graph data models must be translated from the output of the parser.
+  ** Model Browser View: I have a tree view in place already, I just need to link the file sources to the viewer and reorganize the way we store results.
+  ** Results View: The results pane from the previous version should translate fairly easily to the new interface.
+  ** Details View: The details table should also be relatively simple.
+  ** Species Browser View:  After construction the contact map data structures, the species browser viewer should come quickly.
+ ** Multithreaded Simulation: Should also be straight-forward to get something working at first.  Polish will come later.
+
+ * VisWeek Preparation:
+  ** Finish Poster: There are still some changes to be made to the 3rd column.
+  ** Write Presentation: 	I need to write a presentation based on the paper, but I have many slides that I can reuse.
+
+ * RCP Improvements: After the initial version of the tool is finished for the conference, the following changes will be next.
+  ** Improved Species Browser: As mentioned by Justin, it would be helpful to be able to generate networks and pause at each iteration to see the species that have been created.
+  ** Automatic Updating: RCP allows for automatic updating.
+  ** Text Editor Annotation: On-the-fly text annotation and overlays can be used to show improper syntax.
+  ** User Specified Syntax Highlighting: Users can select colors that will be used for various language features.
+
+ * New Website: The existing web site will be updated to use wordpress for the upcoming release.
+Improved Simulation Interface: Implement the simulation designer interface.  
+
+
+==Schedule==
+
+|| *Date* || *Deliverable ||
+|| September 9 || Contact Map View||
+|| September 16 || Species Browser; Influence Graph ||
+|| September 23 ||Model Browser; Results View||
+|| September 30 || Details View; Multithreaded Simulation||
+|| October 7 || Presentation Written||
+|| October 14 || Finish poster; Scramble. ||
+|| October 21 || Website; RCP Tool Version 1.||
+|| October 28 || Released Tool; Given Talk.||
+|| November 4 || Sleep, Review Feedback.||
+|| November 11 || ||
+|| November 18 || Text Editor Annotation or Simulation builder started||
+|| November 25 || ||
+|| December 2 || User Defined Syntax Highlighting or Simulation Builder progress ||
+|| December 9	|| ||
+|| December 16	 || Improved Species Browser or Simulation Builder ||
+
+==Contingencies==
+
+ The most pressing point in time is from now until the conference.  There are many things that need to happen before we release the tool and give the presentation.  I will be working as hard as possible to reach the weekly deadlines, and work on the weekends if I cannot complete my tasks by Friday.  If, however, something cannot be finished on time, then the following things will be incomplete for the conference:
+
+ * Website:	 We have a website already, so time would be better spent on something
+else unless all else is finished.
+
+ * Species Browser:	This is a useful part of the tool, but we had to choose between the
+species browser and any other part of the tool, I would choose to
+not finish the species browser.
+
+ * Details View:	Again, this is important but if we have to leave more out then this is the
+next feature.
+
+If we are approaching the deadline and do not have the features implemented (excluding the above contingencies) then we can use the current release version of the tool.  Is is already the version that is accepted and will be sufficient for the presentation and demo.
+
+After the conference, we can either work on editor features or simulation features.  The visual aspect of the simulation designer interface will not be difficult to implement, but it may be difficult to implement the back-end depending on the existing features of BNG and NFSim.  So, in schedule I left both option available.
+
+==Evaluation==
+
+Finish first version of RCP RuleBender: My first main goal was to re-implement RuleBender in Eclipse RCP.   This was not finished before the conference as we had hoped, mainly due to extra time spent on the presentation and an underestimate of the difficulty of learning RCP.   The re-implementation is now almost complete.
+
+
+*Done:*
+ * New Parser:  The new parser is in place, and the errors given from lexing and parsing are reported to the user through the command line as in the old tool.
+ * CMap View:   The contact map view is finished and works well.
+ * IGraph View:  The influence graph view has not been added at Jim's request.  He and a few other users have noticed bugs in the design and he wanted us to rethink the visualization before we included it in the tool.
+ * Model Browser View: The model browsing view is complete and it also supports a small set of file system interactions that I will expand upon as needed.
+ * Multithreaded Simulation: Simulations are completely multi-threaded with no blocking of the ui, even for error reporting and logging.  Progress bars are used to show that the process has not failed.
+
+*Almost Done:*
+ * Results View: The results view is not yet finished, but I should have it finished by this weekend.  Most of the code from the previous version of the tool will be reusable, so it should not take very long.
+ * Details View:  The details view is in place, but it does not yet respond to selections.  A basic version will be in place before Christmas, and more details will be shown as requested by users.
+ * Species Browser View: Along with the results view, this is not yet implemented but only has to be ported from the old version of the tool.
+
+*!VisWeek Preparation:*
+ * Finish Poster: The poster was completed.
+ * Write Presentation:  The presentation took several iterations and almost twice as much time to right as I had anticipated, which caused delays in my other goals.  However, we did win the best paper award and having a really polished presentation helped our work to stand out at the conference.
+ 
+*RCP Improvements:*
+ * I implemented the simulation interface, and the perspectives design which was not in the original plan.
+*Done:*
+ * Perspectives: Jim's group liked the re-design of the interface using 3 separate views for modeling, simulation, and analysis.  The perspectives have been implemented, and the views should all be finished soon.
+ * Improved Simulation Interface:  I have finished the simulation running pane that allows the user to select a model, choose how to simulate it, add parameters, and then launch the simulation.  As more advanced simulation is supported in the backend, this view will evolve to support it.
+Improved Species Browser: Justin originally gave me an idea for a new species browser, although the rest of the group vetoed it. 
+
+*Not Done:*
+ * Automatic Updating: I have not yet released the tool, so updating has not been a high priority.
+ * Text Editor Annotation:  This may be difficult to achieve using only Jose's parser.  Eclipse has built in features for highlighting text and giving annotations or suggestions, but they depend on special classes that recognize syntax.  I need to look further into whether or not the antlr parsing information can be used here, or if I will need to write some simple parsing instructions using the eclipse technique. 
+ * User Specified Syntax Highlighting: This is not finished, but it would not take very much implementation to make this available.  I thought that the current text highlighting was sufficient and I did not want to spend my time frivolously. 
+
+ * New Website: Wordpress is installed and some content has been added, although there is still more to do.
+
+Overall, even though I have a few things left on my to do list I think this was a productive semester.  Learning RCP has been beneficial both for the tool and for me as a programmer, so I think that the time cost involved with that has been worth it.  The new code is much more organized and easier to work with. Hopefully other students will be able to interface with it when they need to add new features.  The new version is also much more stable and flexible to use.  I am looking forward to finishing the main features and polishing everything.   
