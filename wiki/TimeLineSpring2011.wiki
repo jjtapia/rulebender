@@ -1,0 +1,37 @@
+=Spring 2011=
+
+==Plan==
+
+ * Release Preparation
+  ** We are still working on a beta release for our tool paper and there are some bugs that will need to be resolved before it is ready. Additionally, I have a web page for the tool that will probably need to be proofread and edited before it is ready.
+ * Linking between views
+  ** The different views in the tool are each a representation of the same model. The interaction and visualization in the tool should affect each view appropriately, regardless of the view with which the user interacts.
+ * Parameter Estimation
+ ** We now have the Matlab Builder JA module, so we need to install it, learn how to use it, and prepare the scripts that we already have. Then, we need to design and implement the interaction with the scripts and the results visualization for parameter estimation.
+
+==Original Schedule==
+
+|| *Week* || *Description* || *Deliverable* ||
+|| Jan 18 - Jan21 || MLK Day Monday. Find the source of the Windows graphics update bug and prepare the release for Dr. Faeder’s class on Friday. || Stable release ||
+|| Jan 24 -28 || Design the linking behavior between views and start implementation. || Linking mostly implemented ||
+|| Jan 31 - Feb 4 || Finish implementing the linked views. || Linked view interaction in the tool ||
+|| Feb 7 - Feb 11 || Install Matlab Builder JA and build an example Java program that can use the classes created by Matlab. Edit the parameter estimation scripts as needed so that we can easily call them from the tool. || Ability to build scripts as Java classes. Refactored parameter estimation scripts. ||
+|| Feb 14 - Feb 18 || Design the interface for parameter estimation including results visualization.	|| Parameter estimation sketches. ||
+|| Feb 21 - Feb 25 || Incorporate launching the parameter estimation scripts into the tool and start implementing the results visualization. || Parameter estimation script execution. ||
+|| Feb 28 - March 4 || Finish implementing parameter estimation visualization. || First complete version of parameter estimation in the tool.||
+|| March 7 - March 11 || Spring Break. Outline the paper. Writing Paper. || Paper outline. Paper 1st draft. ||
+|| March 14 - March 18 || Infovis Abstract Deadline on the 21st. Continue revisions of the full paper. || Submit the abstract. More paper revisions.||
+|| March 21 - March 25 || Infovis paper deadline on the 31st. Make final revisions. || Submit the paper. ||
+|| March 28 - April 1 || Again, graduation goals pushed back and remainder used for completion of tasks and bug fixing.	|| ||
+
+== Evaluation ==
+
+Overall this was a productive semester. We implemented new features, released the tool with a website, published a tool paper, submitted a conference paper, and have plans for future work. Most of the goals from my original plan were finished. At the initial planning meeting we agreed that I would need to spend much more time on linked views and that implementing them would probably take up the majority of the semester. Shortly after that we decided that it would be best if I worked through the summer, which allowed me to spend more time on linked views and other goals. As always, there was normal maintenance of two code branches that added extra time requirements.
+
+ * Release Preparation: Finished
+  ** The release version was finished and I deployed a website for the release. So far we’ve had more than 201 visitors in the last month from 17 countries, and 10 downloads in the last week.
+
+ * Linking between views: Finished
+  ** The links between views have been implemented after 2 more iterations of the visualization viewer. They will be ready for the next release.
+ * Parameter Estimation: Goal Changed
+  ** We did not implement parameter estimation, but we did decide that there was more work to be done in the area of hypothesis generation and testing before we implemented parameter estimation. John Sekar helped us define some of the advanced parameter scanning tasks that we will work on next semester before we work on parameter estimation.
