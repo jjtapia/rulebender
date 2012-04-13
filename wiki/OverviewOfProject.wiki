@@ -2,6 +2,19 @@
 
 =Overview=
 
+Current Developer: Adam M. Smith
+Previous Team Members: Wen Xu, Yao Sun
+
+Project Advisor: Dr. G. Elisabeta Marai
+Systems Biology Collaborator: Dr. James R. Faeder
+
+Code Location:
+1.* is hosted on arsenic.cs.pitt.edu in /afs/cs.pitt.edu/projects/marai/gfx3/Projects/BioDiagrams/svn/BioDiagrams and is only accessible with an approved afs account.  Soon the code will be moved to googlecode.
+
+2.* code is all hosted on google code. 
+
+Project Website: http://www.rulebender.org
+
 == Purpose == 
 
 The purpose of !RuleBender is to assist in the creation, debugging, simulation, and analysis of rule-based biochemical models.  Models are created via a text editor with support for syntax highlighting and error annotation.  Linked interactive visualizations display global views of the model under development and provide data on demand for further exploration.  Simulation execution is integrated into the tool and results analysis is assisted via interactive charts and visualizations of the molecules in a generated network.
