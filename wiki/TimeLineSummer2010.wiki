@@ -1,0 +1,80 @@
+=Summer 2010=
+
+==Plan==
+
+The BioNetGen IDE project provides a graphical front end to the !BioNetGen rule-based modeler and simulator. Users create models of molecules and interaction rules that can be executed in the simulator. The simulation produces observables that are of interest to the researcers. Current problems where visualization is desired include debugging of models and rules, viewing observables at various stages of simulation, and analyzing simulation results. Each visualization problem may be solved with 2D models of molecular structure, interactions with visualizations, and data on demand, all of which will be tightly coupled to the IDE GUI itself. In addition to visualization, many features required by a robust IDE still need to implemented such as syntax highlighting, multiple window environments, better file handling, and greater stability.
+
+Dr. James Faeder and his research group will work with us as we continue to develop the IDE with functionality including text editing, parsing, model visualization, incorporation with their simulators, and results visualization. Additionally, this project will serve as part of the requirements of my Masters degree.
+
+ * *Cellular Network Visualization*: For this summer, one of the most important tasks is to develop a framework that allows for simple generation and rendering of graph-based visualizations of molecular networks, since many of the desired visualizations depend on this ability. I have been testing the Prefuse library 2 with some success. It allows for interactive visualizations, various automatic layouts, and is easily extendable. The code is open source under the BSD license so I can tweak it as needed.
+
+ * *Contact Map*: The contact map should be fully implemented according to current specifications with user interaction and data on demand. The current contact map displays molecules with internal bonding sites. An edge between sites creates a bond that corresponds to one or more rule that can potentially be applied to the molecules linked by the bond.
+  ** Users will be able to interact with molecules through mouse clicks to highlight all interactions, view parameters for that molecule, and see other data as we further design the interactions. Mouse interactions with bonds will display bubbleset information corresponding to the content and context of the rule corresponding to the bond.
+Refine BubbleSets: The marching squares algorithm utilized by bubblesets currently encloses any area that has a positive energy value. This needs to be changed in order to allow for an energy threshold. Also, the energy creation and destruction values need to be balanced. Ultimately, the bubblesets implementation needs to serve as a method for highlighting independently located subsets of bonding sites. All implementation should work towards this functional goal.
+Automatic Visualization Updates: The Bioinformatics group has requested that the BNG IDE automatically build their models and update the contact map as they are working. This should not be a problem. Even if it is uncomfortably slow to parse and build a model we can balance the frequency of automatic building.
+Syntax Highlighting Additional simple syntax highlighting of special characters ‘(’, ‘)’, ‘.’, ‘,’, ‘*’, ‘!’, and ‘+’ should be a quick and simple task.
+Results Exploration – The results files are overwritten every time a simulation is run. The users should be able to save the files from every simulation.
+Some of the results files contain hundreds or thousands of observable species and the rules that were applied to produce them. I am not sure of a direct solution to this problem. Mouseovers on the list of observables could display the network and rules, but some kind of aggregation also seems necessary.
+Original Schedule
+
+Week	Description	Deliverable
+June 7 - June 11	Continue reading Prefuse API and exploring source code. In particular, the prefuse.render package.
+Simple graph construction.
+June 14 - 18	Explore prefuse.action package to gain insight for implementing user interaction of molecular network visualizations.
+Simple interaction capabilities for molecular network visualization.
+June 21 - 25	Utilize molecular network visualization to begin constructing contact map.	Working contact map with interaction including bubblesets.
+June 28 - July 2	Continue working with contact map and add interaction.	Contact map parser/model constructor working with prefuse data model. Dis- play basic contact map in GUI.
+July 5th - July 9th	Determine necessary changes to bub- blesets implementation and update as needed.	Interactive contact map excluding bubble sets.
+July 12th - July 16th	Travel	
+July 19 - July 23	Get feedback from Dr. Faeder and his group about the visualization produced so far. Discuss changes that need to be made, and make the changes	Usable and approved version of contact map with bubblesets.
+July 26 - July 30	Add automatic building/checking, syn- tax highlighting to BNG IDE . Work to- wards automatic display of contact map.
+Automatic compilation. Syntax high- lighting of special characters. Basic au- tomatic update of contact map.
+August 2 - August 6	Add ability to save results. Begin looking at results visualization.	Results files can be saved. Ability to load views of any molecule.
+August 9th - August 13	Incorporate visualizations of molecules into GUI. Tentatively through ways such as right clicking the molecule name in the editor or in the results file to get a con- text menu and then selecting ‘See Graph’	Visualization of molecules.
+August 16 - August 20	Meet with Dr. Faeder and his group for feedback and small change suggestions.	Make/document small changes Finished summer goals.
+August 23 - August 30	Buffer Week	Finish Stuff
+
+
+
+
+
+
+
+
+
+
+
+Contingencies
+
+In the event that I cannot complete all of the tasks on the timeline, I will focus primarily on the visualization of the network graphs themselves, and the interactive contact map with bubblesets. In order to facilitate expedient implementation of future visualizations, it is important to establish a robust framework for the visualization of the network graphs. Most of the small changes to the GUI may be made as well. The first goal to abandon if they cannot all be completed will be the visualization of observables and arbitrary molecules in the editor.
+If we complete our goals ahead of schedule, then there are additional visualizations that would interest Dr. Faeder and his group. For example, we discussed a network graph showing the distribution of observables that are produced by a given species and the rules that produce those observables.
+Evaluation
+
+All of the goals excluding automatic compilation were met. The amount of work completed this summer is satisfying to me, especially considering the additional tasks for which we did not plan such as writing abstracts, posters, presentations, reports, and documentation. I would have liked to finish more iterations with the contact map, but we have a strong base with which to continue working.
+Simple graph construction: Utilization of Prefuse allows for rapid development of graph-based visualizations. The library presented a steep learning curve, but after reading and coding tutorials I found that the system is easily understood and well written. One downfall is that there is very little documentation for Prefuse besides a small introduction, although the sourceforge forum provided much assistance once I had advanced beyond the introductory material.
+Simple interaction capabilities for molecular network visualization: Interaction in prefuse also presented little difficulty. The polylithic design of the software enables easy and aesthetically pleasing code additions.
+Contact map parser/model constructor working with prefuse data model. Display basic contact map in GUI: Traversing the data structures created by Yao’s parser was somewhat tedious given the lack of documentation, but it was not too complicated. I created a class that wrapped a lot of the Prefuse pipeline and required only data structures and minimal code for rendering options so that Wen could easily take advantage of Prefuse without spending time learning the libraries. The networkviewer.NetworkViewer class is the result. I think this class is fine for now, but with more organization and planning of common data structures I could make it much easier to create contact map style graphs for future writers of code.
+Interactive contact map excluding bubble sets: Since I had already implemented toy applications with interaction, most of the work for this deliverable was organizing the application and data structures to support the passing of the appropriate information to feed the interaction.
+Contact map with interaction including bubblesets: The majority of the added implementation here was again related to creating and altering data structures so that the interaction and bubble sets could be displayed. I spent very little time in my own bubble sets code since Christopher Collins released his code the day after I had built the system to support bubble sets data models and attached my base bubble sets implementation. He programmed his bubble sets in the same way that I had programmed mine, so I only had to change a few lines of code to use his version. His system was not without bugs, so I spent some time hunting them down and fixing them.
+Usable and approved version of contact map with bubblesets: After one round of feedback we got several good suggestions for the tool and some direction for the contact map. The version that we have is still what I would call a prototype, but it is an improvement over the previous version and will easily be extended.
+Automatic compilation. Syntax highlighting of special characters. Basic automatic update of contact map: Syntax highlighting has been delegated to Wen. Automatic compilation and update was not implemented. I now think that I know what I would do to make this change, so in the future this can be a goal.
+Results files can be saved. Ability to load views of any molecule: Wen finished.
+Visualization of molecules: As stated above, I wrote the NetworkViewer class to support contact map styled visualizations. This was used to visualize molecules in the results browser. Eventually I would like Wen and I to use the same data structures that need to be converted to Prefuse format so that I can just write a method to do it automatically instead of her copying my code and changing it to fit her data.
+Make/document small changes after feedback: One feedback session only.
+
+Future Goals
+
+Contact Map
+Design molecule layout e.g. shape, component position, state position on components, data on demand. • Design map layout. • Create multiple panes for more information. • Possibly use Systems Biology Graphical Notation standards for display.
+Support clicks on the contact map to highlight rules and molecules in text. Editor:
+Allow rules to be named as is allowed in BNG. • Add syntax highlighting. • Support automatic compilation and contact map display. • Put contact map into pane on the editor window.
+Influence Graph
+Fix bugs in model construction. 
+Use Prefuse for visualization.
+Solve scalability issues.
+New Features
+Incorporate Cellucidate API and include translation capabilities from Kappa to BNGL.
+Include statistical model constructors such as Inferelator, Banjo, and CLR.
+Support Systems Biology Markup Language or Biological Pathway Exchange Languauge input/output.
+Display multiple species at one time in the species browser.
+Allow a simulation to run while another file is edited.
