@@ -1,4 +1,4 @@
-* [OverviewOfProject]
+* [OverviewOfProject Project Goals]
 
 * [InterfaceSketches Interface Sketches]
 
