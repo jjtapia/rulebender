@@ -36,7 +36,6 @@ import rulebender.contactmap.view.ContactMapView;
 import rulebender.core.prefuse.PngSaveFilter;
 import rulebender.core.prefuse.collinsbubbleset.layout.BubbleSetLayout;
 import rulebender.core.prefuse.networkviewer.PrefuseTooltip;
-import rulebender.core.prefuse.networkviewer.contactmap.ComponentTooltip;
 import rulebender.core.prefuse.networkviewer.contactmap.JMenuItemRuleHolder;
 import rulebender.core.prefuse.networkviewer.contactmap.VisualRule;
 
@@ -60,30 +59,60 @@ import prefuse.visual.EdgeItem;
 import prefuse.visual.NodeItem;
 import prefuse.visual.VisualItem;
 
+/**
+ * The ContactMapClickControlDelagate is used to handle all of the mouse 
+ * interaction in the contact map. It extends ControlAdapter from 
+ * Prefuse, which allows it to be added to a Prefuse.Display object, and 
+ * it implements the ISelectionProvider so that it can send selection objects 
+ * to the Eclipse RCP ISelectionService. 
+ * @author adammatthewsmith
+ *
+ */
 public class CMapClickControlDelegate extends ControlAdapter implements ISelectionProvider
 {
+	// The current selection
 	private ISelection m_selection;
+	
+	// The selection listeners for this ISelectionProvider.  Objects are added
+	// or removed by Eclipse.
 	private ListenerList m_listeners;
 	
-	public static final String AGG_CAT_LABEL = "molecule";
+	// A label for the Aggregate Category Label. 
+	public static final String AGG_CAT_LABEL = ContactMapVisual.AGG_CAT_LABEL;
 	
 	// For the node tooltips.
 	PrefuseTooltip activeTooltip;
 
+	// An aggregate table that represents the bubble sets.
 	private AggregateTable bubbleTable;
+	
+	// The Visualization object that this ClickControlDelegate is attached to.
 	private Visualization m_vis;
 
+	// The currently selected Rule.
 	private VisualRule activeRule;
 
+	// A string label for the right click context menu that allows for
+	// the displaying of states
 	private String displaymode_states = "Show States";
+	
+	// A string label for the right click context menu that allows for
+		// the displaying of states
 	private String displaymode_compartments = "Show Compartments";
 
+	// The ContactMapView (Eclipse RCP container; extends ViewPart) that this
+	// click control delegate is associated with.
 	private ContactMapView m_view;
 	
+	// The path of the source bngl file.
 	private String m_sourcePath;
 	
-//	private VisualizationViewerController visviewer;
-
+	/**
+	 * Constructor: Takes a view, a source path, and a Visualization.
+	 * @param view
+	 * @param sourcePath
+	 * @param v
+	 */
 	public CMapClickControlDelegate(ContactMapView view, String sourcePath, Visualization v) 
 	{
 		m_view = view;
@@ -400,19 +429,20 @@ public class CMapClickControlDelegate extends ControlAdapter implements ISelecti
 		
 		if(item.getString("type").equals("state"))
 		{
-			//LinkHub.getLinkHub().stateSelectedInContactMap(item);
 		//	start here by finding out how to add the current editor path to the visualization so 
 			//that the selection listener can tell the editor which text file needs the selection.
 			setSelection(new StructuredSelection(new StatePropertySource(item, m_sourcePath)));
 		}
 		else if(item.getString("type").equals("component"))
 		{
-			//LinkHub.getLinkHub().componentSelectedInContactMap(item);
 			setSelection(new StructuredSelection(new ComponentPropertySource(item, m_sourcePath)));
 		}
 		else if(item.getString("type").equals("hub"))
 		{
 			//LinkHub.getLinkHub().hubSelectedInContactMap(item);
+			//TODO Throw a selection object for hubs (Ignore the LinkHub...that 
+			// was the way we linked views in the prototype before the 
+			// ISelectionService was an option.)
 		}
 	}
 	
@@ -618,13 +648,6 @@ public class CMapClickControlDelegate extends ControlAdapter implements ISelecti
 			activeTooltip.stopShowingImmediately();
 		}
 			
-		// empty annotation table
-		//TODO organize this functionality better.
-		// This is commented out because it is clearing the table after it is 
-		// set from the igraphClickControlDelegate.
-		// It should not need to be cleared anyway if it is going to be replaced.
-		//cmapAnnotation.updateAnnotationTable(null, null, null, null);
-
 		// Clear the current activeRule.
 		if (activeRule != null) {
 			activeRule.setVisible(false);
@@ -706,7 +729,7 @@ public class CMapClickControlDelegate extends ControlAdapter implements ISelecti
 		// A context or center object
 		else
 		{
-			System.out.println("context or center");
+			//System.out.println("context or center");
 		}
 	}
 	
@@ -754,9 +777,9 @@ public class CMapClickControlDelegate extends ControlAdapter implements ISelecti
 				}
 				*/
 				
-				// This does not break java 1.5 compatibility and uses swt.
-				//Program.launch(address);
-	
+		// This does not break java 1.5 compatibility and uses swt.
+		//Program.launch(address);
+
 		final String moleculeName = item.getString("molecule");
 		
 		JPopupMenu popup = new JPopupMenu();

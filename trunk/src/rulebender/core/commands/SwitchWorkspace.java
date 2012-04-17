@@ -10,6 +10,13 @@ import org.eclipse.ui.PlatformUI;
 
 import rulebender.core.workspace.PickWorkspaceDialog;
 
+/**
+ * This is an AbstractHandler that is called when the user wants to 
+ * change the workspace.  This command is registered in the 
+ * org.eclipse.ui.commands extension point of plugin.xml.
+ * @author adammatthewsmith
+ *
+ */
 public class SwitchWorkspace extends AbstractHandler
 {
 
@@ -29,7 +36,4 @@ public class SwitchWorkspace extends AbstractHandler
         
 		return null;
 	}
-
-	
-
 }

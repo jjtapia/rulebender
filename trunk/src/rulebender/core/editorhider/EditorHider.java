@@ -23,11 +23,19 @@ import org.eclipse.ui.part.EditorPart;
 
 import de.ralfebert.rcp.tools.preferredperspective.IPrefersPerspective;
 
+/**
+ * This class is a combination of Ralf Ebert's  
+ * de.ralfebert.rcp.tools.preferredperspective package and another package
+ * that I found for remembering where an editor was opened and transferring to 
+ * that perspective when it is selected in a Resource browser. 
+ * @author adammatthewsmith
+ *
+ */
 public class EditorHider implements IStartup, IPerspectiveListener, IPartListener {
 	
 	private HashMap<String, ArrayList<IEditorReference>> perspectiveEditors = new HashMap<String, ArrayList<IEditorReference>>();
 	private HashMap<String, IEditorReference> lastActiveEditors = new HashMap<String, IEditorReference>();
-	private HashMap<IEditorReference, String> openEditors = new HashMap<IEditorReference, String>();
+	//private HashMap<IEditorReference, String> openEditors = new HashMap<IEditorReference, String>();
 	
 	@Override
 	public void earlyStartup() 

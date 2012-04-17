@@ -2,6 +2,11 @@ package rulebender.contactmap.models;
 
 import java.util.ArrayList;
 
+/**
+ * This class represents the patterns of molecules and bonds that appear in a rule.
+ * It is basically just a shortcut holder for the indices of the actual model
+ * elements that are involved in a rule.  
+ */
 public class RulePattern 
 {
 	private ArrayList<MoleculePattern> molepatterns;

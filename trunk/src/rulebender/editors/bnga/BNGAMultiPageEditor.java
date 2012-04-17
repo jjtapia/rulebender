@@ -20,6 +20,8 @@ import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.ui.part.MultiPageEditorPart;
 import org.eclipse.ui.ide.IDE;
 
+import rulebender.editors.bnga.text.BNGATextEditor;
+
 import de.ralfebert.rcp.tools.preferredperspective.IPrefersPerspective;
 
 /**
@@ -51,7 +53,7 @@ public class BNGAMultiPageEditor extends MultiPageEditorPart implements IResourc
 	{
 		try 
 		{
-			editor = new TextEditor();
+			editor = new BNGATextEditor();
 			int index = addPage(editor, getEditorInput());
 			setPageText(index, editor.getTitle());
 		}

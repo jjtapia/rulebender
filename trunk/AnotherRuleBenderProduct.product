@@ -5,7 +5,7 @@
 
    <aboutInfo>
       <text>
-         RuleBender 2.0r63
+         RuleBender 2.0r70
 
 RuleBender is currently developed by Adam M. Smith at the University of Pittsburgh under the direction of James R. Faeder and Elisabeta G. Marai. 
 
@@ -22,7 +22,7 @@ Please send all feedback and questions to help@rulebender.org.
       <vmArgsMac>-XstartOnFirstThread -Dorg.eclipse.swt.internal.carbon.smallFonts -Xdock:icon=../Resources/Eclipse.icns -XstartOnFirstThread -d64</vmArgsMac>
    </launcherArgs>
 
-   <windowImages i16="/rulebender/RB-16.gif" i32="/rulebender/RB-32.gif" i48="/rulebender/RB-48.gif" i64="/rulebender/RB-64.gif" i128="/rulebender/RB-128.gif"/>
+   <windowImages i16="/rulebender/icons/system/RB-16.gif" i32="/rulebender/icons/system/RB-32.gif" i48="/rulebender/icons/system/RB-48.gif" i64="/rulebender/icons/system/RB-64.gif" i128="/rulebender/icons/system/RB-128.gif"/>
 
    <splash
       location="rulebender" />
@@ -42,7 +42,6 @@ Please send all feedback and questions to help@rulebender.org.
    <vm>
       <macos include="false">org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6</macos>
    </vm>
-
 
    <plugins>
       <plugin id="TestCNF"/>

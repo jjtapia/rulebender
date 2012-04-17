@@ -42,6 +42,17 @@ import org.eclipse.ui.WorkbenchException;
  * point "org.eclipse.ui.startup". It will register itself as listener for the
  * activation of parts. When a part which implements IPrefersPerspective is
  * activated it will activate the preferred perspective of this part.
+ * 
+ * - Ralph Ebert
+ * 
+ * 
+ * This class is actually not use at all by RuleBender, but the code in some 
+ * of the methods has been moved to the 
+ * {@link rulebender.core.editorhider.EditorHider} class.  EditorHider changes 
+ * perspectives as this class does, but also hides the opened editor in 
+ * all other perspectives.  
+ * 
+ * -Adam M. Smith.
  */
 public class PreferredPerspectivePartListener implements IPartListener, IStartup {
 

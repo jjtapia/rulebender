@@ -3,10 +3,21 @@ package rulebender.contactmap.models;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * A Compartment is a container for species.  Each Compartment is a node in the tree of 
+ * compartments in the model.
+ *   
+ * @author adammatthewsmith
+ */
 public class Compartment 
 {
+	// The name of the Compartment.
 	private String name;
+	
+	// The container for this Compartment.
 	private Compartment parent;
+	
+	// The Compartments that are inside of this compartment.
 	private List<Compartment> children;
 	
 	public Compartment(String name, Compartment parent) 

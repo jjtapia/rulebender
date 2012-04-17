@@ -11,11 +11,19 @@ import org.eclipse.swt.events.ControlAdapter;
 import org.eclipse.swt.events.ControlEvent;
 import org.eclipse.swt.awt.SWT_AWT;
 import org.eclipse.swt.widgets.Composite;
-
-// Use explicitly
-//import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.part.ViewPart;
 
+/**
+ * This class defines the ViewPart subclass that holds the Contact Map.
+ * 
+ * It uses SWT_AWT to put the prefuse (awt) Display object into an SWT 
+ * composite.
+ * 
+ * ViewPart classes are built by constructing swt composites inside of the 
+ * createPartControl method.
+ * 
+ * @author adammatthewsmith
+ */
 public class ContactMapView extends ViewPart  
 {
 
@@ -31,15 +39,26 @@ public class ContactMapView extends ViewPart
 	// The awt frame that holds the contact map.
 	private java.awt.Frame frame;
 	
+	// There is a warning for this not being used, but
+	// do not remove it.  It is just created here and passes 
+	// 'this' to the constructor.
 	private ContactMapSelectionListener listener;
 	
+	// This is the parent that we will add our composite to.
 	private Composite parentComposite;
 	
+	/**
+	 * Do nothing in the constructor.
+	 */
 	public ContactMapView() 
 	{
 		// Do nothing
 	}
 
+	/**
+	 * This is the method to override for creating a new ViewPart subclass.
+	 * Add all visual elements to the parent composite that is passed in. 
+	 */
 	@Override
 	public void createPartControl(final Composite parent) 
 	{	
@@ -60,9 +79,15 @@ public class ContactMapView extends ViewPart
 		frame.add(layeredPane);
 				
 		// Add a listener that updates the views when the 
-		// parent object is resized.
+		// parent object is resized. 
 		parent.addControlListener(new ControlAdapter() 
 		{	
+			/*
+			 * I use a timer here so that the views are only updated 1 
+			 * time per second since controlResized is called rapidly
+			 * when the user is dragging a corner.  This way just cuts back
+			 * on wasted cycles of resizing the visualizations.
+			 */
 			@Override
 			public void controlResized(ControlEvent e) 
 			{

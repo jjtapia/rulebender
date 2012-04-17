@@ -10,23 +10,53 @@ import prefuse.visual.VisualItem;
 import rulebender.core.prefuse.networkviewer.contactmap.VisualRule;
 import rulebender.editors.bngl.IBNGLLinkedElement;
 
+/**
+ * This class represents a state when a state is selected in the contact map.  
+ * An instance of this object is passed through the ISelectionService to in 
+ * order to give this information to any listening parts.
+ * 
+ * Implements IPropertySource so that the PropertiesView can display this
+ * information.
+ * 
+ * Implements IBNGLLinkedElement so that the text representation can be utilized 
+ * by the BNGLEditor.
+ * @author adammatthewsmith
+ *
+ */
 public class StatePropertySource implements IPropertySource, IBNGLLinkedElement 
 {
 
+	// Each of these strings defines a property of the selected element.
 	public static final String PROPERTY_NAME = "rulebender.contactmap.properties.state";
 	public static final String PROPERTY_COMPONENT = "rulebender.contactmap.properties.state.component";
 	public static final String PROPERTY_MOLECULE = "rulebender.contactmap.properties.state.molecule";
 	public static final String PROPERTY_RULES_PREFIX = "rulebender.contactmap.properties.state.rule";
 	
+	// The name of the state
 	private String m_name;
+	
+	// The containing component.
 	private String m_component;
+	
+	// The containing molecule.
 	private String m_molecule;
+
+	// An arraylist of the rules (VisualRule) that can change this state.
 	private ArrayList<VisualRule> m_rules;
 	
+	// The path the the BNGL file for the current contact map. 
 	private String m_BNGLPath; 
 	
+	// For use with the PropertyView.
     private IPropertyDescriptor[] m_propertyDescriptors;
     
+    /**
+     * Constructor: Takes a visual item and a source path and builds this
+     * object with the contained information.
+     * 
+     * @param item
+     * @param sourcePath
+     */
 	public StatePropertySource(VisualItem item, String sourcePath)//, String bnglPath) 
 	{
 		setName(((String) item.get(VisualItem.LABEL)).trim());
@@ -42,6 +72,10 @@ public class StatePropertySource implements IPropertySource, IBNGLLinkedElement
 		return null;
 	}
 
+	
+	/**
+	 * Returns an array of IPropertyDescriptor objects for the PropertiesView
+	 */
 	@Override
 	public IPropertyDescriptor[] getPropertyDescriptors() 
 	{
@@ -66,6 +100,7 @@ public class StatePropertySource implements IPropertySource, IBNGLLinkedElement
             
             PropertyDescriptor ruleprop = null;
             
+            // Add the rules to the properties.
             if(m_rules != null)
             {
 		        for(int i = 0; i < m_rules.size(); i++)
@@ -83,6 +118,9 @@ public class StatePropertySource implements IPropertySource, IBNGLLinkedElement
             return m_propertyDescriptors;
 	}
 
+	/**
+	 * Returns a specific property given it's id. 
+	 */
 	@Override
 	public Object getPropertyValue(Object id) 
 	{

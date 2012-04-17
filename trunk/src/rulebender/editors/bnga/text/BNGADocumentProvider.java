@@ -1,4 +1,4 @@
-package rulebender.editors.bngl;
+package rulebender.editors.bnga.text;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -27,9 +27,7 @@ import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.ui.texteditor.AbstractDocumentProvider;
 import org.eclipse.ui.texteditor.ResourceMarkerAnnotationModel;
 
-// TODO Try the TextFileDocumentProvider
-
-public class BNGLDocumentProvider extends AbstractDocumentProvider 
+public class BNGADocumentProvider extends AbstractDocumentProvider 
 {
 	@Override
 	protected IDocument createDocument(Object element) throws CoreException 
@@ -54,10 +52,12 @@ public class BNGLDocumentProvider extends AbstractDocumentProvider
 	{
 		// --------------- Setup the partitioner --------------------------
 		IDocumentPartitioner partitioner =
-				new BNGLPartitioner(
-					new BNGLPartitionScanner(),
+				new BNGAPartitioner(
+					new BNGAPartitionScanner(),
 					new String[] {
-						BNGLPartitionScanner.BNGL_COMMENT,
+						BNGAPartitionScanner.BNGA_COMMENT,
+						BNGAPartitionScanner.BNGA_INIT_BLOCK,
+						BNGAPartitionScanner.BNGA_REPEAT_BLOCK,
 						});
 		
 			partitioner.connect(document);

@@ -7,8 +7,15 @@ import org.junit.Test;
 import rulebender.editors.bngl.model.ruledata.ComponentData;
 import rulebender.editors.bngl.model.ruledata.RulePatternData;
 
+/**
+ * JUnit test suite for the RulePattern class.
+ * @author adammatthewsmith
+ */
 public class TestRulePatternData 
 {
+	/**
+	 * Tests the ability to change a state for a component that exists. 
+	 */
 	@Test
 	public void TestChangeExistingComponentState()
 	{
@@ -28,6 +35,4 @@ public class TestRulePatternData
 		
 		assertTrue(cd.getState().equals("state"));
 	}
-	
-	//start here
 }

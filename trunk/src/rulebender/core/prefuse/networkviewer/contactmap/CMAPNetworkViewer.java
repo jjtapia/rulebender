@@ -260,7 +260,9 @@ public class CMAPNetworkViewer
 		// If the two items comprising the edge are the same object, then
 		// an ellipse is drawn, else the parent class is used as is normal.
 		SelfReferenceRenderer srr = new SelfReferenceRenderer();
-
+		srr.setArrowType(Constants.EDGE_ARROW_FORWARD);
+		srr.setArrowHeadSize(15, 30);
+		
 		// The factory decides which renderer to use for a visual item.
 		DefaultRendererFactory rf = new DefaultRendererFactory(lr);
 

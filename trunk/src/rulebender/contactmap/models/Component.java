@@ -2,10 +2,21 @@ package rulebender.contactmap.models;
 
 import java.util.ArrayList;
 
+/**
+ * A Component is a binding site for a molecule.  Components are stored in an
+ * ArrayList in their containing Molecule. 
+ * @author adammatthewsmith
+ *
+ */
 public class Component 
 {
+	// The name of the component
 	private String name;
+	
+	// All of the associated States.
 	private ArrayList<State> states;
+	
+	// The id for the Component (corresponds to the index in the Component List for the molecule.)
 	private int uniqueID;
 	
 	public Component(String name)

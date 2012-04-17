@@ -732,7 +732,7 @@ public class BNGASTReader
 
 				if(comp2.equals(""))
 				{
-					//TODO WILDCARD, BITCHES!  Handled it later.
+					//TODO WILDCARD! Handled it later.
 					System.out.println("Wildcard");
 					continue;
 				}
@@ -741,6 +741,7 @@ public class BNGASTReader
 				
 				// the mole id is up to the second underscore
 				String mole1id = comp1.substring(0, comp1.lastIndexOf("_"));
+				//TODO This errors out on A(a,a)->A(a!1, a!1)
 				String mole2id = comp2.substring(0, comp2.lastIndexOf("_"));
 				
 				// Get the names from the registries 

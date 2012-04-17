@@ -1,34 +1,58 @@
 package rulebender.contactmap.properties;
 
 import java.util.ArrayList;
-import java.util.regex.Pattern;
 
 import org.eclipse.ui.views.properties.IPropertyDescriptor;
 import org.eclipse.ui.views.properties.IPropertySource;
 import org.eclipse.ui.views.properties.PropertyDescriptor;
 
-import prefuse.visual.AggregateItem;
-import prefuse.visual.VisualItem;
 import rulebender.core.prefuse.networkviewer.contactmap.VisualRule;
 import rulebender.editors.bngl.IBNGLLinkedElement;
 
+/**
+ * This class represents a Rule when a Rule is selected in the contact map.  
+ * An instance of this object is passed through the ISelectionService to in 
+ * order to give this information to any listening parts.
+ * 
+ * Implements IPropertySource so that the PropertiesView can display this
+ * information.
+ * 
+ * Implements IBNGLLinkedElement so that the text representation can be utilized 
+ * by the BNGLEditor.
+ * @author adammatthewsmith
+ *
+ */
 public class RulePropertySource implements IPropertySource, IBNGLLinkedElement 
 {
 
+	// Each of these strings defines a property of the selected element.
 	private static final String PROPERTY_LABEL = "rulebender.contactmap.properties.rule";
 	private static final String PROPERTY_EXPRESSION = "rulebender.contactmap.properties.rule.expression";
 	//private static final String PROPERTY_CENTER_PREFIX = "rulebender.contactmap.properties.rule.center_";
 	//private static final String PROPERTY_CONTEXT_PREFIX = "rulebender.contactmap.properties.rule.context_";
 	
+	// The String label for the Rule
 	private String m_label;
+	
+	// The expression of the rule.
 	private String m_expression;
+	
+	// The source path of the bngl file. 
 	private String m_sourcePath;
 
 	//private ArrayList<String> m_context;
 	//private ArrayList<String> m_center;
-	
+
+	// For use with the PropertyView.
     private IPropertyDescriptor[] m_propertyDescriptors;
     
+    /**
+     * Constructor: Takes a visual item and a source path and builds this
+     * object with the contained information.
+     * 
+     * @param item
+     * @param sourcePath
+     */
 	public RulePropertySource(VisualRule sourceRule, String sourcePath) 
 	{
 		m_label = sourceRule.getLabel();
@@ -56,6 +80,9 @@ public class RulePropertySource implements IPropertySource, IBNGLLinkedElement
 		return null;
 	}
 
+	/**
+	 * Returns an array of IPropertyDescriptor objects for the PropertiesView
+	 */
 	@Override
 	public IPropertyDescriptor[] getPropertyDescriptors() 
 	{
@@ -92,6 +119,9 @@ public class RulePropertySource implements IPropertySource, IBNGLLinkedElement
 		return m_propertyDescriptors;
 	}
 
+	/**
+	 * Returns a specific property value given its id.
+	 */
 	@Override
 	public Object getPropertyValue(Object id) 
 	{

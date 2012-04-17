@@ -25,7 +25,7 @@ public class ANTLRFilteredPrintStream extends PrintStream
 	
 	@Override
 	public void println(String s)
-	{
+	{		
 		if(s.subSequence(0, 4).equals("line"))
 		{
 			//super.println(s);

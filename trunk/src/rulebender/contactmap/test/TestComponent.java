@@ -7,9 +7,17 @@ import org.junit.Test;
 import rulebender.contactmap.models.Component;
 import rulebender.contactmap.models.State;
 
+/**
+ * JUnit test suite for the Component class.
+ * 
+ * @author adammatthewsmith
+ */
 public class TestComponent 
 {
 
+	/**
+	 * Tests that duplicate states will not be added.
+	 */
 	@Test
 	public void TestStateUniqueness()
 	{
@@ -21,6 +29,9 @@ public class TestComponent
 		assertTrue(c.getStates().size() == 1);
 	}
 	
+	/**
+	 * Tests that states get merged.
+	 */
 	@Test
 	public void TestMergeComponents()
 	{

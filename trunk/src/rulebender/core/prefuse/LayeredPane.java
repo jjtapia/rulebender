@@ -21,11 +21,15 @@ import javax.swing.border.LineBorder;
 import prefuse.Display;
 import rulebender.core.prefuse.overview.Overview;
 
+/**
+ * This class defines the pane that contains a prefuse.Display object
+ * and an overview for that Display.  It is a subclass of the AWT 
+ * JLayeredPane.
+ * @author adammatthewsmith
+ *
+ */
 public class LayeredPane extends JLayeredPane 
-{
-	// Not entirely sure what this does, but having it gets rid of a warning.
-	private static final long serialVersionUID = 1L;
-	
+{	
 	// The overview window size
 	private final float OVERVIEW_WIDTH = 0.2f;
 	private final float OVERVIEW_HEIGHT = 0.2f;
@@ -34,7 +38,7 @@ public class LayeredPane extends JLayeredPane
 	private final int BORDER_WIDTH = 1;
 
 	// The size of the main visualization window.
-	private Dimension currentSize;
+	private Dimension m_currentSize;
 	
 	// The JPanels that hold the visualization and the overview
 	private JPanel mainJPanel;
@@ -52,7 +56,7 @@ public class LayeredPane extends JLayeredPane
 	public LayeredPane(Dimension size)
 	{
 		// Set the value of the local size variable.
-		currentSize = size;
+		m_currentSize = size;
 		
 		// Instantiate the border object.
 		border = new LineBorder(Color.GRAY, BORDER_WIDTH);
@@ -110,29 +114,45 @@ public class LayeredPane extends JLayeredPane
 		myResize();
 	}
 
+	/**
+	 * There is a native resize method, but I needed to do more so I created
+	 * this one.  This default version calls the parameterized version with
+	 * the m_currentSize as input.
+	 */
 	public void myResize()
 	{
-		myResize(currentSize);
+		myResize(m_currentSize);
 	}
 	
+	/**
+	 * There is a native resize method, but I needed to do more so I created
+	 * this one.
+	 * 
+	 * Sets the m_currentSize.
+	 * 
+	 * Updates the size of the main pane.
+	 * Updates the size of the overview pane.
+	 * 
+	 * @param size
+	 */
 	public void myResize(Dimension size) 
 	{	
-		currentSize = size;
+		m_currentSize = size;
 		
-		int overviewWidth = (int) (currentSize.getWidth() * OVERVIEW_WIDTH);
-		int overviewHeight = (int) (currentSize.getHeight() * OVERVIEW_HEIGHT);
+		int overviewWidth = (int) (m_currentSize.getWidth() * OVERVIEW_WIDTH);
+		int overviewHeight = (int) (m_currentSize.getHeight() * OVERVIEW_HEIGHT);
 		
 		
 		if(mainJPanel != null && overviewJPanel != null)
 		{
-			mainJPanel.setBounds(0, 0, currentSize.width, currentSize.height);
+			mainJPanel.setBounds(0, 0, m_currentSize.width, m_currentSize.height);
 			
 			overviewJPanel.setBounds(0, size.height-overviewHeight, overviewWidth-BORDER_WIDTH, overviewHeight-BORDER_WIDTH);
 			
 			if(mainJPanel.getComponentCount() == 1 && overviewJPanel.getComponentCount() == 1)
 			{
-				((Display) mainJPanel.getComponent(0)).setSize(new Dimension(currentSize.width-BORDER_WIDTH*2, currentSize.height-BORDER_WIDTH*2));				
-				((Display) mainJPanel.getComponent(0)).setBounds(BORDER_WIDTH, BORDER_WIDTH, currentSize.width-BORDER_WIDTH*2, currentSize.height-BORDER_WIDTH*2);
+				((Display) mainJPanel.getComponent(0)).setSize(new Dimension(m_currentSize.width-BORDER_WIDTH*2, m_currentSize.height-BORDER_WIDTH*2));				
+				((Display) mainJPanel.getComponent(0)).setBounds(BORDER_WIDTH, BORDER_WIDTH, m_currentSize.width-BORDER_WIDTH*2, m_currentSize.height-BORDER_WIDTH*2);
 				((Display) overviewJPanel.getComponent(0)).setBounds(BORDER_WIDTH, BORDER_WIDTH, overviewWidth-BORDER_WIDTH*3, overviewHeight-BORDER_WIDTH*2);
 				((Display) overviewJPanel.getComponent(0)).setSize(new Dimension(overviewWidth-BORDER_WIDTH*3, overviewHeight-BORDER_WIDTH*2));
 				

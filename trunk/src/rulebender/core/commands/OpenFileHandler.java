@@ -2,7 +2,6 @@ package rulebender.core.commands;
 
 import java.io.File;
 
-import rulebender.core.utility.Console;
 import rulebender.editors.common.PathEditorInput;
 
 import org.eclipse.core.runtime.IPath;
@@ -16,13 +15,23 @@ import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.ui.IEditorDescriptor;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorRegistry;
-import org.eclipse.ui.IPerspectiveDescriptor;
 import org.eclipse.ui.IWorkbenchPage;
-import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.WorkbenchException;
 
+/**
+ * This is an AbstractHandler for the OpenFile command registered
+ * in org.eclipse.ui.commands in the plugin.xml file.  
+ * 
+ * It is actually not in use any more since we moved to the Resources based
+ * projects, so don't use it.  Files should be imported into the workspace if
+ * the are to be edited.  
+ * 
+ * @author adammatthewsmith
+ *
+ */
+@Deprecated
 public class OpenFileHandler extends AbstractHandler 
 {
 

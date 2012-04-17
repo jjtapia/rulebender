@@ -1,9 +1,15 @@
 package rulebender.contactmap.models;
 
+/**
+ * The BondAction class defines whether a bond is being created or being destroyed.
+ */
 public class BondAction 
 {
-	private int bondIndex;//start from 0
-	private int action;// negative means delete, positive means add
+	// The index of the bond in the Bond list for the model
+	private int bondIndex;
+	
+	// negative means delete, positive means add
+	private int action;
 	
 	public BondAction(int indexIn, int actionIn) 
 	{

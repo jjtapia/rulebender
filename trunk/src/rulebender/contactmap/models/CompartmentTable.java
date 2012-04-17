@@ -6,6 +6,14 @@ import java.util.Hashtable;
 import java.util.List;
 
 
+/**
+ * The CompartmenTable is somewhat of a convenience data structure.  
+ * The root of the Compartments is stored, a hashtable of the compartments, 
+ * and a list of them.  
+ * 
+ * TODO why are there so many representations?
+ * 
+ */
 public class CompartmentTable 
 {
 	private Compartment root;

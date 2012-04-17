@@ -382,21 +382,6 @@
             name="Exit">
       </command>
       <command
-            defaultHandler="rulebender.core.commands.SaveHandler"
-            id="rulebender.commands.Save"
-            name="Save">
-      </command>
-      <command
-            defaultHandler="rulebender.core.commands.SaveAllHandler"
-            id="rulebender.commands.SaveAll"
-            name="SaveAll">
-      </command>
-      <command
-            defaultHandler="rulebender.core.commands.SaveAsHandler"
-            id="rulebender.commands.SaveAs"
-            name="SaveAs">
-      </command>
-      <command
             defaultHandler="rulebender.core.commands.OpenFileHandler"
             id="rulebender.commands.OpenFile"
             name="OpenFile">
@@ -415,11 +400,6 @@
             defaultHandler="rulebender.core.commands.ReplaceHandler"
             id="rulebender.commands.Replace"
             name="Replace">
-      </command>
-      <command
-            defaultHandler="rulebender.core.commands.Test"
-            id="rulebender.commands.Test"
-            name="Test">
       </command>
       <command
             defaultHandler="rulebender.core.commands.SwitchWorkspace"
@@ -492,11 +472,11 @@
          </property>
          <property
                name="aboutText"
-               value="RuleBender 2.0r63&#x0A;&#x0A;RuleBender is currently developed by Adam M. Smith at the University of Pittsburgh under the direction of James R. Faeder and Elisabeta G. Marai. &#x0A;&#x0A;Please send all feedback and questions to help@rulebender.org.">
+               value="RuleBender 2.0r70&#x0A;&#x0A;RuleBender is currently developed by Adam M. Smith at the University of Pittsburgh under the direction of James R. Faeder and Elisabeta G. Marai. &#x0A;&#x0A;Please send all feedback and questions to help@rulebender.org.">
          </property>
          <property
                name="windowImages"
-               value="RB-16.gif,RB-32.gif,RB-48.gif,RB-64.gif,RB-128.gif">
+               value="icons/system/RB-16.gif,icons/system/RB-32.gif,icons/system/RB-48.gif,icons/system/RB-64.gif,icons/system/RB-128.gif">
          </property>
       </product>
    </extension>

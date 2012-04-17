@@ -18,6 +18,7 @@ import prefuse.visual.AggregateTable;
 import prefuse.visual.EdgeItem;
 import prefuse.visual.NodeItem;
 import prefuse.visual.VisualItem;
+import prefuse.visual.tuple.TableEdgeItem;
 import rulebender.contactmap.models.Bond;
 import rulebender.contactmap.models.BondAction;
 import rulebender.contactmap.models.ContactMapModel;
@@ -66,7 +67,7 @@ public class ContactMapVisual
 	String COMPONENT_GRAPH = "component_graph";
 	// This is a label used with Aggregate objects.  They are used for visually grouping nodes.
 	// In our case, they make the molecules
-	String AGG_CAT_LABEL = "molecule";
+	public static String AGG_CAT_LABEL = "molecule";
 	// This is an identifier for the aggregate labels
 	String AGG_DEC = "aggregate_decorators";
 	// This is a label for the aggregates themselves.
@@ -120,6 +121,7 @@ public class ContactMapVisual
 		 * 
 		 */
 		m_componentGraph = new Graph();
+		
 		
 		// Ideally I wanted to remove all interaction with the Visualization object,
 		// but I didn't quite finish it yet.  
@@ -366,7 +368,6 @@ public class ContactMapVisual
 				//TODO I do not see the point of this at_compartment table....
 				// Originally Wen added the convex hull compartments, but these are only
 				// containing a single molecule and are named after it....
-				
 				
 				// add another same aggregate in table at_compartment
 				// Get the aggregate so you can add nodes to it.
@@ -627,9 +628,6 @@ public class ContactMapVisual
 			
 			Node leftparentnode = null, rightparentnode = null;
 			
-			//TODO For multiple components with same name bug:  This is where we are creating the edges.
-			// We use the bonds that are in the data structure so I am pretty sure that it is in the parser.
-			
 			// Create the edge linking component
 			e_comp = m_componentGraph.addEdge(leftnode, rightnode);
 			// Put the edge into the hashtable.
@@ -729,8 +727,8 @@ public class ContactMapVisual
 	private void identifyBonds(Rule thisRule, VisualRule r_comp, VisualRule r_state)
 	{
 		//DEBUG
-		System.out.println("Processing Rule: " + thisRule.getLabel());
-		System.out.println("Bond Actions: " + thisRule.getBondactions().size());
+		//System.out.println("Processing Rule: " + thisRule.getLabel());
+		//System.out.println("Bond Actions: " + thisRule.getBondactions().size());
 		
 		// For the bonds created or destroyed by the rule
 		for(BondAction ba : thisRule.getBondactions())
@@ -738,7 +736,7 @@ public class ContactMapVisual
 			String bondid = Integer.toString(ba.getBondIndex());
 			
 			//DEBUG
-			System.out.println("Bond ID: " + bondid);
+			//System.out.println("Bond ID: " + bondid);
 			
 			// Get the edge for this bond.
 			Edge e_state = m_edges.get(bondid + "." + "state");
@@ -755,16 +753,16 @@ public class ContactMapVisual
 
 				// Add the Visual rule to the Edge.
 				//DEBUG
-				System.out.println("\tAdding Visual Rule: " + r_state.getLabel());
+				//System.out.println("\tAdding Visual Rule: " + r_state.getLabel());
 				ArrayList<VisualRule> e_state_rules =  (ArrayList<VisualRule>) e_state.get("rules");
-				System.out.println("\t\tExisting Visual Rules: " + e_state_rules.size());
+				//System.out.println("\t\tExisting Visual Rules: " + e_state_rules.size());
 				e_state_rules.add(r_state);
-				System.out.println("\t\tNow Visual Rules: " + ((ArrayList<VisualRule>) e_state.get("rules")).size());
+				//System.out.println("\t\tNow Visual Rules: " + ((ArrayList<VisualRule>) e_state.get("rules")).size());
 			}
 			else
 			{
 				//DEBUG
-				System.out.println("\te_state was null");
+				//System.out.println("\te_state was null");
 			}
 			
 			if (e_comp != null) 
@@ -777,18 +775,18 @@ public class ContactMapVisual
 					r_comp.addRemoveBond(e_comp);
 
 				//DEBUG
-				System.out.println("\tAdding Visual Rule: " + r_comp.getLabel());
+				//System.out.println("\tAdding Visual Rule: " + r_comp.getLabel());
 				
 				// Add the Visual rule to the Edge.
 				ArrayList<VisualRule> e_comp_rules =  (ArrayList<VisualRule>) e_comp.get("rules");
-				System.out.println("\t\tExisting Visual Rules: " + e_comp_rules.size());
+				//System.out.println("\t\tExisting Visual Rules: " + e_comp_rules.size());
 				e_comp_rules.add(r_state);	
-				System.out.println("\t\tNow Visual Rules: " + ((ArrayList<VisualRule>) e_comp.get("rules")).size());
+				//System.out.println("\t\tNow Visual Rules: " + ((ArrayList<VisualRule>) e_comp.get("rules")).size());
 			}
 			else
 			{
 				//DEBUG
-				System.out.println("\te_state was null");
+				//System.out.println("\te_state was null");
 			}
 		}
 	}
@@ -1012,7 +1010,7 @@ public class ContactMapVisual
 		}
 		// exists, add current rule to the hub node
 		else {
-			ArrayList<VisualRule> tmplist = (ArrayList<VisualRule>)n.get("rules");
+			ArrayList<VisualRule> tmplist = (ArrayList<VisualRule>) n.get("rules");
 			tmplist.add(r_comp);
 		}
 
@@ -1025,19 +1023,30 @@ public class ContactMapVisual
 					if (mp.getComppatterns().size() != 1) {
 
 						Node moleNode = m_nodes.get("" + mp.getMoleIndex());
+
 						// set visible
 						VisualItem nItem = m_vis.getVisualItem(COMPONENT_GRAPH, moleNode);
 						
 					    nItem.setVisible(true);
-						if (moleNode != null) {
-							// create edge
-							Edge e = m_componentGraph.addEdge(n, moleNode);
+						if (moleNode != null) 
+						{
+							
+						//TODO	start here.  Which way should the edges go????
+							Edge e;
+							// create edge between the hub node and the molecule.
+							if(thisRule.getReactantpatterns().contains(mp))
+							{
+								e = m_componentGraph.addEdge(moleNode, n);	
+							}
+							else
+							{
+								e = m_componentGraph.addEdge(n, moleNode);
+							}
+							 
 							e.set("type", "moleConnection");
 						}
-
 					}
 					else {
-						
 						ComponentPattern cp = mp.getComppatterns().get(0);
 						Node compNode = null, stateNode = null;
 						compNode = m_nodes.get("" + mp.getMoleIndex() + "." + cp.getCompIndex());
@@ -1127,7 +1136,7 @@ public class ContactMapVisual
 			{
 				// Add the node to the aggregate. 
 				//DEBUG
-				System.out.println("ADDING: " + node.getString("molecule"));
+				//System.out.println("ADDING: " + node.getString("molecule"));
 				agg.addItem(m_vis.getVisualItem(COMPONENT_GRAPH, node));
 
 			}

@@ -12,26 +12,58 @@ import org.eclipse.ui.views.properties.PropertyDescriptor;
 import prefuse.visual.VisualItem;
 import rulebender.editors.bngl.IBNGLLinkedElement;
 
+/**
+ * This class represents a Molecule when it is selected in the contact map.  
+ * An instance of this object is passed through the ISelectionService to in 
+ * order to give this information to any listening parts.
+ * 
+ * Implements IPropertySource so that the PropertiesView can display this
+ * information.
+ * 
+ * Implements IBNGLLinkedElement so that the text representation can be utilized 
+ * by the BNGLEditor.
+ * @author adammatthewsmith
+ *
+ */
+
 public class MoleculePropertySource implements IPropertySource, IBNGLLinkedElement 
 {
 
+	// Each of these strings defines a property of the selected element.
 	private static final String PROPERTY_NAME = "rulebender.contactmap.properties.molecule";
 	private static final String PROPERTY_EXPRESSION = "rulebender.contactmap.properties.molecule.expression";
 	private static final String PROPERTY_COMPARTMENT = "rulebender.contactmap.properties.molecule.compartment";
 	private static final String PROPERTY_COMPONENTS_PREFIX = "rulebender.contactmap.properties.molecule.component_";
 	
+	// The name of the molecule
 	private String m_name;
+	
+	// The expressino of the molecule
 	private String m_expression;
+	
+	// The containing compartment.
 	private String m_compartment;
 
+	// The components that are in the molecule.
 	private ArrayList<String> m_components;
 	
+	// For the PropertiesVies 
     private IPropertyDescriptor[] m_propertyDescriptors;
 	
+    // The source path for the bngl file.
     private String m_sourcePath;
     
+    /**
+     * Constructor: Takes a visual item and a source path and builds this
+     * object with the contained information.
+     * 
+     * @param item
+     * @param sourcePath
+     */
+	
 	public MoleculePropertySource(VisualItem item, String sourcePath) 
 	{
+		// Set all of the strings by extracting them from the VisualItem.
 		m_name = ((String) item.get("molecule")).trim();
 		m_expression = ((String) item.get("molecule_expression")).trim();
 		m_compartment = "None";
@@ -51,6 +83,9 @@ public class MoleculePropertySource implements IPropertySource, IBNGLLinkedEleme
 		return null;
 	}
 
+	/**
+	 * Returns an array of IPropertyDescriptor objects for the PropertiesView
+	 */
 	@Override
 	public IPropertyDescriptor[] getPropertyDescriptors() 
 	{
@@ -128,6 +163,9 @@ public class MoleculePropertySource implements IPropertySource, IBNGLLinkedEleme
 		return m_propertyDescriptors;
 	}
 
+	/**
+	 * Returns a specific property value given its id.
+	 */
 	@Override
 	public Object getPropertyValue(Object id) 
 	{

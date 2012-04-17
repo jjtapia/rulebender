@@ -30,7 +30,10 @@ public class SimulationProtocol<T extends ISimulationAction>
 		m_simulationActions.add(action);
 	}	
 	
-	//Continue here.  Need to have export/import of text.
-	//is this class necessary?  If I do hard data-binding then
-	//		it might not be. 
+	public int getRepititions()
+	{
+		return m_repetitions;
+	}
+	
+	
 }

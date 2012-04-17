@@ -10,9 +10,24 @@ import prefuse.visual.VisualItem;
 import rulebender.core.prefuse.networkviewer.contactmap.VisualRule;
 import rulebender.editors.bngl.IBNGLLinkedElement;
 
+/**
+ * This class represents a Component when it is selected in the contact map.  
+ * An instance of this object is passed through the ISelectionService to in 
+ * order to give this information to any listening parts.
+ * 
+ * Implements IPropertySource so that the PropertiesView can display this
+ * information.
+ * 
+ * Implements IBNGLLinkedElement so that the text representation can be utilized 
+ * by the BNGLEditor.
+ * @author adammatthewsmith
+ *
+ */
+
 public class ComponentPropertySource implements IPropertySource, IBNGLLinkedElement 
 {
 
+	// Each of these strings defines a property of the selected element.
 	private static final String PROPERTY_NAME = "rulebender.contactmap.properties.component";
 	private static final String PROPERTY_MOLECULE = "rulebender.contactmap.properties.component.molecule";
 	//private static final String PROPERTY_COMPARTMENT = "rulebender.contactmap.properties.component.compartment";
@@ -28,6 +43,14 @@ public class ComponentPropertySource implements IPropertySource, IBNGLLinkedElem
 	
     private IPropertyDescriptor[] m_propertyDescriptors;
     
+    /**
+     * Constructor: Takes a visual item and a source path and builds this
+     * object with the contained information.
+     * 
+     * @param item
+     * @param sourcePath
+     */
+	
 	public ComponentPropertySource(VisualItem item, String sourcePath) 
 	{
 		m_sourcePath = sourcePath;
@@ -44,6 +67,9 @@ public class ComponentPropertySource implements IPropertySource, IBNGLLinkedElem
 		return null;
 	}
 
+	/**
+	 * Returns an array of IPropertyDescriptor objects for the PropertiesView
+	 */
 	@Override
 	public IPropertyDescriptor[] getPropertyDescriptors() 
 	{
@@ -80,6 +106,9 @@ public class ComponentPropertySource implements IPropertySource, IBNGLLinkedElem
             return m_propertyDescriptors;
 	}
 
+	/**
+	 * Returns a specific property value given its id.
+	 */
 	@Override
 	public Object getPropertyValue(Object id) 
 	{
@@ -106,8 +135,27 @@ public class ComponentPropertySource implements IPropertySource, IBNGLLinkedElem
 	}
 
 	@Override
-	public boolean isPropertySet(Object id) {
-		// TODO Auto-generated method stub
+	public boolean isPropertySet(Object id) 
+	{
+		if(id.equals(PROPERTY_NAME) && !m_name.equals(""))
+		{
+			return true;
+		}
+		else if(id.equals(PROPERTY_MOLECULE) && !m_molecule.equals(""))
+		{
+			return true;
+		}
+		else if (id instanceof String && ((String) id).contains(PROPERTY_STATES_PREFIX))
+		{
+			String sid = (String) id;
+			int num = Integer.parseInt(sid.substring(sid.indexOf("_")+1));
+			
+			if(m_states.get(num) != null)
+			{
+				return true;
+			}
+		}
+	
 		return false;
 	}
 

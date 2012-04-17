@@ -2,14 +2,33 @@ package rulebender.contactmap.models;
 
 import java.util.ArrayList;
 
+/**
+ * Molecules are the primary agents in a model. 
+ *
+ */
 public class Molecule
 {
+	// The BNGL statement that represents the Molecule.
 	private String expression;
+	
+	// Just a marker to see if we need to generate 
+	// the expression for this molecule. 
 	private boolean expComplete = false;
+	
+	// A Text Label
 	private String name;
+	
+	// An ArrayList of the components in the molecule.
 	private ArrayList<Component> components;
+
+	// An ArrayList of the compartments that contain this molecule.
 	private ArrayList<String> compartments;
 	
+	
+	/**
+	 * Constructor: Creates the Molecule given its name. 
+	 * @param name_in
+	 */
 	public Molecule(String name_in)
 	{
 		setName(name_in);
@@ -147,6 +166,13 @@ public class Molecule
 		return null;
 	}
 
+	/**
+	 * This is for merging the information from another molecule into 
+	 * this one.  This is useful when the model is being built from through
+	 * the model builder (see {@link CMapModelBuilder}). 
+	 * 
+	 * @param molecule
+	 */
 	public void mergeData(Molecule molecule) 
 	{	
 		// For each new component

@@ -1,14 +1,30 @@
 package rulebender.contactmap.models;
 
+/**
+ * The bond class represents a chemical bond between two molecules in the model.
+ */
 public class Bond 
 {
+	// The integer id of the first molecule. 
 	private int molecule1;
+
+	// The integer id of the first component.
 	private int component1;
+	
+	// The integer id of the first state.
 	private int state1;
+	
+	// The integer id of the second molecule.
 	private int molecule2;
+
+	// The integer id of the second component.
 	private int component2;
+	
+	// The integer id of the second state.
 	private int state2;
-	private boolean CanGenerate;
+	
+	// This is not used at the moment, but might be important for the influence graph.
+	//private boolean CanGenerate;
 	
 	public Bond(int moleIndex1, int compIndex1, int stateIndex1, int moleIndex2, int compIndex2, int stateIndex2)
 	{
@@ -18,16 +34,19 @@ public class Bond
 		setMolecule2(moleIndex2);
 		setComponent2(compIndex2);
 		setState2(stateIndex2);
-		setCanGenerate(false);
+		//setCanGenerate(false);
 	}
 
+	/*
 	public void setCanGenerate(boolean canGenerate) {
 		CanGenerate = canGenerate;
 	}
-
+   */
+	/*
 	public boolean isCanGenerate() {
 		return CanGenerate;
 	}
+	*/
 
 	public void setMolecule1(int molecule1) {
 		this.molecule1 = molecule1;

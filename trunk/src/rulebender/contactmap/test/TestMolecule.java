@@ -6,10 +6,18 @@ import rulebender.contactmap.models.Molecule;
 
 import org.junit.Test;
 
-
+/**
+ * JUnit test suite for testing the Molecule class.
+ * @author adammatthewsmith
+ *
+ */
 public class TestMolecule 
 {
 	
+	/**
+	 * Tests that nothing changes in two molecules that have the 
+	 * same information when merging.
+	 */
 	@Test
 	public void TestMergeSame()
 	{
@@ -64,6 +72,9 @@ public class TestMolecule
 		
 	}
 
+	/**
+	 * Tests that new compartments are successfully merged.
+	 */
 	@Test
 	public void TestMergeNewCompartments()
 	{
@@ -84,6 +95,9 @@ public class TestMolecule
 		assertTrue(mol1.getCompartments().get(1).equals("compartment2"));
 	}
 	
+	/**
+	 * Tests that new components are merged.
+	 */
 	@Test
 	public void TestMergeNewComponents()
 	{
@@ -104,6 +118,9 @@ public class TestMolecule
 		assertTrue(mol1.getComponents().get(1).getName().equals("B"));
 	}
 	
+	/**
+	 * Tests that new states are merged.
+	 */
 	@Test
 	public void TestMergeNewStates()
 	{
@@ -126,6 +143,9 @@ public class TestMolecule
 		assertTrue(mol1.getComponents().get(0).getStates().get(0).getName().equals("Y"));
 	}
 	
+	/**
+	 * Tests that new states can be added to components.
+	 */
 	@Test
 	public void TestAddStateToComponent()
 	{
@@ -139,6 +159,9 @@ public class TestMolecule
 		assertTrue(mol.getComponents().get(0).getStates().get(0).getName().equals("Y"));
 	}
 	
+	/**
+	 * Tests that multiple components can have the same name. 
+	 */
 	@Test
 	public void TestComponentIDAdd3()
 	{

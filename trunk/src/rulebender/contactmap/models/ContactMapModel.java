@@ -20,16 +20,22 @@ import rulebender.contactmap.models.Rule;
 
 
 
-/******************************************
- * 
- * 1. Some bugs found with duplicate components models, ex: A(a,a)->A(a!1, a!1)
+/*------------------------------
+ * TODO
+ * 1. bugs found with duplicate components models, ex: A(a,a)->A(a!1, a!1)?
  * 2. Duplicate component propagation in bonds
  *
  ******************************************/
 
+/**
+ * This is the main model for the ContactMap.  It has a list of Molecules,
+ * Bonds, Rules, and a CompartmentTable for the compartments. It is build 
+ * using the CMapModelBuilder class which uses the builder pattern with 
+ * the BNGASTReader.  
+ */
 public class ContactMapModel
 {
-	
+	// This is the path for the file that is the source of the model.
 	private String m_sourcePath;
 	
 	// ArrayLists to hold the necessary CMap data.

@@ -7,6 +7,13 @@ import org.eclipse.core.commands.IHandlerListener;
 
 import rulebender.core.utility.Console;
 
+/**
+ * This is an incomplete class for closing a console. In Eclipse, 
+ * consoles are attached to Launches (search for Launch Framework in Eclipse help),
+ * but I have not implemented that yet so our consoles don't get the free close button.
+ * @author adammatthewsmith
+ *
+ */
 public class CloseTopConsole implements IHandler {
 
 	public void addHandlerListener(IHandlerListener handlerListener) {

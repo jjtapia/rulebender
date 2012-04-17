@@ -14,6 +14,8 @@ import rulebender.editors.bngl.model.ruledata.RulePatternData;
  * This class needs to construct and return a CMapModel object
  * based on the method calls that it receives from the BNGASTReader.
  * 
+ * Uses Builder Pattern.
+ * 
  *  Need to produce:
   
     ArrayList<Molecule>:
@@ -64,16 +66,24 @@ import rulebender.editors.bngl.model.ruledata.RulePatternData;
  */
 public class CMapModelBuilder implements BNGLModelBuilderInterface 
 {
+	// The model under construction.
 	ContactMapModel m_model;
 	
+	// A quick lookup for molecule ids 
 	HashMap<String, Integer> m_moleculeIDForName;
 	
+	/**
+	 * Constructor initializes data fields.
+	 */
 	public CMapModelBuilder()
 	{
 		m_model = new ContactMapModel(); 
 		m_moleculeIDForName = new HashMap<String, Integer>();
 	}
 
+	/**
+	 * Called when a parameter is found.
+	 */
 	public void parameterFound(String id, String type, String value)
 	{
 		// Ignored for contact map.
@@ -153,17 +163,22 @@ public class CMapModelBuilder implements BNGLModelBuilderInterface
 		// addBondToModel( moleName1,  compName1,  compID1, state1,  moleName2,  compName2,  compID2, state2);
 	}
 	
+	/**
+	 * Private convenience method that adds a bond to the model.
+	 * 
+	 * @param moleName1
+	 * @param compName1
+	 * @param compID1
+	 * @param state1
+	 * @param moleName2
+	 * @param compName2
+	 * @param compID2
+	 * @param state2
+	 * @return
+	 */
 	private int addBondToModel(String moleName1, String compName1, int compID1,
 			String state1, String moleName2, String compName2, int compID2, String state2)
 	{
-		//DEBUG
-		//System.out.println("Adding Bond:" + moleName1 + "(" + compName1 + "~" + state1 +
-		//					")." + moleName2 + "(" + compName2 + "~" + state2 + ")");
-		
-
-		//TODO this is the problem.  All of the state indices are -1.
-		
-		
 		//Need ints for all of these strings
 		int moleIndex1 = m_moleculeIDForName.get(moleName1);
 		int compIndex1 = m_model.getMolecules().get(moleIndex1).getComponentIndex(compName1, compID1);
@@ -187,12 +202,9 @@ public class CMapModelBuilder implements BNGLModelBuilderInterface
 	 * be looked up from the existing data structures.
 	 */
 	public void foundRule(RuleData ruleData) 
-	{
-		System.out.println(ruleData.getExpression());
-		
-		Rule existingRule = m_model.getRuleWithExpression(ruleData.getExpression());// Get the existing rule.
-		
-		System.out.println("Existing == null: " + (existingRule == null? "yes" : "no"));
+	{	
+		// Get the existing rule.
+		Rule existingRule = m_model.getRuleWithExpression(ruleData.getExpression());
 		
 		// If it is a reverse rule
 		if(existingRule != null)
@@ -200,8 +212,6 @@ public class CMapModelBuilder implements BNGLModelBuilderInterface
 			// Get the rule, set it to bidirectional, and set the 2nd rate.
 			existingRule.setBidirection(true);
 			existingRule.setRate2(ruleData.getRate());
-		
-			System.out.println("REVERSE");
 			
 			//Done
 			return;	
@@ -254,7 +264,10 @@ public class CMapModelBuilder implements BNGLModelBuilderInterface
 					moleculePattern.addComponentPattern(mole.getComponentIndex(cd.getComponent(),cd.getUniqueID()),
 													 mole.getComponent(cd.getComponent(), cd.getUniqueID()).getStateIndex(cd.getState()),
 													 0);
-													//cd.getWildCards); TODO
+					
+							//cd.getWildCards); TODO  There can be be 'wildcard' bonds that
+							// may potentially be connected to anything.  Right now I am not
+							// doing anything about those. 
 													
 				} // done adding components to moleculepatterns
 			} // done with the molecule patterns
@@ -295,7 +308,10 @@ public class CMapModelBuilder implements BNGLModelBuilderInterface
 					moleculePattern.addComponentPattern(mole.getComponentIndex(cd.getComponent(),cd.getUniqueID()),
 													 mole.getComponent(cd.getComponent(), cd.getUniqueID()).getStateIndex(cd.getState()),
 													 0);
-													//cd.getWildCards); TODO
+					//cd.getWildCards); TODO  There can be be 'wildcard' bonds that
+					// may potentially be connected to anything.  Right now I am not
+					// doing anything about those. 
+					
 													
 				} // done adding components to moleculepatterns
 			} // done with the molecule patterns
@@ -325,6 +341,9 @@ public class CMapModelBuilder implements BNGLModelBuilderInterface
 		m_model.addRule(rule);
 	}
 
+	
+	// Nothing is done with the observables in the Contact Map
+	
 	public void foundObservable(String observableID, String observableName,
 			String observableType) 
 	{
