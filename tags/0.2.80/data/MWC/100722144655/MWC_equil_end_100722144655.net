@@ -1,0 +1,49 @@
+begin species
+    1 R_0:Protein(Conf~R,b,b)  4.999999999999808e+02
+    2 Free_Ligand:Ligand(c)  0.000000000000000e+00
+    3 Protein(Conf~T,b,b)   5.000000000000192e+02
+    4 Ligand(c!1).Protein(Conf~R,b!1,b)  0.000000000000000e+00
+    5 Ligand(c!1).Ligand(c!2).Protein(Conf~R,b!1,b!2)  0.000000000000000e+00
+    6 Ligand(c!1).Protein(Conf~T,b!1,b)  0.000000000000000e+00
+    7 Ligand(c!1).Ligand(c!2).Protein(Conf~T,b!1,b!2)  0.000000000000000e+00
+end species
+begin rates
+    1 k_RT_transition       1.000000000000000e-01
+    2 k_TR_transition       1.000000000000000e-01
+    3 k_f_R                 1.000000000000000e+00
+    4 k_r_R                 1.000000000000000e+05
+    5 k_f_T                 1.000000000000000e+01
+    6 k_r_T                 1.000000000000000e+05
+    7 R0                    1.000000000000000e+03
+    8 L0                    1.000000000000000e+04
+end rates
+begin reactions
+    1 1 3 k_RT_transition
+    2 1,2 4 2*k_f_R
+    3 3 1 k_TR_transition
+    4 2,4 5 k_f_R
+    5 4 1,2 k_r_R
+    6 2,3 6 2*k_f_T
+    7 5 2,4 2*k_r_R
+    8 2,6 7 k_f_T
+    9 6 2,3 k_r_T
+   10 7 2,6 2*k_r_T
+end reactions
+begin reaction_rates
+    1 k_RT_transition R_0:Protein(Conf~R,b,b)->Protein(Conf~T,b,b)  5.00000000e+01
+    2 k_f_R R_0:Protein(Conf~R,b,b)+Free_Ligand:Ligand(c)->Ligand(c!1).Protein(Conf~R,b!1,b)  0.00000000e+00
+    3 k_TR_transition Protein(Conf~T,b,b)->R_0:Protein(Conf~R,b,b)  5.00000000e+01
+    4 k_f_R Free_Ligand:Ligand(c)+Ligand(c!1).Protein(Conf~R,b!1,b)->Ligand(c!1).Ligand(c!2).Protein(Conf~R,b!1,b!2)  0.00000000e+00
+    5 k_r_R Ligand(c!1).Protein(Conf~R,b!1,b)->R_0:Protein(Conf~R,b,b)+Free_Ligand:Ligand(c)  0.00000000e+00
+    6 k_f_T Free_Ligand:Ligand(c)+Protein(Conf~T,b,b)->Ligand(c!1).Protein(Conf~T,b!1,b)  0.00000000e+00
+    7 k_r_R Ligand(c!1).Ligand(c!2).Protein(Conf~R,b!1,b!2)->Free_Ligand:Ligand(c)+Ligand(c!1).Protein(Conf~R,b!1,b)  0.00000000e+00
+    8 k_f_T Free_Ligand:Ligand(c)+Ligand(c!1).Protein(Conf~T,b!1,b)->Ligand(c!1).Ligand(c!2).Protein(Conf~T,b!1,b!2)  0.00000000e+00
+    9 k_r_T Ligand(c!1).Protein(Conf~T,b!1,b)->Free_Ligand:Ligand(c)+Protein(Conf~T,b,b)  0.00000000e+00
+   10 k_r_T Ligand(c!1).Ligand(c!2).Protein(Conf~T,b!1,b!2)->Free_Ligand:Ligand(c)+Ligand(c!1).Protein(Conf~T,b!1,b)  0.00000000e+00
+end reaction_rates
+begin groups
+    1 BoundLigand 4,2*5,6,2*7
+    2 FreeProtein 1,3
+    3 SingleBound 4,6
+    4 DoubleBound 5,7
+end groups

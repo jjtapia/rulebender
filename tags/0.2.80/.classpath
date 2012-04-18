@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/J2SE-1.5"/>
+	<classpathentry kind="lib" path="lib/com.ibm.icu.jar"/>
+	<classpathentry kind="lib" path="lib/gnujaxp.jar"/>
+	<classpathentry kind="lib" path="lib/itext-2.0.6.jar"/>
+	<classpathentry kind="lib" path="lib/javax.servlet.jar"/>
+	<classpathentry kind="lib" path="lib/jcommon-1.0.12.jar"/>
+	<classpathentry kind="lib" path="lib/jfreechart-1.0.9-experimental.jar"/>
+	<classpathentry kind="lib" path="lib/jfreechart-1.0.9-swt.jar"/>
+	<classpathentry kind="lib" path="lib/jfreechart-1.0.9.jar"/>
+	<classpathentry kind="lib" path="lib/junit.jar"/>
+	<classpathentry kind="lib" path="lib/org.eclipse.core.commands.jar"/>
+	<classpathentry kind="lib" path="lib/org.eclipse.core.contenttype.jar"/>
+	<classpathentry kind="lib" path="lib/org.eclipse.core.jobs.jar"/>
+	<classpathentry kind="lib" path="lib/org.eclipse.core.runtime.compatibility.auth.jar"/>
+	<classpathentry kind="lib" path="lib/org.eclipse.core.runtime.compatibility.registry.jar"/>
+	<classpathentry kind="lib" path="lib/org.eclipse.core.runtime.jar"/>
+	<classpathentry kind="lib" path="lib/org.eclipse.equinox.app.jar"/>
+	<classpathentry kind="lib" path="lib/org.eclipse.equinox.common.jar"/>
+	<classpathentry kind="lib" path="lib/org.eclipse.equinox.preferences.jar"/>
+	<classpathentry kind="lib" path="lib/org.eclipse.equinox.registry.jar"/>
+	<classpathentry kind="lib" path="lib/org.eclipse.jface.jar"/>
+	<classpathentry kind="lib" path="lib/org.eclipse.jface.text.jar"/>
+	<classpathentry kind="lib" path="lib/org.eclipse.osgi.jar"/>
+	<classpathentry kind="lib" path="lib/org.eclipse.osgi.services.jar"/>
+	<classpathentry kind="lib" path="lib/org.eclipse.swt.jar"/>
+	<classpathentry kind="lib" path="lib/org.eclipse.text.jar"/>
+	<classpathentry kind="lib" path="lib/servlet.jar"/>
+	<classpathentry kind="lib" path="lib/swtgraphics2d.jar"/>
+	<classpathentry kind="con" path="SWT_CONTAINER"/>
+	<classpathentry kind="lib" path="lib/prefuse.jar"/>
+	<classpathentry kind="lib" path="lib/swt.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>

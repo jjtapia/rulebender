@@ -1,0 +1,15 @@
+bubbleset
+collinsbubbleset.control
+collinsbubbleset.layout
+collinsbubbleset.lib
+editor
+editor.contactmap
+editor.influencegraph
+j15support.java.awt.geom
+j15support.sun.awt.geom
+networkviewer
+resultviewer.data
+resultviewer.graph
+resultviewer.text
+resultviewer.tree
+resultviewer.ui

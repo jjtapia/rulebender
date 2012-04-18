@@ -1,0 +1,11 @@
+version="0.3.210"
+changes="-Fixed the bug that the BNGResults folder should be outside /Contents/Resources directory on Mac release.
+-Automatically setup BioNetGen path for release version.
+-Added colored nodes when there are possible state changes. 
+-Added click tooltips on the components that show the name of the component and its possible states.
+-Added Template to write a BNGL model.
+-Added * mark in front of file name to show the file is not saved.
+-Automatically name Parameter Scan results.
+-Automatically open new saved file for Save As function.
+-Support double click on the text tab area to create a new BNGL model file.
+-Changed the color scheme for highlighting BNGL file."

@@ -1,0 +1,21 @@
+# Basic BNGL Model Template
+begin model
+
+begin parameters
+end parameters
+
+begin molecule types
+end molecule types
+
+begin seed species
+end  seed species
+
+begin observables
+end observables
+
+begin reaction rules
+end reaction rules
+
+end model
+
+#ACTIONS

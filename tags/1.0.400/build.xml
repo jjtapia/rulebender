@@ -1,0 +1,867 @@
+<?xml version="1.0"?>
+
+<!-- This script is designed to construct the releases for windows (32 and 64 bit), 
+	 linux, and mac.  It will only work as-is on a mac.  You must change the properties
+	 that lead to launch4j (and probably install it) and the correct lib folder to use
+	 this script on other platforms.
+	 -->
+
+
+<project name="RuleBender">
+  
+	<!-- IMPORTANT: These properties should be changed or checked at each release.
+	
+	The version is used in the filenames and should be 
+	changed for each release. -->
+	<property name = "rb.version" value = "1.1.415"/>
+	
+	<!-- This does not necessarily need to match the version number.  It is just the name of the 
+	     directory that contains the project. -->
+	<property name="basedir" value="/Users/mr_smith22586/Documents/workspace/RuleBender-1.1.400/" />
+	
+	<!-- This is the name of the outermost bng file.  This directory name is used when
+	copying the directory to the distribution directories.-->
+	<property name = "bng.foldername" value = "BioNetGen-2.1.7"/>
+		
+	<!-- END IMPORTANT -->
+
+	
+	<property name = "project.name" value = "RuleBender"/>
+	
+	<property name = "dir.build" value = "bin"/>
+	<property name = "dir.src" value = "src"/>
+	<property name = "dir.dist" value = "distribution"/>
+	
+	
+	
+	<!-- These are used for packaging the jars -->
+	<property name = "lib.mac" value = "lib/mac"/>
+	<property name = "lib.win" value = "lib/win"/>
+	<property name = "lib.lin" value = "lib/lin"/>
+	
+	<property name = "dir.dist.mac32" value = "${dir.dist}/mac/mac32"/>
+	<property name = "dir.dist.mac64" value = "${dir.dist}/mac/mac64"/>
+	<property name = "dir.dist.win32" value = "${dir.dist}/win/win32"/>
+	<property name = "dir.dist.win64" value = "${dir.dist}/win/win64"/>
+	<property name = "dir.dist.lin32" value = "${dir.dist}/lin/lin32"/>
+	<property name = "dir.dist.lin64" value = "${dir.dist}/lin/lin64"/>
+	
+	<property name = "dir.dist.res" value = "distribution-resources"/>
+
+		
+	<!-- This property will need to be changed if the code is built 
+	     using this script on any platform other than mac.  -->
+	<property name = "lib.build" value ="${lib.mac}"/>
+	
+	<!-- This part must also be changed for other platforms, and the correct
+		 launch4j executables must be downloaded. -->
+	<property name="launch4j.dir" location="distribution-resources/tools/launch4j-osx" />
+
+	<!-- define the launch4j target -->
+	<taskdef name="launch4j"
+		classpath="${launch4j.dir}/launch4j.jar
+			        :${launch4j.dir}/lib/xstream.jar"
+		classname="net.sf.launch4j.ant.Launch4jTask"
+	     />
+
+	<!-- CLASSPATH -->
+	<path id="classpath.project">
+		<pathelement location="${dir.build}"/>
+	     <pathelement location="${lib.build}/com.ibm.icu.jar" />
+	      <pathelement location="${lib.build}/gnujaxp.jar" />
+	      <pathelement location="${lib.build}/itext-2.0.6.jar" />
+	      <pathelement location="${lib.build}/javax.servlet.jar" />
+	      <pathelement location="${lib.build}/jcommon-1.0.12.jar" />
+	      <pathelement location="${lib.build}/jfreechart-1.0.9-experimental.jar" />
+	      <pathelement location="${lib.build}/jfreechart-1.0.9-swt.jar" />
+	      <pathelement location="${lib.build}/jfreechart-1.0.9.jar" />
+	      <pathelement location="${lib.build}/junit.jar" />
+	      <pathelement location="${lib.build}/org.eclipse.core.commands.jar" />
+	      <pathelement location="${lib.build}/org.eclipse.core.contenttype.jar" />
+	      <pathelement location="${lib.build}/org.eclipse.core.jobs.jar" />
+	      <pathelement location="${lib.build}/org.eclipse.core.runtime.compatibility.auth.jar" />
+	      <pathelement location="${lib.build}/org.eclipse.core.runtime.compatibility.registry.jar" />
+	      <pathelement location="${lib.build}/org.eclipse.core.runtime.jar" />
+	      <pathelement location="${lib.build}/org.eclipse.equinox.app.jar" />
+	      <pathelement location="${lib.build}/org.eclipse.equinox.common.jar" />
+	      <pathelement location="${lib.build}/org.eclipse.equinox.preferences.jar" />
+	      <pathelement location="${lib.build}/org.eclipse.equinox.registry.jar" />
+	      <pathelement location="${lib.build}/org.eclipse.jface.jar" />
+	      <pathelement location="${lib.build}/org.eclipse.jface.text.jar" />
+	      <pathelement location="${lib.build}/org.eclipse.osgi.jar" />
+	      <pathelement location="${lib.build}/org.eclipse.osgi.services.jar" />
+	      <pathelement location="${lib.build}/org.eclipse.swt.jar" />
+	      <pathelement location="${lib.build}/org.eclipse.text.jar" />
+	      <pathelement location="${lib.build}/prefuse.jar" />
+	      <pathelement location="${lib.build}/servlet.jar" />
+	      <pathelement location="${lib.build}/mac64/swt.jar" />
+	      <pathelement location="${lib.build}/swtgraphics2d.jar" />
+	 </path>
+	
+	
+	<!--______________________ Begin the build targets _________________________-->
+
+	<!-- Removes the build directory -->
+	<target name="Build-Clean">
+		<delete dir="${dir.build}"/>
+	</target>
+
+	<!-- Creates the build directory after deleting it -->
+	<target name="Build-Prepare" depends="Build-Clean">
+		<mkdir dir="${dir.build}"/>
+	</target>
+	
+	<!-- Compiles all of the code -->
+	<target name="Build-Compile" depends="Build-Prepare"
+		description="Compiles all source files.">
+	    <javac 	srcdir="${dir.src}" 
+	    		destdir="${dir.build}"
+				debug = "true" 
+	    		debuglevel = "lines,var,source" 
+				source = "1.5"
+	    		executable="/System/Library/Frameworks/JavaVM.framework/Versions/1.5.0/Home/bin/javac">
+		<classpath refid="classpath.project"/> 
+	    </javac>
+	</target>
+	
+	<!--_______________________________________________________________________________-->
+	<!--______________________ Begin the distribution targets _________________________-->
+	<!--_______________________________________________________________________________-->
+	
+	
+		<!-- Cleaners: Delete a directory for a fresh distribution creation. -->
+	
+	<target name="Dist-Clean-All" depends="Dist-Clean-Lin32, Dist-Clean-Lin64, Dist-Clean-Win32, Dist-Clean-Win64, Dist-Clean-Mac32, Dist-Clean-Mac64">
+		<delete dir="${dir.dist}"/>
+	</target>
+	
+	<target name="Dist-Clean-Lin32">
+		<delete dir="${dir.dist.lin64}"/>
+	</target>
+	
+	<target name="Dist-Clean-Lin64">
+			<delete dir="${dir.dist.lin64}"/>
+	</target>
+	
+	<target name="Dist-Clean-Win32">
+		<delete dir="${dir.dist.win32}"/>
+	</target>
+	
+	<target name="Dist-Clean-Win64">
+		<delete dir="${dir.dist.win64}"/>
+	</target>
+	
+	<target name="Dist-Clean-Mac32">
+		<delete dir="${dir.dist.mac32}"/>
+	</target>
+	
+	<target name="Dist-Clean-Mac64">
+			<delete dir="${dir.dist.mac64}"/>
+	</target>
+	
+	
+
+		<!-- Preparers: These are shortcut targets that depend on many worker targets in order to complete a job.
+			1. Deletes the directory to be prepared.
+			2. Create the directory to be prepared including all subdirectories.
+			3. Copy BioNetGen into the directory.
+			4. Package the class files into a jar, and copy the jar into the distribution directory.
+			5. Write the run script into the appropriate directory.
+			6. (Mac only) Write the plist file.
+			7. (Mac only for now) Copy the icon file into the directory.
+		-->
+	
+	<target name="Dist-Prepare-All" depends="Dist-Clean-All, Dist-Prepare-Mac32, Dist-Prepare-Mac64, Dist-Prepare-Lin32, Dist-Prepare-Lin64, Dist-Prepare-Win32, Dist-Prepare-Win64"/>
+	
+	<target name="Dist-Prepare-Mac32" depends="Dist-Clean-Mac32, Dist-CreateDir-Mac32, Dist-CopyBNG-Mac32, Dist-CreateJar-Mac32, Dist-WriteScript-Mac32, Dist-Write-PList32, Dist-CopyMacIcon32"/>
+	
+	<target name="Dist-Prepare-Mac64" depends="Dist-Clean-Mac64, Dist-CreateDir-Mac64, Dist-CopyBNG-Mac64, Dist-CreateJar-Mac64, Dist-WriteScript-Mac64, Dist-Write-PList64, Dist-CopyMacIcon64"/>
+			
+	<target name="Dist-Prepare-Lin32" depends="Dist-Clean-Lin32, Dist-CreateDir-Lin32, Dist-CopyBNG-Lin32, Dist-CreateJar-Lin32, Dist-WriteScript-Lin32"/>
+	
+	<target name="Dist-Prepare-Lin64" depends="Dist-Clean-Lin64, Dist-CreateDir-Lin64, Dist-CopyBNG-Lin64, Dist-CreateJar-Lin64, Dist-WriteScript-Lin64"/>
+		
+	<target name="Dist-Prepare-Win32" depends="Dist-Clean-Win32, Dist-CreateDir-Win32, Dist-CopyBNG-Win32, Dist-CreateJar-Win32, Dist-Launch4j-Win32"/>
+		
+	<target name="Dist-Prepare-Win64" depends="Dist-Clean-Win64, Dist-CreateDir-Win64, Dist-CopyBNG-Win64, Dist-CreateJar-Win64, Dist-Launch4j-Win64"/>	
+		
+		<!-- Directory Creators: Mainly just create the distribution/[lin or mac or win]/RuleBender
+		     folder.  There are a few more directories to create for the mac distribution
+	    	 because we have to make the .app directory with the Resources and MacOS
+	     	 subdirectories. 
+	    -->
+		
+	<target name="Dist-CreateDir-Lin32">
+		<mkdir dir="${dir.dist.lin32}/${project.name}"/>
+	</target>
+	
+	<target name="Dist-CreateDir-Lin64">
+			<mkdir dir="${dir.dist.lin64}/${project.name}"/>
+		</target>
+	
+	<target name="Dist-CreateDir-Win32">
+		<mkdir dir="${dir.dist.win32}/${project.name}"/>
+	</target>
+	
+	<target name="Dist-CreateDir-Win64">
+		<mkdir dir="${dir.dist.win64}/${project.name}"/>
+	</target>
+	
+	<target name="Dist-CreateDir-Mac32">
+		<mkdir dir="${dir.dist.mac32}/${project.name}/${project.name}-${rb.version}.app/Contents"/>
+		<mkdir dir="${dir.dist.mac32}/${project.name}/${project.name}-${rb.version}.app/Contents/Resources"/>
+		<mkdir dir="${dir.dist.mac32}/${project.name}/${project.name}-${rb.version}.app/Contents/MacOS"/>
+	</target>
+	
+
+	<target name="Dist-CreateDir-Mac64">
+		<mkdir dir="${dir.dist.mac64}/${project.name}/${project.name}-${rb.version}.app/Contents"/>
+		<mkdir dir="${dir.dist.mac64}/${project.name}/${project.name}-${rb.version}.app/Contents/Resources"/>
+		<mkdir dir="${dir.dist.mac64}/${project.name}/${project.name}-${rb.version}.app/Contents/MacOS"/>
+	</target>
+	
+	
+	
+		<!-- Copies the mac icon into the distribution directory. -->
+	<target name="Dist-CopyMacIcon32" depends="Dist-CreateDir-Mac32">
+		<copy file="${dir.dist.res}/mac/appIcon.icns" tofile="${dir.dist.mac32}/${project.name}/${project.name}-${rb.version}.app/Contents/Resources/appIcon.icns"/>
+	</target>
+	
+	<!-- Copies the mac icon into the distribution directory. -->
+	<target name="Dist-CopyMacIcon64" depends="Dist-CreateDir-Mac32">
+		<copy file="${dir.dist.res}/mac/appIcon.icns" tofile="${dir.dist.mac64}/${project.name}/${project.name}-${rb.version}.app/Contents/Resources/appIcon.icns"/>
+	</target>
+	
+	
+		<!-- Write the plist.  This is only for the mac distribution.  It prints the 
+		     plist xml file that goes inside of the mac app.  This is necessary for telling
+		     the app which file to execute and including copyright and author info.
+		     The '&lt;' and '&gt;' character sequences are because the ant xml parser
+		     thinks that you are trying to include program tags instead of printing 
+		     literal '<' and '>' to the file. 
+		-->
+	<target name="Dist-Write-PList32" depends="Dist-CreateDir-Mac32">
+		<delete dir="${dir.dist.mac32}/${project.name}/${project.name}-${rb.version}.app/Contents/info.plist"/>
+		
+		<echo file = "${dir.dist.mac32}/${project.name}/${project.name}-${rb.version}.app/Contents/info.plist">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+			&lt;!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd"&gt;
+			&lt;plist version="1.0"&gt;
+			&lt;dict&gt;
+				&lt;key&gt;CFBundleDevelopmentRegion&lt;/key&gt;
+				&lt;string&gt;English&lt;/string&gt;
+				&lt;key&gt;CFBundleDisplayName&lt;/key&gt;
+				&lt;string&gt;BNGEditor&lt;/string&gt;
+				&lt;key&gt;CFBundleExecutable&lt;/key&gt;
+				&lt;string&gt;run&lt;/string&gt;
+				&lt;key&gt;CFBundleGetInfoString&lt;/key&gt;
+				&lt;string&gt;${project.name}-mac-${rb.version} Copyright 2010 Adam Smith, Wen Xu, Yao Sun&lt;/string&gt;
+				&lt;key&gt;CFBundleIconFile&lt;/key&gt;
+				&lt;string&gt;appIcon.icns&lt;/string&gt;
+				&lt;key&gt;CFBundleInfoDictionaryVersion&lt;/key&gt;
+				&lt;string&gt;6.0&lt;/string&gt;
+				&lt;key&gt;CFBundleName&lt;/key&gt;
+				&lt;string&gt;${project.name}-mac-${rb.version}&lt;/string&gt;
+				&lt;key&gt;CFBundlePackageType&lt;/key&gt;
+				&lt;string&gt;APPL&lt;/string&gt;
+				&lt;key&gt;CFBundleShortVersionString&lt;/key&gt;
+				&lt;string&gt;1.0&lt;/string&gt;
+				&lt;key&gt;CFBundleSignature&lt;/key&gt;
+				&lt;string&gt;????&lt;/string&gt;
+				&lt;key&gt;LSEnvironment&lt;/key&gt;
+				&lt;dict/&gt;
+				&lt;key&gt;LSHasLocalizedDisplayName&lt;/key&gt;
+				&lt;false/&gt;
+				&lt;key&gt;LSMinimumSystemVersion&lt;/key&gt;
+				&lt;string&gt;10.4&lt;/string&gt;
+				&lt;key&gt;LSUIElement&lt;/key&gt;
+				&lt;false/&gt;
+				&lt;key&gt;NSAppleScriptEnabled&lt;/key&gt;
+				&lt;false/&gt;
+				&lt;key&gt;NSHumanReadableCopyright&lt;/key&gt;
+				&lt;string&gt;${project.name}-mac-${rb.version} Copyright 2010 Adam Smith, Wen Xu, Yao Sun&lt;/string&gt;
+				&lt;key&gt;NSMainNibFile&lt;/key&gt;
+				&lt;string&gt;MainMenu&lt;/string&gt;
+				&lt;key&gt;NSPrincipalClass&lt;/key&gt;
+				&lt;string&gt;NSApplication&lt;/string&gt;
+			&lt;/dict&gt;
+			&lt;/plist&gt;
+		</echo>
+	</target>
+	
+	<target name="Dist-Write-PList64" depends="Dist-CreateDir-Mac64">
+			<delete dir="${dir.dist.mac64}/${project.name}/${project.name}-${rb.version}.app/Contents/info.plist"/>
+			
+			<echo file = "${dir.dist.mac64}/${project.name}/${project.name}-${rb.version}.app/Contents/info.plist">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+				&lt;!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd"&gt;
+				&lt;plist version="1.0"&gt;
+				&lt;dict&gt;
+					&lt;key&gt;CFBundleDevelopmentRegion&lt;/key&gt;
+					&lt;string&gt;English&lt;/string&gt;
+					&lt;key&gt;CFBundleDisplayName&lt;/key&gt;
+					&lt;string&gt;BNGEditor&lt;/string&gt;
+					&lt;key&gt;CFBundleExecutable&lt;/key&gt;
+					&lt;string&gt;run&lt;/string&gt;
+					&lt;key&gt;CFBundleGetInfoString&lt;/key&gt;
+					&lt;string&gt;${project.name}-mac-${rb.version} Copyright 2010 Adam Smith, Wen Xu, Yao Sun&lt;/string&gt;
+					&lt;key&gt;CFBundleIconFile&lt;/key&gt;
+					&lt;string&gt;appIcon.icns&lt;/string&gt;
+					&lt;key&gt;CFBundleInfoDictionaryVersion&lt;/key&gt;
+					&lt;string&gt;6.0&lt;/string&gt;
+					&lt;key&gt;CFBundleName&lt;/key&gt;
+					&lt;string&gt;${project.name}-mac-${rb.version}&lt;/string&gt;
+					&lt;key&gt;CFBundlePackageType&lt;/key&gt;
+					&lt;string&gt;APPL&lt;/string&gt;
+					&lt;key&gt;CFBundleShortVersionString&lt;/key&gt;
+					&lt;string&gt;1.0&lt;/string&gt;
+					&lt;key&gt;CFBundleSignature&lt;/key&gt;
+					&lt;string&gt;????&lt;/string&gt;
+					&lt;key&gt;LSEnvironment&lt;/key&gt;
+					&lt;dict/&gt;
+					&lt;key&gt;LSHasLocalizedDisplayName&lt;/key&gt;
+					&lt;false/&gt;
+					&lt;key&gt;LSMinimumSystemVersion&lt;/key&gt;
+					&lt;string&gt;10.4&lt;/string&gt;
+					&lt;key&gt;LSUIElement&lt;/key&gt;
+					&lt;false/&gt;
+					&lt;key&gt;NSAppleScriptEnabled&lt;/key&gt;
+					&lt;false/&gt;
+					&lt;key&gt;NSHumanReadableCopyright&lt;/key&gt;
+					&lt;string&gt;${project.name}-mac-${rb.version} Copyright 2010 Adam Smith, Wen Xu, Yao Sun&lt;/string&gt;
+					&lt;key&gt;NSMainNibFile&lt;/key&gt;
+					&lt;string&gt;MainMenu&lt;/string&gt;
+					&lt;key&gt;NSPrincipalClass&lt;/key&gt;
+					&lt;string&gt;NSApplication&lt;/string&gt;
+				&lt;/dict&gt;
+				&lt;/plist&gt;
+			</echo>
+	</target>
+	
+	<!-- BNG Copiers: Copy bng to the distribution directory. This is the same
+		 for all distributions. It is put inside the outermost file (probably
+		 called RuleBender) 
+	-->
+	
+	<!-- svn files are excluded automatically -->
+	<target name = "Dist-CopyBNG-Win32" depends="Dist-CreateDir-Win32">
+		<copy todir="${dir.dist.win32}/${project.name}/">
+			<fileset dir="${dir.dist.res}/BioNetGen/win32/">
+			</fileset>
+		</copy>
+	</target>
+			
+	<target name = "Dist-CopyBNG-Win64" depends="Dist-CreateDir-Win64">
+		<copy todir="${dir.dist.win64}/${project.name}/">
+			<fileset dir="${dir.dist.res}/BioNetGen/win64/"/>
+		</copy>
+	</target>
+			
+	<target name = "Dist-CopyBNG-Lin32" depends="Dist-CreateDir-Lin32">
+		<copy todir="${dir.dist.lin32}/${project.name}/">
+			<fileset dir="${dir.dist.res}/BioNetGen/lin32/"/>
+		</copy>
+		
+		<chmod 	file="${dir.dist.lin32}/${project.name}/${bng.foldername}/bin/run_network" 
+				perm="775"/>
+	</target>
+	
+	<target name = "Dist-CopyBNG-Lin64" depends="Dist-CreateDir-Lin64">
+			<copy todir="${dir.dist.lin64}/${project.name}/">
+				<fileset dir="${dir.dist.res}/BioNetGen/lin64/"/>
+			</copy>
+			
+			<chmod 	file="${dir.dist.lin64}/${project.name}/${bng.foldername}/bin/run_network" 
+					perm="775"/>
+	</target>
+
+	
+	<target name = "Dist-CopyBNG-Mac32" depends="Dist-CreateDir-Mac32">
+		<copy todir="${dir.dist.mac32}/${project.name}/">
+			<fileset dir="${dir.dist.res}/BioNetGen/mac32/"/>
+		</copy>
+
+		<chmod 	file="${dir.dist.mac32}/${project.name}/${bng.foldername}/bin/run_network" 
+				perm="775"/>
+		
+		<chmod 	file="${dir.dist.mac32}/${project.name}/${bng.foldername}/bin/NFsim_i386-darwin" 
+				perm="775"/>
+				
+		<chmod 	file="${dir.dist.mac32}/${project.name}/${bng.foldername}/bin/NFsim_intel_OSX10.5" 
+				perm="775"/>
+		
+		<chmod 	file="${dir.dist.mac32}/${project.name}/${bng.foldername}/Perl2/BNG2.pl" 
+				perm="775"/>
+			
+		<chmod 	file="${dir.dist.mac32}/${project.name}/${bng.foldername}/Perl2/scan_var.pl" 
+				perm="775"/>
+		
+		<chmod 	file="${dir.dist.mac32}/${project.name}/${bng.foldername}/Perl2/verify.pl" 
+				perm="775"/>
+		
+		<chmod 	file="${dir.dist.mac32}/${project.name}/${bng.foldername}/Perl2/MacroBNG2.pl" 
+				perm="775"/>
+	</target>
+
+	<target name = "Dist-CopyBNG-Mac64" depends="Dist-CreateDir-Mac64">
+			<copy todir="${dir.dist.mac64}/${project.name}/">
+				<fileset dir="${dir.dist.res}/BioNetGen/mac64/"/>
+			</copy>
+
+			<chmod 	file="${dir.dist.mac64}/${project.name}/${bng.foldername}/bin/run_network" 
+					perm="775"/>
+			
+			<chmod 	file="${dir.dist.mac64}/${project.name}/${bng.foldername}/bin/NFsim_i386-darwin" 
+					perm="775"/>
+					
+			<chmod 	file="${dir.dist.mac64}/${project.name}/${bng.foldername}/bin/NFsim_intel_OSX10.5" 
+					perm="775"/>
+			
+			<chmod 	file="${dir.dist.mac64}/${project.name}/${bng.foldername}/Perl2/BNG2.pl" 
+					perm="775"/>
+				
+			<chmod 	file="${dir.dist.mac64}/${project.name}/${bng.foldername}/Perl2/scan_var.pl" 
+					perm="775"/>
+			
+			<chmod 	file="${dir.dist.mac64}/${project.name}/${bng.foldername}/Perl2/verify.pl" 
+					perm="775"/>
+			
+			<chmod 	file="${dir.dist.mac64}/${project.name}/${bng.foldername}/Perl2/MacroBNG2.pl" 
+					perm="775"/>
+		</target>
+
+	
+		<!-- Script Writing Targets: Writes out the script that launches the
+			 jar file.  Each os has one.  For linux and windows it just needs 
+			 to launch the vm with more memory.  OSX forces 32 bit mode and
+			 also uses the -XstartOnFirstThread flag. The odd whitespace here
+			 is so that the scripts themselves look good.  All characters in 
+			 the echo tag are printed, including whitespace.
+			 
+			 The chmod task is used on the mac script so that full permissions
+			 are set so that anyone can execute the script.
+		-->
+			
+	<!-- The windows scriprs are no longer used since launch4j obviates the need -->
+	<target name = "Dist-WriteScript-Win32" depends="Dist-CreateDir-Win32">
+		<delete dir="${dir.dist.win32}/${project.name}/run.bat"/>
+
+		<echo file="${dir.dist.win32}/${project.name}/run.bat">
+java -cp . -Xmx512m -jar "%~dp0/${project.name}-${rb.version}-win32.jar"
+		</echo>
+	</target>
+	
+	<target name = "Dist-WriteScript-Win64" depends="Dist-CreateDir-Win64">
+		<delete dir="${dir.dist.win64}/${project.name}/run.bat"/>
+	
+		<echo file="${dir.dist.win64}/${project.name}/run.bat">
+			java -cp . -Xmx512m -jar "%~dp0/${project.name}-${rb.version}-win64.jar"
+		</echo>
+	</target>
+	
+	<target name = "Dist-WriteScript-Mac32" depends="Dist-CreateDir-Mac32">
+		<delete dir="${dir.dist.mac32}/${project.name}/${project.name}-${rb.version}.app/Contents/MacOS/run"/>
+		
+		<echo file="${dir.dist.mac32}/${project.name}/${project.name}-${rb.version}.app/Contents/MacOS/run">#!/bin/sh
+		
+DIR=`dirname "$0"`
+			
+cd "`dirname "$0"`"
+			
+java -cp . -Xmx512m -XstartOnFirstThread -jar "$${DIR}/${project.name}-${rb.version}-mac32.jar"
+		
+		</echo>
+		
+		<chmod 	file="${dir.dist.mac32}/${project.name}/${project.name}-${rb.version}.app/Contents/MacOS/run"
+				perm="755"/>
+	</target>
+	
+	<target name = "Dist-WriteScript-Mac64" depends="Dist-CreateDir-Mac64">
+			<delete dir="${dir.dist.mac64}/${project.name}/${project.name}-${rb.version}.app/Contents/MacOS/run"/>
+			
+			<echo file="${dir.dist.mac64}/${project.name}/${project.name}-${rb.version}.app/Contents/MacOS/run">#!/bin/sh
+			
+	DIR=`dirname "$0"`
+				
+	cd "`dirname "$0"`"
+				
+	java -cp . -Xmx512m -XstartOnFirstThread -jar "$${DIR}/${project.name}-${rb.version}-mac64.jar"
+			
+			</echo>
+			
+			<chmod 	file="${dir.dist.mac64}/${project.name}/${project.name}-${rb.version}.app/Contents/MacOS/run"
+					perm="755"/>
+		</target>
+		
+	<target name="Dist-WriteScript-Lin32" depends="Dist-CreateDir-Lin32">
+		<delete dir="${dir.dist.lin32}/${project.name}/run.sh"/>	
+		
+		<echo file="${dir.dist.lin32}/${project.name}/run.sh">#!/bin/sh
+
+java -cp . -Xmx512m -jar ${project.name}-${rb.version}-lin32.jar
+		</echo>
+		
+		<chmod 	file="${dir.dist.lin32}/${project.name}/run.sh"
+						perm="755"/>
+	</target>
+	
+	<target name="Dist-WriteScript-Lin64" depends="Dist-CreateDir-Lin64">
+			<delete dir="${dir.dist.lin64}/${project.name}/run.sh"/>	
+			
+			<echo file="${dir.dist.lin64}/${project.name}/run.sh">#!/bin/sh
+
+	java -cp . -Xmx512m -jar ${project.name}-${rb.version}-lin64.jar
+			</echo>
+			
+			<chmod 	file="${dir.dist.lin64}/${project.name}/run.sh"
+							perm="755"/>
+		</target>
+
+	
+  		<!-- Jar-ers: Creates the executable jar file -->	
+  	<target name="Dist-CreateJar-Mac32" depends="Build-Compile, Dist-CreateDir-Mac32">
+  		<delete dir="${dir.dist.mac32}/${project.name}/${project.name}.app/Contents/MacOS/${project.name}-${rb.version}-mac32.jar"/>
+  	
+    	<jar destfile="${dir.dist.mac32}/${project.name}/${project.name}-${rb.version}.app/Contents/MacOS/${project.name}-${rb.version}-mac32.jar">
+      		<zipfileset dir="bin" prefix="" />
+		    	<zipfileset excludes="META-INF/**/*" src="${lib.mac}/com.ibm.icu.jar" />
+		        <zipfileset excludes="META-INF/**/*" src="${lib.mac}/gnujaxp.jar" />
+		        <zipfileset excludes="META-INF/**/*" src="${lib.mac}/itext-2.0.6.jar" />
+		        <zipfileset excludes="META-INF/**/*" src="${lib.mac}/javax.servlet.jar" />
+		        <zipfileset excludes="META-INF/**/*" src="${lib.mac}/jcommon-1.0.12.jar" />
+		        <zipfileset excludes="META-INF/**/*" src="${lib.mac}/jfreechart-1.0.9-experimental.jar" />
+		        <zipfileset excludes="META-INF/**/*" src="${lib.mac}/jfreechart-1.0.9-swt.jar" />
+		        <zipfileset excludes="META-INF/**/*" src="${lib.mac}/jfreechart-1.0.9.jar" />
+		        <zipfileset excludes="META-INF/**/*" src="${lib.mac}/junit.jar" />
+		        <zipfileset excludes="META-INF/**/*" src="${lib.mac}/org.eclipse.core.commands.jar" />
+		        <zipfileset excludes="META-INF/**/*" src="${lib.mac}/org.eclipse.core.contenttype.jar" />
+		        <zipfileset excludes="META-INF/**/*" src="${lib.mac}/org.eclipse.core.jobs.jar" />
+		        <zipfileset excludes="META-INF/**/*" src="${lib.mac}/org.eclipse.core.runtime.compatibility.auth.jar" />
+		        <zipfileset excludes="META-INF/**/*" src="${lib.mac}/org.eclipse.core.runtime.compatibility.registry.jar" />
+		        <zipfileset excludes="META-INF/**/*" src="${lib.mac}/org.eclipse.core.runtime.jar" />
+		        <zipfileset excludes="META-INF/**/*" src="${lib.mac}/org.eclipse.equinox.app.jar" />
+		        <zipfileset excludes="META-INF/**/*" src="${lib.mac}/org.eclipse.equinox.common.jar" />
+		        <zipfileset excludes="META-INF/**/*" src="${lib.mac}/org.eclipse.equinox.preferences.jar" />
+		        <zipfileset excludes="META-INF/**/*" src="${lib.mac}/org.eclipse.equinox.registry.jar" />
+		        <zipfileset excludes="META-INF/**/*" src="${lib.mac}/org.eclipse.jface.jar" />
+		        <zipfileset excludes="META-INF/**/*" src="${lib.mac}/org.eclipse.jface.text.jar" />
+		        <zipfileset excludes="META-INF/**/*" src="${lib.mac}/org.eclipse.osgi.jar" />
+		        <zipfileset excludes="META-INF/**/*" src="${lib.mac}/org.eclipse.osgi.services.jar" />
+		        <zipfileset excludes="META-INF/**/*" src="${lib.mac}/org.eclipse.swt.jar" />
+		        <zipfileset excludes="META-INF/**/*" src="${lib.mac}/org.eclipse.text.jar" />
+		        <zipfileset excludes="META-INF/**/*" src="${lib.mac}/prefuse.jar" />
+		        <zipfileset excludes="META-INF/**/*" src="${lib.mac}/servlet.jar" />
+		        <zipfileset excludes="META-INF/**/*" src="${lib.mac}/mac32/swt.jar" />
+		        <zipfileset excludes="META-INF/**/*" src="${lib.mac}/swtgraphics2d.jar" />  
+    		<manifest>
+				<attribute name="Main-Class" value="editor.BNGEditor" />
+      		</manifest>
+    	</jar>
+  	</target>
+
+	<target name="Dist-CreateJar-Mac64" depends="Build-Compile, Dist-CreateDir-Mac64">
+	  		<delete dir="${dir.dist.mac64}/${project.name}/${project.name}.app/Contents/MacOS/${project.name}-${rb.version}-mac64.jar"/>
+	  	
+	    	<jar destfile="${dir.dist.mac64}/${project.name}/${project.name}-${rb.version}.app/Contents/MacOS/${project.name}-${rb.version}-mac64.jar">
+	      		<zipfileset dir="bin" prefix="" />
+			    	<zipfileset excludes="META-INF/**/*" src="${lib.mac}/com.ibm.icu.jar" />
+			        <zipfileset excludes="META-INF/**/*" src="${lib.mac}/gnujaxp.jar" />
+			        <zipfileset excludes="META-INF/**/*" src="${lib.mac}/itext-2.0.6.jar" />
+			        <zipfileset excludes="META-INF/**/*" src="${lib.mac}/javax.servlet.jar" />
+			        <zipfileset excludes="META-INF/**/*" src="${lib.mac}/jcommon-1.0.12.jar" />
+			        <zipfileset excludes="META-INF/**/*" src="${lib.mac}/jfreechart-1.0.9-experimental.jar" />
+			        <zipfileset excludes="META-INF/**/*" src="${lib.mac}/jfreechart-1.0.9-swt.jar" />
+			        <zipfileset excludes="META-INF/**/*" src="${lib.mac}/jfreechart-1.0.9.jar" />
+			        <zipfileset excludes="META-INF/**/*" src="${lib.mac}/junit.jar" />
+			        <zipfileset excludes="META-INF/**/*" src="${lib.mac}/org.eclipse.core.commands.jar" />
+			        <zipfileset excludes="META-INF/**/*" src="${lib.mac}/org.eclipse.core.contenttype.jar" />
+			        <zipfileset excludes="META-INF/**/*" src="${lib.mac}/org.eclipse.core.jobs.jar" />
+			        <zipfileset excludes="META-INF/**/*" src="${lib.mac}/org.eclipse.core.runtime.compatibility.auth.jar" />
+			        <zipfileset excludes="META-INF/**/*" src="${lib.mac}/org.eclipse.core.runtime.compatibility.registry.jar" />
+			        <zipfileset excludes="META-INF/**/*" src="${lib.mac}/org.eclipse.core.runtime.jar" />
+			        <zipfileset excludes="META-INF/**/*" src="${lib.mac}/org.eclipse.equinox.app.jar" />
+			        <zipfileset excludes="META-INF/**/*" src="${lib.mac}/org.eclipse.equinox.common.jar" />
+			        <zipfileset excludes="META-INF/**/*" src="${lib.mac}/org.eclipse.equinox.preferences.jar" />
+			        <zipfileset excludes="META-INF/**/*" src="${lib.mac}/org.eclipse.equinox.registry.jar" />
+			        <zipfileset excludes="META-INF/**/*" src="${lib.mac}/org.eclipse.jface.jar" />
+			        <zipfileset excludes="META-INF/**/*" src="${lib.mac}/org.eclipse.jface.text.jar" />
+			        <zipfileset excludes="META-INF/**/*" src="${lib.mac}/org.eclipse.osgi.jar" />
+			        <zipfileset excludes="META-INF/**/*" src="${lib.mac}/org.eclipse.osgi.services.jar" />
+			        <zipfileset excludes="META-INF/**/*" src="${lib.mac}/org.eclipse.swt.jar" />
+			        <zipfileset excludes="META-INF/**/*" src="${lib.mac}/org.eclipse.text.jar" />
+			        <zipfileset excludes="META-INF/**/*" src="${lib.mac}/prefuse.jar" />
+			        <zipfileset excludes="META-INF/**/*" src="${lib.mac}/servlet.jar" />
+			        <zipfileset excludes="META-INF/**/*" src="${lib.mac}/mac64/swt.jar" />
+			        <zipfileset excludes="META-INF/**/*" src="${lib.mac}/swtgraphics2d.jar" />  
+	    		<manifest>
+					<attribute name="Main-Class" value="editor.BNGEditor" />
+	      		</manifest>
+	    	</jar>
+  	</target>
+
+	<target name="Dist-CreateJar-Win32" depends="Build-Compile, Dist-CreateDir-Win32">
+		<delete dir="${dir.dist.win32}/${project.name}/${project.name}-${rb.version}-win32.jar"/>
+		
+	    <jar destfile="${dir.dist.win32}/${project.name}/${project.name}-${rb.version}-win32.jar">
+	    	<zipfileset dir="bin" prefix="" />
+	      	<zipfileset excludes="META-INF/**/*" src="${lib.win}/com.ibm.icu.jar" />
+	      	<zipfileset excludes="META-INF/**/*" src="${lib.win}/gnujaxp.jar" />
+	      	<zipfileset excludes="META-INF/**/*" src="${lib.win}/itext-2.0.6.jar" />
+	      	<zipfileset excludes="META-INF/**/*" src="${lib.win}/javax.servlet.jar" />
+	      	<zipfileset excludes="META-INF/**/*" src="${lib.win}/jcommon-1.0.12.jar" />
+	      	<zipfileset excludes="META-INF/**/*" src="${lib.win}/jfreechart-1.0.9-experimental.jar" />
+	      	<zipfileset excludes="META-INF/**/*" src="${lib.win}/jfreechart-1.0.9-swt.jar" />
+	      	<zipfileset excludes="META-INF/**/*" src="${lib.win}/jfreechart-1.0.9.jar" />
+	      	<zipfileset excludes="META-INF/**/*" src="${lib.win}/junit.jar" />
+	      	<zipfileset excludes="META-INF/**/*" src="${lib.win}/org.eclipse.core.commands.jar" />
+	      	<zipfileset excludes="META-INF/**/*" src="${lib.win}/org.eclipse.core.contenttype.jar" />
+	      	<zipfileset excludes="META-INF/**/*" src="${lib.win}/org.eclipse.core.jobs.jar" />
+	      	<zipfileset excludes="META-INF/**/*" src="${lib.win}/org.eclipse.core.runtime.compatibility.auth.jar" />
+	      	<zipfileset excludes="META-INF/**/*" src="${lib.win}/org.eclipse.core.runtime.compatibility.registry.jar" />
+	      	<zipfileset excludes="META-INF/**/*" src="${lib.win}/org.eclipse.core.runtime.jar" />
+	      	<zipfileset excludes="META-INF/**/*" src="${lib.win}/org.eclipse.equinox.app.jar" />
+	      	<zipfileset excludes="META-INF/**/*" src="${lib.win}/org.eclipse.equinox.common.jar" />
+	      	<zipfileset excludes="META-INF/**/*" src="${lib.win}/org.eclipse.equinox.preferences.jar" />
+	      	<zipfileset excludes="META-INF/**/*" src="${lib.win}/org.eclipse.equinox.registry.jar" />
+	      	<zipfileset excludes="META-INF/**/*" src="${lib.win}/org.eclipse.jface.jar" />
+	      	<zipfileset excludes="META-INF/**/*" src="${lib.win}/org.eclipse.jface.text.jar" />
+	      	<zipfileset excludes="META-INF/**/*" src="${lib.win}/org.eclipse.osgi.jar" />
+	      	<zipfileset excludes="META-INF/**/*" src="${lib.win}/org.eclipse.osgi.services.jar" />
+	      	<zipfileset excludes="META-INF/**/*" src="${lib.win}/org.eclipse.swt.jar" />
+	      	<zipfileset excludes="META-INF/**/*" src="${lib.win}/org.eclipse.text.jar" />
+	      	<zipfileset excludes="META-INF/**/*" src="${lib.win}/prefuse.jar" />
+	      	<zipfileset excludes="META-INF/**/*" src="${lib.win}/servlet.jar" />
+	   	  	<zipfileset excludes="META-INF/**/*" src="${lib.win}/swtgraphics2d.jar" />
+	      	<zipfileset excludes="META-INF/**/*" src="${lib.win}/32bit/swt.jar" /> 
+	      
+	    	<manifest>
+				<attribute name="Main-Class" value="editor.BNGEditor" />
+	      </manifest>
+		</jar>
+	</target>
+	
+	<target name="Dist-CreateJar-Win64" depends="Build-Compile, Dist-CreateDir-Win64">
+			
+		<delete dir="${dir.dist.win64}/${project.name}/${project.name}-${rb.version}-win64.jar"/>
+			
+		<jar destfile="${dir.dist.win64}/${project.name}/${project.name}-${rb.version}-win64.jar">
+			<zipfileset dir="bin" prefix="" />
+			<zipfileset excludes="META-INF/**/*" src="${lib.win}/com.ibm.icu.jar" />
+			<zipfileset excludes="META-INF/**/*" src="${lib.win}/gnujaxp.jar" />
+			<zipfileset excludes="META-INF/**/*" src="${lib.win}/itext-2.0.6.jar" />
+			<zipfileset excludes="META-INF/**/*" src="${lib.win}/javax.servlet.jar" />
+			<zipfileset excludes="META-INF/**/*" src="${lib.win}/jcommon-1.0.12.jar" />
+			<zipfileset excludes="META-INF/**/*" src="${lib.win}/jfreechart-1.0.9-experimental.jar" />
+			<zipfileset excludes="META-INF/**/*" src="${lib.win}/jfreechart-1.0.9-swt.jar" />
+			<zipfileset excludes="META-INF/**/*" src="${lib.win}/jfreechart-1.0.9.jar" />
+			<zipfileset excludes="META-INF/**/*" src="${lib.win}/junit.jar" />
+			<zipfileset excludes="META-INF/**/*" src="${lib.win}/org.eclipse.core.commands.jar" />
+			<zipfileset excludes="META-INF/**/*" src="${lib.win}/org.eclipse.core.contenttype.jar" />
+			<zipfileset excludes="META-INF/**/*" src="${lib.win}/org.eclipse.core.jobs.jar" />
+			<zipfileset excludes="META-INF/**/*" src="${lib.win}/org.eclipse.core.runtime.compatibility.auth.jar" />
+			<zipfileset excludes="META-INF/**/*" src="${lib.win}/org.eclipse.core.runtime.compatibility.registry.jar" /> 
+			<zipfileset excludes="META-INF/**/*" src="${lib.win}/org.eclipse.core.runtime.jar" />
+			<zipfileset excludes="META-INF/**/*" src="${lib.win}/org.eclipse.equinox.app.jar" />
+			<zipfileset excludes="META-INF/**/*" src="${lib.win}/org.eclipse.equinox.common.jar" />
+			<zipfileset excludes="META-INF/**/*" src="${lib.win}/org.eclipse.equinox.preferences.jar" />
+			<zipfileset excludes="META-INF/**/*" src="${lib.win}/org.eclipse.equinox.registry.jar" />
+			<zipfileset excludes="META-INF/**/*" src="${lib.win}/org.eclipse.jface.jar" />
+			<zipfileset excludes="META-INF/**/*" src="${lib.win}/org.eclipse.jface.text.jar" />
+			<zipfileset excludes="META-INF/**/*" src="${lib.win}/org.eclipse.osgi.jar" />
+			<zipfileset excludes="META-INF/**/*" src="${lib.win}/org.eclipse.osgi.services.jar" />
+			<zipfileset excludes="META-INF/**/*" src="${lib.win}/org.eclipse.swt.jar" />
+			<zipfileset excludes="META-INF/**/*" src="${lib.win}/org.eclipse.text.jar" />
+			<zipfileset excludes="META-INF/**/*" src="${lib.win}/prefuse.jar" />
+			<zipfileset excludes="META-INF/**/*" src="${lib.win}/servlet.jar" />
+			<zipfileset excludes="META-INF/**/*" src="${lib.win}/swtgraphics2d.jar" />
+			<zipfileset excludes="META-INF/**/*" src="${lib.win}/64bit/swt.jar" />
+		      
+			<manifest>
+				<attribute name="Main-Class" value="editor.BNGEditor" />
+		    </manifest>
+		</jar>
+	</target>
+	
+	
+	<target name="Dist-CreateJar-Lin32" depends="Build-Compile, Dist-CreateDir-Lin32">	    
+	  	<delete dir="${dir.dist.lin32}/${project.name}/${project.name}-${rb.version}-lin32.jar"/>
+		
+		<jar destfile="${dir.dist.lin32}/${project.name}/${project.name}-${rb.version}-lin32.jar">
+			<zipfileset dir="bin" prefix="" />
+		    <zipfileset excludes="META-INF/**/*" src="${lib.lin}/com.ibm.icu.jar" />
+		    <zipfileset excludes="META-INF/**/*" src="${lib.lin}/gnujaxp.jar" />
+		    <zipfileset excludes="META-INF/**/*" src="${lib.lin}/itext-2.0.6.jar" />
+		    <zipfileset excludes="META-INF/**/*" src="${lib.lin}/javax.servlet.jar" />
+		    <zipfileset excludes="META-INF/**/*" src="${lib.lin}/jcommon-1.0.12.jar" />
+		    <zipfileset excludes="META-INF/**/*" src="${lib.lin}/jfreechart-1.0.9-experimental.jar" />
+		    <zipfileset excludes="META-INF/**/*" src="${lib.lin}/jfreechart-1.0.9-swt.jar" />
+		    <zipfileset excludes="META-INF/**/*" src="${lib.lin}/jfreechart-1.0.9.jar" />
+		    <zipfileset excludes="META-INF/**/*" src="${lib.lin}/junit.jar" />
+		    <zipfileset excludes="META-INF/**/*" src="${lib.lin}/org.eclipse.core.commands.jar" />
+		    <zipfileset excludes="META-INF/**/*" src="${lib.lin}/org.eclipse.core.contenttype.jar" />
+		    <zipfileset excludes="META-INF/**/*" src="${lib.lin}/org.eclipse.core.jobs.jar" />
+		    <zipfileset excludes="META-INF/**/*" src="${lib.lin}/org.eclipse.core.runtime.compatibility.auth.jar" />
+		    <zipfileset excludes="META-INF/**/*" src="${lib.lin}/org.eclipse.core.runtime.compatibility.registry.jar" />
+		    <zipfileset excludes="META-INF/**/*" src="${lib.lin}/org.eclipse.core.runtime.jar" />
+		    <zipfileset excludes="META-INF/**/*" src="${lib.lin}/org.eclipse.equinox.app.jar" />
+		    <zipfileset excludes="META-INF/**/*" src="${lib.lin}/org.eclipse.equinox.common.jar" />
+		    <zipfileset excludes="META-INF/**/*" src="${lib.lin}/org.eclipse.equinox.preferences.jar" />
+		    <zipfileset excludes="META-INF/**/*" src="${lib.lin}/org.eclipse.equinox.registry.jar" />
+		    <zipfileset excludes="META-INF/**/*" src="${lib.lin}/org.eclipse.jface.jar" />
+		    <zipfileset excludes="META-INF/**/*" src="${lib.lin}/org.eclipse.jface.text.jar" />
+		    <zipfileset excludes="META-INF/**/*" src="${lib.lin}/org.eclipse.osgi.jar" />
+		    <zipfileset excludes="META-INF/**/*" src="${lib.lin}/org.eclipse.osgi.services.jar" />
+		    <zipfileset excludes="META-INF/**/*" src="${lib.lin}/org.eclipse.swt.jar" />
+		    <zipfileset excludes="META-INF/**/*" src="${lib.lin}/org.eclipse.text.jar" />
+		    <zipfileset excludes="META-INF/**/*" src="${lib.lin}/prefuse.jar" />
+		    <zipfileset excludes="META-INF/**/*" src="${lib.lin}/servlet.jar" />
+		    <zipfileset excludes="META-INF/**/*" src="${lib.lin}/lin32/swt.jar" />
+		    <zipfileset excludes="META-INF/**/*" src="${lib.lin}/swtgraphics2d.jar" />
+		      
+		    <manifest>
+				<attribute name="Main-Class" value="editor.BNGEditor" />
+		    </manifest>
+		</jar>
+	</target>
+
+	<target name="Dist-CreateJar-Lin64" depends="Build-Compile, Dist-CreateDir-Lin64">	    
+		  	<delete dir="${dir.dist.lin64}/${project.name}/${project.name}-${rb.version}-lin64.jar"/>
+			
+			<jar destfile="${dir.dist.lin64}/${project.name}/${project.name}-${rb.version}-lin64.jar">
+				<zipfileset dir="bin" prefix="" />
+			    <zipfileset excludes="META-INF/**/*" src="${lib.lin}/com.ibm.icu.jar" />
+			    <zipfileset excludes="META-INF/**/*" src="${lib.lin}/gnujaxp.jar" />
+			    <zipfileset excludes="META-INF/**/*" src="${lib.lin}/itext-2.0.6.jar" />
+			    <zipfileset excludes="META-INF/**/*" src="${lib.lin}/javax.servlet.jar" />
+			    <zipfileset excludes="META-INF/**/*" src="${lib.lin}/jcommon-1.0.12.jar" />
+			    <zipfileset excludes="META-INF/**/*" src="${lib.lin}/jfreechart-1.0.9-experimental.jar" />
+			    <zipfileset excludes="META-INF/**/*" src="${lib.lin}/jfreechart-1.0.9-swt.jar" />
+			    <zipfileset excludes="META-INF/**/*" src="${lib.lin}/jfreechart-1.0.9.jar" />
+			    <zipfileset excludes="META-INF/**/*" src="${lib.lin}/junit.jar" />
+			    <zipfileset excludes="META-INF/**/*" src="${lib.lin}/org.eclipse.core.commands.jar" />
+			    <zipfileset excludes="META-INF/**/*" src="${lib.lin}/org.eclipse.core.contenttype.jar" />
+			    <zipfileset excludes="META-INF/**/*" src="${lib.lin}/org.eclipse.core.jobs.jar" />
+			    <zipfileset excludes="META-INF/**/*" src="${lib.lin}/org.eclipse.core.runtime.compatibility.auth.jar" />
+			    <zipfileset excludes="META-INF/**/*" src="${lib.lin}/org.eclipse.core.runtime.compatibility.registry.jar" />
+			    <zipfileset excludes="META-INF/**/*" src="${lib.lin}/org.eclipse.core.runtime.jar" />
+			    <zipfileset excludes="META-INF/**/*" src="${lib.lin}/org.eclipse.equinox.app.jar" />
+			    <zipfileset excludes="META-INF/**/*" src="${lib.lin}/org.eclipse.equinox.common.jar" />
+			    <zipfileset excludes="META-INF/**/*" src="${lib.lin}/org.eclipse.equinox.preferences.jar" />
+			    <zipfileset excludes="META-INF/**/*" src="${lib.lin}/org.eclipse.equinox.registry.jar" />
+			    <zipfileset excludes="META-INF/**/*" src="${lib.lin}/org.eclipse.jface.jar" />
+			    <zipfileset excludes="META-INF/**/*" src="${lib.lin}/org.eclipse.jface.text.jar" />
+			    <zipfileset excludes="META-INF/**/*" src="${lib.lin}/org.eclipse.osgi.jar" />
+			    <zipfileset excludes="META-INF/**/*" src="${lib.lin}/org.eclipse.osgi.services.jar" />
+			    <zipfileset excludes="META-INF/**/*" src="${lib.lin}/org.eclipse.swt.jar" />
+			    <zipfileset excludes="META-INF/**/*" src="${lib.lin}/org.eclipse.text.jar" />
+			    <zipfileset excludes="META-INF/**/*" src="${lib.lin}/prefuse.jar" />
+			    <zipfileset excludes="META-INF/**/*" src="${lib.lin}/servlet.jar" />
+			    <zipfileset excludes="META-INF/**/*" src="${lib.lin}/lin64/swt.jar" />
+			    <zipfileset excludes="META-INF/**/*" src="${lib.lin}/swtgraphics2d.jar" />
+			      
+			    <manifest>
+					<attribute name="Main-Class" value="editor.BNGEditor" />
+			    </manifest>
+			</jar>
+	</target>
+
+	
+	<!-- Launch4j the windows files-->
+
+	<target name="Dist-Launch4j-Win32" depends="Dist-CreateJar-Win32">
+		<launch4j>
+			<config headerType="gui" outfile="${dir.dist.win32}/${project.name}/${project.name}-${rb.version}-win32.exe"
+		      		dontWrapJar="false" jarPath="${dir.dist.win32}/${project.name}/${project.name}-${rb.version}-win32.jar"
+					stayAlive="false" customProcName="true" icon="${dir.dist.res}/win/bngicon.ico"> 
+		    
+				<jre minVersion="1.5.0" initialHeapSize="512" maxHeapSize="2048"/>
+		  	</config>
+		</launch4j>
+		
+		<delete file="${dir.dist.win32}/${project.name}/${project.name}-${rb.version}-win32.jar"/>	
+	</target>
+	
+	<target name="Dist-Launch4j-Win64" depends="Dist-CreateJar-Win64">
+		<launch4j>
+			<config headerType="gui" outfile="${dir.dist.win64}/${project.name}/${project.name}-${rb.version}-win64.exe"
+		      		dontWrapJar="false" jarPath="${dir.dist.win64}/${project.name}/${project.name}-${rb.version}-win64.jar"
+					stayAlive="false" customProcName="true" icon="${dir.dist.res}/win/bngicon.ico"> 
+		    
+				<jre minVersion="1.5.0" initialHeapSize="512" maxHeapSize="2048"/>
+		  	</config>
+		</launch4j>
+		
+		<delete file="${dir.dist.win64}/${project.name}/${project.name}-${rb.version}-win64.jar"/>	
+	</target>	
+	
+	<!-- Packaging targets: Zip or Tar the completely constructed directories. -->
+	
+	<target name="Dist-Package-All" depends="Dist-Package-Mac32, Dist-Package-Mac64, Dist-Package-Lin32, Dist-Package-Lin64, Dist-Package-Win32, Dist-Package-Win64"/>
+	
+	
+
+	<target name="Dist-Package-Mac32" depends="Dist-Prepare-Mac32">
+	<!-- Does not preserve file permissions
+		<zip 	destfile="${dir.dist}/${project.name}-${rb.version}-mac.zip"
+				basedir="${dir.dist.mac}"
+		/> 
+	-->
+		<exec executable="zip" dir="${dir.dist.mac32}">
+			<arg line="-r ../../${project.name}-${rb.version}-mac32.zip ${project.name}"/>
+		</exec>
+	</target>
+	
+	<target name="Dist-Package-Mac64" depends="Dist-Prepare-Mac64">
+	<!-- Does not preserve file permissions
+		<zip 	destfile="${dir.dist}/${project.name}-${rb.version}-mac.zip"
+				basedir="${dir.dist.mac}"
+		/> 
+	-->
+		<exec executable="zip" dir="${dir.dist.mac64}">
+			<arg line="-r ../../${project.name}-${rb.version}-mac64.zip ${project.name}"/>
+		</exec>
+		
+	</target>
+	
+	
+	<target name="Dist-Package-Win32" depends="Dist-Prepare-Win32">
+		<zip 	destfile="${dir.dist}/${project.name}-${rb.version}-win32.zip"
+				basedir="${dir.dist.win32}"
+		/>
+	</target>
+	
+	<target name="Dist-Package-Win64" depends="Dist-Prepare-Win64">
+		<zip 	destfile="${dir.dist}/${project.name}-${rb.version}-win64.zip"
+					basedir="${dir.dist.win64}"
+		/>
+	</target>
+	
+	<target name="Dist-Package-Lin32" depends="Dist-Prepare-Lin32">
+		<tar 	destfile="${dir.dist}/${project.name}-${rb.version}-lin32.tar.gz"
+				compression="gzip">
+		
+			<tarfileset dir="${dir.dist.lin32}/" filemode="755">
+				<include name="${project.name}/run.sh"/>
+			</tarfileset>
+		
+			<tarfileset dir="${dir.dist.lin32}/" filemode="755">
+				<include name="**"/>
+				<exclude name="${project.name}/run.sh"/>
+			</tarfileset>
+	</tar>
+	</target>
+		
+	<target name="Dist-Package-Lin64" depends="Dist-Prepare-Lin64">
+			<tar 	destfile="${dir.dist}/${project.name}-${rb.version}-lin64.tar.gz"
+					compression="gzip">
+			
+				<tarfileset dir="${dir.dist.lin64}/" filemode="755">
+					<include name="${project.name}/run.sh"/>
+				</tarfileset>
+			
+				<tarfileset dir="${dir.dist.lin64}/" filemode="755">
+					<include name="**"/>
+					<exclude name="${project.name}/run.sh"/>
+				</tarfileset>
+		</tar>
+	</target>
+		
+</project>

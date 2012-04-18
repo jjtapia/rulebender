@@ -1,0 +1,509 @@
+Test Cases for Result Viewer Files Management
+08/19/2010
+wex14
+
+////////////////////////////////////////////////////////////////////////////////////
+
+Number: 1
+
+Description:
+The user opens result viewer without running simulation.
+
+#1.1
+
+Series of Actions:
+(1) Run BNG Editor.
+
+(2) Open menu "View" --> Select "Open Result Viewer".
+
+Results: Pop up a dialog "Enter Directory Path", with one text input field and three buttons "Choose…", "Open" and "Cancel".
+
+(3) Press "Cancel" button.
+
+Results: The dialog is closed. Return to the main window of BNG Editor.
+
+
+#1.2
+Series of Actions:
+(1) Run BNG Editor.
+
+(2) Open menu "View" --> Select "Open Result Viewer".
+
+Results: Pop up a dialog "Enter Directory Path", with one text input field and three buttons "Choose…", "Open" and "Cancel".
+
+(3) Press "Open" button.
+
+Results: Pop up an error message said "The directory path can't be empty."
+
+(4) Press "OK" button on the error message box.
+
+Results: Return to the dialog "Enter Directory Path".
+
+
+#1.3
+
+Series of Actions:
+(1) Run BNG Editor.
+
+(2) Open menu "View" --> Select "Open Result Viewer".
+
+Results: Pop up a dialog "Enter Directory Path", with one text input field and three buttons "Choose…", "Open" and "Cancel".
+
+(3) Press "Choose..." button to select a directory to be the root of result viewer.
+
+Results: Pop up a file selection dialog with two buttons, "Cancel" and "Choose".
+
+(4) Press "Choose" button.
+
+Results: The file selection dialog is closed. And the path will appear in the text input field on the dialog "Enter Directory Path".
+
+(5) Press "Cancel" button.
+
+Results: The dialog is closed. Return to the main window of BNG Editor.
+
+
+#1.4
+
+Series of Actions:
+(1) Run BNG Editor.
+
+(2) Open menu "View" --> Select "Open Result Viewer".
+
+Results: Pop up a dialog "Enter Directory Path", with one text input field and three buttons "Choose…", "Open" and "Cancel".
+
+(3) Press "Choose..." button to select a directory to be the root of result viewer.
+
+Results: Pop up a file selection dialog with two buttons, "Cancel" and "Choose".
+
+(4) Press "Choose" button.
+
+Results: The file selection dialog is closed. And the path will appear in the text input field on the dialog "Enter Directory Path".
+
+(5) Press "Open" button.
+
+Results: The dialog "Enter Directory Path" is closed. And a new window "Viewer" poped up on the left-top corner.
+
+#1.5
+
+Series of Actions:
+(1) Open a result viewer as above.
+
+(2) Change the location and size of the window of "Viewer".
+
+(3) Open a result viewer as above.
+
+Results: The old "Viewer" will be closed. And a new "Viewer" will appear in the position of the old one and with the same size of the old one.
+
+////////////////////////////////////////////////////////////////////////////////////
+
+Number: 2
+
+Description:
+The user run a simulation on a model, and then the result viewer poped up automatically.
+
+#2.1
+Series of Actions:
+(1) Run BNG Editor.
+
+(2) Open a model file (BNGL).
+
+(3) Press "Run" button on the tool bar or
+	Open menu "Run" --> Select "Run Model"
+
+Results: The running information showed in the "Console" region. And a new window "Viewer" poped up on the left-top corner. The first "GDAT" file in this simulation was opened automatically and all the checkboxes in front of the observables are checked. That means, all the curves of the observables showed in the chart.
+
+#2.2
+Series of Actions:
+(1) Run one simulation on a model as above.
+
+(2) Change the location and size of the window of "Viewer".
+
+(3) Run another simulation on the same model.
+
+Result: The old "Viewer" will be closed. And a new "Viewer" will appear in the position of the old one and with the same size of the old one.
+
+#2.3
+Series of Actions:
+(1) Open a model file.
+
+(2) Run one simulation on this model.
+
+Results: The running information showed in the "Console" region. And a new window "Viewer" poped up on the left-top corner. The first "GDAT" file in this simulation was opened automatically and all the checkboxes in front of the observables are checked. That means, all the curves of the observables showed in the chart.
+
+(3) Open another model file.
+
+(4) Run one simulation on the second model.
+
+Results: The running information showed in the "Console" region. And a new window "Viewer" poped up on the left-top corner. Each model has its own result viewer windows.
+
+(5) Change the location and size of the second window.
+
+(6) Run another simulation on the second model.
+
+Results: The old "Viewer" will be closed. And a new "Viewer" will appear in the position of the old one and with the same size of the old one. The "Viewer" window for the first model stays the same.
+
+(7) Open another "Viewer" from the menu "View" --> "Open Result Viewer".
+
+Results: A new "Viewer" will appear in the left-top corner. Now there are three "Viewer" windows.
+
+(8) Run another simulation on the second model.
+
+Results: The "Viewer" opened from menu will be closed. The old "Viewer" for second model will be closed. A new "Viewer" for the second model will appear in the position of the old one and with the same size of the old one. So now, two "Viewer" window left.
+
+
+////////////////////////////////////////////////////////////////////////////////////
+
+Number: 3
+
+Description:
+Open a file from the "Explorer" region for the first time.
+
+The layout of the result viewer window contains three region, "Explorer", "Outline", and the chart & text region. The region "Explorer" listed all the directories and files under the root directory. The region "Outline" listed species and observables for result files. And the chart & text region show the chart and text for different types of files.
+
+#3.1
+Series of Actions:
+(1) Expand and collapse the file tree using the little triangle in front of the items.
+
+Results: The tree expanded and collapsed with no problems.
+
+(2) Select items in the tree by single click.
+
+Results: A message will appear in the status line, which is on the bottom of the window. Format: "Selected: <item name>".
+
+(3) Double click on a directory.
+
+Results: A message will appear in the status line, which is on the bottom of the window. Format: "Selected: <item name>".
+
+
+#3.2
+Series of Actions:
+(1) Double click on a file item to open the file. None of the results files of one simulation was missed.
+
+Results:
+"GDAT": All the observables (format: name) are listed in the region of "Outline", and all the checkboxes in front the observables are checked. The children of observable items are species items. A tab with a chart of all the curves of observables appeared in the chart & text region. The default option is "Chart:line, X Axis:linear, Y Axis:linear".
+
+"CDAT": All the species (format: id expression) are listed in the region of "Outline", and none of the checkboxes are checked. A tab with an empty chart appeared in the chart & text region. The default option is "Chart:line, X Axis:linear, Y Axis:linear".
+
+"NET": The links of different blocks are listed in the region of "Outline". The text of NET file appeared in the region of chart & text with syntax highlighting.
+
+"BNGL": The links of different blocks are listed in the region of "Outline". A tab with the text of BNGL file appeared in the region of chart & text with syntax highlighting. Some of the syntax highlighting is not correct, because the template for NET file was used for BNGL file temporarily.
+
+"TXT": A tab with the text of TXT file appeared in the region of chart & text.
+
+#3.3
+Series of Actions:
+(1) Double click on a file item to open the file. The "NET" file with the same name of "GDAT" and "CDAT" file was missed.
+
+Results:
+"GDAT": All the observables (format: name) are listed in the region of "Outline", and all the checkboxes in front the observables are checked. No children for observable items. A tab with a chart of all the curves of observables appeared in the chart & text region. The default option is "Chart:line, X Axis:linear, Y Axis:linear".
+
+"CDAT": All the species (format: id) are listed in the region of "Outline", and none of the checkboxes are checked. A tab with an empty chart appeared in the chart & text region. The default option is "Chart:line, X Axis:linear, Y Axis:linear".
+
+#3.4
+Series of Actions:
+(1) Select multiple files in the region of "Explorer", and then press "Enter" on the keyboard or double click.
+
+Results:
+All the items will be opened in multiple tabs.
+
+#3.5
+Series of Actions:
+(1) Select multiple items in the "Explorer", including files and directories. Then press "Enter" on the keyboard.
+
+Results: None of those items was opened.
+
+////////////////////////////////////////////////////////////////////////////////////
+
+Number: 4
+
+Description:
+Open multiple files and switch among them by selecting the tab.
+
+#4.1
+Series of Actions:
+(1) Open 4 files, "NET", "GDAT", "CDAT" and "BNGL".
+
+(2) Expand the tree in the "Outline" and select different parts in "Outline".
+
+(3) Switch the tabs by selecting one of them. 
+
+Results:
+Everything stays the same. But the graph will not redraw if switch to another tab with selection on another species.
+
+Both left single click and right single click work. But right single click will pop up a menu.
+
+#4.2
+Series of Actions:
+(1) Open 4 files, two "GDAT" and two "CDAT".
+
+(2) Expand the tree in the "Outline" and select different parts in "Outline".
+
+(3) Switch the tabs.
+
+Results:
+Everything stays the same. But the graph will not redraw if switch to another tab with selection on another species.
+
+#4.3
+Series of Actions:
+(1) Open two files with the same name.
+
+Results:
+Two tab with the same name appeared in the region of chart & text.
+
+(2) Move the mouse to the tab title and stay there for one second.
+
+Results:
+A tool tip will appear besides the tab title with the path of the file, not the name. Two files can have the same name, but they can't have the same path.
+
+////////////////////////////////////////////////////////////////////////////////////
+
+Number: 5
+
+Description:
+Close one tab or all the tabs.
+
+#5.1
+Series of Actions:
+(1) Open multiple files.
+
+(2) Expand the tree in the "Outline" and select different parts in "Outline".
+
+(3) Close tabs one by one.
+
+Results: After closing one tab, the focus will redirected to the one before it. And after closing the last tab, the region of "Outline" will be empty.
+
+#5.2
+Series of Actions:
+(1) Open multiple files.
+
+(2) Right click on one of the tabs.
+
+Results: A menu with only one option "Close All" will pop up.
+
+(3) Select "Close All".
+
+Results: All the tabs will be closed one by one. And after closing the last tab, the region of "Outline" will be empty.
+
+////////////////////////////////////////////////////////////////////////////////////
+
+Number: 6
+
+Description:
+Refresh the "Explorer" tree.
+
+#6.1
+Series of Actions:
+(1) Expand some of the directories in the "Explorer" tree.
+
+(2) Right click on any area of "Explorer" region.
+
+Results: A menu will pop up, with option "Refresh" and "Delete". If the click was not on a item, the "Delete" option will be disabled.
+
+(3) Press "Refresh".
+
+Results: Everything stays the same.
+
+
+#6.2
+Series of Actions:
+(1) Expand some of the directories in the "Explorer" tree.
+
+(2) Open multiple files.
+
+(3) Right click on any area of "Explorer" region.
+
+Results: A menu will pop up, with option "Refresh" and "Delete". If the click was not on a item, the "Delete" option will be disabled.
+
+(4) Press "Refresh".
+
+Results: Everything stays the same.
+
+#6.3
+Series of Actions:
+(1) Expand some of the directories in the "Explorer" tree.
+
+(2) Add some files or directories to the root directory. (Can't be done through BNG Editor) 
+
+(3) Open multiple files.
+
+(4) Right click on any area of "Explorer" region.
+
+Results: A menu will pop up, with option "Refresh" and "Delete". If the click was not on a item, the "Delete" option will be disabled.
+
+(5) Press "Refresh" in the "Explorer" tree.
+
+Results: New items appeared. And every other things stay the same.
+
+#6.4
+Series of Actions:
+(1) Expand some of the directories in the "Explorer" tree.
+
+(2) Open a file.
+
+(3) Delete some files or directories throught file system. Not related to the opened file.
+
+(4) Right click on any area of "Explorer" region.
+
+Results: A menu will pop up, with option "Refresh" and "Delete". If the click was not on a item, the "Delete" option will be disabled.
+
+(5) Press "Refresh".
+
+Results: Deleted items disappeared in the "Explorer" tree. And every other things stay the same.
+
+#6.5
+Series of Actions:
+(1) Expand some of the directories in the "Explorer" tree.
+
+(2) Open a file.
+
+(3) Delete the opened file or the directory contains this opend file throught file system.
+
+(4) Right click on any area of "Explorer" region.
+
+Results: A menu will pop up, with option "Refresh" and "Delete". If the click was not on a item, the "Delete" option will be disabled.
+
+(5) Press "Refresh".
+
+Results: Deleted items disappeared in the "Explorer" tree. And every other things stay the same. The opened file still there.
+
+////////////////////////////////////////////////////////////////////////////////////
+
+Number: 7
+
+Description:
+Delete files or directories from "Explorer" tree.
+
+#7.1
+Series of Actions:
+(1) Expand some of the directories in the "Explorer" tree.
+
+(2) Right click on any area of "Explorer" region.
+
+Results: A menu will pop up, with option "Refresh" and "Delete". If the click was not on a item, the "Delete" option will be disabled.
+
+(3) Press "Delete" to delete one file.
+
+Results:
+A message box will pop up, "Are you sure you want to delete <file name> ?". Two options on the message box, "Cancel" and "OK".
+
+(4) Press "Cancel".
+
+Results: The file is still there.
+
+#7.2
+Series of Actions:
+(1) Expand some of the directories in the "Explorer" tree.
+
+(2) Right click on any area of "Explorer" region.
+
+Results: A menu will pop up, with option "Refresh" and "Delete". If the click was not on a item, the "Delete" option will be disabled.
+
+(3) Press "Delete" to delete one file.
+
+Results:
+A message box will pop up, "Are you sure you want to delete <file name> ?". Two options on the message box, "Cancel" and "OK".
+
+(4) Press "OK".
+
+Results: The file is deleted in the file system and the file disappeared in the "Explorer" tree.
+
+
+#7.3
+Series of Actions:
+(1) Expand some of the directories in the "Explorer" tree.
+
+(2) Right click on any area of "Explorer" region.
+
+Results: A menu will pop up, with option "Refresh" and "Delete". If the click was not on a item, the "Delete" option will be disabled.
+
+(3) Press "Delete" to delete one directory.
+
+Results:
+A message box will pop up, "Are you sure you want to delete <directory name> ?". Two options on the message box, "Cancel" and "OK".
+
+(4) Press "OK".
+
+Results: The directory and its children are deleted in the file system and the directory disappeared in the "Explorer" tree.
+
+#7.4
+Series of Actions:
+(1) Expand some of the directories in the "Explorer" tree.
+
+(2) Select multiple items, including files and directories.
+
+(2) Right click on any area of "Explorer" region.
+
+Results: A menu will pop up, with option "Refresh" and "Delete".
+
+(3) Press "Delete" to delete all the selected items.
+
+Results:
+A message box will pop up, "Are you sure you want to delete <number of selection> elements?". Two options on the message box, "Cancel" and "OK".
+
+(4) Press "OK".
+
+Results: The files, the directories and its children are deleted in the file system and the files and directories disappeared in the "Explorer" tree.
+
+
+#7.5
+Series of Actions:
+(1) Expand some of the directories in the "Explorer" tree.
+
+(2) Open one file.
+
+(2) Right click on the opened file item.
+
+Results: A menu will pop up, with option "Refresh" and "Delete".
+
+(3) Press "Delete" to delete the opened file.
+
+Results:
+A message box will pop up, "Are you sure you want to delete <file name> elements?". Two options on the message box, "Cancel" and "OK".
+
+(4) Press "OK".
+
+Results: The opened file will be closed first. And then delete the file in the file system and the item disappeared in the "Explorer" tree.
+
+////////////////////////////////////////////////////////////////////////////////////
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

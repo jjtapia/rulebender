@@ -1,0 +1,4 @@
+CFBundleName = "BNGEditor 0.2.110";
+CFBundleShortVersionString = "1.0";
+CFBundleGetInfoString = "BNGEditor 0.2.110 version 1.0 Copyright 2010 VisLab";
+NSHumanReadableCopyright = "Copyright 2010 VisLab.";

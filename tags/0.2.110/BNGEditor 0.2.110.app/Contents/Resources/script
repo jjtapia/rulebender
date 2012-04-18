@@ -1,0 +1,7 @@
+echo '<h1>BNGEditor 0.2.110</h1>'
+echo '<p>Thank you for evaluating this alpha version software.  We are very interested in any feedback that you can send us.</p>'
+echo 'Send all comments, questions, or ideas to<p> Adam Smith: <a href="mailto:wex14@cs.pitt.edu?cc=ams292@cs.pitt.edu?subject=BNGEditor">ams292@cs.pitt.edu</a> and Wen Xu: <a href="mailto:ams292@cs.pitt.edu?cc=wex14@cs.pitt.edu?subject=BNGEditor">wex14@cs.pitt.edu</a></p>'
+
+java -d32 -Xmx512m -XstartOnFirstThread -jar BNGEditor-osx-0.2.110.jar
+
+

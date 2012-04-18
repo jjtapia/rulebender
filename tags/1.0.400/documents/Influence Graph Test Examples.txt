@@ -1,0 +1,81 @@
+Influence Graph Test Examples
+12/02/2010
+wex14
+
+Test Example 1:
+
+ # Ligand-receptor binding      
+ 1 Rec(a) + Lig(l,l) <-> Rec(a!1).Lig(l,l!1) kp1, km1
+
+ # Receptor-aggregation
+ 2 Rec(a) + Lig(l,l!1) <-> Rec(a!2).Lig(l!2,l!1) kp2,km2
+
+
+R1 (full activate) R1'
+R1' (full activate) R1
+R1 (full activate) R2
+R2 (full inhibit) R1
+R2' (full activate) R1
+
+R1' (full activate) R2
+R2 (partial inhibit) R1'
+R2' (partial activate) R1'
+
+R2 (full activate) R2'
+R2' (full activate) R2
+
+Test Example 2:
+
+ # Ligand-receptor binding      
+ 1 EGFR(L,CR1) + EGF(R) <-> EGFR(L!1,CR1).EGF(R!1) kp1, km1
+  
+ # Receptor-aggregation 
+ 2 EGFR(L!+,CR1) + EGFR(L!+,CR1) <-> EGFR(L!+,CR1!1).EGFR(L!+,CR1!1) kp2,km2
+ 
+R1 (full activate) R1'
+R1' (full activate) R1
+R1 (full activate) R2
+
+R1' (full inhibit) R2
+R2 (partial inhibit) R1'
+R2' (partial activate) R1'
+
+R2 (full activate) R2'
+R2' (full activate) R2
+
+Test Example 3:
+
+ # Syk-receptor binding through tSH2 domain
+ 9 Rec(g~pY) + Syk(tSH2) <-> Rec(g~pY!1).Syk(tSH2!1) kpS, kmS
+ 
+ # Dephosphorylation of Syk at membrane
+ 16 Syk(tSH2!1,l~pY)-> Syk(tSH2!1,l~Y) dm
+ 
+ 
+R9 (partial activate) R16
+R9' (partial inhibit) R16
+
+Test Example 4:
+
+ 1 Protein(b,b,Conf~R)<->Protein(b,b,Conf~T) k_RT_transition,k_TR_transition
+ 2 Protein(b,Conf~R)+Ligand(c)<->Protein(b!0,Conf~R).Ligand(c!0) k_f_R,k_r_R
+ 
+R1 (full activate) R1'
+R1' (full activate) R1
+R1 (full inhibit) R2
+R2 (partial inhibit) R1
+R2' (partial activate) R1
+
+Test Example 5:
+ # Adaptor binding kinase 
+ # Note: Doesn't depend on phosphorylation state of K or whether A is bound to
+ #       receptor, i.e. binding rate is same whether A is on membrane (bound to
+ #        R) or in cytosol.
+ 4 A(k) + K(a) <-> A(k!1).K(a!1) kpK,kmK
+
+ # Dephosphorylation of kinase in membrane complex
+ 7 R(a!1).A(r!1,k!2).K(a!2,Y~P) -> R(a!1).A(r!1,k!2).K(a!2,Y~U) dM
+ 
+R4 (full activate) R4'
+R4' (full activate) R4
+R4 (partial activate) R7

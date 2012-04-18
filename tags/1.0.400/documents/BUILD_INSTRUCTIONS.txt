@@ -1,0 +1,277 @@
+BUILD_INSTRUCTIONS.txt
+
+This document describes how to build the distribution files for the 
+rulebender project.  The project uses the 'ant' build system by Apache, 
+so this document will give a very brief introduction to ant, and then 
+describe the distribution process for rulebender.  The ant introduction 
+is in no way complete, but will give you enough of a head start to be able 
+to read most of rulebender's build.xml file or to understand the ant manual
+that can be found here: 
+
+http://ant.apache.org/manual/index.html
+
+
+1. Apache Ant
+
+	Ant is a build system for java projects.  Instead of relying on 
+	a more traditional a scripting language to compile, move, zip, 
+	or perform other actions to your files, ant uses xml.  You can
+	define different goals, called targets, that you would like the xml file
+	to accomplish, and then execute those targets.  Each target contains
+	the operations, called tasks, that are necessary for completing the goal
+	of the target.	For an example, a target that deletes the build directory 
+	would look like:
+	
+			...
+			<target name="clean">
+				<delete dir="build">
+			</target>
+			...
+
+	The <delete> tag is used to remove the 'build' directory, which in this case
+	is a relative path from the location of the build.xml file.
+	
+	Another target that is in almost every build.xml file is the compile target.
+	The javac tag takes care of this.  
+	
+			<target name="compile">
+			    <javac 	srcdir="src" 
+	    			destdir="build"
+			    </javac>
+			</target>
+	
+	Before we run this task, we need to make sure that the build directory exists.
+	We can include dependencies in each task that make sure the build is in the 
+	correct state before the target is executed. The following snippet contains 
+	enough tasks to clean, prepare, and compile a project and is a complete 
+	example of a build.xml file. Notice that the build.xml file is enclosed in a
+	<project> tag.
+	
+			<project name="RuleBender">
+				<target name="clean">
+					<delete dir="build">
+				</target>
+		
+				<target name="prepare">
+					<mkdir dir="build"/>
+				</target>
+				
+				<target name="compile" depends="prepare">
+			    	<javac 	srcdir="src" 
+	    				destdir="build"
+				    </javac>
+				</target>
+			</project>
+
+	Now the compile target will not run without first trying to create the build
+	directory.  If multiple targets depend on the same different target, the 
+	target on which they depend will only be executed once by the build script.  
+	
+	You can also set properties inside of the build.xml file that can be used as
+	variables by enclosing them in '${' and '}'. 
+	
+	
+			<project name="RuleBender">
+			
+				<property name="dir.build" value="build"/>
+				<property name="dir.src" value="src"/>
+								
+				<target name="clean">
+					<delete dir="${dir.build}">
+				</target>
+		
+				<target name="prepare">
+					<mkdir dir="${dir.build}"/>
+				</target>
+			
+				<target name="compile" depends"prepare">
+			    	<javac 	srcdir="${dir.src}" 
+	    				destdir="${dir.build}"
+				    </javac>
+				</target>
+			</project>
+
+	That should give you a very basic understanding of what happens inside of 
+	the build file, and as I said above you should check out 
+	http://ant.apache.org/manual/index.html to get a complete understanding.
+	
+	There are many more tasks that can happen inside of the target than what 
+	I have shown above, such as building executable jars, setting classpaths,
+	compiling with libraries, zipping, moving/copying directories, and even
+	custom defined tasks such launch4j execution that wraps jars into 
+	Windows executables.  Luckily xml is pretty straight-forward and the ant
+	resources are very good, so read the build.xml file and consult the 
+	references when you are confused.
+	
+
+
+
+1.5 Executing ant tasks
+	
+	Eclipse:
+		In Eclipse, open the build.xml file and the targets should appear
+		in the outline pane.  Right click on a target and click 
+		'Run As' -> 'Ant Build' to execute the task.  Alternatively you can 
+		select the name of the target in the document itself, and then right
+		click and select 'Run As' -> 'Ant Build' from the context menu.
+	
+	Command Line: 
+		To execute this action from the command line, navigate to the containing
+		directory of build.xml and type, 'ant <name of target>' (without the 
+		< and >) and then hit return. 
+
+	
+	
+
+2.0 Before you generate the distributable files
+
+You have to change the version numbers in the program.  
+
+	*editor.version.Version.java: Change the major, minor, and revision numbers 
+		appropriately.  This is what the program uses to see if there is
+		a new version available on the website. 
+
+	*/afs/cs.pitt.edu/projects/vis/visweb/resources/docs/versions.vt:
+		This file contains the version number and changes for all of the 
+		releases.  The format is
+
+		version="x.y.z" 
+		changes="-change
+			 -change
+			 É
+			"
+		
+	*build.xml: Around line 18 there is a variable that needs to be set to the new version
+		    number.  It is used for file naming. 
+
+2.2 Generating distributables for RuleBender
+
+	Short Version:
+	
+	The ant tasks to produce zipped/tarred versions of the distributables are:
+		For All: 
+			Dist-Package-All
+			
+		For Individual:
+			Dist-Package-Win32
+			Dist-Package-Win64
+			Dist-Package-Lin32
+			Dist-Package-Lin64
+			Dist-Package-Mac32
+			Dist-Package-Mac64
+			
+	They can only be executed from an osx machine.
+			
+			
+	Long Version:
+	
+	The build.xml file in the RuleBender directory contains many tasks, and I 
+	tried to include complete documentation for each one in the xml file. You 
+	only need to know a small subset of them to create the distributables, so
+	for the	sake of brevity, I will give a generaly description of the process and 
+	then only share the targets that are necessary for generating a build.  
+	Feel free to examine the build.xml file for the others, as even without my comments
+	it is fairly self documented.
+
+	Warning: There are some targets that require osx, so no other platforms can be used
+	to generate the distributables with this script (for now)
+
+	In general, the targets are prefixed with Build or Dist depending on if 
+	they are for compiling or generating distributables.  You will probably 
+	not need to use Build prefixed targets.
+	
+	There are many Dist-* targets because for every step of the build process 
+	there is a windows 32 bit, windows 64 bit, linux, and osx target.  
+	The basic process for a build is to
+	
+		1. Delete the distribution directory.
+		2. Create the directory that holds the distributable.
+		3. Copy the correct BNG distribution into the distributable directory.
+		4. Create the jar file
+		5. (OSX and Linux Only) Write the run scripts into the directories.
+		6. (OSX only) Write the PList file into the app and copy the icon.
+		7. (Windows only) Execute the launch4j target, which makes the exe,
+		   and deletes the jar.
+		8. Package the release into a zip or tar and place it in the 
+		   'distribution' directory.
+		   	
+		   	
+	To handle steps 1-7 for the individual platforms,
+		All: 
+			Dist-Prepare-All
+			
+		Individual:
+			Dist-Prepare-Win32
+			Dist-Prepare-Win64
+			Dist-Prepare-Lin
+			Dist-Prepare-Mac
+		
+	After execution, there should be a 'distribution/<mac or win32 or win64 or lin>/RuleBender'
+	directory that contains the distribution for the appropriate system.
+	
+	The Windows (both 32 and 64) distribution inside of the RuleBender directory
+	will look like:
+		/BioNetGen-2.1.6/... 					
+			(the BNG distribution)
+			
+		/RuleBender-<version>-winxx.exe
+			(The executable where xx is either 64 or 32)
+		
+	The Linux distribution inside of the RuleBender directory will look like:
+		/BioNetGen-2.1.6/... 					
+			(The BNG distribution)
+
+		/RuleBender-<version>-lin.jar			
+			(The executable jar)
+			
+		/run.sh					
+			(The run script)
+	
+	The OSX distribution inside of the RuleBender directory will look like:
+		/BioNetGen-2.1.6/... 							
+			(The BNG distribution)
+			
+		/RuleBender-<version>.app						
+			(The mac app)
+			
+		/RuleBender-<version>.app/Contents
+			(Directory to hold all of the app files)
+			
+		/RuleBender-<version>.app/Contents/info.plist	
+			(Information about the app, including the 
+			icon and executable file)
+			
+		/RuleBender-<version>.app/Contents/MacOS		
+			(Holds the jar and run script)\
+			
+		/RuleBender-<version>.app/Contents/MacOS/RuleBender-<version>-mac.jar
+			(The jar)
+			
+		/RuleBender-<version>.app/Contents/MacOS/run
+			(The run script)
+			
+		/RuleBender-<version>.app/Contents/Resources/appIcon.icns
+			(The icon file)
+		
+		
+	To complete steps 1-8 you can use:
+		All: 
+			Dist-Package-All
+			
+		Individual:
+			Dist-Package-Win32
+			Dist-Package-Win64
+			Dist-Package-Lin
+			Dist-Package-Mac
+			
+	After the execution of this task, the 'distribution' directory will contain all of the
+	things described above, and also a zipped distributable file for each platform.
+		
+		   
+
+
+	
+		
+		
+
+Adam Smith Jan 2011 ams292@cs.pitt.edu 

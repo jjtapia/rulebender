@@ -1,0 +1,214 @@
+# Created by BioNetGen 2.1.6
+version("2.0.23");
+substanceUnits("Number");
+begin parameters
+    1 L0 1 # Constant
+    2 R0 1 # Constant
+    3 A0 1 # Constant
+    4 K0 1 # Constant
+    5 kpL 0.1 # Constant
+    6 kmL 0.1 # Constant
+    7 kpD 1.0 # Constant
+    8 kmD 0.1 # Constant
+    9 kpA 0.1 # Constant
+   10 kmA 0.1 # Constant
+   11 kpK 0.1 # Constant
+   12 kmK 0.1 # Constant
+   13 pK 1 # Constant
+   14 pKs 10 # Constant
+   15 dM 1 # Constant
+   16 dC 10 # Constant
+end parameters
+begin molecule types
+  1 A(k,r)
+  2 K(Y~U~P,a)
+  3 L(r)
+  4 Null()
+  5 R(a,l,r)
+end molecule types 
+begin observables
+    1 Molecules RecDim R(r!+)
+    2 Molecules Rec_A R(a!1).A(r!1)
+    3 Molecules Rec_K R(a!1).A(r!1,k!2).K(a!2)
+    4 Molecules Rec_Kp R(a!1).A(r!1,k!2).K(a!2,Y~P)
+    5 Molecules RecDim_Kp R().R(a!1).A(r!1,k!2).K(a!2,Y~P)
+    6 Molecules L_tot L()
+    7 Molecules A_tot A()
+    8 Molecules K_tot K()
+    9 Molecules R_tot R()
+end observables
+begin species
+    1 L(r)                                                                                     1
+    2 R(a,l,r)                                                                                 6.1803398862678982e-01
+    3 A(k,r)                                                                                   3.8196601103604433e-01
+    4 K(Y~U,a)                                                                                 6.1803398862652692e-01
+    5 Null()                                                                                   0.0000000000000000e+00
+    6 L(r!1).R(a,l!1,r)                                                                        0.0000000000000000e+00
+    7 A(k,r!1).R(a!1,l,r)                                                                      2.3606797759232734e-01
+    8 A(k!1,r).K(Y~U,a!1)                                                                      2.3606797759222695e-01
+    9 A(k,r!1).L(r!2).R(a!1,l!2,r)                                                             0.0000000000000000e+00
+   10 L(r!1).L(r!2).R(a,l!1,r!3).R(a,l!2,r!3)                                                  0.0000000000000000e+00
+   11 A(k!1,r!2).K(Y~U,a!1).R(a!2,l,r)                                                         1.4589803378049848e-01
+   12 A(k!1,r!2).K(Y~U,a!1).L(r!3).R(a!2,l!3,r)                                                0.0000000000000000e+00
+   13 A(k,r!1).L(r!2).L(r!3).R(a!1,l!3,r!4).R(a,l!2,r!4)                                       0.0000000000000000e+00
+   14 A(k!1,r!2).K(Y~U,a!1).L(r!3).L(r!4).R(a!2,l!4,r!5).R(a,l!3,r!5)                          0.0000000000000000e+00
+   15 A(k,r!1).A(k,r!2).L(r!3).L(r!4).R(a!1,l!3,r!5).R(a!2,l!4,r!5)                            0.0000000000000000e+00
+   16 A(k!1,r!2).A(k,r!3).K(Y~U,a!1).L(r!4).L(r!5).R(a!3,l!4,r!6).R(a!2,l!5,r!6)               0.0000000000000000e+00
+   17 A(k!1,r!2).A(k!3,r!4).K(Y~U,a!1).K(Y~U,a!3).L(r!5).L(r!6).R(a!2,l!5,r!7).R(a!4,l!6,r!7)  0.0000000000000000e+00
+   18 A(k!1,r!2).A(k!3,r!4).K(Y~P,a!3).K(Y~U,a!1).L(r!5).L(r!6).R(a!2,l!5,r!7).R(a!4,l!6,r!7)  0.0000000000000000e+00
+   19 A(k!1,r!2).K(Y~P,a!1).L(r!3).R(a!2,l!3,r)                                                0.0000000000000000e+00
+   20 A(k!1,r!2).K(Y~P,a!1).L(r!3).L(r!4).R(a!2,l!4,r!5).R(a,l!3,r!5)                          0.0000000000000000e+00
+   21 A(k!1,r).K(Y~P,a!1)                                                                      0.0000000000000000e+00
+   22 A(k!1,r!2).A(k,r!3).K(Y~P,a!1).L(r!4).L(r!5).R(a!3,l!4,r!6).R(a!2,l!5,r!6)               0.0000000000000000e+00
+   23 K(Y~P,a)                                                                                 0.0000000000000000e+00
+   24 A(k!1,r!2).A(k!3,r!4).K(Y~P,a!3).K(Y~P,a!1).L(r!5).L(r!6).R(a!2,l!5,r!7).R(a!4,l!6,r!7)  0.0000000000000000e+00
+   25 A(k!1,r!2).K(Y~P,a!1).R(a!2,l,r)                                                         0.0000000000000000e+00
+end species
+begin reaction rules
+Rule1: \
+  L(r) + R(l,r) <-> L(r!1).R(l!1,r) kpL, kmL
+# Bind(0.0.0,0.1.0)
+# Reverse
+# Unbind(0.0.0,0.1.0)
+Rule2: \
+  L(r!1).R(l!1,r) + L(r!1).R(l!1,r) <-> L(r!1).R(l!1,r!2).L(r!3).R(l!3,r!2) kpD, kmD
+# Bind(0.1.1,0.3.1)
+# Reverse
+# Unbind(0.1.1,0.3.1)
+Rule3: \
+  A(r) + R(a) <-> A(r!1).R(a!1) kpA, kmA
+# Bind(0.0.0,0.1.0)
+# Reverse
+# Unbind(0.0.0,0.1.0)
+Rule4: \
+  A(k) + K(a) <-> A(k!1).K(a!1) kpK, kmK
+# Bind(0.0.0,0.1.0)
+# Reverse
+# Unbind(0.0.0,0.1.0)
+Rule5: \
+  K(Y~U).K(Y~U) -> K(Y~U).K(Y~P) pK
+# StateChange(0.1.0,U->P)
+Rule6: \
+  K(Y~P).K(Y~U) -> K(Y~P).K(Y~P) pKs
+# StateChange(0.1.0,U->P)
+Rule7: \
+  R(a!1).A(r!1,k!2).K(a!2,Y~P) -> R(a!1).A(r!1,k!2).K(a!2,Y~U) dM
+# StateChange(0.2.1,P->U)
+Rule8: \
+  K(a,Y~P) -> K(a,Y~U) dC
+# StateChange(0.0.1,P->U)
+end reaction rules
+begin reactions
+    1 1,2 6 kpL #Rule1
+    2 2,3 7 kpA #Rule3
+    3 3,4 8 kpK #Rule4
+    4 1,7 9 kpL #Rule1
+    5 6 1,2 kmL #Rule1r
+    6 6,6 10 0.5*kpD #Rule2
+    7 3,6 9 kpA #Rule3
+    8 2,8 11 kpA #Rule3
+    9 6,8 12 kpA #Rule3
+   10 7 2,3 kmA #Rule3r
+   11 4,7 11 kpK #Rule4
+   12 8 3,4 kmK #Rule4r
+   13 1,11 12 kpL #Rule1
+   14 9 1,7 kmL #Rule1r
+   15 12 1,11 kmL #Rule1r
+   16 6,9 13 kpD #Rule2
+   17 6,12 14 kpD #Rule2
+   18 9,9 15 0.5*kpD #Rule2
+   19 9,12 16 kpD #Rule2
+   20 12,12 17 0.5*kpD #Rule2
+   21 10 6,6 kmD #Rule2r
+   22 3,10 13 2*kpA #Rule3
+   23 8,10 14 2*kpA #Rule3
+   24 9 3,6 kmA #Rule3r
+   25 11 2,8 kmA #Rule3r
+   26 12 6,8 kmA #Rule3r
+   27 4,9 12 kpK #Rule4
+   28 11 4,7 kmK #Rule4r
+   29 12 4,9 kmK #Rule4r
+   30 13 6,9 kmD #Rule2r
+   31 14 6,12 kmD #Rule2r
+   32 15 9,9 kmD #Rule2r
+   33 16 9,12 kmD #Rule2r
+   34 17 12,12 kmD #Rule2r
+   35 3,13 15 kpA #Rule3
+   36 3,14 16 kpA #Rule3
+   37 8,13 16 kpA #Rule3
+   38 8,14 17 kpA #Rule3
+   39 13 3,10 kmA #Rule3r
+   40 14 8,10 kmA #Rule3r
+   41 15 3,13 2*kmA #Rule3r
+   42 16 8,13 kmA #Rule3r
+   43 16 3,14 kmA #Rule3r
+   44 17 8,14 2*kmA #Rule3r
+   45 4,13 14 kpK #Rule4
+   46 4,15 16 2*kpK #Rule4
+   47 4,16 17 kpK #Rule4
+   48 14 4,13 kmK #Rule4r
+   49 16 4,15 kmK #Rule4r
+   50 17 4,16 2*kmK #Rule4r
+   51 17 18 2*pK #Rule5
+   52 18 12,19 kmD #Rule2r
+   53 18 8,20 kmA #Rule3r
+   54 18 14,21 kmA #Rule3r
+   55 18 4,22 kmK #Rule4r
+   56 18 16,23 kmK #Rule4r
+   57 18 24 pKs #Rule6
+   58 18 17 dM #Rule7
+   59 19 1,25 kmL #Rule1r
+   60 6,19 20 kpD #Rule2
+   61 9,19 22 kpD #Rule2
+   62 12,19 18 kpD #Rule2
+   63 19,19 24 0.5*kpD #Rule2
+   64 20 6,19 kmD #Rule2r
+   65 22 9,19 kmD #Rule2r
+   66 24 19,19 kmD #Rule2r
+   67 3,20 22 kpA #Rule3
+   68 8,20 18 kpA #Rule3
+   69 2,21 25 kpA #Rule3
+   70 6,21 19 kpA #Rule3
+   71 10,21 20 2*kpA #Rule3
+   72 13,21 22 kpA #Rule3
+   73 14,21 18 kpA #Rule3
+   74 20,21 24 kpA #Rule3
+   75 19 6,21 kmA #Rule3r
+   76 20 10,21 kmA #Rule3r
+   77 22 13,21 kmA #Rule3r
+   78 22 3,20 kmA #Rule3r
+   79 24 20,21 2*kmA #Rule3r
+   80 3,23 21 kpK #Rule4
+   81 7,23 25 kpK #Rule4
+   82 9,23 19 kpK #Rule4
+   83 13,23 20 kpK #Rule4
+   84 15,23 22 2*kpK #Rule4
+   85 16,23 18 kpK #Rule4
+   86 4,22 18 kpK #Rule4
+   87 22,23 24 kpK #Rule4
+   88 19 9,23 kmK #Rule4r
+   89 20 13,23 kmK #Rule4r
+   90 21 3,23 kmK #Rule4r
+   91 22 15,23 kmK #Rule4r
+   92 24 22,23 2*kmK #Rule4r
+   93 19 12 dM #Rule7
+   94 20 14 dM #Rule7
+   95 22 16 dM #Rule7
+   96 24 18 2*dM #Rule7
+   97 23 4 dC #Rule8
+   98 1,25 19 kpL #Rule1
+   99 25 2,21 kmA #Rule3r
+  100 25 7,23 kmK #Rule4r
+  101 25 11 dM #Rule7
+end reactions
+begin groups
+    1 RecDim               2*10,2*13,2*14,2*15,2*16,2*17,2*18,2*20,2*22,2*24
+    2 Rec_A                7,9,11,12,13,14,2*15,2*16,2*17,2*18,19,20,2*22,2*24,25
+    3 Rec_K                11,12,14,16,2*17,2*18,19,20,22,2*24,25
+    4 Rec_Kp               18,19,20,22,2*24,25
+    5 RecDim_Kp            18,20,22,2*24
+    6 L_tot                1,6,9,2*10,12,2*13,2*14,2*15,2*16,2*17,2*18,19,2*20,2*22,2*24
+    7 A_tot                3,7,8,9,11,12,13,14,2*15,2*16,2*17,2*18,19,20,21,2*22,2*24,25
+    8 K_tot                4,8,11,12,14,16,2*17,2*18,19,20,21,22,23,2*24,25
+    9 R_tot                2,6,7,9,2*10,11,12,2*13,2*14,2*15,2*16,2*17,2*18,19,2*20,2*22,2*24,25
+end groups
