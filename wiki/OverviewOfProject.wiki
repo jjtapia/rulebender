@@ -2,16 +2,15 @@
 
 =Overview=
 
-Current Developer: Adam M. Smith
-Previous Team Members: Wen Xu, Yao Sun
+*Current Developer:* Adam M. Smith
+*Previous Team Members:* Wen Xu, Yao Sun
 
-Project Advisor: Dr. G. Elisabeta Marai
-Systems Biology Collaborator: Dr. James R. Faeder
+*Project Advisor:* Dr. G. Elisabeta Marai
+*Systems Biology Collaborator:* Dr. James R. Faeder
 
-Code Location:
-All versions now hosted on googlecode.  See the 'tags' directory for previous versions.
+*Code Location:* All versions now hosted on googlecode.  See the 'tags' directory for previous versions.
 
-Project Website: http://www.rulebender.org
+*Project Website:* http://www.rulebender.org
 
 == Purpose == 
 
