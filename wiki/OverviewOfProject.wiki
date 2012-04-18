@@ -9,9 +9,7 @@ Project Advisor: Dr. G. Elisabeta Marai
 Systems Biology Collaborator: Dr. James R. Faeder
 
 Code Location:
-Version 1 is hosted on arsenic.cs.pitt.edu in /afs/cs.pitt.edu/projects/marai/gfx3/Projects/BioDiagrams/svn/BioDiagrams and is only accessible with an approved afs account.  Soon the code will be moved to googlecode.
-
-Version 2 code is all hosted on google code. 
+All versions now hosted on googlecode.  See the 'tags' directory for previous versions.
 
 Project Website: http://www.rulebender.org
 
