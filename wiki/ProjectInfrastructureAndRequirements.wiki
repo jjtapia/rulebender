@@ -5,7 +5,7 @@
 ==Version 1.*==
 
 ===Source Code===
-RuleBender is written in Java and is cross-platform for use and development.  
+!RuleBender is written in Java and is cross-platform for use and development.  
 
 ===Frameworks===
 Prefuse: prefuse.org.  Prefuse is a visualization framework that allows for the definition of visual models, rendering, and interaction.  It is used for the Contact Map, Influence Graph, and Species Browser.
