@@ -1,0 +1,44 @@
+=Fall 2012=
+ == Writing/Presentations ==
+  ** Journal Paper: About 2-3 pages of extra content needs to be added to the BioVis Paper.
+
+ ==Implementation==
+  ** Details View:  Interaction in the gui should show data on demand in a table format.
+  ** Improved Simulation Interface: Implement the simulation designer interface.  
+  ** Bug Fixing: There will be many small issues to fix with the help of our biology testers.
+  ** Releases: There will be two official releases this semester.  The first will be as soon as possible and will include the basic version of the RCP application.  The second release will be towards the end of the semester once the semester’s work has been added.
+  ** Documentation: Whoever works on the project next would appreciate a few days worth of documentation and tutorial material.
+  ** Improved Contact Map:  Molecule creation and destruction are now shown through “hub nodes”, however, these are not intuitive and the biologists would like to change them.
+  ** Improved Influence Graph: The construction algorithm for the influence graph is incorrect, and the visualization is not scalable.  Both of these problems should be fixed.
+  ** Rule Visualization: John Sekar has a prototype for visualizing rules.  We should explore his ideas and implement a way to show the rules.
+  ** New Website:	The existing web site will be updated to use WordPress.  It has already been installed, but I am waiting on tech to help me with permissions issues.
+  ** User Specified Syntax Highlighting: Users select colors for various language features.  
+  ** Text Editor Annotation: On-the-fly text annotation and overlays can show bad syntax.  
+
+==Schedule=
+|| Date || Deliverable ||
+|| January 11th || High School Presentation Slides; Review of simulation options from relevant tools.||
+|| January 18th || Finished journal paper; Completed MS committee.||
+|| January 25th || Taking care of sickness; cs2620 presentation materials.||
+|| February 1st || More sickness; Details View Started; Much bug fixing. ||
+|| February 8th || Progress for details view; Plans for improved simulation interface; Contact Map bug fixing.||
+|| February 15th || Initial beta release of the tool with new website; details view.||
+|| February 22nd || Separation of model and actions; Progress on Simulation Interface; EDT Thesis started.||
+|| February 29th || Progress on Simulation Interface. EDT Thesis Sent to Readers||
+|| March 7th || Contact Map or Influence Graph or RuleVis depending on importance.||
+|| March 14 ||  || 
+|| March 21 || Thesis defense materials progress.||
+|| March 28th || Have a job lined up; Thesis Defense.||
+|| April 4th || Bug Fixes/Buffer Week||
+|| April 11th || Bug Fixes/Buffer Week||
+|| April 18th || Semester work released.||
+|| April 25th || Ready to Graduate; RuleBender Documentation||
+
+
+==Contingencies==
+	
+===Implementation===
+
+ * User Specified Syntax Highlighting: This is a convenient feature that the biologists have requested in the past, however, it is not novel or essential.  It should not be more than a days worth of work, but it will not be done unless sufficient demand is made or there is extra time.
+ *Text Editor Annotation: This is a very convenient feature in a text editor but it is also not novel and not as important as simulation or the visual elements of the tool.  Additionally it may require our own simple parser implementation.  I estimate that at least 4 days of work would be required to get this working so this will be skipped unless we have finished all of the other goals.
+ * Contact Map vs. Influence Graph vs. RuleVis: Each of these things is very important and I do not want to skip any of them, but we do need to discuss their priority.  Depending on the amount of simulation work that is required, we could be very short on time for other implementation this semester.
