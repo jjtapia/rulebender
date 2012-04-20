@@ -1,6 +1,8 @@
 #summary How to do some common things.
 
-= Changing the text on the Status Line =
+=How To...=
+
+== Change the text on the Status Line ==
 
 {{{
 IStatusLineManager statusline = getWindowConfigurer()
@@ -10,7 +12,7 @@ statusline.setMessage(null, "Status line is ready");
 }}}
 
 
-= Write to a Console =
+== Write to a Console ==
 
 The console is currently only visible in the simulate perspective, but you can easily write to it with a static method in the Console class.  Consoles are managed by name, and new ones are created for names that are not recognized. 
 
@@ -18,7 +20,7 @@ The console is currently only visible in the simulate perspective, but you can e
 Console.displayOutput("<console name>","<message>");
 }}}
 
-=Access the views=
+==Access the views==
 If a view needs to be updated from a different package then use the code below.  This somewhat violates the separation of concerns and should not be used as a shortcut for a feature, but it does work and can be useful for testing.
 	
 {{{	 
