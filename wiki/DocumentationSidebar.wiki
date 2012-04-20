@@ -12,3 +12,4 @@
  * [ReleasePreparation Release Preparation]
  * [TestPlans Testing Plans]
  * [Pitfalls Common Pitfalls]
+ * [RandomHowTos Random How-Tos]
