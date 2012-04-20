@@ -2,6 +2,6 @@
 
 = Web Site Management =
 
-The rulebender.org domain was registered by Dr. Faeder, and redirects to rulebender.cs.pitt.edu which is hosted on the department web server at /afs/cs.pitt.edu/projects/vis/visweb/research/rulebender/.  The index.html file redirects to /afs/cs.pitt.edu/projects/vis/visweb/research/rulebender/wordpress/ which is where the actual page contents are stored.   WordPress was selected as a content management system because it is much easier than the old html/css version.  To change the site, you first must register and then have an admin give you the proper permissions.  
+The rulebender.org domain was registered by Dr. Faeder, and redirects to rulebender.cs.pitt.edu which is hosted on the department web server at /afs/cs.pitt.edu/projects/vis/visweb/research/rulebender/.  The index.html file redirects to /afs/cs.pitt.edu/projects/vis/visweb/research/rulebender/wordpress/ which is where the actual page contents are stored.   !WordPress was selected as a content management system because it is much easier than the old html/css version.  To change the site, you first must register and then have an admin give you the proper permissions.  
 
 (TODO: More details about the site structure and probably some screenshots.)
