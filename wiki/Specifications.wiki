@@ -1,8 +1,14 @@
+= Specifications =
 
-= Coming Soon... =
+==Specs==
 
-Specs; mock interfaces go below in Mocks)
-Goals (what this project will do, given the specs above)
-Non-goals (what this project will not do)
-Use-cases
+
+
+==Goals==
+ (what this project will do, given the specs above)
+
+==Non-goals==
+ (what this project will not do)
+
+==Use-cases==
 graphs of possible interaction/interfaces/states
