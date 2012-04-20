@@ -1,0 +1,11 @@
+#summary A List of potential areas for making mistakes
+
+= Pitfalls =
+  
+==Restoring Views Across Sessions==
+
+In ApplicationWorkbenchAdvisor, the line
+
+	{{{configurer.setSaveAndRestore(true);}}}
+	
+tells the workbench to save its window/view state so that the next time it is opened, the view settings are restored.  This is great once the program is being used, but it will actually hide new views when you are developing the tool and can be a major source of frustration.  I generally keep this commented out while I am working, and then just make sure to uncomment it before a release. 
