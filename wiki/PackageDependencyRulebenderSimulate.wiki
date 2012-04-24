@@ -1,1 +1,0 @@
-Writing to /Users/adammatthewsmith/Documents/workspace/rulebender-wiki/PackageDependencyRulebenderSimulate.wiki#summary package dependency for rulebender.simulate= Package dependency graph for rulebender.simulate=http://rulebender.googlecode.com/svn/wiki/imgs/arch/rulebender.simulate.png

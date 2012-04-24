@@ -1,1 +1,0 @@
-Writing to /Users/adammatthewsmith/Documents/workspace/rulebender-wiki/PackageDependencyRulebenderContactmapProperties.wiki#summary package dependency for rulebender.contactmap.properties= Package dependency graph for rulebender.contactmap.properties=http://rulebender.googlecode.com/svn/wiki/imgs/arch/rulebender.contactmap.properties.png

@@ -1,1 +1,0 @@
-Writing to /Users/adammatthewsmith/Documents/workspace/rulebender-wiki/PackageDependencyRulebenderSpeciesgraphView.wiki#summary package dependency for rulebender.speciesgraph.view= Package dependency graph for rulebender.speciesgraph.view=http://rulebender.googlecode.com/svn/wiki/imgs/arch/rulebender.speciesgraph.view.png

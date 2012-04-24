@@ -1,1 +1,0 @@
-Writing to /Users/adammatthewsmith/Documents/workspace/rulebender-wiki/PackageDependencyRulebenderInfluencegraphPrefuse.wiki#summary package dependency for rulebender.influencegraph.prefuse= Package dependency graph for rulebender.influencegraph.prefuse=http://rulebender.googlecode.com/svn/wiki/imgs/arch/rulebender.influencegraph.prefuse.png

@@ -1,1 +1,0 @@
-Writing to /Users/adammatthewsmith/Documents/workspace/rulebender-wiki/PackageDependencyRulebenderEditorsBnga.wiki#summary package dependency for rulebender.editors.bnga= Package dependency graph for rulebender.editors.bnga=http://rulebender.googlecode.com/svn/wiki/imgs/arch/rulebender.editors.bnga.png

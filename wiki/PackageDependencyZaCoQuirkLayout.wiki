@@ -1,1 +1,0 @@
-Writing to /Users/adammatthewsmith/Documents/workspace/rulebender-wiki/PackageDependencyZaCoQuirkLayout.wiki#summary package dependency for za.co.quirk.layout= Package dependency graph for za.co.quirk.layout=http://rulebender.googlecode.com/svn/wiki/imgs/arch/za.co.quirk.layout.png

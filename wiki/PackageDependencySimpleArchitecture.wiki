@@ -1,1 +1,0 @@
-Writing to /Users/adammatthewsmith/Documents/workspace/rulebender-wiki/PackageDependencySimpleArchitecture.wiki#summary package dependency for SimpleArchitecture= Package dependency graph for SimpleArchitecture=http://rulebender.googlecode.com/svn/wiki/imgs/arch/SimpleArchitecture.png

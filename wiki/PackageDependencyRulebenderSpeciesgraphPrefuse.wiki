@@ -1,1 +1,0 @@
-Writing to /Users/adammatthewsmith/Documents/workspace/rulebender-wiki/PackageDependencyRulebenderSpeciesgraphPrefuse.wiki#summary package dependency for rulebender.speciesgraph.prefuse= Package dependency graph for rulebender.speciesgraph.prefuse=http://rulebender.googlecode.com/svn/wiki/imgs/arch/rulebender.speciesgraph.prefuse.png

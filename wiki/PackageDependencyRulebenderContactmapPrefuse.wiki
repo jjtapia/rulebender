@@ -1,1 +1,0 @@
-Writing to /Users/adammatthewsmith/Documents/workspace/rulebender-wiki/PackageDependencyRulebenderContactmapPrefuse.wiki#summary package dependency for rulebender.contactmap.prefuse= Package dependency graph for rulebender.contactmap.prefuse=http://rulebender.googlecode.com/svn/wiki/imgs/arch/rulebender.contactmap.prefuse.png
