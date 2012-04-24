@@ -371,35 +371,12 @@
           </includes>
        </viewerActionBinding>
    </extension>
-   <extension
-   		point="org.eclipse.ui.startup">
-	</extension> 
-   <extension
+  <extension
          point="org.eclipse.ui.commands">
-      <command
-            defaultHandler="rulebender.core.commands.ExitHandler"
-            id="rulebender.commands.Exit"
-            name="Exit">
-      </command>
       <command
             defaultHandler="rulebender.core.commands.OpenFileHandler"
             id="rulebender.commands.OpenFile"
             name="OpenFile">
-      </command>
-      <command
-            defaultHandler="rulebender.core.commands.PrintFileHandler"
-            id="rulebender.commands.PrintFile"
-            name="Print">
-      </command>
-      <command
-            defaultHandler="rulebender.core.commands.FindHandler"
-            id="rulebender.commands.Find"
-            name="Find">
-      </command>
-      <command
-            defaultHandler="rulebender.core.commands.ReplaceHandler"
-            id="rulebender.commands.Replace"
-            name="Replace">
       </command>
       <command
             defaultHandler="rulebender.core.commands.SwitchWorkspace"

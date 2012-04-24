@@ -1,4 +1,4 @@
-package rulebender.core.utility;
+package rulebender.test.parser.astreader;
 
 import java.io.FileReader;
 import java.io.FileWriter;
