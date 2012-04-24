@@ -4,4 +4,6 @@
 
 
 http://rulebender.googlecode.com/svn/wiki/imgs/arch/SimpleArchitecture.png 
-[http://rulebender.googlecode.com/svn/wiki/imgs/arch/SimpleArchitecture.png Link To File]
+
+
+[http://code.google.com/p/rulebender/svn/wiki/imgs/arch/SimpleArchitecture.png Link To File]
