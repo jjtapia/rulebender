@@ -1,4 +1,4 @@
 #summary package dependency for SimpleArchitecture
 = Package dependency graph for SimpleArchitecture=
-For class level and interactive graphs, use the CDA tool (http://www.dependency-analyzer.org/) on the RuleBender class files.
+For class level and interactive graphs, use the CDA tool (http://www.dependency-analyzer.org/) on the !RuleBender class files.
 http://rulebender.googlecode.com/svn/wiki/imgs/arch/SimpleArchitecture.png
