@@ -1,0 +1,4 @@
+#summary package dependency for rulebender.results.view
+= Package dependency graph for rulebender.results.view=
+For class level and interactive graphs, use the CDA tool (http://www.dependency-analyzer.org/) on the RuleBender class files.
+http://rulebender.googlecode.com/svn/wiki/imgs/arch/rulebender.results.view.png
