@@ -1,3 +1,5 @@
 #summary sketch of overall design
 
 = Coming Soon... =
+
+http://code.google.com/p/rulebender/source/browse/trunk/docs/arch/SimpleArchitecture.png
