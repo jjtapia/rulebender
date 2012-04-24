@@ -1,0 +1,1 @@
+Writing to /Users/adammatthewsmith/Documents/workspace/rulebender-wiki/PackageDependencyDeRalfebertRcpToolsPreferredperspective.wiki#summary package dependency for de.ralfebert.rcp.tools.preferredperspective= Package dependency graph for de.ralfebert.rcp.tools.preferredperspective=http://rulebender.googlecode.com/svn/wiki/imgs/arch/de.ralfebert.rcp.tools.preferredperspective.png

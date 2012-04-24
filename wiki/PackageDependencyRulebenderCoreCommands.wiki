@@ -1,0 +1,1 @@
+Writing to /Users/adammatthewsmith/Documents/workspace/rulebender-wiki/PackageDependencyRulebenderCoreCommands.wiki#summary package dependency for rulebender.core.commands= Package dependency graph for rulebender.core.commands=http://rulebender.googlecode.com/svn/wiki/imgs/arch/rulebender.core.commands.png

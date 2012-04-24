@@ -1,0 +1,1 @@
+Writing to /Users/adammatthewsmith/Documents/workspace/rulebender-wiki/PackageDependencyRulebenderContactmapView.wiki#summary package dependency for rulebender.contactmap.view= Package dependency graph for rulebender.contactmap.view=http://rulebender.googlecode.com/svn/wiki/imgs/arch/rulebender.contactmap.view.png

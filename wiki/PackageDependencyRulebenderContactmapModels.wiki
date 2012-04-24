@@ -1,0 +1,1 @@
+Writing to /Users/adammatthewsmith/Documents/workspace/rulebender-wiki/PackageDependencyRulebenderContactmapModels.wiki#summary package dependency for rulebender.contactmap.models= Package dependency graph for rulebender.contactmap.models=http://rulebender.googlecode.com/svn/wiki/imgs/arch/rulebender.contactmap.models.png

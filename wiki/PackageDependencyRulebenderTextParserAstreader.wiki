@@ -1,0 +1,1 @@
+Writing to /Users/adammatthewsmith/Documents/workspace/rulebender-wiki/PackageDependencyRulebenderTextParserAstreader.wiki#summary package dependency for rulebender.text.parser.astreader= Package dependency graph for rulebender.text.parser.astreader=http://rulebender.googlecode.com/svn/wiki/imgs/arch/rulebender.text.parser.astreader.png

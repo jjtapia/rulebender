@@ -1,0 +1,1 @@
+Writing to /Users/adammatthewsmith/Documents/workspace/rulebender-wiki/PackageDependencyRulebenderEditorsSimple.wiki#summary package dependency for rulebender.editors.simple= Package dependency graph for rulebender.editors.simple=http://rulebender.googlecode.com/svn/wiki/imgs/arch/rulebender.editors.simple.png

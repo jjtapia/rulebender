@@ -1,0 +1,1 @@
+Writing to /Users/adammatthewsmith/Documents/workspace/rulebender-wiki/PackageDependencyRulebenderEditorsCommon.wiki#summary package dependency for rulebender.editors.common= Package dependency graph for rulebender.editors.common=http://rulebender.googlecode.com/svn/wiki/imgs/arch/rulebender.editors.common.png

@@ -1,0 +1,1 @@
+Writing to /Users/adammatthewsmith/Documents/workspace/rulebender-wiki/PackageDependencyRulebender-full.wiki#summary package dependency for rulebender-full= Package dependency graph for rulebender-full=http://rulebender.googlecode.com/svn/wiki/imgs/arch/rulebender-full.png

@@ -1,0 +1,1 @@
+Writing to /Users/adammatthewsmith/Documents/workspace/rulebender-wiki/PackageDependencyRulebenderContactmapTest.wiki#summary package dependency for rulebender.contactmap.test= Package dependency graph for rulebender.contactmap.test=http://rulebender.googlecode.com/svn/wiki/imgs/arch/rulebender.contactmap.test.png

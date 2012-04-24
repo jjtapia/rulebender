@@ -1,0 +1,1 @@
+Writing to /Users/adammatthewsmith/Documents/workspace/rulebender-wiki/PackageDependencyRulebenderInfluencegraphView.wiki#summary package dependency for rulebender.influencegraph.view= Package dependency graph for rulebender.influencegraph.view=http://rulebender.googlecode.com/svn/wiki/imgs/arch/rulebender.influencegraph.view.png

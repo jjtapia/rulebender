@@ -1,0 +1,1 @@
+Writing to /Users/adammatthewsmith/Documents/workspace/rulebender-wiki/PackageDependencyRulebenderCorePrefuseNetworkviewer.wiki#summary package dependency for rulebender.core.prefuse.networkviewer= Package dependency graph for rulebender.core.prefuse.networkviewer=http://rulebender.googlecode.com/svn/wiki/imgs/arch/rulebender.core.prefuse.networkviewer.png

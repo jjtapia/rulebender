@@ -1,0 +1,1 @@
+Writing to /Users/adammatthewsmith/Documents/workspace/rulebender-wiki/PackageDependencyRulebenderPreferencesViews.wiki#summary package dependency for rulebender.preferences.views= Package dependency graph for rulebender.preferences.views=http://rulebender.googlecode.com/svn/wiki/imgs/arch/rulebender.preferences.views.png

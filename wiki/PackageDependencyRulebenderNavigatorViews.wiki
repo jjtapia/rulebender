@@ -1,0 +1,1 @@
+Writing to /Users/adammatthewsmith/Documents/workspace/rulebender-wiki/PackageDependencyRulebenderNavigatorViews.wiki#summary package dependency for rulebender.navigator.views= Package dependency graph for rulebender.navigator.views=http://rulebender.googlecode.com/svn/wiki/imgs/arch/rulebender.navigator.views.png

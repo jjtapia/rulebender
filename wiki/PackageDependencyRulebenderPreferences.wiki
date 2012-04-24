@@ -1,0 +1,1 @@
+Writing to /Users/adammatthewsmith/Documents/workspace/rulebender-wiki/PackageDependencyRulebenderPreferences.wiki#summary package dependency for rulebender.preferences= Package dependency graph for rulebender.preferences=http://rulebender.googlecode.com/svn/wiki/imgs/arch/rulebender.preferences.png

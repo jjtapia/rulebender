@@ -1,0 +1,1 @@
+Writing to /Users/adammatthewsmith/Documents/workspace/rulebender-wiki/PackageDependencyRulebenderNavigatorModel.wiki#summary package dependency for rulebender.navigator.model= Package dependency graph for rulebender.navigator.model=http://rulebender.googlecode.com/svn/wiki/imgs/arch/rulebender.navigator.model.png
