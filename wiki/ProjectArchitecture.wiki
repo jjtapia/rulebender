@@ -2,7 +2,8 @@
 
 = Simple Sketch of !RuleBender and library interaction =
 
+http://wiki.rulebender.googlecode/hg/wiki/imgs/arch/SimpleArchitecture-small.png
 
-http://code.google.com/p/rulebender/source/browse/trunk/docs/arch/SimpleArchitecture-small.png
+https://rulebender.googlecode.com/svn/wiki/SimpleArchitecture.png
 
-[http://code.google.com/p/rulebender/source/browse/trunk/docs/arch/SimpleArchitecture.png Full Resolution (1.6 Mb)]
+[wiki.rulebender.googlecode/hg/wiki/imgs/arch/SimpleArchitecture-small.png Full Resolution (1.6 Mb)]
