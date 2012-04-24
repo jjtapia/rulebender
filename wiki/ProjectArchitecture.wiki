@@ -1,5 +1,8 @@
 #summary sketch of overall design
 
-= Coming Soon... =
+= Simple Sketch of RuleBender and library interaction =
 
-http://code.google.com/p/rulebender/source/browse/trunk/docs/arch/SimpleArchitecture.png
+
+http://code.google.com/p/rulebender/source/browse/trunk/docs/arch/SimpleArchitecture-small.png
+
+[http://code.google.com/p/rulebender/source/browse/trunk/docs/arch/SimpleArchitecture.png Full Resolution (1.6 Mb)]
