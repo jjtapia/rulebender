@@ -2,7 +2,7 @@
 
 = Introduction =
 
-Add your content here.
+This How-To builds on the [HowTo
 
 
 = Details =
