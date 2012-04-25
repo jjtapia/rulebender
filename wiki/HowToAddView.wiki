@@ -50,6 +50,8 @@ import org.eclipse.ui.part.ViewPart;
 
 public class ExampleView extends ViewPart {
 
+        private Label label;
+	
 	// Generally nothing happens in the constructor
 	public ExampleView() {
 	
@@ -59,7 +61,7 @@ public class ExampleView extends ViewPart {
 	@Override
 	public void createPartControl(Composite parent) 
 	{
-		Label label = new Label(parent, SWT.BORDER);
+	        label = new Label(parent, SWT.BORDER);
 		label.setText("Hello from a new view!!!");
 	}
 
