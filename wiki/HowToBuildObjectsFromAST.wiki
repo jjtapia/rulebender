@@ -18,10 +18,14 @@ The Reader class is initialized with an instance of a Builder (that implements t
 
 In the case of RuleBender, the !AST is an !XML based representation of a BNGL model.  The !BNGLASTReader.java class is the Reader for that !XML data.  !BNGLModelBuilderInterface.java is the Interface that defines the methods that will be called when elements are encountered (i.e. molecules, reactions, observables).   The Builder classes will be what you will write, but there is an example of one in {{{rulebender.contactmap.models.CMapModelBuilder.java}}}.
 
-== Relevant RuleBender Classes == 
+== Relevant !RuleBender Classes == 
 
  * rulebender.editors.bngl.BNGLEditor: The BNGLEditor is used in the partActivated method, as in the previous tutorial, to get a model object and listen for changes to it.  
  * rulebender.editors.bngl.model.BNGASTReader: The BNGASTReader is the class that actually 
  * rulebender.editors.bngl.model.BNGLModel
  * rulebender.editors.bngl.model.BNGLModelBuilderInterface
  * rulebender.editors.bngl.model.ruledata.*
+
+= Steps = 
+
+# Start with the ExampleView.java code that was defined in the [HowTo previous tutorial]
