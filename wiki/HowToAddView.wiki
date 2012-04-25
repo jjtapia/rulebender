@@ -2,16 +2,85 @@
 
 = Introduction =
 
-Adding a view to RuleBender is the first step to producing another visualization or swt widget that can be used by a modeler.  There are many other things that you need to add to a view in order for it to be useful, but this page will show you the basic first step.
+Adding a view to !RuleBender is the first step to producing another visualization or swt widget that can be used by a modeler.  There are many other things that you need to add to a view in order for it to be useful, but this page will show you the basic first step.
 
 == 1. Create the view in the plugin.xml document visual interface ==
 
-Open plugin.xml and go to the "Extensions" tab.  This tree structure is a visual interface to the Extensions element of the plugin.xml text file, and is much easier to use than editing the xml itself.  Each element in this tree defines a point of the Eclipse RCP framework that can be extended.  Right now we are concerned with the extension org.eclipse.ui.views.  To add a view to the system, right click on the views element and navigate to "New->view".  
-
-http://rulebender.googlecode.com/svn/wiki/imgs/how-to/addViewExtension.png  
+Open {{{plugin.xml}}} and go to the "Extensions" tab.  This tree structure is a visual interface to the Extensions element of the {{{plugin.xml}}} text file, and is much easier to use than editing the xml itself.  Each element in this tree defines a point of the Eclipse RCP framework that can be extended.  Right now we are concerned with the extension {{{org.eclipse.ui.views}}}.  To add a view to the system, right click on the views element and navigate to "New->view".  
 
 
-This will create a new node in the tree for our new view.  When this node is selected, it shows the properties for the view on the right hand side of the form.  
+http://rulebender.googlecode.com/svn/wiki/imgs/howTo/addView/addViewExtension.png  
+
+This will create a new node in the tree for our new view. 
 
 
-http://rulebender.googlecode.com/svn/wiki/imgs/how-to/ViewProperties.png  
+== 2. Fill in the view Properties ==
+
+When the new view node is selected, it shows the properties for the view on the right hand side of the form.  You must fill in 
+ 
+ * *id:* A unique identifier for the view.  This can be used to reference the view from within the code.
+ * *name:* A name for the view that will be used to label it in the program.  
+ * *class:* The class that will define this view.  This does not have to exist yet, but it will be a subclass of the !ViewPart class.  After you have typed in the package and class information, you can click on the 'class' link and it will create the class for you.
+
+Optionally, you can define an icon for the class that must be a 16x16 pixel .gif file. 
+
+http://rulebender.googlecode.com/svn/wiki/imgs/howTo/addView/viewProperties.png  
+
+== 3. Add the view to the perspective.  ==
+
+Adding the element to the {{{org.eclipse.ui.views}}} extension tells Eclipse RCP that you have defined a view, but if you do not add it to a perspective, then it will not show up in the tool.  So, just like before when we added a view to {{{org.eclipse.ui.views}}}, we are going to add a view to one of the perspective extensions in {{{org.eclipse.ui.perspectiveExtensions}}}.
+
+Each node in the level below {{{org.eclipse.ui.perspectiveExtensions}}} defines a perspective for RuleBender.   Right now it has definitions for {{{rulebender.perspective}}} (the modeling perspective), {{{rulebender.ResultsPerspective}}} (the results perspective), and {{{rulebender.simulate.SimulatePerspective}}} (the simulation perspective).  We are going to add our example view to the modeling perspective so expand that tree.  You should see a list of views that are already in this perspective, and each one uses a view id to link back to a view that is defined in the {{{org.eclipse.ui.views}}} extension.  Right click on the perspective node and navigate to "New->view".  
+
+Select the new node that was created, and fill in the properties.  This time you need to use the id that we created for the view ({{{rulebender.example.exampleview}}} if you're following my example).  Also, you need to fill in where the view should appear within this perspective.  Locations are defined as relative to another view.  For now choose "stack" relative to {{{rulebender.contactmap.view.ContactMapView}}}
+
+http://rulebender.googlecode.com/svn/wiki/imgs/howTo/addView/fullPerspectiveExtensionProperties.png  
+
+== 4. Create the class==
+
+If you have not done it already, select the node for our new view that we defined in {{{org.eclipse.ui.views}}} and click on the blue "class" link in the properties for our view.  This will bring up a wizard to create a new class based on what was written in the text box.  The class is empty except for a few methods that we must fill in.  Enter the extra information from the code snippet below.
+
+{{{
+package rulebender.example;
+
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Label;
+import org.eclipse.ui.part.ViewPart;
+
+public class ExampleView extends ViewPart {
+
+	// Generally nothing happens in the constructor
+	public ExampleView() {
+	
+	}
+
+	// This is where the view itself is defined using JFace widgets or SWT.
+	@Override
+	public void createPartControl(Composite parent) 
+	{
+		Label label = new Label(parent, SWT.BORDER);
+		label.setText("Hello from a new view!!!");
+	}
+
+	// This gets called when the view gets focus from the user.  
+	// You do not have to implement it, but you can tell any of the
+	// view elements that you define about the focus event if you want to.
+	@Override
+	public void setFocus() {
+		// TODO Auto-generated method stub
+
+	}
+
+}
+}}}
+
+== 5. Comment out setSaveAndRestore, and then run it! ==
+
+A nice feature of Eclipse RCP is that it allows the size, location, and layout of the interface to be saved between sessions; however, this is a serious source of frustration because it also blocks new views from showing during development.  So, before running RuleBender when you are adding views be sure to open rulebender.ApplicationWorkbenchAdvisor and comment out the line 
+{{{configurer.setSaveAndRestore(true);}}}.  
+
+Now check out your results!
+
+
+http://rulebender.googlecode.com/svn/wiki/imgs/howTo/addView/rulebenderWithExampleNewView.png  
