@@ -5,7 +5,7 @@
  * [ProjectInfrastructureAndRequirements Infrastructure]
  * [ProjectArchitecture Architecture Overview]
  * [DetailedDesignDocumentation Detailed Architecture]
-  * [PackageDependencyRulebender-full All Packages]
+  * [PackageDependencyRulebenderFull All Packages]
   * [PackageDependencyRulebenderContactmapModels rulebender.contactmap.models]
   * [PackageDependencyRulebenderContactmapPrefuse rulebender.contactmap.prefuse]
   * [PackageDependencyRulebenderContactmapProperties rulebender.contactmap.properties]
