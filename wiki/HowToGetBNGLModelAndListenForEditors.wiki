@@ -20,7 +20,7 @@ The IPartService tracks all of the changes that a Part (a View as far as we are 
  # Use the Eclipse suggestion or manually add the following methods to the class:
 
 {{{
-@Override
+        @Override
 	public void partActivated(IWorkbenchPartReference partRef) {
 		// TODO Auto-generated method stub
 	}
@@ -68,7 +68,7 @@ The IPartService tracks all of the changes that a Part (a View as far as we are 
 	}
 }}}
 
- # In the "{{{createPartControl(Composite parent)}}}" method, add the following line at the end to register the view as a part listener:
+ # In the {{{createPartControl(Composite parent)}}} method, add the following line at the end to register the view as a part listener:
 
 {{{// Register the view as a part listener.
 		getSite().getPage().addPartListener(this);}}}
