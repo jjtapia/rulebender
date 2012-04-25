@@ -1,11 +1,14 @@
-#summary How To
+#summary How to add a simple empty view to RuleBender
 
 = Introduction =
 
-Add your content here.
+Adding a view to RuleBender is the first step to producing another visualization or swt widget that can be used by a modeler.  There are many other things that you need to add to a view in order for it to be useful, but this page will show you the basic first step.
 
+== 1. Create the view in the plugin.xml document visual interface ==
 
-= Details =
+Open plugin.xml and go to the "Extensions" tab.  This tree structure is a visual interface to the Extensions element of the plugin.xml text file, and is much easier to use than editing the xml itself.  Each element in this tree defines a point of the Eclipse RCP framework that can be extended.  Right now we are concerned with the extension org.eclipse.ui.views.  To add a view to the system, right click on the views element and navigate to "New->view".  
+
+[http:// ]
 
 Add your content here.  Format your content with:
   * Text in *bold* or _italic_
