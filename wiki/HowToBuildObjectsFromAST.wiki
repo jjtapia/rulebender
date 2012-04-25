@@ -2,12 +2,26 @@
 
 = Introduction =
 
-This How-To builds on the [HowTo
+This How-To builds on the [HowToGetBNGLModelAndListenForEditors tutorial for getting BNGLModel objects] from the BNGLEditor when it is opened or changed.  We will be using the code from that example as a base, so make sure you can get it to work before you move on. 
 
+Specifically, this tutorial will show how to build a model from and abstract syntax tree (!AST) that is retrieved from BNGLModel using the Builder Pattern.  
 
-= Details =
+== Relevant Eclipse Frameworks == 
 
-Add your content here.  Format your content with:
-  * Text in *bold* or _italic_
-  * Headings, paragraphs, and lists
-  * Automatic links to other wiki pages
+Nothing new for this tutorial
+
+==  The Builder Pattern ==
+
+The Builder Pattern is used when there is a complex data structure or file that needs to be read in order to construct another model.  It requires one Reader class that parses the complex data structure, an Interface of methods to be called when features of the model are read by the Reader, and many Builder objects that implement the Interface and construct a custom model.  
+
+The Reader class is initialized with an instance of a Builder (that implements the interface), and then reads the complex data/file.  As the Reader processes the data, it calls the methods in the Builder which then builds the object.  (see the [http://en.wikipedia.org/wiki/Builder_pattern WikiPedia page]).
+
+In the case of RuleBender, the !AST is an !XML based representation of a BNGL model.  The !BNGLASTReader.java class is the Reader for that !XML data.  !BNGLModelBuilderInterface.java is the Interface that defines the methods that will be called when elements are encountered (i.e. molecules, reactions, observables).   The Builder classes will be what you will write, but there is an example of one in {{{rulebender.contactmap.models.CMapModelBuilder.java}}}.
+
+== Relevant RuleBender Classes == 
+
+ * rulebender.editors.bngl.BNGLEditor: The BNGLEditor is used in the partActivated method, as in the previous tutorial, to get a model object and listen for changes to it.  
+ * rulebender.editors.bngl.model.BNGASTReader: The BNGASTReader is the class that actually 
+ * rulebender.editors.bngl.model.BNGLModel
+ * rulebender.editors.bngl.model.BNGLModelBuilderInterface
+ * rulebender.editors.bngl.model.ruledata.*
