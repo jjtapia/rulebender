@@ -1,0 +1,7 @@
+= Write to a Console =
+
+The console is currently only visible in the simulate perspective, but you can easily write to it with a static method in the Console class.  Consoles are managed by name, and new ones are created for names that are not recognized. 
+
+{{{
+Console.displayOutput("<console name>","<message>");
+}}}
