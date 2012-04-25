@@ -15,7 +15,7 @@ The IPartService tracks all of the changes that a Part (a View as far as we are 
 
 = Steps =
 
- # In {{{rulebender.example.ExampleView.java}}} add "{{{implements IPartListener2}}}" to the class declaration.
+ # In {{{rulebender.example.ExampleView.java}}} add {{{implements IPartListener2}}} to the class declaration.
 
  # Use the Eclipse suggestion or manually add the following methods to the class:
 
@@ -70,8 +70,10 @@ The IPartService tracks all of the changes that a Part (a View as far as we are 
 
  # In the {{{createPartControl(Composite parent)}}} method, add the following line at the end to register the view as a part listener:
 
-{{{// Register the view as a part listener.
-		getSite().getPage().addPartListener(this);}}}
+{{{
+     // Register the view as a part listener.
+     getSite().getPage().addPartListener(this);
+}}}
 
  # Fill in the {{{partActivated(IWorkbenchPartReference partRef) }}} method.  This is where all of the work is going to be done.  Basically, we check to see that the part activated is a !BNGLEditor.  Each !BNGLEditor is associated with a !BNGLModel object that is automatically updated when the file is saved.  When the !BNGLModel is updated a !PropertyChangeEvent is sent to all of the listeners, so we add a PropertyChangeListener to the object.   The particular property that we are interested in for the model is the !AST (abstract syntax tree).  This ast is what we will be using to construct our model for the visualization (or whatever else we are building in this view).  For now, we are ignoring the details of the !AST and just printing to our example view. For more information about handling the !AST see [HowToBuildObjectsFromAST How To Build Objects From the BNGL Abstract Syntax Tree].
 
