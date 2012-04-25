@@ -4,8 +4,6 @@
 
 This How-To explains the details of getting a BNGL model, listening for changes in the models, and listening for new editors.
 
-This is a continuation of the tutorial in [HowToAddView How to add a view to !RuleBender]
-Add your content here.  Format your content with:
-  * Text in *bold* or _italic_
-  * Headings, paragraphs, and lists
-  * Automatic links to other wiki pages
+This is a continuation of the tutorial in [HowToAddView How to Add a View to !RuleBender], so please make sure that works before starting this one.
+
+== Relevant Classes == 
