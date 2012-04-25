@@ -13,7 +13,7 @@ This is a continuation of the tutorial in [HowToAddView How to Add a View to !Ru
 The IPartService tracks all of the changes that a Part (a View as far as we are concerned) undergoes while the program is running. Specifically, our view is going to implement the IPartListener2 interface and then register itself as a part listener when it is initialized.  
 
 
-== Steps ==
+= Steps =
 
  # In {{{rulebender.example.ExampleView.java}}} add "{{{implements IPartListener2}}}" to the class declaration.
 
