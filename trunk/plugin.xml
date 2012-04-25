@@ -71,6 +71,12 @@
                relative="org.eclipse.ui.editorss"
                visible="true">
          </view>
+         <view
+               id="rulebender.example.exampleview"
+               minimized="false"
+               relationship="stack"
+               relative="rulebender.contactmap.view.ContactMapView">
+         </view>
       </perspectiveExtension>
       <perspectiveExtension
             targetID="rulebender.ResultsPerspective">
@@ -227,8 +233,16 @@
       </view>
       <view
             class="org.eclipse.ui.internal.views.markers.ProblemsView"
+            icon="icons/views/problems_view.gif"
             id="rulebender.views.problemview"
             name="Problems"
+            restorable="true">
+      </view>
+      <view
+            class="rulebender.example.ExampleView"
+            icon="icons/views/example.gif"
+            id="rulebender.example.exampleview"
+            name="Example View Extension"
             restorable="true">
       </view>
    </extension>

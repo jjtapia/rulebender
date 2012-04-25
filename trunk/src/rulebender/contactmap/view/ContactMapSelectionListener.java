@@ -330,7 +330,8 @@ public class ContactMapSelectionListener implements ISelectionListener, IPartLis
 	@Override
 	public void partActivated(IWorkbenchPartReference partRef) 
 	{
-		
+		// FIXME  This where we should be checkingn to see if a new model is
+		// opened instead of using the selection service.
 	}
 
 	@Override
