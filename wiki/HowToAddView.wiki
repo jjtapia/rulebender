@@ -8,9 +8,10 @@ Adding a view to RuleBender is the first step to producing another visualization
 
 Open plugin.xml and go to the "Extensions" tab.  This tree structure is a visual interface to the Extensions element of the plugin.xml text file, and is much easier to use than editing the xml itself.  Each element in this tree defines a point of the Eclipse RCP framework that can be extended.  Right now we are concerned with the extension org.eclipse.ui.views.  To add a view to the system, right click on the views element and navigate to "New->view".  
 
-[http:// ]
+http://rulebender.googlecode.com/svn/wiki/imgs/how-to/addViewExtension.png  
 
-Add your content here.  Format your content with:
-  * Text in *bold* or _italic_
-  * Headings, paragraphs, and lists
-  * Automatic links to other wiki pages
+
+This will create a new node in the tree for our new view.  When this node is selected, it shows the properties for the view on the right hand side of the form.  
+
+
+http://rulebender.googlecode.com/svn/wiki/imgs/how-to/ViewProperties.png  
