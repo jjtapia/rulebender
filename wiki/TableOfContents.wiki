@@ -62,3 +62,4 @@
   * [HowToStatusLine Write to Status Line]
   * [HowToConsole Write to Console]
   * [HowToAccessViews How to Access Views] 
+  * [HowToAddView How to Add a View to RuleBender]
