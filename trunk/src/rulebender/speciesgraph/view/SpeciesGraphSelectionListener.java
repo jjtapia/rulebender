@@ -6,7 +6,7 @@ import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.ui.ISelectionListener;
 import org.eclipse.ui.IWorkbenchPart;
 
-import rulebender.results.view.ResultsView;
+import rulebender.editors.dat.DATMultiPageEditor;
 import rulebender.speciesgraph.prefuse.SpeciesGraphVisual;
 
 public class SpeciesGraphSelectionListener implements ISelectionListener
@@ -31,7 +31,7 @@ public class SpeciesGraphSelectionListener implements ISelectionListener
 				           "\n\tselection: " + selection.toString());
 		System.out.println("\tclass: " + part.getClass().toString());
 		
-		if(part.getClass() == ResultsView.class && !selection.equals(""))
+		if(part.getClass() == DATMultiPageEditor.class && !selection.equals(""))
 		{
 			m_view.setSpeciesGraph(generateSpeciesGraph(selection.toString()));
 		}

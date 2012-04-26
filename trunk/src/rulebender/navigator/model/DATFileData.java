@@ -82,7 +82,15 @@ public class DATFileData extends FileData {
 			for (int i = 0; i < seriesList.size(); i++) {
 				String id = (String) seriesList.get(i).getKey();
 				// add checked species series only
-				if (checkedSpecies.containsKey(Integer.parseInt(id)) == true) {
+				
+				// The S prefix to the column number was introduced with BNG 2.2.0
+				if(id.substring(0,1).equals("S"))
+				{
+					id = id.substring(1);
+				}
+				
+				if (checkedSpecies.containsKey(Integer.parseInt(id)) == true) 
+				{
 					seriesCollection.addSeries(seriesList.get(i));
 				}
 			}
@@ -221,8 +229,7 @@ public class DATFileData extends FileData {
 				|| file.getName().endsWith(".scan")) {
 			// read the observables from NET file
 			if (readObservableFromNETFile(file) == false) {
-				ArrayList<String>[] componentsList = new ArrayList[varName
-						.size()];
+				ArrayList<String>[] componentsList = new ArrayList[varName.size()];
 				observableFolder = new ObservableFolderNode("Observables",
 						varName, componentsList);
 			}

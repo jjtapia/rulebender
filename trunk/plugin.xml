@@ -82,16 +82,6 @@
             targetID="rulebender.ResultsPerspective">
          <view
                closeable="false"
-               id="rulebender.results.view.ResultsView"
-               minimized="false"
-               moveable="true"
-               ratio="0.6f"
-               relationship="left"
-               relative="org.eclipse.ui.editorss"
-               visible="true">
-         </view>
-         <view
-               closeable="false"
                id="rulebender.speciesgraph.SpeciesGraphView"
                minimized="false"
                moveable="true"
@@ -101,12 +91,10 @@
                visible="true">
          </view>
          <view
-               closeable="false"
-               id="rulebender.views.Navigator"
+               id="rulebender.cnf.CommonNavigator"
                minimized="false"
-               ratio="0.3f"
                relationship="left"
-               relative="rulebender.results.view.ResultsView"
+               relative="org.eclipse.ui.editorss"
                visible="true">
          </view>
       </perspectiveExtension>
@@ -162,14 +150,6 @@
             restorable="true">
       </view>
       <view
-            allowMultiple="false"
-            class="rulebender.navigator.views.ModelTreeView"
-            icon="icons/views/tree_explorer.gif"
-            id="rulebender.views.Navigator"
-            name="Navigator"
-            restorable="true">
-      </view>
-      <view
             class="rulebender.contactmap.view.ContactMapView"
             icon="icons/views/CMap.gif"
             id="rulebender.contactmap.view.ContactMapView"
@@ -181,13 +161,6 @@
             icon="icons/views/speciesGraph.gif"
             id="rulebender.speciesgraph.SpeciesGraphView"
             name="Species Graph"
-            restorable="true">
-      </view>
-      <view
-            class="rulebender.results.view.ResultsView"
-            icon="icons/views/Results.gif"
-            id="rulebender.results.view.ResultsView"
-            name="Results"
             restorable="true">
       </view>
       <view
@@ -445,6 +418,14 @@
             icon="icons/sample.gif"
             id="rulebender.editors.bnga.BNGAMultiPageEditor"
             name="BioNetGen Actions Editor">
+      </editor>
+      <editor
+            class="rulebender.editors.dat.DATMultiPageEditor"
+            default="false"
+            extensions="gdat, cdat, scan"
+            icon="icons/views/Results.gif"
+            id="rulebender.editors.dat"
+            name="Results File">
       </editor>
    </extension>
    <extension

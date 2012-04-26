@@ -13,7 +13,7 @@ public class ResultsPerspective implements IPerspectiveFactory {
 
 	public void createInitialLayout(IPageLayout layout) 
 	{
-		layout.setEditorAreaVisible(false);
+		layout.setEditorAreaVisible(true);
 		layout.setFixed(false);
 	}
 
