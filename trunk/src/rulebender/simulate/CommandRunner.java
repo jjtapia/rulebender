@@ -7,6 +7,9 @@ import java.util.Map;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 
+import rulebender.preferences.OS;
+import rulebender.preferences.PreferencesClerk;
+
 /**
  * 
  * @author adammatthewsmith
@@ -176,6 +179,24 @@ public class CommandRunner<T extends CommandInterface>
 		m_stdLog = stdOut.getLog();
 		m_errorLog = errOut.getLog();
 		m_fullLog = m_stdLog + System.getProperty("line.separator") + System.getProperty("line.separator") + m_errorLog;
+		
+		// Windows Task Kill
+		if(PreferencesClerk.getOS() == OS.WINDOWS)
+		{
+			
+			int pid = stdOut.getPID();
+			
+			System.out.println("Windows: Trying to kill pid " + pid );
+			
+			try {
+				Runtime.getRuntime().exec("TaskKill /PID " + pid + " /F");
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		
+	
 		
 		System.out.println("Command cancelled.");
 	}

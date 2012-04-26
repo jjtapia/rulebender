@@ -13,6 +13,7 @@ public class StreamDisplayThread extends Thread
 	private boolean m_printNow;
 	private String m_log="";
 	private String m_name;
+	private int m_pid = -1;
 	
 	public StreamDisplayThread(String name, InputStream stream, boolean printNow)
 	{
@@ -36,6 +37,13 @@ public class StreamDisplayThread extends Thread
 					Console.displayOutput(m_name, line);
 				}
 				
+				if(line.startsWith("[simulation PID is:"))
+				{
+					String[] split = line.split("\\s+");
+					System.out.println("split[3]: " + split[3]);
+					m_pid = Integer.parseInt(split[3].substring(0, split[3].indexOf("]")).trim());
+				}
+				
 				m_log += line + Console.getConsoleLineDelimeter();
 			}
 		} 
@@ -49,6 +57,11 @@ public class StreamDisplayThread extends Thread
 	public String getLog()
 	{
 		return m_log;
+	}
+
+	public int getPID() 
+	{	
+		return m_pid;
 	}
 }
 

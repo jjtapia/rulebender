@@ -73,12 +73,6 @@
                relative="org.eclipse.ui.editorss"
                visible="true">
          </view>
-         <view
-               id="rulebender.example.exampleview"
-               minimized="false"
-               relationship="stack"
-               relative="rulebender.contactmap.view.ContactMapView">
-         </view>
       </perspectiveExtension>
       <perspectiveExtension
             targetID="rulebender.ResultsPerspective">
