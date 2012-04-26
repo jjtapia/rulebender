@@ -1,4 +1,4 @@
-package rulebender.editors.dat;
+package rulebender.editors.dat.view;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -46,14 +46,12 @@ import org.eclipse.ui.part.FileEditorInput;
 import org.jfree.chart.JFreeChart;
 
 import rulebender.editors.common.PathEditorInput;
-import rulebender.navigator.model.ObservableNode;
-import rulebender.navigator.model.SpeciesNode;
-import rulebender.navigator.model.TreeContentProvider;
-import rulebender.navigator.model.TreeLabelProvider;
-import rulebender.navigator.model.TreeNode;
+import rulebender.editors.dat.model.ObservableNode;
+import rulebender.editors.dat.model.SpeciesNode;
+import rulebender.editors.dat.model.TreeContentProvider;
+import rulebender.editors.dat.model.TreeLabelProvider;
+import rulebender.editors.dat.model.TreeNode;
 import rulebender.results.data.DATFileData;
-import rulebender.results.view.CustomizedChartComposite;
-import rulebender.results.view.DATChart;
 
 public class ChartComposite extends Composite implements ISelectionProvider 
 {	

@@ -13,6 +13,8 @@ import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.ui.part.MultiPageEditorPart;
 import org.eclipse.ui.ide.IDE;
 
+import rulebender.editors.dat.view.ChartComposite;
+
 import de.ralfebert.rcp.tools.preferredperspective.IPrefersPerspective;
 
 /**

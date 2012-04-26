@@ -1,4 +1,4 @@
-package rulebender.results.view;
+package rulebender.editors.dat.view;
 
 /* ===========================================================
  * JFreeChart : a free chart library for the Java(tm) platform
@@ -135,6 +135,7 @@ import org.jfree.chart.plot.Zoomable;
 import org.jfree.experimental.chart.swt.editor.SWTChartEditor;
 import org.jfree.experimental.swt.SWTGraphics2D;
 import org.jfree.experimental.swt.SWTUtils;
+
 
 /**
  * A SWT GUI composite for displaying a {@link JFreeChart} object.

@@ -1,4 +1,4 @@
-package rulebender.navigator.model;
+package rulebender.editors.dat.model;
 
 import java.util.List;
 

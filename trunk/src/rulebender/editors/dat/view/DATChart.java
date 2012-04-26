@@ -1,4 +1,4 @@
-package rulebender.results.view;
+package rulebender.editors.dat.view;
 
 import java.awt.BasicStroke;
 import java.text.DecimalFormat;

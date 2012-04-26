@@ -38,7 +38,7 @@
  *
  */
 
-package rulebender.results.view;
+package rulebender.editors.dat.view;
 
 import java.net.URL;
 import java.net.URLClassLoader;

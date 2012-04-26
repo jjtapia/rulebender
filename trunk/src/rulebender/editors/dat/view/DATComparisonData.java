@@ -1,16 +1,16 @@
-package rulebender.results.view;
+package rulebender.editors.dat.view;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import org.jfree.data.xy.XYSeriesCollection;
 
-import rulebender.navigator.model.FileData;
-import rulebender.navigator.model.ObservableFolderNode;
-import rulebender.navigator.model.ObservableNode;
-import rulebender.navigator.model.SpeciesFolderNode;
-import rulebender.navigator.model.SpeciesNode;
-import rulebender.navigator.model.TreeNode;
+import rulebender.editors.dat.model.FileData;
+import rulebender.editors.dat.model.ObservableFolderNode;
+import rulebender.editors.dat.model.ObservableNode;
+import rulebender.editors.dat.model.SpeciesFolderNode;
+import rulebender.editors.dat.model.SpeciesNode;
+import rulebender.editors.dat.model.TreeNode;
 import rulebender.results.data.DATFileData;
 
 public class DATComparisonData extends FileData 

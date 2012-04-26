@@ -1,4 +1,4 @@
-package rulebender.navigator.model;
+package rulebender.editors.dat.model;
 
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;

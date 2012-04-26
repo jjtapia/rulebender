@@ -1,4 +1,4 @@
-package rulebender.navigator.model;
+package rulebender.editors.dat.model;
 
 import java.io.File;
 import java.util.List;
@@ -143,11 +143,8 @@ public class FileNode extends TreeNode {
 			} else if (filename.endsWith(".cdat") || filename.endsWith(".gdat")
 					|| filename.endsWith(".scan")) {
 				fData = new DATFileData(this.fFile);
-			} else if (filename.endsWith(".log") || filename.endsWith(".pl")
-					|| filename.endsWith(".m") || filename.endsWith(".xml")
-					|| filename.endsWith(".rxn") || filename.endsWith(".cfg")) {
-				fData = new LogFileData(this.fFile);
-			}
+			} 
+
 		}
 		return fData;
 	}

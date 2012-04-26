@@ -1,7 +1,7 @@
 /**
  * This is not used.  It is an example of a source provider for a state.
  */
-package rulebender.navigator.model;
+package rulebender.editors.dat.model;
 
 import java.util.HashMap;
 import java.util.Map;

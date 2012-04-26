@@ -49,19 +49,24 @@ import org.eclipse.ui.part.ViewPart;
 import org.jfree.chart.JFreeChart;
 
 import rulebender.editors.common.PathEditorInput;
+import rulebender.editors.dat.model.FileNode;
+import rulebender.editors.dat.model.NETFileData;
+import rulebender.editors.dat.model.NETItemNode;
+import rulebender.editors.dat.model.ObservableNode;
+import rulebender.editors.dat.model.SpeciesNode;
+import rulebender.editors.dat.model.TreeContentProvider;
+import rulebender.editors.dat.model.TreeLabelProvider;
+import rulebender.editors.dat.model.TreeNode;
+import rulebender.editors.dat.view.CustomizedChartComposite;
+import rulebender.editors.dat.view.DATChart;
+import rulebender.editors.dat.view.DATComparisonChart;
+import rulebender.editors.dat.view.DATComparisonData;
 import rulebender.editors.net.NETConfiguration;
 import rulebender.editors.net.NETDocumentProvider;
-import rulebender.navigator.model.FileNode;
-import rulebender.navigator.model.LogFileData;
-import rulebender.navigator.model.NETFileData;
-import rulebender.navigator.model.NETItemNode;
-import rulebender.navigator.model.ObservableNode;
-import rulebender.navigator.model.SpeciesNode;
-import rulebender.navigator.model.TreeContentProvider;
-import rulebender.navigator.model.TreeLabelProvider;
-import rulebender.navigator.model.TreeNode;
+//import rulebender.navigator.model.LogFileData;
 import rulebender.results.data.DATFileData;
 
+@Deprecated
 public class ResultsView extends ViewPart implements ISelectionProvider 
 {
 	private static Color color_DarkGoldenrod1 = new Color(null, 255, 185, 15);
@@ -1169,7 +1174,7 @@ public class ResultsView extends ViewPart implements ISelectionProvider
 						|| curFileNode.getName().endsWith(".rxn")
 						|| curFileNode.getName().endsWith(".cfg")) {
 					// create a new LOGItem
-					createLOGItem(curFileNode);
+					//createLOGItem(curFileNode);
 				} 
 				
 				else 
@@ -1212,6 +1217,7 @@ public class ResultsView extends ViewPart implements ISelectionProvider
 		}
 	}
 	
+	/*
 	private void createLOGItem(FileNode fNode) 
 	{
 		// open the text with TextViewer
@@ -1264,6 +1270,7 @@ public class ResultsView extends ViewPart implements ISelectionProvider
 		});
 	}
 	
+	*/
 	/*
 	 * create a netItem on textFolder when the corresponding file was double
 	 * clicked

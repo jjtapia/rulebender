@@ -11,11 +11,11 @@ import org.jfree.data.xy.XYDataItem;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 
-import rulebender.navigator.model.FileData;
-import rulebender.navigator.model.ObservableFolderNode;
-import rulebender.navigator.model.ObservableNode;
-import rulebender.navigator.model.SpeciesFolderNode;
-import rulebender.navigator.model.SpeciesNode;
+import rulebender.editors.dat.model.FileData;
+import rulebender.editors.dat.model.ObservableFolderNode;
+import rulebender.editors.dat.model.ObservableNode;
+import rulebender.editors.dat.model.SpeciesFolderNode;
+import rulebender.editors.dat.model.SpeciesNode;
 
 /**
  * 

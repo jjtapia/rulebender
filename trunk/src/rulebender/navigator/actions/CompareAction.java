@@ -8,7 +8,7 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 
 
-import rulebender.navigator.model.FileNode;
+import rulebender.editors.dat.model.FileNode;
 import rulebender.results.view.ResultsView;
 
 public class CompareAction extends Action 

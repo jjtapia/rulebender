@@ -1,4 +1,4 @@
-package rulebender.navigator.model;
+package rulebender.editors.dat.model;
 
 import org.eclipse.jface.viewers.IColorProvider;
 import org.eclipse.jface.viewers.IFontProvider;
