@@ -46,12 +46,12 @@ import org.eclipse.ui.part.FileEditorInput;
 import org.jfree.chart.JFreeChart;
 
 import rulebender.editors.common.PathEditorInput;
-import rulebender.navigator.model.DATFileData;
 import rulebender.navigator.model.ObservableNode;
 import rulebender.navigator.model.SpeciesNode;
 import rulebender.navigator.model.TreeContentProvider;
 import rulebender.navigator.model.TreeLabelProvider;
 import rulebender.navigator.model.TreeNode;
+import rulebender.results.data.DATFileData;
 import rulebender.results.view.CustomizedChartComposite;
 import rulebender.results.view.DATChart;
 

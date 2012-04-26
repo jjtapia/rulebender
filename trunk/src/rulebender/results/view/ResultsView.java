@@ -51,7 +51,6 @@ import org.jfree.chart.JFreeChart;
 import rulebender.editors.common.PathEditorInput;
 import rulebender.editors.net.NETConfiguration;
 import rulebender.editors.net.NETDocumentProvider;
-import rulebender.navigator.model.DATFileData;
 import rulebender.navigator.model.FileNode;
 import rulebender.navigator.model.LogFileData;
 import rulebender.navigator.model.NETFileData;
@@ -61,6 +60,7 @@ import rulebender.navigator.model.SpeciesNode;
 import rulebender.navigator.model.TreeContentProvider;
 import rulebender.navigator.model.TreeLabelProvider;
 import rulebender.navigator.model.TreeNode;
+import rulebender.results.data.DATFileData;
 
 public class ResultsView extends ViewPart implements ISelectionProvider 
 {

@@ -5,6 +5,8 @@ import java.util.List;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 
+import rulebender.results.data.DATFileData;
+
 /**
  * 
  * File Node

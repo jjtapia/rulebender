@@ -8,10 +8,6 @@ import org.eclipse.ui.ISelectionListener;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.navigator.CommonNavigator;
 
-import rulebender.navigator.model.FileNode;
-import rulebender.navigator.model.TreeNode;
-import rulebender.navigator.views.ModelTreeView;
-
 public class SimulateViewSelectionListener implements ISelectionListener {
 
 	private SimulateView m_view;

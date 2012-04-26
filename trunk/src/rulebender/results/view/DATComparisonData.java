@@ -5,13 +5,13 @@ import java.util.List;
 
 import org.jfree.data.xy.XYSeriesCollection;
 
-import rulebender.navigator.model.DATFileData;
 import rulebender.navigator.model.FileData;
 import rulebender.navigator.model.ObservableFolderNode;
 import rulebender.navigator.model.ObservableNode;
 import rulebender.navigator.model.SpeciesFolderNode;
 import rulebender.navigator.model.SpeciesNode;
 import rulebender.navigator.model.TreeNode;
+import rulebender.results.data.DATFileData;
 
 public class DATComparisonData extends FileData 
 {

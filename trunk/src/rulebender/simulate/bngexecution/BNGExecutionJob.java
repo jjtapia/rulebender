@@ -16,7 +16,6 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.progress.IProgressConstants;
 
 import rulebender.core.utility.Console;
-import rulebender.navigator.views.ModelTreeView;
 import rulebender.simulate.CommandRunner;
 import rulebender.simulate.SimulationErrorException;
 
@@ -128,26 +127,7 @@ public class BNGExecutionJob extends Job
 
 	private void updateTrees()
 	{
-		//FIXME  This is "bad design" that tightly couples the simulation and 
-		// tree view
-		Display.getDefault().syncExec(new Runnable(){
-			@Override
-			public void run() 
-			{
-				IViewReference[] views = PlatformUI.getWorkbench().getActiveWorkbenchWindow()
-						 .getActivePage().getActivePart().getSite().getPage()
-						 .getViewReferences();
-					
-				for(IViewReference view : views)
-				{
-					if(view.getId().equals("rulebender.views.Navigator"))
-					{
-						((ModelTreeView) view.getPart(true)).rebuildWholeTree();
-					}
-				}
-			}});
-		
-		
+	
 		 // Update the resource tree.
 	       try {
 			ResourcesPlugin.getWorkspace().getRoot().refreshLocal(IResource.DEPTH_INFINITE, null);
