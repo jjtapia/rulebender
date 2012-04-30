@@ -253,7 +253,8 @@ public class ExampleModelBuilder implements BNGLModelBuilderInterface
 
 == 3. Implement the methods in !ExampleBuilder.java ==
 
+//TODO
+
 == 4. Use an instance of BNGASTReader to build the object ==
 
-
-
+//TODO
