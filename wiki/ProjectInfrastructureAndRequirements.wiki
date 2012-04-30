@@ -74,3 +74,68 @@ servlet.jar
 swtgraphics2d.jar
 
 swt.jar (must be native)
+
+== Version 2 ==
+
+
+
+
+===Source Code===
+!RuleBender 2.0 is an Eclipse !RCP application, but is still written in Java and is cross-platform for use and development.  
+
+===Frameworks===
+
+Eclipse Rich Client Platform: The Eclipse RCP is platform for constructing general purpose gui applications.  It uses JFace, OSGI, and SWT as primary libraries, but is built on many more.  The purpose of Eclipse RCP is to allow developers to create modular programs (called plugins) that can be combined to create an end product.  Eclipse RCP development can be difficult at first, but once the framework is learned it is a powerful tool for robust application development.  It was chosen due to the many standard gui and text editing features that our collaborators required.  The !RuleBender developers can focus on implementing novel visualizations and interactions while the platform supports more common gui needs. 
+
+Prefuse: prefuse.org.  Prefuse is a visualization framework that allows for the definition of visual models, rendering, and interaction.  It is used for the Contact Map, Influence Graph, and Species Browser.
+
+SWT: http://www.eclipse.org/swt/.  SWT is a windowing toolkit written by IBM.  
+
+JFreeChart: http://www.jfree.org/jfreechart/
+
+JFace: http://wiki.eclipse.org/index.php/JFace
+
+===Required Jar Libraries===
+antlr-3.3-complete.jar - For some testing of the BNGASTReader
+BNGParser.jar - All parsing.
+jdom.jar - Reading xml.
+jcommon-1.0.12.jar - Charting
+jfreechart-1.0.9-experimental.jar - Charting
+jfreechart-1.0.9-swt.jar - Charting
+jfreechart-1.0.9.jar - Charting
+junit.jar - Testing
+prefuse.jar - Visualizations
+
+=== Required Plugins ===
+/Applications/eclipse/plugins/org.eclipse.ui_3.7.0.I20110602-0100.jar
+/Applications/eclipse/plugins/org.eclipse.swt_3.7.0.v3735b.jar
+/Applications/eclipse/deltapack/eclipse/plugins/org.eclipse.swt.cocoa.macosx.x86_64_3.7.0.v3735b.jar
+/Applications/eclipse/plugins/org.eclipse.jface_3.7.0.I20110522-1430.jar
+/Applications/eclipse/plugins/org.eclipse.core.commands_3.6.0.I20110111-0800.jar
+/Applications/eclipse/plugins/org.eclipse.ui.workbench_3.7.0.I20110519-0100.jar
+/Applications/eclipse/plugins/org.eclipse.core.runtime_3.7.0.v20110110.jar
+/Applications/eclipse/plugins/org.eclipse.osgi_3.7.0.v20110613.jar
+/Applications/eclipse/plugins/org.eclipse.equinox.common_3.6.0.v20110523.jar
+/Applications/eclipse/plugins/org.eclipse.core.jobs_3.5.100.v20110404.jar
+/Applications/eclipse/plugins/org.eclipse.core.runtime.compatibility.registry_3.5.0.v20110505/runtime_registry_compatibility.jar
+/Applications/eclipse/plugins/org.eclipse.equinox.registry_3.5.100.v20110502.jar
+/Applications/eclipse/plugins/org.eclipse.equinox.preferences_3.4.0.v20110502.jar
+/Applications/eclipse/plugins/org.eclipse.core.contenttype_3.4.100.v20110423-0524.jar
+/Applications/eclipse/plugins/org.eclipse.equinox.app_1.3.100.v20110321.jar
+/Applications/eclipse/plugins/org.eclipse.ui.ide_3.7.0.I20110519-0100.jar
+/Applications/eclipse/plugins/org.eclipse.core.resources_3.7.100.v20110510-0712.jar
+/Applications/eclipse/plugins/org.eclipse.ui.navigator_3.5.100.I20110524-0800.jar
+/Applications/eclipse/plugins/org.eclipse.ui.navigator.resources_3.4.300.I20110421-1800.jar
+/Applications/eclipse/plugins/org.eclipse.ui.console_3.5.100.v20110511.jar
+/Applications/eclipse/plugins/org.eclipse.ui.editors_3.7.0.v20110517-0800.jar
+/Applications/eclipse/plugins/org.eclipse.core.filebuffers_3.5.200.v20110505-0800.jar
+/Applications/eclipse/plugins/org.eclipse.jface.text_3.7.0.v20110505-0800.jar
+/Applications/eclipse/plugins/org.eclipse.text_3.5.100.v20110505-0800.jar
+/Applications/eclipse/plugins/org.junit_4.8.2.v4_8_2_v20110321-1705/junit.jar
+/Applications/eclipse/plugins/org.hamcrest.core_1.1.0.v20090501071000.jar
+/Applications/eclipse/plugins/org.eclipse.jdt.core_3.7.0.v_B61.jar
+/Applications/eclipse/plugins/org.eclipse.jdt.compiler.apt_1.0.400.v0110509-1300.jar
+/Applications/eclipse/plugins/org.eclipse.jdt.compiler.tool_1.0.100.v_B61.jar
+/Applications/eclipse/plugins/org.eclipse.core.filesystem_1.3.100.v20110423-0524.jar
+/Applications/eclipse/plugins/org.eclipse.ui.views_3.6.0.I20110412-0800.jar
+/Applications/eclipse/plugins/org.eclipse.ui.workbench.texteditor_3.7.0.v20110505-0800.jar
