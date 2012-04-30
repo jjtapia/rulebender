@@ -2,7 +2,7 @@
 
 = Infrastructure =
 
-==Version 1.*==
+==Version 1.==
 
 ===Source Code===
 !RuleBender is written in Java and is cross-platform for use and development.  
