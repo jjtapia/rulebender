@@ -251,10 +251,142 @@ public class ExampleModelBuilder implements BNGLModelBuilderInterface
 
 }}}
 
-== 3. Implement the methods in !ExampleBuilder.java ==
+== 3. Design your data structure. ==
 
-//TODO
+Before we implement a model builder, we have to know what our model is.  To keep things simple, our data structure is going to be a list of molecules, but as you can see in the BNGLModelBuilderInterface it is possible to build a model using all of the information from a BNGL file.
 
-== 4. Use an instance of BNGASTReader to build the object ==
+{{{
+package rulebender.example;
 
-//TODO
+import java.util.ArrayList;
+
+public class ExampleModel 
+{
+	private ArrayList<String> m_moleculeList;
+	
+	public ExampleModel()
+	{
+		m_moleculeList = new ArrayList<String>();
+	}
+	
+	public void add(String mol)
+	{
+		m_moleculeList.add(mol);
+	}
+	
+	public String toString()
+	{
+		String toReturn = "";
+				
+		for(String s : m_moleculeList)
+			toReturn += "\t" + s + "\n";
+				
+		return toReturn;
+	}
+}
+
+}}}
+
+
+== 4. Implement the methods in !ExampleBuilder.java ==
+
+As the BNGLASTReader encounters the elements of the BNGL it calls the appropriate interface methods with information in the form of objects or primitives that describe the element.   As just said, our 'model' is going to be a list of all of the molecules that are found in the model.  To utilize the builder model we need to implement the methods of the interface that give us molecule information: {{{foundMoleculeInSeedSpecies(Molecule molecule) }}} and {{{foundMoleculeType(Molecule molecule)}}}. 
+
+In ExampleModelBuilder.java, add the following field, constructor, and method implementations:
+{{{
+ExampleModel m_exampleModel;
+	
+	public ExampleModelBuilder()
+	{
+		m_exampleModel = new ExampleModel();
+	}
+	
+	@Override
+	public void foundMoleculeInSeedSpecies(Molecule molecule) 
+	{
+		m_exampleModel.add(molecule.getName());
+	}
+	
+	public ExampleModel getModel()
+	{
+		return m_exampleModel;
+	}
+	
+	@Override
+	public void foundMoleculeType(Molecule molecule) 
+	{
+		m_exampleModel.add(molecule.getName());
+	}
+
+}}}
+
+== 5. Use an instance of BNGASTReader to build the object ==
+
+Now, we need to actually build the model when the abstract syntax tree is updated.  For this, we will edit the ExampleView.java class that was created in the [HowToGetBNGLModelAndListenForEditors previous tutorial].  
+
+First we will add a data field for our model object: {{{private ExampleModel m_myModel;}}}
+
+Next, we will change the two lines in {{{partActivated(IWorkbenchPartReference partRef) }}} where we originally set the text on m_label.
+
+{{{
+@Override
+	public void partActivated(IWorkbenchPartReference partRef) 
+	{
+		// If it's a bngl editor.   (Cannot remember why there is id and instanceof checking
+		// but I would not change it without serious testing.)
+		if(partRef.getId().equals("rulebender.editors.bngl") && partRef.getPart(false) instanceof BNGLEditor)
+		{	
+			// Get the model.
+			final BNGLModel model = ((BNGLEditor) partRef.getPart(false)).getModel();
+		
+			// Create a property changed listener for when files are saved and 
+			// models are updated.
+			PropertyChangeListener pcl = new PropertyChangeListener()
+			{
+				public void propertyChange(PropertyChangeEvent propertyChangeEvent) 
+				{
+					String filePath = ((BNGLModel) propertyChangeEvent.getSource()).getPathID();
+					String propertyName = propertyChangeEvent.getPropertyName();
+					
+					if(propertyName.equals(BNGLModel.AST))
+					{
+                                                 //NEW!
+						//Update the display object that is associated with the path and ast. 
+						updateModel(model);
+						System.out.println("Property Changed on AST for " + filePath);
+					}
+				}
+			};
+			
+	                // NEW!
+			model.addPropertyChangeListener(pcl);
+			
+			updateModel(model);
+		} // end if it's an editor block	
+	}
+	
+}}}
+
+Finally, we will fill in {{{updateModel(BNGLModel model}}} method.  We use our builder and reader to construct the model, and then update the view with the {{{toString()}}} method for our model.
+
+{{{
+private void updateModel(BNGLModel model)
+{
+	// Create the builder instance.
+	ExampleModelBuilder builder = new ExampleModelBuilder();
+		
+	// Create the reader instance with the builder as input.
+	BNGASTReader reader = new BNGASTReader(builder);
+		
+	// Build the model.
+	reader.buildWithAST(model.getAST());
+		
+	// Get the model.
+	m_myModel = builder.getModel();
+	
+	// Update the display.
+	m_label.setText(m_myModel.toString());	
+}
+}}}
+
+If you run RuleBender, display the view, and open a file you should see something like the screenshot below where all of the molecule names are displayed in a list.
