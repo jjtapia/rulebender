@@ -390,3 +390,5 @@ private void updateModel(BNGLModel model)
 }}}
 
 If you run RuleBender, display the view, and open a file you should see something like the screenshot below where all of the molecule names are displayed in a list.
+
+http://rulebender.googlecode.com/svn/wiki/imgs/howTo/modelBuilder/modelBuilderFinal.png  
