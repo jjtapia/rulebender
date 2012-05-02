@@ -54,7 +54,6 @@
   * [PackageDependencyDeRalfebertRcpToolsPreferredperspective de.ralfebert.rcp.tools.preferredperspective]
  * [WebsiteManagement Web Site Management]
  * [GettingStartedWithCode How To Start Working]
- * [ModificationInstructions Adding to the Project]
  * [ReleasePreparation Release Preparation]
  * [TestPlans Testing Plans]
  * [Pitfalls Common Pitfalls]
