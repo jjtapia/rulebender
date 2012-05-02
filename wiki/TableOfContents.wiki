@@ -4,7 +4,7 @@
  * [ProjectHistory Timeline and Deliverables]
  * [ProjectInfrastructureAndRequirements Infrastructure]
  * [ProjectArchitecture Architecture Overview]
- * [DetailedDesignDocumentation Detailed Architecture]
+ * [DetailedDesignDocumentation Package Dependency Graphs]
   * [PackageDependencyRulebenderFull All Packages]
   * [PackageDependencyRulebenderContactmapModels rulebender.contactmap.models]
   * [PackageDependencyRulebenderContactmapPrefuse rulebender.contactmap.prefuse]
