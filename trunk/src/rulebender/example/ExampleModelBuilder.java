@@ -6,6 +6,31 @@ import rulebender.editors.bngl.model.ruledata.RuleData;
 
 public class ExampleModelBuilder implements BNGLModelBuilderInterface 
 {
+	
+	ExampleModel m_exampleModel;
+	
+	public ExampleModelBuilder()
+	{
+		m_exampleModel = new ExampleModel();
+	}
+	
+	@Override
+	public void foundMoleculeInSeedSpecies(Molecule molecule) 
+	{
+		m_exampleModel.add(molecule.getName());
+	}
+	
+	public ExampleModel getModel()
+	{
+		return m_exampleModel;
+	}
+	
+	@Override
+	public void foundMoleculeType(Molecule molecule) 
+	{
+		m_exampleModel.add(molecule.getName());
+	}
+
 
 	@Override
 	public void parameterFound(String id, String type, String value) {
@@ -20,21 +45,9 @@ public class ExampleModelBuilder implements BNGLModelBuilderInterface
 	}
 
 	@Override
-	public void foundMoleculeInSeedSpecies(Molecule molecule) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
 	public void foundBondInSeedSpecies(String moleName1, String compName1,
 			int compID1, String state1, String moleName2, String compName2,
 			int compID2, String state2) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void foundMoleculeType(Molecule molecule) {
 		// TODO Auto-generated method stub
 		
 	}

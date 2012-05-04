@@ -1,8 +1,0 @@
-Use configurer.setSaveAndRestore() in the ApplicationWorkBenchAdvisor to save 
-the location and size of all of the views, HOWEVER, this will prevent new 
-views from being displayed during development.
-
-			
-Need a DS for all of the open files.  I will keep track of the models in a centralized DS, from which all translations/representations of the model will be computed.  
-e.g.  Open file-> model is computed using antlr -> views will receive notification of file in view -> views access model and update content. file closed ->  model garbage collected.
-result file opened -> result view made foremost. 

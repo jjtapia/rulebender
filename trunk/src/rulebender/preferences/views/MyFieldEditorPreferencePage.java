@@ -35,6 +35,16 @@ public class MyFieldEditorPreferencePage extends FieldEditorPreferencePage imple
 	public void init(IWorkbench workbench) {
 		setPreferenceStore(Activator.getDefault().getPreferenceStore());
 		setDescription("RuleBender Preferences");
+		
+		/*
+		System.out.println("" + System.getProperty("user.dir") + "/BioNetGen-2.2.0/");
+		
+		if(Activator.getDefault().getPreferenceStore().getString("SIM_PATH").equals(""))
+		{
+			System.out.println("Setting the default preference");
+			Activator.getDefault().getPreferenceStore().setDefault("SIM_PATH", System.getProperty("user.dir") + "/BioNetGen-2.2.0/");
+		}
+		*/
 	}
 
 }

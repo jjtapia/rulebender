@@ -12,7 +12,7 @@ import rulebender.editors.bngl.IBNGLLinkedElement;
 
 /**
  * This class represents a state when a state is selected in the contact map.  
- * An instance of this object is passed through the ISelectionService to in 
+ * An instance of this object is passed through the ISelectionService in 
  * order to give this information to any listening parts.
  * 
  * Implements IPropertySource so that the PropertiesView can display this

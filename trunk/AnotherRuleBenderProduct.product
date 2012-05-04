@@ -5,7 +5,7 @@
 
    <aboutInfo>
       <text>
-         RuleBender 2.0r70
+         RuleBender 2.0r220
 
 RuleBender is currently developed by Adam M. Smith at the University of Pittsburgh under the direction of James R. Faeder and Elisabeta G. Marai. 
 
@@ -33,8 +33,11 @@ Please send all feedback and questions to help@rulebender.org.
       <win useIco="false">
          <bmp
             winSmallHigh="/rulebender/icons/system/win32/RB-16.bmp"
+            winSmallLow="/rulebender/icons/system/win32/RB-16-8bit.bmp"
             winMediumHigh="/rulebender/icons/system/win32/RB-32.bmp"
-            winLargeHigh="/rulebender/icons/system/win32/RB-48.bmp"/>
+            winMediumLow="/rulebender/icons/system/win32/RB-32-8bit.bmp"
+            winLargeHigh="/rulebender/icons/system/win32/RB-48.bmp"
+            winLargeLow="/rulebender/icons/system/win32/RB-48-8bit.bmp"/>
       </win>
    </launcher>
 

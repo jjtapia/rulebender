@@ -59,7 +59,6 @@ public class BNGLEditor extends TextEditor implements ISelectionListener, IPrefe
 	private BNGLColorManager m_colorManager;
 	
 	//private String m_path;
-	
 	public BNGLEditor() 
 	{
 		// Call the TextEditor constructor

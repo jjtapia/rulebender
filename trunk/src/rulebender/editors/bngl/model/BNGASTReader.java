@@ -51,7 +51,7 @@ public class BNGASTReader
 		Document doc = getDocument(ast);
 		
 		// DEBUG
-		//System.out.println(ast.toString());
+		System.out.println(ast.toString());
 		
 		// The root of the document is the sbml tag.  Get the Model node.
 		Element model = doc.getRootElement().getChild("Model", doc.getRootElement().getNamespace());
@@ -741,7 +741,9 @@ public class BNGASTReader
 				
 				// the mole id is up to the second underscore
 				String mole1id = comp1.substring(0, comp1.lastIndexOf("_"));
+
 				//TODO This errors out on A(a,a)->A(a!1, a!1)
+				System.out.println("*** " + comp2);
 				String mole2id = comp2.substring(0, comp2.lastIndexOf("_"));
 				
 				// Get the names from the registries 

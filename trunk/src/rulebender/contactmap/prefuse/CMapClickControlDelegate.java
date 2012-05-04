@@ -7,6 +7,7 @@ import java.awt.event.MouseWheelEvent;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -25,6 +26,7 @@ import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.program.Program;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.ui.PartInitException;
 
 import rulebender.contactmap.properties.CompartmentPropertySource;
 import rulebender.contactmap.properties.ComponentPropertySource;
@@ -38,6 +40,8 @@ import rulebender.core.prefuse.collinsbubbleset.layout.BubbleSetLayout;
 import rulebender.core.prefuse.networkviewer.PrefuseTooltip;
 import rulebender.core.prefuse.networkviewer.contactmap.JMenuItemRuleHolder;
 import rulebender.core.prefuse.networkviewer.contactmap.VisualRule;
+import rulebender.preferences.OS;
+import rulebender.preferences.PreferencesClerk;
 
 
 import prefuse.Constants;
@@ -192,8 +196,24 @@ public class CMapClickControlDelegate extends ControlAdapter implements ISelecti
 	 * Called when no VisualItem is hit.
 	 */
 	public void mouseClicked(MouseEvent e) 
-	{					
-		// super.mouseClicked(e);
+	{		
+		Display.getDefault().syncExec(new Runnable(){
+
+			@Override
+			public void run() 
+			{
+				try 
+				{
+					m_view.getSite().getPage().showView("rulebender.contactmap.view.ContactMapView");
+				}
+				catch (PartInitException e2) {
+					// TODO Auto-generated catch block
+					e2.printStackTrace();
+				}
+			
+				
+			}});
+// super.mouseClicked(e);
 
 		// Right click
 		if (e.getButton() == MouseEvent.BUTTON3 || (e.getButton() == MouseEvent.BUTTON1 && e.isControlDown())) 
@@ -371,6 +391,24 @@ public class CMapClickControlDelegate extends ControlAdapter implements ISelecti
 	
 	public void itemClicked(VisualItem item, MouseEvent e) 
 	{
+
+		Display.getDefault().syncExec(new Runnable(){
+
+			@Override
+			public void run() 
+			{
+				try 
+				{
+					m_view.getSite().getPage().showView("rulebender.contactmap.view.ContactMapView");
+				}
+				catch (PartInitException e2) {
+					// TODO Auto-generated catch block
+					e2.printStackTrace();
+				}
+			
+				
+			}});
+		
 		// Right Click
 		if (e.getButton() == MouseEvent.BUTTON3 || (e.getButton() == MouseEvent.BUTTON1 && e.isControlDown())) 
 		{
@@ -720,6 +758,7 @@ public class CMapClickControlDelegate extends ControlAdapter implements ISelecti
 		if(item.getString("type").equals("molecule"))
 		{
 			setSelection(new StructuredSelection(new MoleculePropertySource(item, m_sourcePath)));
+			System.out.println("Molecule selection: \n\tListeners: " + m_listeners.size());
 		}
 		// Compartment
 		else if(item.getString("type").equals("compartment"))
@@ -797,7 +836,11 @@ public class CMapClickControlDelegate extends ControlAdapter implements ISelecti
 				address += moleculeName;
 				address += "&sort=score";
 				
-				Program.launch(address);
+				try {
+					myLaunch(address);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
 			}});
 		
 		searchMenu.add(uniProt);
@@ -813,7 +856,11 @@ public class CMapClickControlDelegate extends ControlAdapter implements ISelecti
 				address += moleculeName;
 				address += "&format=html&cmd=get_by_keyword";
 				
-				Program.launch(address);
+				try {
+					myLaunch(address);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
 			}});
 		
 		searchMenu.add(pathwayCommons);
@@ -828,7 +875,11 @@ public class CMapClickControlDelegate extends ControlAdapter implements ISelecti
 				address += moleculeName;
 				address += "&external=Ref_seq&accession_id=&hprd=&gene_symbol=&chromo_locus=&function=&ptm_type=&localization=&domain=&motif=&expression=&prot_start=&prot_end=&limit=0&mole_start=&mole_end=&disease=&query_submit=Search";	
 				
-				Program.launch(address);
+				try {
+					myLaunch(address);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
 			}});
 		
 		searchMenu.add(hprd);
@@ -842,7 +893,11 @@ public class CMapClickControlDelegate extends ControlAdapter implements ISelecti
 				String address = "http://www.reactome.org/cgi-bin/search2?OPERATOR=ALL&SPECIES=48887&QUERY=";
 				address += moleculeName;	
 				
-				Program.launch(address);
+				try {
+					myLaunch(address);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
 			}});
 		
 		searchMenu.add(reactome);
@@ -856,7 +911,11 @@ public class CMapClickControlDelegate extends ControlAdapter implements ISelecti
 				String address = "http://www.signaling-gateway.org/molecule/search?nm=";
 				address += moleculeName;	
 				
-				Program.launch(address);
+				try {
+					myLaunch(address);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
 			}});
 		
 		searchMenu.add(ucsdNature);
@@ -870,7 +929,11 @@ public class CMapClickControlDelegate extends ControlAdapter implements ISelecti
 				String address = "http://www.ebi.ac.uk/interpro/ISearch?query=";
 				address += moleculeName;	
 				
-				Program.launch(address);
+				try {
+					myLaunch(address);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
 			}});
 		
 		searchMenu.add(interPro);
@@ -884,7 +947,11 @@ public class CMapClickControlDelegate extends ControlAdapter implements ISelecti
 				String address = "http://au.expasy.org/cgi-bin/prosite-search-ful?SEARCH=";
 				address += moleculeName;	
 				
-				Program.launch(address);
+				try {
+					myLaunch(address);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
 			}});
 		
 		searchMenu.add(proSite);		
@@ -898,7 +965,11 @@ public class CMapClickControlDelegate extends ControlAdapter implements ISelecti
 				String address = "http://www.genome.jp/dbget-bin/www_bfind_sub?mode=bfind&max_hit=1000&dbkey=kegg&keywords=";
 				address += moleculeName;	
 				
-				Program.launch(address);
+				try {
+					myLaunch(address);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
 			}});
 		
 		searchMenu.add(kegg);
@@ -913,7 +984,11 @@ public class CMapClickControlDelegate extends ControlAdapter implements ISelecti
 				address += moleculeName;
 				address += "&queryBean.stars=3&queryBean.stars=-1";	
 				
-				Program.launch(address);
+				try {
+					myLaunch(address);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
 			}});
 		
 		searchMenu.add(chebi);
@@ -927,7 +1002,11 @@ public class CMapClickControlDelegate extends ControlAdapter implements ISelecti
 				String address = "http://www.ncbi.nlm.nih.gov/sites/entrez?db=pccompound&term=";
 				address += moleculeName;
 				
-				Program.launch(address);
+				try {
+					myLaunch(address);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
 			}});
 		
 		searchMenu.add(pubChem);
@@ -935,6 +1014,53 @@ public class CMapClickControlDelegate extends ControlAdapter implements ISelecti
 		
 		// After adding all of the search locations, show the popup.
 		popup.show(event.getComponent(), event.getX(), event.getY());		
+	}
+	
+	private void myLaunch(String url) throws Exception
+	{
+		if(PreferencesClerk.getOS() == OS.LINUX)
+		{
+			Runtime runtime = Runtime.getRuntime();
+			
+			String[] browsers = {"chrome", "chromium", "firefox", "opera", "konqueror", "epiphany", "mozilla", "netscape" };
+			String browser = null;
+			
+			for (int count = 0; count < browsers.length && browser == null; count++)
+			{
+				  try {
+					if (runtime.exec(new String[] {"which", browsers[count]}).waitFor() == 0)
+					  {
+						  browser = browsers[count];  
+					  }
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+
+			  if (browser == null)
+			  {
+				  throw new Exception("Could not find web browser");
+			  }
+			  
+			  else
+			  {
+				  try {
+					runtime.exec(new String[] {browser, url});
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			  }
+			}	
+		// Windows or osx.
+		else
+		{
+			Program.launch(url);
+		}
 	}
 	
 	/**

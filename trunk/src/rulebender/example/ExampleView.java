@@ -12,6 +12,7 @@ import org.eclipse.ui.IWorkbenchPartReference;
 import org.eclipse.ui.part.ViewPart;
 
 import rulebender.editors.bngl.BNGLEditor;
+import rulebender.editors.bngl.model.BNGASTReader;
 import rulebender.editors.bngl.model.BNGLModel;
 
 public class ExampleView extends ViewPart implements IPartListener2
@@ -20,7 +21,7 @@ public class ExampleView extends ViewPart implements IPartListener2
 	// A label for output
 	private Label m_label;
 	
-	private ArrayList<String> m_myModel;
+	private ExampleModel m_myModel;
 	
 	// Generally nothing happens in the constructor
 	public ExampleView() {
@@ -34,7 +35,7 @@ public class ExampleView extends ViewPart implements IPartListener2
 		m_label = new Label(parent, SWT.BORDER);
 		m_label.setText("Hello from a new view!!!");
 
-		m_myModel = new ArrayList<String>();
+		m_myModel = new ExampleModel();
 		
 		// Register the view as a part listener.
 		getSite().getPage().addPartListener(this);
@@ -54,7 +55,7 @@ public class ExampleView extends ViewPart implements IPartListener2
 		if(partRef.getId().equals("rulebender.editors.bngl") && partRef.getPart(false) instanceof BNGLEditor)
 		{	
 			// Get the model.
-			BNGLModel model = ((BNGLEditor) partRef.getPart(false)).getModel();
+			final BNGLModel model = ((BNGLEditor) partRef.getPart(false)).getModel();
 		
 			// Create a property changed listener for when files are saved and 
 			// models are updated.
@@ -68,23 +69,34 @@ public class ExampleView extends ViewPart implements IPartListener2
 					if(propertyName.equals(BNGLModel.AST))
 					{
 						//Update the display object that is associated with the path and ast. 
-						m_label.setText("Property Changed on AST for " + filePath);
+						updateModel(model);
 						System.out.println("Property Changed on AST for " + filePath);
 					}
 				}
 			};
 				
 			model.addPropertyChangeListener(pcl);
-						
-			m_label.setText("New model opened!  " + model.getPathID());
 			
-			createAndSetMyModel(model);
+			updateModel(model);
 		} // end if it's an editor block	
 	}
 	
-	private void createAndSetMyModel(BNGLModel model)
+	private void updateModel(BNGLModel model)
 	{
+		// Create the builder instance.
+		ExampleModelBuilder builder = new ExampleModelBuilder();
 		
+		// Create the reader instance with the builder as input.
+		BNGASTReader reader = new BNGASTReader(builder);
+		
+		// Build the model.
+		reader.buildWithAST(model.getAST());
+		
+		// Get the model.
+		m_myModel = builder.getModel();
+		
+		// Update the display.
+		m_label.setText(m_myModel.toString());	
 	}
 
 	@Override

@@ -1,29 +1,16 @@
 Do before release:
 	The OSX Application menu elements are not shown anywhere when RB is run in windows.
-	Maybe better console management.
-		- really there does not need to be a console for the model view.  
-		  A TableViewer or something like that should be used instead of a console for errors.
+	Maybe better console management.  
 	
-	Email BNG team about version() not being accepted by the parser.
-	
-Bugs:
-possible bug from null contact map...
-windows does not have the preferences menu.
-
-General TODO:
-	New website.  
 
 Programming TODO:
 	General:
-		Really need to look into the Resources API.  The way that I hacked things together is working, but the Resources API can make it easier to integrate other elements (save as, project management,...?)
 
 	Parser:
-		In the future, the parser will recognize bonds of the type Ex1().Ex2().
 		Wild cards. they are ignored for now. 
 		Need to be able to add states that are found in rules. 
 			
 	Simulation:
-		cancel job
 		results preview
 
 	Results:
@@ -31,12 +18,8 @@ Programming TODO:
 
 	Model Browser:
 		Linking with text
-		Console
-			shorter name of console
-			use problem view?
 		Contact map mouse-over highlights
 		contact map hit box size for edges.
 		Contact map overview can be too zoomed out.
 		contact map file label.
-		properties view.
 			

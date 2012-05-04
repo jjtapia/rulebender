@@ -5,7 +5,18 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Map;
 
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.Path;
+import org.eclipse.jface.viewers.StructuredSelection;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.ui.IViewPart;
+import org.eclipse.ui.IWorkbenchPage;
+import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.navigator.CommonNavigator;
 
 import rulebender.preferences.OS;
 import rulebender.preferences.PreferencesClerk;
@@ -144,9 +155,38 @@ public class CommandRunner<T extends CommandInterface>
 			throw new SimulationErrorException(m_errorLog);
 		}
 		
+		//exposeResults();
 		return true;		
 	}
 
+	private void exposeResults()
+	{
+		Display.getDefault().syncExec(new Runnable(){
+
+			@Override
+			public void run() 
+			{
+				IPath path = new Path(m_workingDirectory.getAbsolutePath());
+				
+				IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
+				
+				if (page != null) {
+				    
+				  IViewPart view = page.findView("rulebender.cnf.CommonNavigator");
+
+				  if (view != null && view instanceof CommonNavigator) {
+				   CommonNavigator cn = (CommonNavigator) view;
+				   Object[] objects = {path};
+				   //cn.getCommonViewer().getTree().get
+				   cn.getCommonViewer().setSelection(new StructuredSelection(objects), true);
+				  }
+				}
+				
+
+				
+			}});
+	}
+	
 	private void writeLogToResults()
 	{
 		System.out.println("Writing log to " + m_workingDirectory);

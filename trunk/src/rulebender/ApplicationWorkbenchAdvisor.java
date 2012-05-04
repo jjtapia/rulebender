@@ -2,6 +2,8 @@ package rulebender;
 
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IAdaptable;
+import org.eclipse.ui.IEditorReference;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.application.IWorkbenchConfigurer;
 import org.eclipse.ui.application.IWorkbenchWindowConfigurer;
 import org.eclipse.ui.application.WorkbenchAdvisor;
@@ -54,7 +56,19 @@ public class ApplicationWorkbenchAdvisor extends WorkbenchAdvisor {
 		System.out.println("Registering Adapters");
 		org.eclipse.ui.ide.IDE.registerAdapters();
 		
-		// This line
-		configurer.setSaveAndRestore(true);
+		// Comment out this line when you are adding/editing views so that the state
+		// is not restored from previous sessions.
+		//configurer.setSaveAndRestore(true);
 	}	
+	
+	@Override
+	public boolean preShutdown()
+	{
+		      
+    	PlatformUI.getWorkbench()
+        .getActiveWorkbenchWindow()
+        .getActivePage().closeAllEditors(true);
+       	
+    	return true;
+	}
 }

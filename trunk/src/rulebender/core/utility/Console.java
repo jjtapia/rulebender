@@ -25,6 +25,8 @@ public class Console
 	 */
 	public static void displayOutput(String console, String output)
 	{
+		// FIXME Completely overridding the different consoles
+		console = "RuleBender Console";
 		getMessageConsoleStream(console).println(output);
 	}
 	

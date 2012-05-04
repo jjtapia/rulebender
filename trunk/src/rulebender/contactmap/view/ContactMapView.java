@@ -140,7 +140,7 @@ public class ContactMapView extends ViewPart
 		// there may be a better solution than this, but this works.
 		parentComposite.redraw();
 		
-		// Aparrently the above fix does not work in windows.
+		// Apparently the above fix does not work in windows.
 		frame.repaint();
 	}
 	

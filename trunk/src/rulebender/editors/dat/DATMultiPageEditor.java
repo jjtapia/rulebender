@@ -70,6 +70,7 @@ public class DATMultiPageEditor extends MultiPageEditorPart implements IResource
 			};
 			int index = addPage(editor, getEditorInput());
 			setPageText(index, editor.getTitle());
+			setPartName(editor.getTitle());
 		}
 		
 		catch (PartInitException e) 
@@ -93,7 +94,7 @@ public class DATMultiPageEditor extends MultiPageEditorPart implements IResource
 		
 		int index = addPage(chart);
 		
-		setPageText(index, "Simulation Cockpit");
+		setPageText(index, "Chart");
 	}
 	
 	/**
