@@ -1,0 +1,7 @@
+#How to run simulations
+
+More will come soon...
+
+= Running Simulations =
+
+All simulations are called from the static methods in rulebender.simulate.BioNetGenUtility.java.  Those methods have appropriate hooks into the RCP Jobs api.  
