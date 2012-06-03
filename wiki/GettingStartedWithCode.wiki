@@ -1,0 +1,10 @@
+#summary Checking out and setting up the project.
+
+*Install eclipse
+*Install svn for eclipse
+*Import project from svn.
+*Right click on the project and select properties->java build path
+*Add lib/*.jar to build path.
+*Click 'new variable' and select plugin dependencies.
+
+At this point there should not be any compile errors.
