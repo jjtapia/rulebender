@@ -4,7 +4,7 @@
  * Install svn for eclipse
  * Import project from svn.
  * Right click on the project and select properties->java build path
- * Add lib/*.jar to build path.
+ * Add lib/{{{*}}}.jar to build path.
  * Click 'new variable' and select plugin dependencies.
 
 At this point there should not be any compile errors.  To run the project, open the plugin.xml file and click the run button in the top right corner.
