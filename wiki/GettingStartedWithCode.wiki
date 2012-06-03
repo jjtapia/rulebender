@@ -1,10 +1,30 @@
 #summary Checking out and setting up the project.
 
- * Install eclipse
- * Install svn for eclipse
- * Import project from svn.
- * Right click on the project and select properties->java build path
- * Add lib/{{{*}}}.jar to build path.
- * Click 'new variable' and select plugin dependencies.
+=Introduction=
+
+This wiki includes instructions for setting up your development environment, checking out the code, and setting up the RuleBender project on you machine.
+
+==Install Eclipse==
+ # Download Eclipse version 3.7 from eclipse.org.
+ # Unzip Eclipse wherever you want it to be installed.
+ # Run Eclipse.
+ # See the Eclipse documentation if you have trouble.
+
+==Install svn for Eclipse==
+ # In the Eclipse menu bar, click 'Help' and then 'Install New Software...'
+ # In the 'Work with:' field, select the update site for your Eclipse version (e.g. Indigo - http://download.eclipse.org/releases/indigo)
+ # Expand the 'Collaboration' row, and select the checkbox for 'Subversive SVN Team Provider'.  Click next and follow all instructions and accept all agreements until it asks you to restart Eclipse.
+ # When Eclipse restarts, right click on the project explorer and select 'Import...'.  Click on the option to import from SVN.  Before you can actually import you will need to follow the direction for installing the SVN connectors, and then restart Eclipse again.  
+
+==Import project from SVN==
+ # After installing the team provider and the SVN connectors you can actually import from SVN.  Use the repository location that is displayed in the 'Source' tab of the RuleBender googlecode page (https://rulebender.googlecode.com/svn/trunk/)
+ # If you have commit rights, you can enter your username and password to authenticate with the system.
+ # Eclipse may ask you to truncate the svn location, but this will force you to checkout the entire repository when you really only want to get the trunk, a branch, or a tag depending on what you're doing.
+ # Import it as a Java project using the wizard or any other method that you are comfortable with.
+
+==Set up the project== 
+ # Right click on the project and select properties->java build path
+ # Add lib/{{{*}}}.jar to build path.
+ # Click 'new variable' and select plugin dependencies.
 
 At this point there should not be any compile errors.  To run the project, open the plugin.xml file and click the run button in the top right corner.
