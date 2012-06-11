@@ -1,9 +1,39 @@
 #summary How to prepare releases
 
-= Coming Soon... =
+= WORK IN PROGRESS = 
 
-	bng
+= Introduction = 
 
-	rb with pde
+This page describes the process for preparing RuleBender releases.  The 1.x and 2.x versions are prepared in entirely different ways.  1.x uses an ant script to generate executables for each platform and copies all of the jars, simulators (with source), executables,  and icons to the appropriate release directories.  2.x uses the Eclipse Plugin Development Environment (PDE) build system.  Each of the processes are described below. 
 
-	old versions with ant.
+= BioNetGen and NFSim = 
+The simulators are maintained by their respective groups and RuleBender developers should obtain them in an executable form for inclusion in the RuleBender distributable.  BioNetGen is maintained by Jim Faeder and his lab, while NFSim is written by the Emonet lab.  BioNetGen can be downloaded in its latest release version from bionetgen.org, and more recent versions can be obtained from the team directly.  NFSim is downloaded from http://emonet.biology.yale.edu/nfsim/.
+
+The current simulator component of the distribution looks like:
+
+/BioNetGen-2.2.0
+/BioNetGen-2.2.0/bin/...
+/BioNetGen-2.2.0/BNG2.pl
+/BioNetGen-2.2.0/CREDITS.txt
+/BioNetGen-2.2.0/LICENSE.txt
+/BioNetGen-2.2.0/Network3/...
+/BioNetGen-2.2.0/Perl2/...
+/BioNetGen-2.2.0/PhiBPlot/...
+/BioNetGen-2.2.0/README_FIRST.txt
+/BioNetGen-2.2.0/Validate/...
+/BioNetGen-2.2.0/VERSION
+/NFSim-1.10-src/
+/NFSim-1.10-src/NFcode/...
+/NFSim-1.10-src/NFtools/...
+/SampleModels/...
+
+
+BioNetGen-2.2.0 contains all of the BioNetGen related code and executables.  The BNG distribution from bionetgen.org also includes a Models2 directory that is renamed to SampleModels and moved outside of the BioNetGen-2.2.0 directory.  The BioNetGen-2.2.0/bin directory includes all of the executables (including NFSim).  The NFSim-1.10-src directory holds all of the NFSim source.
+
+This directory structure should be inside of the 'distributionResources/Simulation' directory in both of the projects.  After this directory structure is manually created, the scripts and build processes will be able to automatically move all of the appropriate files into place for the release.
+
+= 2.x =
+
+
+
+= 1.x =
