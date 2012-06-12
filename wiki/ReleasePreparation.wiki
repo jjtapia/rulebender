@@ -6,7 +6,7 @@
 
 This page describes the process for preparing RuleBender releases.  The 1.x and 2.x versions are prepared in entirely different ways.  1.x uses an ant script to generate executables for each platform and copies all of the jars, simulators (with source), executables,  and icons to the appropriate release directories.  2.x uses the Eclipse Plugin Development Environment (PDE) build system.  Each of the processes are described below. 
 
-= BioNetGen and NFSim = 
+= !BioNetGen and !NFSim = 
 The simulators are maintained by their respective groups and RuleBender developers should obtain them in an executable form for inclusion in the RuleBender distributable.  BioNetGen is maintained by Jim Faeder and his lab, while NFSim is written by the Emonet lab.  BioNetGen can be downloaded in its latest release version from bionetgen.org, and more recent versions can be obtained from the team directly.  NFSim is downloaded from http://emonet.biology.yale.edu/nfsim/.
 
 The current simulator component of the distribution looks like:
@@ -38,10 +38,11 @@ This directory structure should be inside of the 'distributionResources/Simulati
 == Setup == 
 The 2.x build is created with the Eclipse Plugin Development Environment Build system (PDE Build).  Specifically, we create a _product configuration_ that represents all of the files for a release, and then PDE Build does all of the heavy lifting.  [http://www.vogella.com/articles/EclipseRCP/article.html#product The Vogella Tutorial] explains products reasonably well.  
 
-One important thing that you need to do is set up the Eclipse "Delta Pack".  This set of libraries is what allows us to export for multiple target platforms.  In short, you must download the correct delta pack for the version of Eclipse that your RCP application is supposed to run on (the "target platform").  Your target platform does not have to be the same as the Eclipse platform on which you are working, but it is easier to set up that way.  There are good instructions for setting up the delta pack [http://ugosan.org/eclipse-rcp-delta-pack/ here].  
+One important thing that you need to do is set up the Eclipse "Delta Pack".  This set of libraries is what allows us to export for multiple target platforms.  In short, you must download the correct delta pack for the version of Eclipse that your RCP application is supposed to run on (the "target platform").  Your target platform does not have to be the same as the Eclipse platform on which you are working, but it is easier to set up that way.  There are detailed instructions for setting up the delta pack [http://ugosan.org/eclipse-rcp-delta-pack/ here].  
 
 (If ever there is an ambitious developer for !RuleBender, one area to improve in the build process would be to set up a separate platform definition file so that there are no dependencies between working environments and target environments.  See [http://www.modumind.com/2009/09/01/creating-an-eclipse-rcp-target-platform/ this]).
 
 == Product Definition File == 
+
 
 = 1.x =
