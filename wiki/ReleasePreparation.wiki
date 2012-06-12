@@ -11,7 +11,8 @@ The simulators are maintained by their respective groups and RuleBender develope
 
 The current simulator component of the distribution looks like:
 
-/BioNetGen-2.2.0
+{{{
+/BioNetGen-2.2.0 
 /BioNetGen-2.2.0/bin/...
 /BioNetGen-2.2.0/BNG2.pl
 /BioNetGen-2.2.0/CREDITS.txt
@@ -26,7 +27,7 @@ The current simulator component of the distribution looks like:
 /NFSim-1.10-src/NFcode/...
 /NFSim-1.10-src/NFtools/...
 /SampleModels/...
-
+}}}
 
 BioNetGen-2.2.0 contains all of the BioNetGen related code and executables.  The BNG distribution from bionetgen.org also includes a Models2 directory that is renamed to SampleModels and moved outside of the BioNetGen-2.2.0 directory.  The BioNetGen-2.2.0/bin directory includes all of the executables (including NFSim).  The NFSim-1.10-src directory holds all of the NFSim source.
 
@@ -34,6 +35,13 @@ This directory structure should be inside of the 'distributionResources/Simulati
 
 = 2.x =
 
+== Setup == 
+The 2.x build is created with the Eclipse Plugin Development Environment Build system (PDE Build).  Specifically, we create a _product configuration_ that represents all of the files for a release, and then PDE Build does all of the heavy lifting.  [http://www.vogella.com/articles/EclipseRCP/article.html#product The Vogella Tutorial] explains products reasonably well.  
 
+One important thing that you need to do is set up the Eclipse "Delta Pack".  This set of libraries is what allows us to export for multiple target platforms.  In short, you must download the correct delta pack for the version of Eclipse that your RCP application is supposed to run on (the "target platform").  Your target platform does not have to be the same as the Eclipse platform on which you are working, but it is easier to set up that way.  There are good instructions for setting up the delta pack [http://ugosan.org/eclipse-rcp-delta-pack/ here].  
+
+(If ever there is an ambitious developer for !RuleBender, one area to improve in the build process would be to set up a separate platform definition file so that there are no dependencies between working environments and target environments.  See [http://www.modumind.com/2009/09/01/creating-an-eclipse-rcp-target-platform/ this]).
+
+== Product Definition File == 
 
 = 1.x =
