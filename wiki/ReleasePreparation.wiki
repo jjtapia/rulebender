@@ -49,7 +49,7 @@ There are a few ways to create a product definition file.  It is possible to do 
 
 Once you have a launch configuration, go ahead and open the New Project Configuration Wizard as described above and select the option to build it from a launch configuration.  Name the new product and make sure you put it in the rulebender project.  
 
-*Image for creating the new product*
+*TODO: Image for creating the new product*
 
 After clicking 'Finish' the .product file should open, revealing 7 tabs for customizing the product.  
 
@@ -58,7 +58,7 @@ Leave 'ID' and 'Version' blank, but fill in "RuleBender" for the 'Name'.
 
 You will need to define a new product (button on the right).  This will bring up a wizard that will let you choose the plugin to use ("rulebender"), the name of the product (whatever you want), and the actual application to run ("rulebender.application").
 
-*image for defining the new product.*
+*TODO: image for defining the new product.*
 
 The 'Application' drop down should say "rulebender.application", and the product will be based on plug-ins.
 
