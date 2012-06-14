@@ -539,7 +539,7 @@
    <consolePatternMatchListener
          class="rulebender.core.utility.ConsolePatternMatchListenerDelegate"
          id="rulebender.core.utility.consolePatternMatchListener"
-         regex="ABORT:[.]* at line \d+">
+         regex="Iteration">
       <enablement></enablement>
    </consolePatternMatchListener>
 </extension>
