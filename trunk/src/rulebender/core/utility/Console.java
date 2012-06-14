@@ -2,8 +2,10 @@ package rulebender.core.utility;
 
 import java.util.HashMap;
 
+import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.ui.console.ConsolePlugin;
 import org.eclipse.ui.console.IConsole;
+import org.eclipse.ui.console.IHyperlink;
 import org.eclipse.ui.console.MessageConsole;
 import org.eclipse.ui.console.MessageConsoleStream;
 
@@ -27,7 +29,9 @@ public class Console
 	{
 		// FIXME Completely overridding the different consoles
 		console = "RuleBender Console";
+		
 		getMessageConsoleStream(console).println(output);
+		
 	}
 	
 	/**
