@@ -522,5 +522,26 @@
          class="rulebender.core.editorhider.EditorHider">
    </startup>
 </extension>
+<extension
+      id="TestRuleBenderProduct"
+      point="org.eclipse.core.runtime.products">
+   <product
+         application="rulebender.application"
+         name="RuleBender">
+      <property
+            name="appName"
+            value="RuleBender">
+      </property>
+   </product>
+</extension>
+<extension
+      point="org.eclipse.ui.console.consolePatternMatchListeners">
+   <consolePatternMatchListener
+         class="rulebender.core.utility.ConsolePatternMatchListenerDelegate"
+         id="rulebender.core.utility.consolePatternMatchListener"
+         regex="ABORT:[.]* at line \d+">
+      <enablement></enablement>
+   </consolePatternMatchListener>
+</extension>
 
 </plugin>
