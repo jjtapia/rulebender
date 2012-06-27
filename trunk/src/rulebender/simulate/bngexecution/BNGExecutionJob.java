@@ -3,6 +3,7 @@ package rulebender.simulate.bngexecution;
 import java.io.File;
 import java.io.FileNotFoundException;
 
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
@@ -10,9 +11,6 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
-import org.eclipse.swt.widgets.Display;
-import org.eclipse.ui.IViewReference;
-import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.progress.IProgressConstants;
 
 import rulebender.core.utility.Console;
@@ -21,15 +19,16 @@ import rulebender.simulate.SimulationErrorException;
 
 public class BNGExecutionJob extends Job 
 {
-
-	private String m_filePath;
+	private String m_relativeFilePath;
+	private String m_absoluteFilePath;
 	private String m_bngFullPath;
 	private String m_resultsPath;
 	
-	public BNGExecutionJob(String name, String filePath, String bngFullPath, String resultsPath) 
+	public BNGExecutionJob(String name, IFile ifile, String bngFullPath, String resultsPath) 
 	{
 		super(name);
-		setFilePath(filePath);
+		setAbsoluteFilePath(ifile.getLocation().makeAbsolute().toOSString());
+		setRelativeFilePath(ifile.getFullPath().toOSString());
 		setBNGFullPath(bngFullPath);
 		setResultsPath(resultsPath);
 		
@@ -39,17 +38,20 @@ public class BNGExecutionJob extends Job
 	@Override
 	protected IStatus run(IProgressMonitor monitor) 
 	{
+		System.out.println("Starting the run");
+		
+		
 		// Tell the monitor
 		monitor.beginTask("Validation Files...", 4);
 		
-		if(!validateBNGLFile(m_filePath))
+		if(!validateBNGLFile(m_absoluteFilePath))
 		{
-			Console.displayOutput("Simulation: " + m_filePath, "Error in file path.");
+			Console.displayOutput(m_absoluteFilePath, "Error in file path.");
 			return Status.CANCEL_STATUS;
 		}
 		if(!validateBNGPath(m_bngFullPath))
 		{
-			Console.displayOutput("Simulation: " + m_filePath, "Error in bng path.");
+			Console.displayOutput(m_bngFullPath, "Error in bng path.");
 			return Status.CANCEL_STATUS;
 		}
 		
@@ -59,21 +61,19 @@ public class BNGExecutionJob extends Job
 		
 		// Create the directory if necessary.
 	    (new File(m_resultsPath)).mkdirs();
-	    
-	    //TODO start here by copying the file to be simulated, then use that file for the simulations.
-	       
+	    	       
 		//MONITOR
 		monitor.setTaskName("Generating Scripts...");
 		monitor.worked(1);
 		
-		SimulateCommand simCommand = new SimulateCommand(m_filePath, m_bngFullPath, m_resultsPath, true);
+		SimulateCommand simCommand = new SimulateCommand(m_absoluteFilePath, m_bngFullPath, m_resultsPath, true);
 		
 		//MONITOR
 		monitor.setTaskName("Running Simulation...");
 		monitor.worked(1);
 				
 		// Run it in the commandRunner
-		CommandRunner<SimulateCommand> runner = new CommandRunner<SimulateCommand>(simCommand, new File(m_resultsPath), "Simulation: " + m_filePath, monitor);
+		CommandRunner<SimulateCommand> runner = new CommandRunner<SimulateCommand>(simCommand, new File(m_resultsPath), m_relativeFilePath, monitor);
 		
 		try 
 		{
@@ -122,7 +122,7 @@ public class BNGExecutionJob extends Job
 		}
 		
 		System.out.println("Deleting: " + m_resultsPath);
-		Console.displayOutput("Simulation: " + m_filePath, "Simulation Cancelled!\n\n");
+		Console.displayOutput(m_relativeFilePath, "Simulation Cancelled!\n\n");
 	}
 
 	private void updateTrees()
@@ -154,9 +154,14 @@ public class BNGExecutionJob extends Job
 		return false;
 	}
 
-	public void setFilePath(String path)
+	public void setAbsoluteFilePath(String path)
 	{
-		m_filePath = path;
+		m_absoluteFilePath = path;
+	}
+	
+	public void setRelativeFilePath(String path)
+	{
+		m_relativeFilePath = path;
 	}
 	
 	public void setBNGFullPath(String path)

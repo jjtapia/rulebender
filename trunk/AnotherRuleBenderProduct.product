@@ -17,7 +17,7 @@ Please send all feedback and questions to help@rulebender.org.
    </configIni>
 
    <launcherArgs>
-      <programArgs>-consoleLog -data @noDefault</programArgs>
+      <programArgs>-data @noDefault</programArgs>
       <vmArgs>-Xms40m -Xmx512m</vmArgs>
       <vmArgsMac>-XstartOnFirstThread -Dorg.eclipse.swt.internal.carbon.smallFonts -Xdock:icon=../Resources/Eclipse.icns -XstartOnFirstThread -d64</vmArgsMac>
    </launcherArgs>
@@ -43,7 +43,9 @@ Please send all feedback and questions to help@rulebender.org.
 
 
    <vm>
+      <linux include="false">org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6</linux>
       <macos include="false">org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6</macos>
+      <windows include="false">org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6</windows>
    </vm>
 
    <plugins>

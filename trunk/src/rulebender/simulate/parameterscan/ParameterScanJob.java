@@ -59,17 +59,17 @@ public class ParameterScanJob extends Job
 		
 		if(!validateBNGLFile(m_filePath))
 		{
-			Console.displayOutput("Parameter Scan: " + m_filePath, "Error in file path.");
+			Console.displayOutput(m_filePath, "Error in file path.");
 			return Status.CANCEL_STATUS;
 		}
 		if(!validateBNGPath(m_bngPath) )
 		{
-			Console.displayOutput("Parameter Scan: " + m_filePath, "Error bng path.");
+			Console.displayOutput(m_filePath, "Error bng path.");
 			return Status.CANCEL_STATUS;
 		}
 		if(!validateScriptPath(m_scriptFullPath))
 		{
-			Console.displayOutput("Parameter Scan: " + m_filePath, "Error in script path.");
+			Console.displayOutput(m_filePath, "Error in script path.");
 			return Status.CANCEL_STATUS;
 		}
 		
@@ -135,9 +135,8 @@ public class ParameterScanJob extends Job
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
-		System.out.println("Deleting: " + m_resultsPath);
-		Console.displayOutput("Parameter Scan: " + m_filePath, "Parameter Scan Cancelled!\n\n");
+	
+		Console.displayOutput(m_filePath, "Parameter Scan Cancelled!\n\n");
 	}
 	
 	private boolean deleteRecursive(File path) throws FileNotFoundException{

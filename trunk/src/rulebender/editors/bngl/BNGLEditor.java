@@ -394,6 +394,48 @@ public class BNGLEditor extends TextEditor implements ISelectionListener, IPrefe
 		return "rulebender.perspective";
 	}
 	
+	public void setSelection(final int lineNumber)
+	{
+	  doSetSelection(new ITextSelection(){
+
+		@Override
+		public boolean isEmpty() {
+			// TODO Auto-generated method stub
+			return false;
+		}
+
+		@Override
+		public int getOffset() {
+			// TODO Auto-generated method stub
+			return 0;
+		}
+
+		@Override
+		public int getLength() {
+			// TODO Auto-generated method stub
+			return 0;
+		}
+
+		@Override
+		public int getStartLine() 
+		{
+			return lineNumber;
+		}
+
+		@Override
+		public int getEndLine() 
+		{
+			return lineNumber;
+		}
+
+		@Override
+		public String getText() {
+			// TODO Auto-generated method stub
+			return null;
+		}
+		});	
+	}
+	
 	//TODO this is not being called. 
 	/**
 	 * Closes all project files on project close.

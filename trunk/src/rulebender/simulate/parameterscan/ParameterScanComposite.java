@@ -230,7 +230,7 @@ public class ParameterScanComposite extends Composite
 			//TODO  Possibly show console, 
 			
 			// Display console output.
-			Console.displayOutput("Parameter Scan: " + m_parentView.getSelectedFile().getRawLocation().makeAbsolute().toOSString(), Console.getConsoleLineDelimeter() + "Running Parameter Scan...");
+			Console.displayOutput(m_parentView.getSelectedFile().getFullPath().toOSString(), Console.getConsoleLineDelimeter() + "Running Parameter Scan...");
 		
 			// Run the parameter scan.  This returns a boolean, but for now I am ignoring it.	
 			BioNetGenUtility.parameterScan(m_parentView.getSelectedFile().getRawLocation().makeAbsolute().toOSString(), 

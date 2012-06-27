@@ -4,10 +4,6 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Map;
-
-import org.eclipse.core.resources.IResource;
-import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
@@ -43,6 +39,7 @@ public class CommandRunner<T extends CommandInterface>
 	/**
 	 * @param command The CommandInterface object that should be executed.
 	 * @param workingDirectory The working directory where it should be executed.
+	 * @param name The relative path from the workspace to the file.
 	 * @param monitor 
 	 */
 	public CommandRunner(T command, File workingDirectory, String name, IProgressMonitor monitor)
@@ -159,6 +156,8 @@ public class CommandRunner<T extends CommandInterface>
 		return true;		
 	}
 
+	//TODO This is the start of the method to show which files have been created....
+	// feel free to totally ignore or remove.  I don't remember getting very far with it. 
 	private void exposeResults()
 	{
 		Display.getDefault().syncExec(new Runnable(){

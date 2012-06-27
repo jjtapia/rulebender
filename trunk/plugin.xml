@@ -521,6 +521,9 @@
    <startup
          class="rulebender.core.editorhider.EditorHider">
    </startup>
+   <startup
+         class="rulebender.core.utility.Console">
+   </startup>
 </extension>
 <extension
       id="TestRuleBenderProduct"

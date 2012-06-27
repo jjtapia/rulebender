@@ -1,5 +1,6 @@
 package rulebender.simulate;
 
+import org.eclipse.core.resources.IFile;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.MessageBox;
@@ -54,9 +55,9 @@ public class BioNetGenUtility
 	
 	/**
 	 * 
-	 * @param filePath
+	 * @param iFile
 	 */
-	public static void runBNGLFile(String filePath, String bngFullPath, String resultsPath)
+	public static void runBNGLFile(IFile iFile, String bngFullPath, String resultsPath)
 	{
 		if(!PreReqChecker.isPerlInPath())
 		{
@@ -68,43 +69,13 @@ public class BioNetGenUtility
 		}
 		else
 		{
-			String name = "Executing file: " + filePath.substring(filePath.lastIndexOf(System.getProperty("file.separator"))+1, filePath.indexOf(".bngl"));
-			BNGExecutionJob job = new BNGExecutionJob(name, filePath, bngFullPath, resultsPath);
+			String relPath = iFile.getRawLocation().toOSString();
+			String name = "Executing file: " + relPath;
+			BNGExecutionJob job = new BNGExecutionJob(name, iFile, bngFullPath, resultsPath);
 			
 			job.schedule();
 		}
 		
 		
 	}	
-
-	/**
-	 * 
-	 * @param actionsFilePath
-	 * @param filePath
-	 * @param bngFullPath
-	 * @param resultsPath
-	 */
-	public static void runSeparateActionsForModel(String actionsFilePath, String filePath, String bngFullPath, String resultsPath)
-	{
-		if(!PreReqChecker.isPerlInPath())
-		{
-			MessageBox errorMessage = new MessageBox(Display.getDefault().getActiveShell(), SWT.ICON_ERROR | SWT.OK);
-			errorMessage.setText("Perl Not Found");
-			errorMessage.setMessage("Warning: It appears that Perl is not in your PATH environment variable.\nPlease install Perl if you want to run simulations.");
-			
-			errorMessage.open();
-		}
-		else
-		{
-			
-			String name = "Executing file: " + 
-						  filePath.substring(filePath.lastIndexOf(System.getProperty("file.separator"))+1, filePath.indexOf(".bngl")) +
-						  "With actions: " +
-						  actionsFilePath.substring(actionsFilePath.lastIndexOf(System.getProperty("file.separator"))+1, actionsFilePath.indexOf(".bngl"));
-			
-			BNGExecutionJob job = new BNGExecutionJob(name, filePath, bngFullPath, resultsPath);
-			
-			job.schedule();
-		}
-	}
 }
