@@ -30,7 +30,9 @@ import rulebender.editors.bngl.BNGLColorManager;
 import rulebender.editors.bngl.IBNGLLinkedElement;
 import rulebender.editors.bngl.IBNGLLinkedElementCollection;
 
-public class BNGATextEditor extends TextEditor implements ISelectionListener, IPrefersPerspective, IResourceChangeListener
+public class BNGATextEditor extends TextEditor 
+                            implements ISelectionListener,
+                                       IResourceChangeListener
 {
 	// The model for the text
 	private SimulationProtocol m_model;
@@ -210,12 +212,6 @@ public class BNGATextEditor extends TextEditor implements ISelectionListener, IP
 		} 
 	}
 		
-	@Override
-	public String getPreferredPerspectiveId() 
-	{
-		return "rulebender.perspective";
-	}
-	
 	//TODO this is not being called. 
 	/**
 	 * Closes all project files on project close.

@@ -32,7 +32,7 @@ public class BioNetGenUtility
 	 * @param scriptFullPath
 	 * @return true if job submitted, false otherwise. 
 	 */
-	public static void parameterScan(String filePath, ParameterScanData data, String bngPath, String scriptFullPath, String resultsPath)
+	public static void parameterScan(IFile iFile, ParameterScanData data, String bngPath, String scriptFullPath, String resultsPath)
 	{
 		if(!PreReqChecker.isPerlInPath())
 		{
@@ -45,9 +45,14 @@ public class BioNetGenUtility
 		
 		else
 		{
-		
-			String name = "Parameter Scan: " + filePath.substring(filePath.lastIndexOf(System.getProperty("file.separator"))+1, filePath.indexOf(".bngl"));
-			ParameterScanJob job = new ParameterScanJob(name, filePath, bngPath, scriptFullPath, data, resultsPath);
+      String relPath = iFile.getRawLocation().toOSString();
+			String name = "Parameter Scan: " + relPath;
+			ParameterScanJob job = new ParameterScanJob(name,
+			                                            iFile, 
+			                                            bngPath,
+			                                            scriptFullPath,
+			                                            data,
+			                                            resultsPath);
 			
 			job.schedule();
 		}

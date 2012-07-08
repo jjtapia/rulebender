@@ -26,7 +26,9 @@ import de.ralfebert.rcp.tools.preferredperspective.IPrefersPerspective;
  * <li>page 2 shows the words in page 0 in sorted order
  * </ul>
  */
-public class DATMultiPageEditor extends MultiPageEditorPart implements IResourceChangeListener, IPrefersPerspective {
+public class DATMultiPageEditor extends MultiPageEditorPart 
+                                implements IResourceChangeListener
+                                {
 
 	/** The text editor used in page 0. */
 	private TextEditor editor;
@@ -180,10 +182,5 @@ public class DATMultiPageEditor extends MultiPageEditorPart implements IResource
 				}            
 			});
 		}
-	}
-	
-	@Override
-	public String getPreferredPerspectiveId() {
-		return "rulebender.ResultsPerspective";
 	}
 }

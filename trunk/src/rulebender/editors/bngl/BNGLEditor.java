@@ -51,7 +51,8 @@ import rulebender.errorview.model.BNGLError;
  * @author adammatthewsmith
  *
  */
-public class BNGLEditor extends TextEditor implements ISelectionListener, IPrefersPerspective, IResourceChangeListener 
+public class BNGLEditor extends TextEditor implements ISelectionListener, 
+                                                      IResourceChangeListener 
 {
 	// The model for the text
 	private BNGLModel m_model;
@@ -386,12 +387,6 @@ public class BNGLEditor extends TextEditor implements ISelectionListener, IPrefe
 				exception.printStackTrace();
 			}
 		} 
-	}
-		
-	@Override
-	public String getPreferredPerspectiveId() 
-	{
-		return "rulebender.perspective";
 	}
 	
 	public void setSelection(final int lineNumber)

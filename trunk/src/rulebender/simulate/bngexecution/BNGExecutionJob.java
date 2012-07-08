@@ -66,14 +66,22 @@ public class BNGExecutionJob extends Job
 		monitor.setTaskName("Generating Scripts...");
 		monitor.worked(1);
 		
-		SimulateCommand simCommand = new SimulateCommand(m_absoluteFilePath, m_bngFullPath, m_resultsPath, true);
+		SimulateCommand simCommand =
+		    new SimulateCommand(m_absoluteFilePath, 
+		                        m_bngFullPath, 
+		                        m_resultsPath, 
+		                        true);
 		
 		//MONITOR
 		monitor.setTaskName("Running Simulation...");
 		monitor.worked(1);
 				
 		// Run it in the commandRunner
-		CommandRunner<SimulateCommand> runner = new CommandRunner<SimulateCommand>(simCommand, new File(m_resultsPath), m_relativeFilePath, monitor);
+		CommandRunner<SimulateCommand> runner = 
+		    new CommandRunner<SimulateCommand>(simCommand, 
+		                                       new File(m_resultsPath), 
+		                                       m_relativeFilePath, 
+		                                       monitor);
 		
 		try 
 		{

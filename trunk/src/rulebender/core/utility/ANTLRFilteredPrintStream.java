@@ -26,11 +26,21 @@ public class ANTLRFilteredPrintStream extends PrintStream
 	@Override
 	public void println(String s)
 	{		
-		if(s.subSequence(0, 4).equals("line"))
+	  if(s.subSequence(0, 4).equals("line"))
 		{
-			//super.println(s);
+			super.println(s);
 			//Console.displayOutput(m_consoleName, s);
 			m_errors.add(parseError(s));
+		}
+		else if(s.subSequence(5,9).equals("line"))
+		{
+		  s = s.replaceAll("null\\s+", "");
+		  //FIXME The second condition is for some strange errors being reported
+	    // of the form "null line xx:xx message" instead of just 
+	    // "line xx:xx message"
+		  super.println(s);
+      //Console.displayOutput(m_consoleName, s);
+      m_errors.add(parseError(s));
 		}
 		else
 		{
@@ -53,6 +63,8 @@ public class ANTLRFilteredPrintStream extends PrintStream
 	{
 		//line 13:3 no viable alternative at input 'version' in model
 		
+	  System.out.println("***** parsing: " +s);
+	  
 		// chomp "line "
 		s = s.substring(s.indexOf(" ")).trim();
 		

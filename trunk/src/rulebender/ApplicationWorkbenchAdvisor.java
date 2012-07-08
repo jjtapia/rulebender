@@ -51,8 +51,8 @@ public class ApplicationWorkbenchAdvisor extends WorkbenchAdvisor {
 	//To get the resource workspace as input, override this method:
 	// For common navigator framework
 	public IAdaptable getDefaultPageInput() 
-	{	System.out.println("Root name: " + ResourcesPlugin.getWorkspace().getRoot().getName());
-		return ResourcesPlugin.getWorkspace().getRoot(); 
+	{
+	  return ResourcesPlugin.getWorkspace().getRoot(); 
 	}
 	
 	//To get the correct adapters hooked up add this code to the initialize() method:
@@ -66,7 +66,7 @@ public class ApplicationWorkbenchAdvisor extends WorkbenchAdvisor {
 		
 		// Comment out this line when you are adding/editing views so that the state
 		// is not restored from previous sessions.
-		configurer.setSaveAndRestore(true);
+		//configurer.setSaveAndRestore(true);
 		
 		// here is the work around code
 		// From http://stackoverflow.com/questions/8277902/add-package-explorer-in-rcp-application-result-in-loosing-some-icon

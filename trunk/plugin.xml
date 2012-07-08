@@ -32,6 +32,11 @@
             id="rulebender.ResultsPerspective"
             name="Results">
       </perspective>
+      <perspective
+            class="rulebender.perspecive.CustomPerspective"
+            id="rulebender.perspective.Custom"
+            name="Custom">
+      </perspective>
    </extension>
    <extension
          point="org.eclipse.ui.perspectiveExtensions">
@@ -72,12 +77,6 @@
                relationship="left"
                relative="org.eclipse.ui.editorss"
                visible="true">
-         </view>
-         <view
-               id="rulebender.example.exampleview"
-               minimized="false"
-               relationship="stack"
-               relative="rulebender.contactmap.view.ContactMapView">
          </view>
       </perspectiveExtension>
       <perspectiveExtension
@@ -140,6 +139,87 @@
                ratio="0.6f"
                relationship="left"
                relative="org.eclipse.ui.editorss"
+               visible="true">
+         </view>
+      </perspectiveExtension>
+      <perspectiveExtension
+            targetID="rulebender.perspective.Custom">
+         <view
+               closeable="true"
+               id="rulebender.cnf.CommonNavigator"
+               minimized="false"
+               moveable="true"
+               ratio="0.3f"
+               relationship="left"
+               relative="org.eclipse.ui.editorss"
+               visible="true">
+         </view>
+         <view
+               closeable="true"
+               id="rulebender.contactmap.view.ContactMapView"
+               minimized="false"
+               moveable="true"
+               ratio="0.6f"
+               relationship="right"
+               relative="org.eclipse.ui.editorss"
+               visible="true">
+         </view>
+         <view
+               closeable="true"
+               id="rulebender.views.Console"
+               minimized="false"
+               moveable="true"
+               ratio="0.7f"
+               relationship="bottom"
+               relative="org.eclipse.ui.editorss"
+               visible="true">
+         </view>
+         <view
+               closeable="true"
+               id="rulebender.properties.view.PropertiesSheetView"
+               minimized="false"
+               moveable="true"
+               relationship="bottom"
+               relative="rulebender.contactmap.view.ContactMapView"
+               visible="true">
+         </view>
+         <view
+               closeable="true"
+               id="rulebender.views.problemview"
+               minimized="false"
+               moveable="true"
+               relationship="stack"
+               relative="rulebender.views.Console"
+               visible="true">
+         </view>
+         <view
+               closeable="true"
+               id="rulebender.speciesgraph.SpeciesGraphView"
+               minimized="false"
+               moveable="true"
+               relationship="stack"
+               relative="rulebender.contactmap.view.ContactMapView"
+               visible="true">
+         </view>
+         <view
+               closeable="true"
+               id="rulebender.simulate.view.SimulateView"
+               minimized="false"
+               moveable="true"
+               ratio="0.3f"
+               relationship="stack"
+               relative="rulebender.contactmap.view.ContactMapView"
+               showTitle="true"
+               standalone="false"
+               visible="true">
+         </view>
+         <view
+               closeable="true"
+               id="org.eclipse.ui.views.ProgressView"
+               minimized="false"
+               moveable="true"
+               relationship="stack"
+               relative="rulebender.properties.view.PropertiesSheetView"
                visible="true">
          </view>
       </perspectiveExtension>
@@ -336,6 +416,13 @@
                   label="About..."
                   style="push">
             </command>
+            <menu
+                  label="Show View...">
+               <dynamic
+                     class="rulebender.ui.menu.ShowViewContributionItem"
+                     id="rulebendender.ui.menu.showViewMenu">
+               </dynamic>
+            </menu>
          </menu>
       </menuContribution>
       <menuContribution
