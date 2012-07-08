@@ -100,27 +100,31 @@ public class Console implements IPartListener, IStartup
       @Override
       public void linkActivated()
       {
+        //TODO logging.
         System.out.println("Link activated for "
             + getMessageConsole(name).getName());
 
-        // TODO
-        // Get the line that matched, extract where the error is,
-        // jump to that line in the editor.
-        String text = "";
+      
+        String errorText = "";
 
         try
         {
-          text = getMessageConsole(name).getDocument().get(offset, length);
+          errorText = getMessageConsole(name).getDocument().get(offset, length);
         }
         catch (BadLocationException e)
         {
           e.printStackTrace();
         }
 
-        // TODO Get the line from the text (Requires putting the regex
-        // in place in plugin.xml.
-        System.out.println("text: " + text);
+        //ABORT:\s+.*\s+at line \d+
+        System.out.println("text: " + errorText);
 
+        String[] textArray = errorText.split("\\s+");
+        
+        //TODO 
+        // verify this.
+        int line = Integer.parseInt(textArray[textArray.length - 1]); 
+        
         // Open the editor.  This will open the file in an editor if it is not
         // opened already, and will bring it in focus once it is opened.
         openFile(name);
@@ -129,9 +133,6 @@ public class Console implements IPartListener, IStartup
         // the openFile call will still cause all of the part listening code
         // for the Console (see below) to fire.
         BNGLEditor editor = m_editors.get(name);
-
-        // TODO this is a test line.
-        int line = 10;
 
         // Go to the line in the editor.
         goToLine(editor, line);

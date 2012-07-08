@@ -30,8 +30,6 @@ import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.ui.texteditor.IDocumentProvider;
 import org.eclipse.ui.texteditor.ITextEditor;
 
-import de.ralfebert.rcp.tools.preferredperspective.IPrefersPerspective;
-
 import bngparser.BNGParseData;
 import bngparser.BNGParserUtility;
 import bngparser.grammars.BNGGrammar.prog_return;
@@ -286,6 +284,7 @@ public class BNGLEditor extends TextEditor implements ISelectionListener,
   @Override
   public void selectionChanged(IWorkbenchPart part, ISelection selection)
   {
+    //FIXME Need logging.
     System.out.println("Part: " + part.getTitle());
     System.out.println("selection: " + selection.toString());
     System.out.println("empty selection? " + selection.isEmpty());
