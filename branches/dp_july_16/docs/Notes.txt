@@ -1,0 +1,26 @@
+Use configurer.setSaveAndRestore() in the ApplicationWorkBenchAdvisor to save 
+the location and size of all of the views, HOWEVER, this will prevent new 
+views from being displayed during development.
+
+
+
+	10 weeks to release:  
+		Major tasks:
+			1. Create grammar supported editor that can autocompile the code
+			2. define dom for language (probably with existing perl datastructures)
+			3. Finalize and implement dumb interface.
+			4. construct CMap and IGraph with new datastructures.
+			5. Fix overview window glitch with the prefuse supported solution.
+			6. Manage links with RCP supported linking structures as necessary.
+			   It is more important at first to just have the tool work.
+			7. Implement simulation execution presenter classes.
+			8. Implement user preferences.
+
+			
+			
+			
+			
+			
+Need a DS for all of the open files.  I will keep track of the models in a centralized DS, from which all translations/representations of the model will be computed.  
+e.g.  Open file-> model is computed using antlr -> views will receive notification of file in view -> views access model and update content. file closed ->  model garbage collected.
+result file opened -> result view made foremost. 

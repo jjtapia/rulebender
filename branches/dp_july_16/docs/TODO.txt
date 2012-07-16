@@ -1,0 +1,11 @@
+TODO:
+
+* In the future, the parser will recognize bonds of the type Ex1().Ex2().  
+
+* The overview window does not zoom in when molecules are brought together.
+
+* Wild cards. they are ignored for now. 
+
+* Need to be able to add states that are found in rules. 
+
+* Popups don't work. 
