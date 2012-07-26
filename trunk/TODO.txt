@@ -1,7 +1,10 @@
+TODO may be out of date. See issues queue for google code:
+https://code.google.com/p/rulebender/issues/list
+
 Do before release:
 	The OSX Application menu elements are not shown anywhere when RB is run in windows.
 	Maybe better console management.  
-	
+
 
 Programming TODO:
 	General:
