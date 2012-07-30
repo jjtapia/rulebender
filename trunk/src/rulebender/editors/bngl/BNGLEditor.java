@@ -39,13 +39,14 @@ import rulebender.editors.bngl.BNGLConfiguration;
 import rulebender.editors.bngl.BNGLDocumentProvider;
 import rulebender.editors.bngl.model.BNGLModel;
 import rulebender.errorview.model.BNGLError;
+import rulebender.logging.Logger;
 
 /**
  * This class defines the editor for bngl.
  * 
  * The ISelectionListener implementation listens for selections in the tool, and
  * IPrefersPerspective is for loading a perspective when an editor is loaded
- * (this is not used at the moment). IPreferse
+ * (this is not used at the moment). 
  * 
  * @author adammatthewsmith
  * 
@@ -97,7 +98,6 @@ public class BNGLEditor extends TextEditor implements ISelectionListener,
     clearMarkers("rulebender.markers.bnglerrormarker");
 
     setAST(getAST());
-
   }
 
   private void clearMarkers(String markerId)
@@ -284,13 +284,22 @@ public class BNGLEditor extends TextEditor implements ISelectionListener,
   @Override
   public void selectionChanged(IWorkbenchPart part, ISelection selection)
   {
-    //FIXME Need logging.
-    System.out.println("Part: " + part.getTitle());
-    System.out.println("selection: " + selection.toString());
-    System.out.println("empty selection? " + selection.isEmpty());
-    System.out.println("structured selection? "
+    Logger.log(Logger.LOG_LEVELS.INFO, 
+        this.getClass(),
+        "Part: " + part.getTitle());
+    Logger.log(Logger.LOG_LEVELS.INFO, 
+        this.getClass(),
+        "selection: " + selection.toString());
+    Logger.log(Logger.LOG_LEVELS.INFO,
+        this.getClass(),
+        "empty selection? " + selection.isEmpty());
+    Logger.log(Logger.LOG_LEVELS.INFO,
+        this.getClass(),
+        "structured selection? "
         + (selection instanceof IStructuredSelection));
-    System.out.println("text selection? "
+    Logger.log(Logger.LOG_LEVELS.INFO, 
+        this.getClass(),
+        "text selection? "
         + (selection instanceof ITextSelection));
 
     // If it is an IStructuredSelection
@@ -344,7 +353,7 @@ public class BNGLEditor extends TextEditor implements ISelectionListener,
     }
     else if (selection instanceof ITextSelection)
     {
-      System.out.println(((ITextSelection) selection).toString());
+      //System.out.println(((ITextSelection) selection).toString());
     }
     else
     {
@@ -371,7 +380,9 @@ public class BNGLEditor extends TextEditor implements ISelectionListener,
 
   private void selectFromRegExp(String regExp)
   {
-    System.out.println("Search for regex: " + regExp);
+    Logger.log(Logger.LOG_LEVELS.INFO, 
+        this.getClass(),
+        "Search for regex: " + regExp);
 
     // Get the ifile reference for this editor input.
     IFile file = ((FileEditorInput) ((IEditorInput) getEditorInput()))
@@ -395,8 +406,6 @@ public class BNGLEditor extends TextEditor implements ISelectionListener,
         marker.setAttribute(IMarker.SEVERITY, IMarker.SEVERITY_ERROR);
         marker.setAttribute(IMarker.CHAR_START, m.start());
         marker.setAttribute(IMarker.CHAR_END, m.end());
-
-        System.out.println("Made the text marker!");
       }
       catch (Exception exception)
       {
@@ -458,12 +467,12 @@ public class BNGLEditor extends TextEditor implements ISelectionListener,
    */
   public void resourceChanged(final IResourceChangeEvent event)
   {
-    System.out.println("Resource Changed Event: " + event.getType());
+    Logger.log(Logger.LOG_LEVELS.INFO, 
+        this.getClass(),
+        "Resource Changed Event: " + event.getType());
 
     if (event.getType() == IResourceChangeEvent.PRE_CLOSE)
     {
-      System.out.println("Closing");
-
       Display.getDefault().asyncExec(new Runnable()
       {
         public void run()

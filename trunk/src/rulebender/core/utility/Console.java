@@ -1,8 +1,6 @@
 package rulebender.core.utility;
 
 import java.util.HashMap;
-
-import org.eclipse.core.internal.resources.File;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
@@ -29,16 +27,18 @@ import org.eclipse.ui.console.MessageConsoleStream;
 import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.ui.texteditor.ITextEditor;
 
-import de.ralfebert.rcp.tools.preferredperspective.PreferredPerspectivePartListener;
-
 import rulebender.editors.bngl.BNGLEditor;
+import rulebender.logging.Logger;
+import rulebender.logging.Logger.LOG_LEVELS;
 
 public class Console implements IPartListener, IStartup
 {
   private static Console m_instance;
 
-  private static HashMap<String, MessageConsole> m_messageConsoles = new HashMap<String, MessageConsole>();
-  private static HashMap<String, BNGLEditor> m_editors = new HashMap<String, BNGLEditor>();
+  private static HashMap<String, MessageConsole> m_messageConsoles = 
+      new HashMap<String, MessageConsole>();
+  private static HashMap<String, BNGLEditor> m_editors = 
+      new HashMap<String, BNGLEditor>();
 
   /**
    * Private Constructor for static library. This should be private, but
@@ -100,10 +100,8 @@ public class Console implements IPartListener, IStartup
       @Override
       public void linkActivated()
       {
-        //TODO logging.
-        System.out.println("Link activated for "
+        Logger.log(LOG_LEVELS.INFO, this.getClass(), "Link activated for "
             + getMessageConsole(name).getName());
-
       
         String errorText = "";
 
@@ -117,7 +115,9 @@ public class Console implements IPartListener, IStartup
         }
 
         //ABORT:\s+.*\s+at line \d+
-        System.out.println("text: " + errorText);
+        Logger.log(LOG_LEVELS.INFO, 
+            this.getClass(), 
+            "text: " + errorText);
 
         String[] textArray = errorText.split("\\s+");
         

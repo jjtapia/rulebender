@@ -29,7 +29,12 @@ import rulebender.simulate.parameterscan.ParameterScanComposite;
 
 public class SimulateView extends ViewPart 
 {
-	private Composite main, actionSelect, stackedComposite, parameterScanComposite, runFileComposite;
+	private Composite main, 
+	                  actionSelect, 
+	                  stackedComposite, 
+	                  parameterScanComposite,
+	                  runFileComposite;
+	
 	private StackLayout stackLayout;
 	
 	private ScrolledComposite scroll;
@@ -229,7 +234,6 @@ public class SimulateView extends ViewPart
 			public void controlResized(ControlEvent e) 
 			{
 				main.setSize(parent.getSize().x, parent.getSize().y);
-			
 			}
 		});
 		
@@ -248,7 +252,8 @@ public class SimulateView extends ViewPart
 	
 	public void setSelectedResource(IFile selectedObject) 
 	{
-		fileText.setText(selectedObject.getRawLocation().makeAbsolute().toOSString());
+		//fileText.setText(selectedObject.getRawLocation().makeAbsolute().toOSString());
+	  fileText.setText(selectedObject.getFullPath().toOSString());
 		m_selectedFile = selectedObject;
 	}
 }

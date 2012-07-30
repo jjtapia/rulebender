@@ -5,6 +5,8 @@ import java.io.PrintStream;
 import java.util.ArrayList;
 
 import rulebender.errorview.model.BNGLError;
+import rulebender.logging.Logger;
+import rulebender.logging.Logger.LOG_LEVELS;
 
 public class ANTLRFilteredPrintStream extends PrintStream
 {
@@ -13,7 +15,10 @@ public class ANTLRFilteredPrintStream extends PrintStream
 	private ArrayList<BNGLError> m_errors;
 	private String m_file;
 	
-	public ANTLRFilteredPrintStream(OutputStream arg0, String consoleName, PrintStream oldStream, String file) 
+	public ANTLRFilteredPrintStream(OutputStream arg0, 
+	    String consoleName, 
+	    PrintStream oldStream, 
+	    String file) 
 	{
 		super(arg0);
 		setOld(oldStream);
@@ -28,9 +33,9 @@ public class ANTLRFilteredPrintStream extends PrintStream
 	{		
 	  if(s.subSequence(0, 4).equals("line"))
 		{
-			super.println(s);
-			//Console.displayOutput(m_consoleName, s);
-			m_errors.add(parseError(s));
+	    Logger.log(LOG_LEVELS.INFO, this.getClass(), "Potential Error: " + s);
+
+	    m_errors.add(parseError(s));
 		}
 		else if(s.subSequence(5,9).equals("line"))
 		{
@@ -38,20 +43,22 @@ public class ANTLRFilteredPrintStream extends PrintStream
 		  //FIXME The second condition is for some strange errors being reported
 	    // of the form "null line xx:xx message" instead of just 
 	    // "line xx:xx message"
-		  super.println(s);
-      //Console.displayOutput(m_consoleName, s);
-      m_errors.add(parseError(s));
+		  Logger.log(LOG_LEVELS.INFO, this.getClass(), "Potential Error: " + s);
+
+		  m_errors.add(parseError(s));
 		}
 		else
 		{
 			m_old.println(s);
 		}
 	}
-		
+	
+	
 	private void setOld(PrintStream old)
 	{
 		m_old = old;
 	}
+	
 	
 	private void setConsoleName(String name)
 	{
@@ -61,9 +68,8 @@ public class ANTLRFilteredPrintStream extends PrintStream
 
 	private BNGLError parseError(String s)
 	{
+	  // Example...
 		//line 13:3 no viable alternative at input 'version' in model
-		
-	  System.out.println("***** parsing: " +s);
 	  
 		// chomp "line "
 		s = s.substring(s.indexOf(" ")).trim();
@@ -73,10 +79,6 @@ public class ANTLRFilteredPrintStream extends PrintStream
 		
 		// chomp "12:2 "
 		s = s.substring(s.indexOf(" ")).trim();
-		
-		//DEBUG
-		System.out.println("Error: \n\tFile" + m_file + "\n\tLine: " + line + "\n\tMessage: " + s);
-		
 		
 		return new BNGLError(m_file, line , s);
 	}

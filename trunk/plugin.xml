@@ -606,9 +606,6 @@
 <extension
       point="org.eclipse.ui.startup">
    <startup
-         class="rulebender.core.editorhider.EditorHider">
-   </startup>
-   <startup
          class="rulebender.core.utility.Console">
    </startup>
 </extension>

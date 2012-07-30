@@ -29,6 +29,8 @@ import de.ralfebert.rcp.tools.preferredperspective.IPrefersPerspective;
  * I found for remembering where an editor was opened and transferring to that
  * perspective when it is selected in a Resource browser.
  * 
+ * This class is no longer used
+ * 
  * @author adammatthewsmith
  * 
  */

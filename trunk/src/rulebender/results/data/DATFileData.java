@@ -142,8 +142,21 @@ public class DATFileData extends FileData {
 			 */
 			firstLine = firstLine.substring(firstLine.indexOf('#') + 1,
 					firstLine.length()).trim();
-			// name for x axis
-			xAxisName = firstLine.substring(0, firstLine.indexOf(' '));
+
+			// name for x axis - Have to have this (hack) check because NFSim
+			// does not produce data for observables.
+			int indexForSpace = firstLine.indexOf(' ');
+			
+			if(indexForSpace < 0)
+			{
+			  //FIXME  Need to rework results in general, but for now should at least
+			  // log this.
+			  System.out.println("LOG: No observable data found. Cannot display " +
+			  		"results");
+			  return;
+			}
+			
+			xAxisName = firstLine.substring(0, indexForSpace);
 
 			// delete #
 			firstLine = firstLine.substring(firstLine.indexOf(' '),
