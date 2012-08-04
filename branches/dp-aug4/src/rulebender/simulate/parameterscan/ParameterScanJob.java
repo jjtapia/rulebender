@@ -151,8 +151,8 @@ public class ParameterScanJob extends Job
     Console.displayOutput(m_relativeFilePath, "Parameter Scan Cancelled!\n\n");
   }
   
-	/*
-	 * Display the generated gdat file after simulation
+	/**
+	 * Display the generated scan file after simulation
 	 */
 	private void showResults() {
 		

@@ -126,7 +126,7 @@ public class BNGExecutionJob extends Job
 		return Status.OK_STATUS;
 	}
 	
-	/*
+	/**
 	 * Display the generated gdat file after simulation
 	 */
 	private void showResults() {
