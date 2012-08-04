@@ -62,6 +62,7 @@ public class ParameterScanCommand implements CommandInterface
 		
 		scanInstructionAL.add("-prefix");
 		scanInstructionAL.add(constructPrefix());
+		//System.out.println("PREFIX! " + constructPrefix() + "_" + m_data.getName());
 		
 		// This has been replaced by setting the BNGPATH environment variable 
 		// in the ProcessBuilder in the CommandRunner class.
@@ -105,7 +106,7 @@ public class ParameterScanCommand implements CommandInterface
 	 * 
 	 * @return String prefix - The prefix to use in the filename.
 	 */
-	private String constructPrefix()
+	protected String constructPrefix()
 	{
 		// Init the prefix string
 		String prefix = "";
@@ -157,6 +158,9 @@ public class ParameterScanCommand implements CommandInterface
 	
 	public String getPrefix()
 	{
+		if (m_prefix == null) {
+			m_prefix = constructPrefix();
+		}
 		return m_prefix;
 	}
 
