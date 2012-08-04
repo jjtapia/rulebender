@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created by BioNetGen 2.1.7  -->
+
+<sbml xmlns="http://www.sbml.org/sbml/level3" level="3" version="1">
+  <Model>
+    <ListOfParameters>
+    </ListOfParameters>
+    <ListOfMoleculeTypes>
+         <MoleculeType id="Test1"/>
+         <MoleculeType id="Test2"/>
+         <MoleculeType id="Lig">
+           <ListOfComponentTypes>
+                 <ComponentType id="l"/>
+                 <ComponentType id="l"/>  
+           </ListOfComponentTypes>   
+         </MoleculeType>
+         <MoleculeType id="Lyn">
+           <ListOfComponentTypes>
+                 <ComponentType id="U"/>
+                 <ComponentType id="SH2"/>  
+           </ListOfComponentTypes>   
+         </MoleculeType>
+         <MoleculeType id="Syk">
+           <ListOfComponentTypes>
+                 <ComponentType id="tSH2"/>
+                   <ComponentType id="l">   
+                   <ListOfAllowedStates>
+                    <AllowedState id="Y"/>
+                   </ListOfAllowedStates>
+                   </ComponentType>
+                   <ComponentType id="a">   
+                   <ListOfAllowedStates>
+                    <AllowedState id="Y"/>
+                   </ListOfAllowedStates>
+                   </ComponentType>  
+           </ListOfComponentTypes>   
+         </MoleculeType>
+         <MoleculeType id="Rec">
+           <ListOfComponentTypes>
+                 <ComponentType id="a"/>
+                   <ComponentType id="b">   
+                   <ListOfAllowedStates>
+                    <AllowedState id="Y"/>
+                   </ListOfAllowedStates>
+                   </ComponentType>
+                   <ComponentType id="g">   
+                   <ListOfAllowedStates>
+                    <AllowedState id="Y"/>
+                   </ListOfAllowedStates>
+                   </ComponentType>  
+           </ListOfComponentTypes>   
+         </MoleculeType>
+         <MoleculeType id="GenTest1"/>
+         <MoleculeType id="GentTest2"/>
+    </ListOfMoleculeTypes>
+    <ListOfSpecies>
+       </ListOfSpecies>
+    <ListOfCompartments>
+    </ListOfCompartments>
+    <ListOfReactionRules>
+       <ListOfObservables>
+       </ListOfObservables>
+    <ListOfFunctions>
+    </ListOfFunctions>
+  </Model>
+</sbml>
