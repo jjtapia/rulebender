@@ -16,6 +16,11 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.ui.IEditorInput;
+import org.eclipse.ui.IWorkbenchPage;
+import org.eclipse.ui.IWorkbenchWindow;
+import org.eclipse.ui.PartInitException;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.ui.progress.IProgressConstants;
 
@@ -24,7 +29,7 @@ import rulebender.core.utility.FileInputUtility;
 import rulebender.simulate.CommandRunner;
 import rulebender.simulate.SimulationErrorException;
 
-import org.eclipse.ui.*;
+
 
 public class BNGExecutionJob extends Job 
 {
