@@ -1,0 +1,28 @@
+TODO may be out of date. See issues queue for google code:
+https://code.google.com/p/rulebender/issues/list
+
+Do before release:
+	The OSX Application menu elements are not shown anywhere when RB is run in windows.
+	Maybe better console management.  
+
+
+Programming TODO:
+	General:
+
+	Parser:
+		Wild cards. they are ignored for now. 
+		Need to be able to add states that are found in rules. 
+			
+	Simulation:
+		results preview
+
+	Results:
+		multiple species in browser
+
+	Model Browser:
+		Linking with text
+		Contact map mouse-over highlights
+		contact map hit box size for edges.
+		Contact map overview can be too zoomed out.
+		contact map file label.
+			

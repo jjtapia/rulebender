@@ -1,0 +1,51 @@
+Notes for RCP:
+
+1. Extensions add functionality to the program.  Add them from the pugin.xml interface
+   under the extensions tab.  Add the extension point that you want to extend and then you can
+   add the specific feature that you want to include.
+       
+	A. Commands: 	Add org.ecilpse.ui.commands.  Right click on the extension point and create a
+    			 	new command.  Use a label for the command so that it can be accessed from 
+       			 	elsewhere.
+       			
+	B. Menus:	  	Add org.eclipse.ui.menus.  Right click on the extension point and create a new
+              		MenuContribution.  Right click on the menucontribition and add a menu.  Right 
+             		click on the menu and add a command.  Use the command labels created earlier to
+             		link to previously created commands.  Be sure to use the correct locationURI for 
+             		the type of menu that you want (e.g. menu:org.eclipse.ui.main.menu for program 
+             		menu).
+
+    C. Views:		Views are used to add the visual panes to the program.  Add the 
+    				org.eclipse.ui.views extension point and then create a new view.  You then 
+    				define an id for the view and can specify a class that provides the 
+    				implementation.  The default is a subclass of ViewPart.java. 
+    				
+    				After the view is created, it has to be added to the perspective via the 
+    				org.eclipse.ui.perspectiveExtension extension point.  After adding the e.p., 
+    				right click it and add a new view.  Use the view id to link the proper view.
+    				You can use the 'relative' menu to tell the interface to behave like a 
+    				particular widget.
+
+					You can also use code to add a view to a perspective by adding the following to
+					the createInitialLayout method in Perspective.java:
+					layout.addView("<view id string>", IPageLayout.TOP,
+									IPageLayout.RATIO_MAX, IPageLayout.ID_EDITOR_AREA);
+
+2. The ApplicationWorkbenchWindowAdvisor helps set up the visual design of the gui.  
+
+	A. System Tray:	See my org.eclipse.rcp.test example for details, but basically you 
+					can easily create the gui elements and define behavior here, although
+					I would rather see the menu built inside of the plugin.xml file.
+					
+					To use the commands that you have defined via the org.eclipse.ui.commands 
+					extension point, you have to use an IHandlerService object:
+
+					IHandlerService handlerService = (IHandlerService) window
+								.getService(IHandlerService.class);
+						try {
+							// The EXIT_COMMAND_ID is the string id of your command that is linked
+							// to a handler through the plugin.xml file.
+							handlerService.executeCommand(EXIT_COMMAND_ID, null);
+						} catch (Exception ex) {
+							throw new RuntimeException(EXIT_COMMAND_ID);
+						}
