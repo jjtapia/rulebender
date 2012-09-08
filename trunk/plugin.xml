@@ -18,133 +18,19 @@
             class="rulebender.Perspective"
             icon="icons/views/CMap.gif"
             id="rulebender.perspective"
-            name="Model">
+            name="Default">
       </perspective>
       <perspective
-            class="rulebender.SimulationPerspective"
-            icon="icons/views/run.gif"
-            id="rulebender.simulate.SimulatePerspective"
-            name="Simulation">
-      </perspective>
-      <perspective
-            class="rulebender.ResultsPerspective"
-            icon="icons/views/Results.gif"
-            id="rulebender.ResultsPerspective"
-            name="Results">
-      </perspective>
-      <perspective
-            class="rulebender.perspecive.CustomPerspective"
-            id="rulebender.perspective.Custom"
-            name="Custom">
+            class="rulebender.perspective.Custom2Perspective"
+            id="rulebender.perspective.Custom2"
+            name="Custom2">
       </perspective>
    </extension>
    <extension
          point="org.eclipse.ui.perspectiveExtensions">
       <perspectiveExtension
             targetID="rulebender.perspective">
-         <view
-               closeable="false"
-               id="rulebender.contactmap.view.ContactMapView"
-               minimized="false"
-               moveable="true"
-               ratio="0.6f"
-               relationship="right"
-               relative="org.eclipse.ui.editorss"
-               visible="true">
-         </view>
-         <view
-               closeable="false"
-               id="rulebender.properties.view.PropertiesSheetView"
-               minimized="false"
-               moveable="true"
-               relationship="bottom"
-               relative="rulebender.contactmap.view.ContactMapView"
-               visible="true">
-         </view>
-         <view
-               closeable="false"
-               id="rulebender.views.problemview"
-               minimized="false"
-               moveable="true"
-               relationship="bottom"
-               relative="org.eclipse.ui.editorss"
-               visible="true">
-         </view>
-         <view
-               id="rulebender.cnf.CommonNavigator"
-               minimized="false"
-               ratio="0.5f"
-               relationship="left"
-               relative="org.eclipse.ui.editorss"
-               visible="true">
-         </view>
-      </perspectiveExtension>
-      <perspectiveExtension
-            targetID="rulebender.ResultsPerspective">
-         <view
-               closeable="false"
-               id="rulebender.speciesgraph.SpeciesGraphView"
-               minimized="false"
-               moveable="true"
-               ratio="0.7f"
-               relationship="right"
-               relative="org.eclipse.ui.editorss"
-               visible="true">
-         </view>
-         <view
-               id="rulebender.cnf.CommonNavigator"
-               minimized="false"
-               ratio="0.3f"
-               relationship="left"
-               relative="org.eclipse.ui.editorss"
-               visible="true">
-         </view>
-      </perspectiveExtension>
-      <perspectiveExtension
-            targetID="rulebender.simulate.SimulatePerspective">
-         <view
-               closeable="false"
-               id="rulebender.simulate.view.SimulateView"
-               minimized="false"
-               moveable="true"
-               ratio="0.3f"
-               relationship="right"
-               relative="org.eclipse.ui.editorss"
-               showTitle="true"
-               standalone="false"
-               visible="true">
-         </view>
-         <view
-               closeable="false"
-               id="rulebender.views.Console"
-               minimized="false"
-               moveable="true"
-               ratio="0.7f"
-               relationship="bottom"
-               relative="rulebender.simulate.view.SimulateView"
-               visible="true">
-         </view>
-         <view
-               closeable="false"
-               id="org.eclipse.ui.views.ProgressView"
-               minimized="false"
-               moveable="true"
-               relationship="right"
-               relative="rulebender.views.Console"
-               visible="true">
-         </view>
-         <view
-               id="rulebender.cnf.CommonNavigator"
-               minimized="false"
-               ratio="0.6f"
-               relationship="left"
-               relative="org.eclipse.ui.editorss"
-               visible="true">
-         </view>
-      </perspectiveExtension>
-      <perspectiveExtension
-            targetID="rulebender.perspective.Custom">
-         <view
+		<view
                closeable="true"
                id="rulebender.cnf.CommonNavigator"
                minimized="false"
@@ -223,6 +109,25 @@
                visible="true">
          </view>
       </perspectiveExtension>
+      <perspectiveExtension
+            targetID="rulebender.perspective.Custom2">
+         <view
+               id="rulebender.cnf.CommonNavigator"
+               minimized="false"
+               ratio="0.2f"
+               relationship="left"
+               relative="org.eclipse.ui.editorss"
+               visible="true">
+         </view>
+         <view
+               id="rulebender.simulationjournaling.view.smallmultiplesview"
+               minimized="false"
+               ratio="0.1f"
+               relationship="right"
+               relative="org.eclipse.ui.editorss"
+               visible="true">
+         </view>
+      </perspectiveExtension>
    </extension>
    <extension
          point="org.eclipse.ui.views">
@@ -294,6 +199,12 @@
             icon="icons/views/problems_view.gif"
             id="rulebender.views.problemview"
             name="Problems"
+            restorable="true">
+      </view>
+      <view
+            class="rulebender.simulationjournaling.view.SmallMultiplesView"
+            id="rulebender.simulationjournaling.view.smallmultiplesview"
+            name="Small Multiples"
             restorable="true">
       </view>
       <view
@@ -485,6 +396,15 @@
             extensions="txt, log"
             id="rulebender.editors.simple"
             name="Simple Editor">
+      </editor>
+      <editor
+            class="org.eclipse.ui.editors.text.TextEditor"
+            contributorClass="org.eclipse.ui.texteditor.BasicTextEditorActionContributor"
+            default="false"
+            extensions="pos"
+            icon="/icons/views/pos.gif"
+            id="rulebender.editors.position"
+            name="Position Editor">
       </editor>
       <editor
             class="rulebender.editors.bngl.BNGLEditor"

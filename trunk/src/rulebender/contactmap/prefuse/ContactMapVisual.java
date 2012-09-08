@@ -1,10 +1,14 @@
 package rulebender.contactmap.prefuse;
 
 import java.awt.Dimension;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Hashtable;
+import java.util.Scanner;
 import java.util.Set;
+import java.util.StringTokenizer;
 
 import javax.swing.table.TableModel;
 
@@ -93,7 +97,7 @@ public class ContactMapVisual
 	
 	Dimension m_mainDisplaySize;
 	
-	 // This is an index to the Node objects so that I can retrieve them 
+	// This is an index to the Node objects so that I can retrieve them 
     // based on the string value "<parent molecule index>.<component index>.<state index>".
     private Hashtable<String, Node> m_nodes;
     
@@ -103,7 +107,6 @@ public class ContactMapVisual
     // Hash table for all the hub nodes of molecule-level rules.
     // The set contains all the involved nodes in a rule.
     private Hashtable<Set<Node>, Node> m_hubNodes;
-    
 	
 	public ContactMapVisual(ContactMapView view, ContactMapModel model_in, Dimension cMapSize) 
 	{
@@ -126,7 +129,8 @@ public class ContactMapVisual
 		// Ideally I wanted to remove all interaction with the Visualization object,
 		// but I didn't quite finish it yet.  
 		m_vis = m_networkViewer.getVisualization();
-				
+		
+		
 		// Graphs (and all other data structures in prefuse) are table-based data structures.  Each node is a row in the
 		// table and the columns hold data about the node.  Here we add a 
 		// column for the label of the node, and then a column for the
@@ -313,6 +317,8 @@ public class ContactMapVisual
 			    // Set the expression of the molecule
 			    n.setString("molecule_expression", tmole.getExpression());
 
+			    
+			    
 			    // Add it to the hashtable for future reference.
 			    m_nodes.put(""+i, n);
 			
@@ -558,6 +564,9 @@ public class ContactMapVisual
 			
 			previousRuleText = thisRule.getExpression();
 		}
+		
+		// Pass the BNGL source file into the CMAPNetworkViewer object
+		m_networkViewer.setFilepath(m_model.getSourcePath());
 					
 		m_networkViewer.build();
 	}
@@ -1182,5 +1191,10 @@ public class ContactMapVisual
 	public CMAPNetworkViewer getCMAPNetworkViewer() {
 		return this.m_networkViewer;
 	}
+
+	public Hashtable<String, Node> getNodeIndex() {
+		return m_nodes;
+	} //getNodeIndex
+
 }
 

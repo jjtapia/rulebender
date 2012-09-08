@@ -39,7 +39,7 @@ public class Rule
 	// done in the ContactMapVisual class and it should not be there.  
 	
 	/**
-	 * Basic constructur: just instantiate data structures. 
+	 * Basic constructor: just instantiate data structures. 
 	 */
 	public Rule()
 	{

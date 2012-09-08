@@ -4,6 +4,8 @@ import java.awt.Dimension;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import javax.swing.JLabel;
+
 import rulebender.core.prefuse.LayeredPane;
 
 import org.eclipse.swt.SWT;
@@ -131,6 +133,12 @@ public class ContactMapView extends ViewPart
 	 */
 	public void setCMap(prefuse.Display d)
 	{
+		if(d == null) {
+			JLabel temp = new JLabel();
+			temp.setText("The Contact Map data for this model failed to load properly.  Please try again.");
+			layeredPane.add(temp);
+		} //if
+		
 		// Set the display in the layered pane
 		layeredPane.setDisplay(d);
 

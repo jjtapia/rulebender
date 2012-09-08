@@ -54,6 +54,9 @@ public class CMAPNetworkViewer
 	// This is a label for aggregates of component with states
 	private static String AGG_COMP = "aggregates_component";
 
+	// Filepath to the BNGL source
+	private String m_filePath;
+	
 	// The visualization itself. We give the data to this, set
 	// its renderers and whatnot.
 	private Visualization vis;
@@ -136,6 +139,10 @@ public class CMAPNetworkViewer
 		return vis;
 	}
 
+	public void setFilepath(String path) {
+		m_filePath = path;
+	} //setFilepath
+	
 	/**
 	 * Set the click control delegate that will handle the clicks.
 	 * 
@@ -388,12 +395,16 @@ public class CMAPNetworkViewer
 		
 		// Create the force directed layout that uses invisible edges in force
 		// calculations as well as the visible ones.
+
 		ForceDirectedLayoutMagic f;
 		f = new ForceDirectedLayoutMagic(
 				COMPONENT_GRAPH, true, true);
 		f.setMagicEdges(true);
 		f.getForceSimulator().setSpeedLimit(3);
 		
+		// Pass in filepath to force simulator
+		f.setPositionFilepath(m_filePath);
+				
 		// set bounds based on graph size		
 		Rectangle2D bounds;
 		System.out.println("graph size: " + vis.size(COMPONENT_GRAPH));
@@ -411,8 +422,9 @@ public class CMAPNetworkViewer
 		
 		// Currently the anchor is only used for runonce mode
 		f.setLayoutAnchor(new Point2D.Double(500, 600));
-		   
+		
 		layout.add(f);
+		
 		
 		ComponentLayout cl = new ComponentLayout(COMPONENT_GRAPH);
 		layout.add(cl);

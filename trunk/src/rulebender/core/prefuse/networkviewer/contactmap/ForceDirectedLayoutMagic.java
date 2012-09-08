@@ -2,6 +2,7 @@ package rulebender.core.prefuse.networkviewer.contactmap;
 
 import java.awt.geom.Rectangle2D;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 
 
@@ -17,6 +18,7 @@ import prefuse.util.force.NBodyForce;
 import prefuse.visual.EdgeItem;
 import prefuse.visual.NodeItem;
 import prefuse.visual.VisualItem;
+import rulebender.contactmap.models.NodePosition;
 
 /**
  * A modification of the ForceDirectedLayout, which allows to set all edges
@@ -43,6 +45,8 @@ public class ForceDirectedLayoutMagic extends Layout {
 
 	protected String m_nodeGroup;
 	protected String m_edgeGroup;
+	
+	private String m_filePath;
 
 	/**
 	 * Create a new ForceDirectedLayoutMagic. By default, this layout will not
@@ -70,6 +74,9 @@ public class ForceDirectedLayoutMagic extends Layout {
 		this(group, enforceBounds, false);
 	}
 
+	/* CMAPNetworkViewer USES THIS CONSTRUCTOR */
+	/* f = new ForceDirectedLayoutMagic(COMPONENT_GRAPH, true, true); */
+	/* group = COMPONENT_GRAPH, enforceBounds = true, runonce = true */
 	/**
 	 * Create a new ForceDirectedLayoutMagic.
 	 * 
@@ -240,6 +247,24 @@ public class ForceDirectedLayoutMagic extends Layout {
 	}
 
 	/**
+	 * Set the path to the file that contains molecule/component positions
+	 * 
+	 * @param path
+	 */
+	public void setPositionFilepath(String path) {
+		m_filePath = path;
+	} //setPositionFilePath
+	
+	/**
+	 * Get the path to the file that contains molecule/component positions
+	 * 
+	 * @return the filepath
+	 */
+	public String getPositionFilepath() {
+		return m_filePath;
+	} //getPositionFilepath
+	
+	/**
 	 * @see prefuse.action.Action#run(double)
 	 */
 	@Override
@@ -253,15 +278,48 @@ public class ForceDirectedLayoutMagic extends Layout {
 
 			System.out.println("Anchor is at " + anchor.getX() + " "
 					+ anchor.getY());
-
-			Iterator iter = getMagicIterator(m_nodeGroup);
-
-			while (iter.hasNext()) {
-				VisualItem item = (NodeItem) iter.next();
-				item.setX(anchor.getX());
-				item.setY(anchor.getY());
-			}
 			*/
+			
+			// Retrieve the node positions from the file
+			ArrayList<NodePosition> positionMap = ContactMapPosition.loadMoleculePositions(m_filePath);
+
+			// Skip this position loader if the position file doesn't exist (or if a problem occurred when loading the positionMap)
+			if (positionMap != null) {
+			
+				// Iterate over all nodes in the graph
+				Iterator iter = getMagicIterator(m_nodeGroup);
+				while (iter.hasNext()) {
+					VisualItem item = (NodeItem) iter.next();
+					
+					// Get the properties of that VisualItem
+					String id = item.getString("ID");
+					String molecule = item.getString("molecule");
+					String component = item.getString(VisualItem.LABEL);
+				
+					// Correction for the null items
+					if (molecule == null) {
+						molecule = id;
+						component = id;
+					} //if					
+					
+					// Iterate over all node positions in the file
+					Iterator fileIter = positionMap.iterator();
+					while (fileIter.hasNext()) {
+						NodePosition fileItem = (NodePosition) fileIter.next();
+				
+						// If we found a matching ID, set the position of that VisualItem and fix the item in place 
+						if ((molecule.equals(fileItem.getMolecule())) && (component.equals(fileItem.getComponent()))) {
+							item.setX(fileItem.getX());
+							item.setY(fileItem.getY());
+							item.setFixed(true);
+							break;
+						} //if
+					} //while
+				
+				} //while
+			
+			} //if
+			
 
 			m_fsim.clear();
 			long timestep = 500L;
@@ -622,16 +680,28 @@ public class ForceDirectedLayoutMagic extends Layout {
 
 	public Iterator getMagicIterator(String group) {
 
-		if (group.equals(m_nodeGroup)) {
-			if (magicNodes) {
+		if (group.equals(m_nodeGroup)) 
+		{
+			if (magicNodes) 
+			{
 				return m_vis.items(group);
-			} else {
+			} 
+			
+			else 
+			{
 				return m_vis.visibleItems(group);
 			}
-		} else {
-			if (magicEdges) {
+		} 
+		
+		else 
+		{
+			if (magicEdges) 
+			{
 				return m_vis.items(group);
-			} else {
+			} 
+			
+			else 
+			{
 				return m_vis.visibleItems(group);
 			}
 		}

@@ -38,6 +38,7 @@ import rulebender.contactmap.view.ContactMapView;
 import rulebender.core.prefuse.PngSaveFilter;
 import rulebender.core.prefuse.collinsbubbleset.layout.BubbleSetLayout;
 import rulebender.core.prefuse.networkviewer.PrefuseTooltip;
+import rulebender.core.prefuse.networkviewer.contactmap.ContactMapPosition;
 import rulebender.core.prefuse.networkviewer.contactmap.JMenuItemRuleHolder;
 import rulebender.core.prefuse.networkviewer.contactmap.VisualRule;
 import rulebender.preferences.OS;
@@ -1092,6 +1093,16 @@ public class CMapClickControlDelegate extends ControlAdapter implements ISelecti
 	}
 
 	/**
+	 * Called when the user releases the mouse on an item
+	 */
+	public void itemReleased(VisualItem item, MouseEvent e) {
+		// Call save position function, save node positions on mouse-up		
+		if (e.getID() == MouseEvent.MOUSE_RELEASED) {
+			ContactMapPosition.writeNodeLocations(m_sourcePath, m_vis);
+		} //if
+	} //itemReleased
+	
+	/**
 	 * Called when the user exits an item. If there is a tooltip, then the
 	 * tooltip is removed.
 	 * 
@@ -1123,7 +1134,7 @@ public class CMapClickControlDelegate extends ControlAdapter implements ISelecti
 	}
  
 	public void mouseDragged(MouseEvent e) 
-	{
+	{		
     }
 	
 	public void mouseWheelMoved(MouseWheelEvent e) 
@@ -1131,11 +1142,11 @@ public class CMapClickControlDelegate extends ControlAdapter implements ISelecti
     }
 
 	public void itemDragged(VisualItem item, MouseEvent e) 
-	{
+	{		
 	}
 
 	public void itemMoved(VisualItem item, MouseEvent e) 
-	{
+	{		
 	}
 
 	public void itemWheelMoved(VisualItem item, MouseWheelEvent e) 

@@ -29,7 +29,7 @@ import rulebender.contactmap.models.Rule;
 
 /**
  * This is the main model for the ContactMap.  It has a list of Molecules,
- * Bonds, Rules, and a CompartmentTable for the compartments. It is build 
+ * Bonds, Rules, and a CompartmentTable for the compartments. It is built 
  * using the CMapModelBuilder class which uses the builder pattern with 
  * the BNGASTReader.  
  */

@@ -156,6 +156,18 @@ public class BNGLEditor extends TextEditor implements ISelectionListener,
 
     return m_model;
   }
+  
+  /**
+   * Returns a BNGL model given a specific source path
+   * 
+   * @param src
+   * @return
+   */
+  public BNGLModel getModel(String src) {
+	  BNGLModel mdl = new BNGLModel(src);
+	  mdl.setAST(getAST());
+	  return mdl;
+  } //getModel
 
   /**
    * Returns the AST for the text in the editor, or null if there are errors.

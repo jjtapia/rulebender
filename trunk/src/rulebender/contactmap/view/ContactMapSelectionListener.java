@@ -193,7 +193,8 @@ public class ContactMapSelectionListener implements ISelectionListener, IPartLis
 			System.out.println("The CMapModel is null. Something went wrong " +
 					"while trying to parse the Abstract Syntax Tree for the " +
 					"BNGL File.  \nExiting");
-			
+			//FIXME  Even if this 'never' happens, this can be handled gracefully...
+			// return null?? derp.
 			System.exit(0);
 		}
 		
@@ -231,6 +232,8 @@ public class ContactMapSelectionListener implements ISelectionListener, IPartLis
 		
 		// Generate a new display
 		prefuse.Display display = generateContactMap(path, ast);
+		
+		//System.out.println(path);
 		
 		// Add the new representation.
 		m_contactMapRegistry.put(path, display);
