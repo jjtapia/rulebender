@@ -1,13 +1,14 @@
 #summary How to prepare releases
 
 = WORK IN PROGRESS = 
+_Not only is this page a work in progress, but release preparation as a whole should be improved as well.  Things have gotten rather complicated.  Soon I'll streamline things.  For now, see below._
 
 = Introduction = 
 
 This page describes the process for preparing !RuleBender releases.  The 1.x and 2.x versions are prepared in entirely different ways.  1.x uses an ant script to generate executables for each platform and copies all of the jars, simulators (with source), executables,  and icons to the appropriate release directories.  2.x uses the Eclipse Plugin Development Environment (PDE) build system.  Each of the processes are described below. 
 
 = !BioNetGen and NFSim = 
-The simulators are maintained by their respective groups and !RuleBender developers should obtain them in an executable form for inclusion in the !RuleBender distributable.  !BioNetGen is maintained by Jim Faeder and his lab, while NFSim is written by the Emonet lab.  !BioNetGen can be downloaded in its latest release version from bionetgen.org, and more recent versions can be obtained from the team directly.  NFSim is downloaded from http://emonet.biology.yale.edu/nfsim/.
+The simulators are maintained by their respective groups and !RuleBender developers should obtain them in an executable form for inclusion in the !RuleBender distributable.  !BioNetGen is maintained by Jim Faeder and his lab, while NFSim is written by the Emonet lab.  !BioNetGen can be downloaded in its latest release version from bionetgen.org, and more recent versions can sometimes be found on the !BioNetGen google code site.  NFSim is downloaded from http://emonet.biology.yale.edu/nfsim/.
 
 The current simulator component of the distribution looks like:
 
@@ -32,6 +33,10 @@ The current simulator component of the distribution looks like:
 BioNetGen-2.2.0 contains all of the BioNetGen related code and executables.  The BNG distribution from bionetgen.org also includes a Models2 directory that is renamed to SampleModels and moved outside of the BioNetGen-2.2.0 directory.  The BioNetGen-2.2.0/bin directory includes all of the executables (including NFSim).  The NFSim-1.10-src directory holds all of the NFSim source.
 
 This directory structure should be inside of the 'distributionResources/Simulation' directory in both of the projects.  Right now there is some manual build construction after the build process has finished, but eventually the scripts and build processes will be able to automatically move all of the appropriate files into place for the release.
+
+= !BNGParser =
+
+Currently, the BNGParser jar file is created by updating the BNGParser code from the bionetgen repository, importing the project into Eclipse as an ANTLR project, and producing the jar via Eclipse export.  Then, simply include the jar file in the lib dependencies for !RuleBender.
 
 = 2.x =
 
