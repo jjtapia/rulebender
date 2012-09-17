@@ -1,7 +1,7 @@
 #summary How to prepare releases
 
 = WORK IN PROGRESS = 
-_Not only is this page a work in progress, but release preparation as a whole should be improved as well.  Things have gotten rather complicated.  Soon I'll streamline things.  For now, see below._
+_Not only is this page a work in progress, but release preparation as a whole should be improved as well.  Things have gotten rather complicated.  Soon I'll streamline things.  For now, see below. - [AdamMatthewSmith Adam]_
 
 = Introduction = 
 
