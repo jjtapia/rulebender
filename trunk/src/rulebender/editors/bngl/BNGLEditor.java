@@ -44,10 +44,7 @@ import rulebender.logging.Logger;
 /**
  * This class defines the editor for bngl.
  * 
- * The ISelectionListener implementation listens for selections in the tool, and
- * IPrefersPerspective is for loading a perspective when an editor is loaded
- * (this is not used at the moment). 
- * 
+ * The ISelectionListener implementation listens for selections in the tool.
  * @author adammatthewsmith
  * 
  */

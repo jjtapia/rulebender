@@ -380,7 +380,7 @@
             contributorClass="org.eclipse.ui.texteditor.BasicTextEditorActionContributor"
             default="false"
             extensions="pos"
-            icon="/icons/views/pos.gif"
+            icon="icons/views/pos.gif"
             id="rulebender.editors.position"
             name="Position Editor">
       </editor>

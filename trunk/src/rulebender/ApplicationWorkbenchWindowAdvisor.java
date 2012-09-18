@@ -63,10 +63,8 @@ public class ApplicationWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor {
 		// Set the buttons that appear in the perspective switcher.  These
 		// id values are for the modeling, simulation, and analysis perspectives.
 		prefStore.setValue(IWorkbenchPreferenceConstants.PERSPECTIVE_BAR_EXTRAS, 
-		    "rulebender.perspective," +
-		    "rulebender.simulate.SimulatePerspective," +
-		    "rulebender.ResultsPerspective," +
-		    "rulebender.perspective.Custom");
+		    "rulebender.perspective");
+		    
 		
 		// Do not use the traditionaly style tabs.  I think that this is just a cosmetic option.
 		prefStore.setValue(IWorkbenchPreferenceConstants.SHOW_TRADITIONAL_STYLE_TABS, false);

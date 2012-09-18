@@ -221,8 +221,6 @@ public class EditorHider implements IStartup, IPerspectiveListener,
 
   public void partOpened(IWorkbenchPart part)
   {
-    System.out.println("Part Opened");
-
     // If it is an editor.
     if (part instanceof EditorPart)
     {
