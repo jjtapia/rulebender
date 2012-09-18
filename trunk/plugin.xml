@@ -434,7 +434,7 @@
          </property>
          <property
                name="aboutText"
-               value="RuleBender 2.0r220&#x0A;&#x0A;RuleBender is currently developed by Adam M. Smith at the University of Pittsburgh under the direction of James R. Faeder and Elisabeta G. Marai. &#x0A;&#x0A;Please send all feedback and questions to help@rulebender.org.">
+               value="RuleBender 2.0r250&#x0A;&#x0A;Please send all feedback and questions to help@rulebender.org.">
          </property>
          <property
                name="windowImages"

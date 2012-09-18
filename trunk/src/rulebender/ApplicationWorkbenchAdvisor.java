@@ -66,7 +66,7 @@ public class ApplicationWorkbenchAdvisor extends WorkbenchAdvisor {
 		
 		// Comment out this line when you are adding/editing views so that the state
 		// is not restored from previous sessions.
-		//configurer.setSaveAndRestore(true);
+		configurer.setSaveAndRestore(true);
 		
 		// here is the work around code
 		// From http://stackoverflow.com/questions/8277902/add-package-explorer-in-rcp-application-result-in-loosing-some-icon

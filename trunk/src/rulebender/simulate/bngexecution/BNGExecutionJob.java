@@ -32,6 +32,7 @@ public class BNGExecutionJob extends Job
 		setBNGFullPath(bngFullPath);
 		setResultsPath(resultsPath);
 		
+		System.out.println("The Results path is: " + resultsPath);
 		setProperty(IProgressConstants.KEEP_PROPERTY, true);
 	}
 
@@ -135,15 +136,15 @@ public class BNGExecutionJob extends Job
 
 	private void updateTrees()
 	{
-	
 		 // Update the resource tree.
-	       try {
+	  try 
+	  {
 			ResourcesPlugin.getWorkspace().getRoot().refreshLocal(IResource.DEPTH_INFINITE, null);
-		} catch (CoreException e) {
-			// TODO Auto-generated catch block
+		}
+	  catch (CoreException e) 
+		{
 			e.printStackTrace();
 		}
-	      
 	}
 	
 	private static boolean validateBNGLFile(String path)
