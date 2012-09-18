@@ -9,3 +9,12 @@ In ApplicationWorkbenchAdvisor, the line
 	{{{configurer.setSaveAndRestore(true);}}}
 	
 tells the workbench to save its window/view state so that the next time it is opened, the view settings are restored.  This is great once the program is being used, but it will actually hide new views when you are developing the tool and can be a major source of frustration.  I generally keep this commented out while I am working, and then just make sure to uncomment it before a release. 
+
+
+==64-bit JVM Issue==
+
+When developing on a machine using a 64-bit version of the JVM, you may encounter this error upon running the project:
+
+	{{{Cannot load 32-bit SWT libraries on 64-bit JVM}}}
+
+This issue can be resolved by clicking on the Run menu and selecting Run Configurations.  Under the Arguments tab, add the argument -d32 to the VM arguments textarea.  This forces Java to run the project on a 32-bit JVM.
