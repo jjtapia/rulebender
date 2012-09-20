@@ -250,7 +250,7 @@ public class BNGLEditor extends TextEditor implements ISelectionListener,
         marker = file.createMarker("rulebender.markers.bnglerrormarker");
         marker.setAttribute(IMarker.SEVERITY, IMarker.SEVERITY_ERROR);
         marker.setAttribute(IMarker.MESSAGE, error.getMessage());
-        marker.setAttribute(IMarker.LINE_NUMBER, error.getLineNumber() - 1);
+        marker.setAttribute(IMarker.LINE_NUMBER, error.getLineNumber());
         marker.setAttribute(IMarker.CHAR_START, region.getOffset());
         marker.setAttribute(IMarker.CHAR_END,
             region.getOffset() + region.getLength());
