@@ -7,13 +7,24 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.ui.IEditorInput;
+import org.eclipse.ui.IWorkbenchPage;
+import org.eclipse.ui.IWorkbenchWindow;
+import org.eclipse.ui.PartInitException;
+import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.ui.progress.IProgressConstants;
 
 import rulebender.core.utility.Console;
+import rulebender.core.utility.FileInputUtility;
 import rulebender.simulate.CommandRunner;
 import rulebender.simulate.SimulationErrorException;
 
@@ -26,6 +37,8 @@ public class ParameterScanJob extends Job
   private String m_scriptFullPath;
   private ParameterScanData m_data;
   private String m_resultsPath;
+  private IFile  m_iFile;
+  private String m_scanPath; 
 
   public ParameterScanJob(String name, IFile iFile, String bngPath,
       String scriptFullPath, ParameterScanData data, String resultsPath)
@@ -39,6 +52,7 @@ public class ParameterScanJob extends Job
     setScriptFullPath(scriptFullPath);
     setData(data);
     setResultsPath(resultsPath);
+    setIfile(iFile);
 
     setProperty(IProgressConstants.KEEP_PROPERTY, true);
   }
@@ -81,7 +95,11 @@ public class ParameterScanJob extends Job
     // Get a parameterscan command
     ParameterScanCommand command = new ParameterScanCommand(m_absoluteFilePath,
         m_bngPath, m_scriptFullPath, m_resultsPath, m_data);
-
+    
+    String prefix = command.constructPrefix() + "_" + m_data.getName();
+    setScanPath(m_resultsPath + prefix + ".scan");
+    //System.out.println("PREFIX gleaned from command: " + m_scanPath);
+    		
     // MONITOR
     monitor.setTaskName("Running Parameter Scan...");
     monitor.worked(1);
@@ -114,6 +132,7 @@ public class ParameterScanJob extends Job
     }
 
     updateTrees();
+    showResults();
     return Status.OK_STATUS;
   }
 
@@ -131,6 +150,62 @@ public class ParameterScanJob extends Job
 
     Console.displayOutput(m_relativeFilePath, "Parameter Scan Cancelled!\n\n");
   }
+  
+	/**
+	 * Display the generated scan file after simulation
+	 */
+	private void showResults() {
+		
+		final String scanFileToOpen = m_scanPath; // provided by scan command
+		//System.out.println("gdatFileToOpen = "+ gdatFileToOpen);
+		
+		// Calculate the path of the project folder for RuleBender
+		String workspacePath = Platform.getInstanceLocation().getURL().getPath().toString();
+		//System.out.println("workspacePath: " + workspacePath);
+		String projectPath = m_iFile.getProject().getLocation().toFile().getName();
+		//System.out.println("projectPath: " + projectPath);
+		String completeProjectPath = new String(workspacePath + projectPath);
+		//System.out.println("completeProjectPath = " + completeProjectPath);
+		
+		// Turn absolute gdat path into a path relative to RB project folder
+		final String relScanFileToOpen = scanFileToOpen.replaceAll(completeProjectPath, "");
+		//System.out.println("relGdatFileToOpen: " + relGdatFileToOpen);
+		
+		// Prepare to pass off file to an editor
+		IPath path = new Path(relScanFileToOpen);
+		IFile file = m_iFile.getProject().getFile(path);
+		
+		final IEditorInput editorInput = new FileEditorInput(file);
+
+		// Figure out what page is open right now. There must be a better way to do this...
+		IWorkbenchPage page_last = null;
+		//IWorkbenchWindow w = null;
+		for (IWorkbenchWindow window : PlatformUI.getWorkbench().getWorkbenchWindows()) {
+		    //w = window;
+			for (IWorkbenchPage page : window.getPages()) {
+		    	page_last = page;
+		        //for (IEditorReference editor : page.getEditorReferences()) {
+		            //System.out.println(page.getLabel() + " -> " + editor.getName());
+		        //}
+		    }
+		}
+		final IWorkbenchPage p = page_last;
+		//final IWorkbenchWindow w2open = w;
+		
+		// In the UI thread open the scan editor
+		Display.getDefault().asyncExec(new Runnable() {
+		 
+			public void run() {
+				try {
+					p.openEditor(editorInput, FileInputUtility.getEditorId(new File(relScanFileToOpen)));
+				} catch (PartInitException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} 
+			}
+		});
+		
+	}
 
   private boolean deleteRecursive(File path) throws FileNotFoundException
   {
@@ -215,6 +290,16 @@ public class ParameterScanJob extends Job
   public void setRelativeFilePath(String path)
   {
     m_relativeFilePath = path;
+  }
+  
+  public void setIfile(IFile ifile)
+  {
+	  m_iFile = ifile;
+  }
+  
+  public void setScanPath(String path)
+  {
+	  m_scanPath = path;
   }
 
 }

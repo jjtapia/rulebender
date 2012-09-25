@@ -2,20 +2,34 @@ package rulebender.simulate.bngexecution;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.util.concurrent.TimeUnit;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.ui.IEditorInput;
+import org.eclipse.ui.IWorkbenchPage;
+import org.eclipse.ui.IWorkbenchWindow;
+import org.eclipse.ui.PartInitException;
+import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.ui.progress.IProgressConstants;
 
 import rulebender.core.utility.Console;
+import rulebender.core.utility.FileInputUtility;
 import rulebender.simulate.CommandRunner;
 import rulebender.simulate.SimulationErrorException;
+
+
 
 public class BNGExecutionJob extends Job 
 {
@@ -23,6 +37,7 @@ public class BNGExecutionJob extends Job
 	private String m_absoluteFilePath;
 	private String m_bngFullPath;
 	private String m_resultsPath;
+	private IFile  m_iFile;				// store to get path info
 	
 	public BNGExecutionJob(String name, IFile ifile, String bngFullPath, String resultsPath) 
 	{
@@ -31,6 +46,7 @@ public class BNGExecutionJob extends Job
 		setRelativeFilePath(ifile.getFullPath().toOSString());
 		setBNGFullPath(bngFullPath);
 		setResultsPath(resultsPath);
+		setFile(ifile);
 		
 		System.out.println("The Results path is: " + resultsPath);
 		setProperty(IProgressConstants.KEEP_PROPERTY, true);
@@ -107,7 +123,67 @@ public class BNGExecutionJob extends Job
 		}
 		
 		updateTrees();   
+		showResults();
 		return Status.OK_STATUS;
+	}
+	
+	/**
+	 * Display the generated gdat file after simulation
+	 */
+	private void showResults() {
+		
+		// Get the full absolute path to the gdat file
+		String baseFileName = new File(m_relativeFilePath).getName();
+		//System.out.println("baseFileName = "+ baseFileName);
+		String updated = baseFileName.replaceAll(".bngl", ".gdat"); 
+		final String gdatFileToOpen = m_resultsPath + updated;
+		//System.out.println("gdatFileToOpen = "+ gdatFileToOpen);
+		
+		// Calculate the path of the project folder for RuleBender
+		String workspacePath = Platform.getInstanceLocation().getURL().getPath().toString();
+		//System.out.println("workspacePath: " + workspacePath);
+		String projectPath = m_iFile.getProject().getLocation().toFile().getName();
+		//System.out.println("projectPath: " + projectPath);
+		String completeProjectPath = new String(workspacePath + projectPath);
+		//System.out.println("completeProjectPath = " + completeProjectPath);
+		
+		// Turn absolute gdat path into a path relative to RB project folder
+		final String relGdatFileToOpen = gdatFileToOpen.replaceAll(completeProjectPath, "");
+		//System.out.println("relGdatFileToOpen: " + relGdatFileToOpen);
+
+		// Prepare to pass off file to an editor
+		IPath path = new Path(relGdatFileToOpen);
+		IFile file = m_iFile.getProject().getFile(path);
+		final IEditorInput editorInput = new FileEditorInput(file);
+
+		// Figure out what page is open right now. There must be a better way to do this...
+		IWorkbenchPage page_last = null;
+		//IWorkbenchWindow w = null;
+		for (IWorkbenchWindow window : PlatformUI.getWorkbench().getWorkbenchWindows()) {
+		    //w = window;
+			for (IWorkbenchPage page : window.getPages()) {
+		    	page_last = page;
+		        //for (IEditorReference editor : page.getEditorReferences()) {
+		            //System.out.println(page.getLabel() + " -> " + editor.getName());
+		        //}
+		    }
+		}
+		final IWorkbenchPage p = page_last;
+		//final IWorkbenchWindow w2open = w;
+		
+		// In the UI thread open the gdat editor
+		Display.getDefault().asyncExec(new Runnable() {
+		 
+			public void run() {
+				try {
+					p.openEditor(editorInput, FileInputUtility.getEditorId(new File(gdatFileToOpen)));
+				} catch (PartInitException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} 
+			}
+		});
+		
 	}
 
 	private boolean deleteRecursive(File path) throws FileNotFoundException{
@@ -182,4 +258,10 @@ public class BNGExecutionJob extends Job
 	{
 		m_resultsPath = path;
 	}
+	
+	public void setFile(IFile ifile)
+	{
+		m_iFile = ifile;
+	}
+	
 }
