@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="RuleBender" id="rulebender.product" application="rulebender.application" useFeatures="false" includeLaunchers="true">
+<product name="RuleBender" id="rulebender.product" application="rulebender.application" version="2.0.271" useFeatures="false" includeLaunchers="true">
 
    <aboutInfo>
       <text>
-         RuleBender 2.0r250
+         RuleBender 2.0r271
+
+RuleBender is a front end to cell signaling simulation that is developed at the University of Pittsburgh in the Computer Science Viz Lab.  The BioNetGen simulator is a product of the Faeder Lab in the Systems and Computational Biology Department.  NFSim is developed by the Emonet Lab at Yale.
 
 Please send all feedback and questions to help@rulebender.org.
       </text>

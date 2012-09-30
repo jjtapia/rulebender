@@ -434,7 +434,7 @@
          </property>
          <property
                name="aboutText"
-               value="RuleBender 2.0r250&#x0A;&#x0A;Please send all feedback and questions to help@rulebender.org.">
+               value="RuleBender 2.0r271&#x0A;&#x0A;RuleBender is a front end to cell signaling simulation that is developed at the University of Pittsburgh in the Computer Science Viz Lab.  The BioNetGen simulator is a product of the Faeder Lab in the Systems and Computational Biology Department.  NFSim is developed by the Emonet Lab at Yale.&#x0A;&#x0A;Please send all feedback and questions to help@rulebender.org.">
          </property>
          <property
                name="windowImages"

@@ -129,7 +129,6 @@ public class ChartComposite extends Composite implements ISelectionProvider
 		// TODO  Figure out how to do comparisons
 		//createCompareOutline();
 	}
-	
 
 	/*
 	 * Create outline for CDAT files
@@ -1124,12 +1123,14 @@ public class ChartComposite extends Composite implements ISelectionProvider
 		/* This code selects all of the observables from the start. 
 		 * This incurs high overhead and is not always necessary, so if the
 		 * user wants to load all of the data points they can easily manually select it. 
-		if (fNode.getName().endsWith(".gdat")
-				|| fNode.getName().endsWith(".scan")) 
+		 */
+		
+		if (m_datFileData.getFileName().endsWith(".gdat")
+				|| m_datFileData.getFileName().endsWith(".scan")) 
 		{
 
 			// update the "check/uncheck all" button
-			data.setAllChecked(true);
+			m_datFileData.setAllChecked(true);
 			
 			((Button) outlineCmp_gdat.getChildren()[1]).setSelection(true);
 
@@ -1142,18 +1143,18 @@ public class ChartComposite extends Composite implements ISelectionProvider
 				TreeNode node = (TreeNode) elements[i];
 				if (node.getNodeType().equalsIgnoreCase("SpeciesNode")) {
 					// SpeciesNode
-					data.addCheckedSpecies((SpeciesNode) elements[i]);
+					m_datFileData.addCheckedSpecies((SpeciesNode) elements[i]);
 				} else if (node.getNodeType()
 						.equalsIgnoreCase("ObservableNode")) {
 					// ObservableNode
-					data.addCheckedObservable((ObservableNode) elements[i]);
+					m_datFileData.addCheckedObservable((ObservableNode) elements[i]);
 				} else {
 				}
 			}
 			
-		} else if (fNode.getName().endsWith(".cdat")) {
+		} else if (m_datFileData.getFileName().endsWith(".cdat")) {
 			// update the "check/uncheck all" button
-			data.setAllChecked(true);
+		  m_datFileData.setAllChecked(true);
 			
 			((Button) outlineCmp_cdat.getChildren()[1]).setSelection(true);
 
@@ -1166,16 +1167,23 @@ public class ChartComposite extends Composite implements ISelectionProvider
 				TreeNode node = (TreeNode) elements[i];
 				if (node.getNodeType().equalsIgnoreCase("SpeciesNode")) {
 					// SpeciesNode
-					data.addCheckedSpecies((SpeciesNode) elements[i]);
+				  m_datFileData.addCheckedSpecies((SpeciesNode) elements[i]);
 				} else {
 				}
 			}   
 		}
-		 */
+		// Closes the mass comment that disables selecting all of the observables
+		// by default. ---> */
+		
 		// plot chart
 		curChartPanel.setChart(DATChart.plotChart(m_datFileData, xAxisType, yAxisType, chartType));
 		
 		// add close listener for tabItem
+		/*
+		// This was doing nothing, but might have something to do with comparisons.
+		// Most likely it can be deleted, if comparisons are possible, then this 
+		// definitely can be deleted.
+		 
 		chartItem.addDisposeListener(new DisposeListener() 
 		{
 			public void widgetDisposed(DisposeEvent event) 
@@ -1185,19 +1193,20 @@ public class ChartComposite extends Composite implements ISelectionProvider
 				String filePath = (String) item.getData("path");
 
 				// remove the fileNode from curFileList
-				/*removeFileNode(filePath);
+				removeFileNode(filePath);
 
-				//if (curFileList.size() == 0) 
-				//{
+				if (curFileList.size() == 0) 
+				{
 					curFileNode = null;
 					if (elementOutline != null&& elementOutline.isDisposed() == false) 
 					{
 						elementOutline.setControl(null);
 					}
 				}
-				*/
+			
 			}
 		});
+		  */
 	}
 
 	/*
@@ -1394,7 +1403,8 @@ public class ChartComposite extends Composite implements ISelectionProvider
 		Object[] list = listeners.getListeners();  
 		for (int i = 0; i < list.length; i++) 
 		{  
-			((ISelectionChangedListener) list[i]).selectionChanged(new SelectionChangedEvent(this, select));  
+			((ISelectionChangedListener) list[i])
+			.selectionChanged(new SelectionChangedEvent(this, select));  
 		 }  
 	}
 	
