@@ -25,6 +25,11 @@ public class BNGLModel
 		setPathID(pathID);
 	}
 	
+	/**
+	 * Set the absolute path for the model. 
+	 * 
+	 * @param path The absolute String path for the model file.
+	 */
 	private void setPathID(String path)
 	{
 		m_pathID = path;
@@ -36,6 +41,11 @@ public class BNGLModel
 		pcs.firePropertyChange(AST, null, m_ast);
 	}
 
+	/**
+   * Get the absolute path for the model. 
+   * 
+   * @return path The absolute String path for the model file.
+   */
 	public String getPathID() 
 	{
 		return m_pathID;

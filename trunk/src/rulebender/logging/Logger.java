@@ -12,6 +12,9 @@ public class Logger
   
   public static void log(LOG_LEVELS level, Class className, String message)
   {
-    System.out.println("[" + level +" | " +className.getName() + "]: " + message);
+    String[] split = className.getName().split("\\.");
+    
+    System.out.println("[" + level +" | ..." + split[split.length-2] + "." + 
+                       split[split.length - 1]+ "]: " + message);
   }
 }

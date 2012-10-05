@@ -56,11 +56,18 @@ public class RuleData
 		m_productPatternData.add(rpd);
 	}
 	
-	public void addBondData(String sourceMolIn, String sourceCompIn, int compID1, String sourceStateIn, 
-			String targetMolIn, String targetCompIn, int compID2, String targetStateIn, int action)
+	public void addBondData(String sourceMolIn, String sourceCompIn, 
+	                        int compID1, String sourceStateIn, 
+	                        String targetMolIn, String targetCompIn, 
+	                        int compID2, String targetStateIn, 
+	                        int action)
 	{	
-		m_bondActionData.add(new BondActionData(new BondData(sourceMolIn, sourceCompIn, compID1, sourceStateIn, 
-				   targetMolIn, targetCompIn, compID2, targetStateIn), action));
+		m_bondActionData.add(
+		    new BondActionData(new BondData(sourceMolIn, sourceCompIn, 
+		                                    compID1, sourceStateIn,
+		                                    targetMolIn, targetCompIn, 
+		                                    compID2, targetStateIn), 
+		                       action));
 	}
 	
 	public ArrayList<RulePatternData> getProductPatternData() {
@@ -74,7 +81,6 @@ public class RuleData
 
 	public ArrayList<BondActionData> getBondActions() 
 	{
-		
 		return m_bondActionData;
 	}	
 }

@@ -86,7 +86,7 @@ public class ContactMapModel
 
 	public int addBond(Bond bond) 
 	{	
-		// Make sute that the bond is not already here.
+		// Make sure that the bond is not already here.
 		
 		// Iterate through existing
 		for(int i=0;i<m_bonds.size();i++)

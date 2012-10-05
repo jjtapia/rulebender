@@ -40,6 +40,7 @@ public class Console implements IPartListener, IStartup
   private static HashMap<String, BNGLEditor> m_editors = 
       new HashMap<String, BNGLEditor>();
 
+
   /**
    * Private Constructor for static library. This should be private, but
    * IStartup implementers cannot be private. So... use this as a singleton.
@@ -51,6 +52,7 @@ public class Console implements IPartListener, IStartup
     m_editors = new HashMap<String, BNGLEditor>();
   }
 
+
   public static synchronized Console getConsoleInstance()
   {
     if (m_instance == null)
@@ -60,6 +62,7 @@ public class Console implements IPartListener, IStartup
 
     return m_instance;
   }
+
 
   /**
    * Display a String directly to a console.
@@ -72,6 +75,7 @@ public class Console implements IPartListener, IStartup
     getMessageConsoleStream(console).println(output);
   }
 
+
   /**
    * 
    * @param name
@@ -80,29 +84,16 @@ public class Console implements IPartListener, IStartup
    * @param lineNum
    */
   public static void addHyperlink(final String name, final int offset,
-      final int length, final int lineNum)
+      final int length)
   {
     IHyperlink link = new IHyperlink()
     {
-
-      @Override
-      public void linkEntered()
-      {
-        // Do Nothing
-      }
-
-      @Override
-      public void linkExited()
-      {
-        // Do Nothing
-      }
-
       @Override
       public void linkActivated()
       {
         Logger.log(LOG_LEVELS.INFO, this.getClass(), "Link activated for "
             + getMessageConsole(name).getName());
-      
+
         String errorText = "";
 
         try
@@ -114,22 +105,20 @@ public class Console implements IPartListener, IStartup
           e.printStackTrace();
         }
 
-        //ABORT:\s+.*\s+at line \d+
-        Logger.log(LOG_LEVELS.INFO, 
-            this.getClass(), 
-            "text: " + errorText);
+        // ABORT:\s+.*\s+at line \d+
+        Logger.log(LOG_LEVELS.INFO, this.getClass(), "text: " + errorText);
 
         String[] textArray = errorText.split("\\s+");
-        
-        //TODO 
+
+        // TODO
         // verify this.
-        int line = Integer.parseInt(textArray[textArray.length - 1]); 
-        
-        // Open the editor.  This will open the file in an editor if it is not
+        int line = Integer.parseInt(textArray[textArray.length - 1]);
+
+        // Open the editor. This will open the file in an editor if it is not
         // opened already, and will bring it in focus once it is opened.
         openFile(name);
 
-        // Get the editor.  Even if the editor was not in the HashMap before,
+        // Get the editor. Even if the editor was not in the HashMap before,
         // the openFile call will still cause all of the part listening code
         // for the Console (see below) to fire.
         BNGLEditor editor = m_editors.get(name);
@@ -138,24 +127,25 @@ public class Console implements IPartListener, IStartup
         goToLine(editor, line);
       }
 
+
       /**
        * 
        * @param name
        */
       private void openFile(String name)
       {
-        
+
         // Get an IPath for the relative file location.
         IPath path = new Path(name);
-        
+
         // Get an IFile given the IPath
-        IFile fileToBeOpened = 
-            ResourcesPlugin.getWorkspace().getRoot().getFile(path);
+        IFile fileToBeOpened = ResourcesPlugin.getWorkspace().getRoot()
+            .getFile(path);
 
         // Get the editor input
         IEditorInput editorInput = new FileEditorInput(fileToBeOpened);
-        
-        // Get the acive window and page.
+
+        // Get the active window and page.
         IWorkbenchWindow window = PlatformUI.getWorkbench()
             .getActiveWorkbenchWindow();
         IWorkbenchPage page = window.getActivePage();
@@ -170,6 +160,20 @@ public class Console implements IPartListener, IStartup
           e.printStackTrace();
         }
       }
+      
+
+      @Override
+      public void linkEntered()
+      {
+        // Do Nothing
+      }
+
+
+      @Override
+      public void linkExited()
+      {
+        // Do Nothing
+      }
     };
 
     try
@@ -183,6 +187,7 @@ public class Console implements IPartListener, IStartup
 
   }
 
+
   /**
    * Get the MessageConsoleStream so that it can be printed to directly.
    * 
@@ -194,6 +199,7 @@ public class Console implements IPartListener, IStartup
     // Get the stream
     return getMessageConsole(console).newMessageStream();
   }
+
 
   private static MessageConsole getMessageConsole(String console)
   {
@@ -217,10 +223,12 @@ public class Console implements IPartListener, IStartup
     return messageConsole;
   }
 
+
   public static String getConsoleLineDelimeter()
   {
     return "\n";
   }
+
 
   /**
    * FIXME need to find out which one is on the top before this works.
@@ -234,11 +242,13 @@ public class Console implements IPartListener, IStartup
 
   }
 
+
   public static void clearConsole(String title)
   {
     getMessageConsole(title).clearConsole();
 
   }
+
 
   @Override
   public void partActivated(IWorkbenchPart part)
@@ -246,11 +256,13 @@ public class Console implements IPartListener, IStartup
     // Do Nothing.
   }
 
+
   @Override
   public void partBroughtToTop(IWorkbenchPart part)
   {
     // Do Nothing
   }
+
 
   @Override
   public void partClosed(IWorkbenchPart part)
@@ -266,24 +278,24 @@ public class Console implements IPartListener, IStartup
 
   }
 
+
   @Override
   public void partDeactivated(IWorkbenchPart part)
   {
     // Do Nothing
   }
 
+
   @Override
   public void partOpened(IWorkbenchPart part)
   {
-    System.out.println("**** Console sees the part opened.");
-
     // If it's an editor
     if (part instanceof BNGLEditor)
     {
       addEditor((BNGLEditor) part);
     }
-
   }
+
 
   private void addEditor(BNGLEditor editor)
   {
@@ -292,9 +304,10 @@ public class Console implements IPartListener, IStartup
 
     m_editors.put(path, editor);
 
-    System.out.println("Added editor to hashmap: " + path);
-
+    Logger.log(LOG_LEVELS.INFO, this.getClass(), 
+        "Added editor to hashmap: " + path);
   }
+
 
   /**
    * Register as a part listener.
@@ -320,6 +333,7 @@ public class Console implements IPartListener, IStartup
     });
   }
 
+
   /**
    * From
    * http://stackoverflow.com/questions/2873879/eclipe-pde-jump-to-line-x-and
@@ -332,7 +346,9 @@ public class Console implements IPartListener, IStartup
   {
     if (!(editorPart instanceof ITextEditor) || lineNumber <= 0)
     {
-      System.out.println("Not TextEditor or line number <=0");
+      Logger.log(LOG_LEVELS.ERROR, Console.class, 
+          "Requested to go to line number <= 0, or editor part is not a " +
+          "TextEditor");
       return;
     }
     ITextEditor editor = (ITextEditor) editorPart;
