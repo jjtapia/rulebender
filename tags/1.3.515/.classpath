@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="lib/mac/mac64/swt.jar"/>
+	<classpathentry kind="lib" path="lib/mac/com.ibm.icu.jar"/>
+	<classpathentry kind="lib" path="lib/mac/gnujaxp.jar"/>
+	<classpathentry kind="lib" path="lib/mac/itext-2.0.6.jar"/>
+	<classpathentry kind="lib" path="lib/mac/javax.servlet.jar"/>
+	<classpathentry kind="lib" path="lib/mac/jcommon-1.0.12.jar"/>
+	<classpathentry kind="lib" path="lib/mac/jfreechart-1.0.9-experimental.jar"/>
+	<classpathentry kind="lib" path="lib/mac/jfreechart-1.0.9-swt.jar"/>
+	<classpathentry kind="lib" path="lib/mac/jfreechart-1.0.9.jar"/>
+	<classpathentry kind="lib" path="lib/mac/junit-4.10.jar"/>
+	<classpathentry kind="lib" path="lib/mac/junit.jar"/>
+	<classpathentry kind="lib" path="lib/mac/org.eclipse.core.commands.jar"/>
+	<classpathentry kind="lib" path="lib/mac/org.eclipse.core.contenttype.jar"/>
+	<classpathentry kind="lib" path="lib/mac/org.eclipse.core.jobs.jar"/>
+	<classpathentry kind="lib" path="lib/mac/org.eclipse.core.runtime.compatibility.auth.jar"/>
+	<classpathentry kind="lib" path="lib/mac/org.eclipse.core.runtime.compatibility.registry.jar"/>
+	<classpathentry kind="lib" path="lib/mac/org.eclipse.core.runtime.jar"/>
+	<classpathentry kind="lib" path="lib/mac/org.eclipse.equinox.app.jar"/>
+	<classpathentry kind="lib" path="lib/mac/org.eclipse.equinox.common.jar"/>
+	<classpathentry kind="lib" path="lib/mac/org.eclipse.equinox.preferences.jar"/>
+	<classpathentry kind="lib" path="lib/mac/org.eclipse.equinox.registry.jar"/>
+	<classpathentry kind="lib" path="lib/mac/org.eclipse.jface.jar"/>
+	<classpathentry kind="lib" path="lib/mac/org.eclipse.jface.text.jar"/>
+	<classpathentry kind="lib" path="lib/mac/org.eclipse.osgi.jar"/>
+	<classpathentry kind="lib" path="lib/mac/org.eclipse.osgi.services.jar"/>
+	<classpathentry kind="lib" path="lib/mac/org.eclipse.swt.jar"/>
+	<classpathentry kind="lib" path="lib/mac/org.eclipse.text.jar"/>
+	<classpathentry kind="lib" path="lib/mac/prefuse.jar"/>
+	<classpathentry kind="lib" path="lib/mac/servlet.jar"/>
+	<classpathentry kind="lib" path="lib/mac/swtgraphics2d.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>

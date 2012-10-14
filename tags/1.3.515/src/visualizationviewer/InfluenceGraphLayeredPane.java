@@ -15,251 +15,278 @@ import prefuse.Display;
 import prefuse.Visualization;
 import prefuse.visual.VisualItem;
 
-public class InfluenceGraphLayeredPane extends JLayeredPane {
+public class InfluenceGraphLayeredPane extends JLayeredPane
+{
 
-	private final int OVERVIEW_WIDTH = 200;
-	private final int OVERVIEW_HEIGHT = 100;
-	private final int BORDER_WIDTH = 1;
+  private final int OVERVIEW_WIDTH = 200;
+  private final int OVERVIEW_HEIGHT = 100;
+  private final int BORDER_WIDTH = 1;
 
-	private Dimension currentSize;
+  private Dimension currentSize;
 
-	private JPanel iGraphJPanel;
-	private JPanel iGraphOverviewJPanel;
+  private JPanel iGraphJPanel;
+  private JPanel iGraphOverviewJPanel;
 
-	private RectanglePanel iGraphRectanglePanel;
-	private SelectBoxControl iGraphSelectBoxControl;
+  private RectanglePanel iGraphRectanglePanel;
+  private SelectBoxControl iGraphSelectBoxControl;
 
-	private Border border;
+  private Border border;
 
-	public InfluenceGraphLayeredPane(Dimension size) {
-		super();
 
-		currentSize = size;
+  public InfluenceGraphLayeredPane(Dimension size)
+  {
+    super();
 
-		border = new LineBorder(Color.GRAY, BORDER_WIDTH);
+    currentSize = size;
 
-		iGraphOverviewJPanel = new JPanel();
-		iGraphOverviewJPanel.setBorder(border);
-		iGraphOverviewJPanel.setBackground(Color.WHITE);
+    border = new LineBorder(Color.GRAY, BORDER_WIDTH);
 
-		iGraphJPanel = new JPanel(new BorderLayout());
-		iGraphJPanel.setBorder(border);
-		iGraphJPanel.setBackground(Color.WHITE);
+    iGraphOverviewJPanel = new JPanel();
+    iGraphOverviewJPanel.setBorder(border);
+    iGraphOverviewJPanel.setBackground(Color.WHITE);
 
-		this.add(iGraphJPanel, new Integer(0));
-		this.add(iGraphOverviewJPanel, new Integer(1));
-	}
+    iGraphJPanel = new JPanel(new BorderLayout());
+    iGraphJPanel.setBorder(border);
+    iGraphJPanel.setBackground(Color.WHITE);
 
-	public void setIGraph(Display d) {
-		if (iGraphJPanel.getComponentCount() > 0) {
-			// This should allow the visualization to be garbage collected.
-			iGraphJPanel.removeAll();
-			// iGraphJPanel.revalidate();
-		}
+    this.add(iGraphJPanel, new Integer(0));
+    this.add(iGraphOverviewJPanel, new Integer(1));
+  }
 
-		if (d != null) {
-			iGraphJPanel.add(d, BorderLayout.CENTER);
-			// iGraphJPanel.revalidate();
-		}
 
-	}
+  public void setIGraph(Display d)
+  {
+    if (iGraphJPanel.getComponentCount() > 0)
+    {
+      // This should allow the visualization to be garbage collected.
+      iGraphJPanel.removeAll();
+      // iGraphJPanel.revalidate();
+    }
 
-	public void setIGraphOverview(Display od) {
-		if (iGraphOverviewJPanel.getComponentCount() > 0) {
-			iGraphOverviewJPanel.removeAll();
-			// iGraphOverviewJPanel.revalidate();
-		}
+    if (d != null)
+    {
+      iGraphJPanel.add(d, BorderLayout.CENTER);
+      // iGraphJPanel.revalidate();
+    }
 
-		if (od != null && iGraphJPanel.getComponentCount() == 1) {
-			// absolute layout
-			iGraphOverviewJPanel.setLayout(null);
+  }
 
-			Display dis_focus = (Display) iGraphJPanel.getComponent(0);
 
-			// compute the size of select box
-			int x, y, width, height;
-			double ratio; // scale of overview over focus
+  public void setIGraphOverview(Display od)
+  {
+    if (iGraphOverviewJPanel.getComponentCount() > 0)
+    {
+      iGraphOverviewJPanel.removeAll();
+      // iGraphOverviewJPanel.revalidate();
+    }
 
-			double[] result = computeSelectBox(iGraphOverviewJPanel, od,
-					dis_focus, "igraph");
-			x = (int) result[0];
-			y = (int) result[1];
-			width = (int) result[2];
-			height = (int) result[3];
-			ratio = result[4];
+    if (od != null && iGraphJPanel.getComponentCount() == 1)
+    {
+      // absolute layout
+      iGraphOverviewJPanel.setLayout(null);
 
-			// get insets of overviewPanel
-			// Insets insets = iGraphOverviewJPanel.getInsets();
-			// get the size of overviewPanel
-			// Dimension size_panel = iGraphOverviewJPanel.getSize();
+      Display dis_focus = (Display) iGraphJPanel.getComponent(0);
 
-			// create select box
-			iGraphRectanglePanel = new RectanglePanel(width, height);
-			// set bounds for select box
-			iGraphRectanglePanel.setBounds(x, y, width, height);
-			// set select box be transparent
-			iGraphRectanglePanel.setOpaque(false);
-			// add select box to panel
-			iGraphOverviewJPanel.add(iGraphRectanglePanel);
+      // compute the size of select box
+      int x, y, width, height;
+      double ratio; // scale of overview over focus
 
-			// set bounds for overview display
-			// od.setBounds(insets.left, insets.top, size_panel.width,
-			// size_panel.height);
-			// add overview display to panel
-			iGraphOverviewJPanel.add(od);
-			// iGraphOverviewJPanel.revalidate();
+      double[] result = computeSelectBox(iGraphOverviewJPanel, od, dis_focus,
+          "igraph");
+      x = (int) result[0];
+      y = (int) result[1];
+      width = (int) result[2];
+      height = (int) result[3];
+      ratio = result[4];
 
-			// add mouse listener for select box
-			iGraphSelectBoxControl = new SelectBoxControl(x, y, width, height,
-					iGraphRectanglePanel, dis_focus, ratio);
-			iGraphRectanglePanel.addMouseListener(iGraphSelectBoxControl);
-			iGraphRectanglePanel.addMouseMotionListener(iGraphSelectBoxControl);
-		}
+      // get insets of overviewPanel
+      // Insets insets = iGraphOverviewJPanel.getInsets();
+      // get the size of overviewPanel
+      // Dimension size_panel = iGraphOverviewJPanel.getSize();
 
-		resizeIGraph();
-	}
+      // create select box
+      iGraphRectanglePanel = new RectanglePanel(width, height);
+      // set bounds for select box
+      iGraphRectanglePanel.setBounds(x, y, width, height);
+      // set select box be transparent
+      iGraphRectanglePanel.setOpaque(false);
+      // add select box to panel
+      iGraphOverviewJPanel.add(iGraphRectanglePanel);
 
-	public void updateIGraphSelectBox() {
+      // set bounds for overview display
+      // od.setBounds(insets.left, insets.top, size_panel.width,
+      // size_panel.height);
+      // add overview display to panel
+      iGraphOverviewJPanel.add(od);
+      // iGraphOverviewJPanel.revalidate();
 
-		if (iGraphJPanel.getComponentCount() == 1
-				&& iGraphOverviewJPanel.getComponentCount() == 2) {
-			double[] result = computeSelectBox(iGraphOverviewJPanel,
-					(Display) iGraphOverviewJPanel.getComponent(1),
-					(Display) iGraphJPanel.getComponent(0), "igraph");
+      // add mouse listener for select box
+      iGraphSelectBoxControl = new SelectBoxControl(x, y, width, height,
+          iGraphRectanglePanel, dis_focus, ratio);
+      iGraphRectanglePanel.addMouseListener(iGraphSelectBoxControl);
+      iGraphRectanglePanel.addMouseMotionListener(iGraphSelectBoxControl);
+    }
 
-			iGraphSelectBoxControl.updateInfo((int) result[0], (int) result[1],
-					(int) result[2], (int) result[3], result[4]);
-		}
-	}
+    resizeIGraph();
+  }
 
-	public Dimension getIGraphSize() {
-		return iGraphJPanel.getSize();
-	}
 
-	public Dimension getIGraphOverviewSize() {
-		return iGraphOverviewJPanel.getSize();
-	}
+  public void updateIGraphSelectBox()
+  {
 
-	private void resizeIGraph() {
-		resizeIGraph(currentSize);
-	}
+    if (iGraphJPanel.getComponentCount() == 1
+        && iGraphOverviewJPanel.getComponentCount() == 2)
+    {
+      double[] result = computeSelectBox(iGraphOverviewJPanel,
+          (Display) iGraphOverviewJPanel.getComponent(1),
+          (Display) iGraphJPanel.getComponent(0), "igraph");
 
-	public void resizeIGraph(Dimension size) {
-		currentSize = size;
+      iGraphSelectBoxControl.updateInfo((int) result[0], (int) result[1],
+          (int) result[2], (int) result[3], result[4]);
+    }
+  }
 
-		// TODO this was == 2 before, but I cannot think of any reason
-		// why there would be two things in that JPanel.
-		if (iGraphJPanel != null && iGraphOverviewJPanel != null) {
-			iGraphJPanel.setBounds(0, 0, currentSize.width, currentSize.height);
-			iGraphOverviewJPanel.setBounds(0, currentSize.height
-					- OVERVIEW_HEIGHT, OVERVIEW_WIDTH - BORDER_WIDTH,
-					OVERVIEW_HEIGHT - BORDER_WIDTH);
 
-			if (iGraphJPanel.getComponentCount() == 1
-					&& iGraphOverviewJPanel.getComponentCount() > 1) {
-				((Display) iGraphJPanel.getComponent(0)).setSize(new Dimension(
-						size.width - BORDER_WIDTH * 2, size.height
-								- BORDER_WIDTH * 2));
-				((Display) iGraphOverviewJPanel.getComponent(1)).setBounds(
-						BORDER_WIDTH, BORDER_WIDTH, OVERVIEW_WIDTH
-								- BORDER_WIDTH * 3, OVERVIEW_HEIGHT
-								- BORDER_WIDTH * 2);
-				((Display) iGraphOverviewJPanel.getComponent(1))
-						.setSize(new Dimension(OVERVIEW_WIDTH - BORDER_WIDTH
-								* 3, OVERVIEW_HEIGHT - BORDER_WIDTH * 2));
-			}
-		}
+  public Dimension getIGraphSize()
+  {
+    return iGraphJPanel.getSize();
+  }
 
-		updateIGraphSelectBox();
-	}
 
-	/**
-	 * Compute select box based on linear relationship between overview display
-	 * and focus display
-	 * 
-	 * TODO this should be a part of the rectangle control or rectangle panel
-	 * class, but I don't have the time to refactor that right now.
-	 * 
-	 * @param overviewPanel
-	 *            JPanel for the overview display
-	 * @param overviewDis
-	 *            overview display
-	 * @param focusDis
-	 *            focus display
-	 * @param graphName
-	 *            name of the visualization in display
-	 * @return [x, y, width, height, ratio(scale of overview over focus)] of
-	 *         select box
-	 */
-	private double[] computeSelectBox(JPanel overviewPanel,
-			Display overviewDis, Display focusDis, String graphName) {
-		double[] result = new double[5];
+  public Dimension getIGraphOverviewSize()
+  {
+    return iGraphOverviewJPanel.getSize();
+  }
 
-		// get insets of overviewPanel
-		Insets insets = overviewPanel.getInsets();
 
-		// compute the size of select box
-		int x, y, width, height;
+  private void resizeIGraph()
+  {
+    resizeIGraph(currentSize);
+  }
 
-		// focus display width height
-		Display dis_focus = focusDis;
-		double scale_focus = dis_focus.getScale();
-		int dis_focus_width = dis_focus.getVisibleRect().width;
-		int dis_focus_height = dis_focus.getVisibleRect().height;
 
-		// compute ratio
-		double scale_overview = overviewDis.getScale();
-		double ratio = scale_overview / scale_focus;
+  public void resizeIGraph(Dimension size)
+  {
+    currentSize = size;
 
-		// set width and height for select box
-		width = (int) (dis_focus_width * ratio);
-		height = (int) (dis_focus_height * ratio);
+    // TODO this was == 2 before, but I cannot think of any reason
+    // why there would be two things in that JPanel.
+    if (iGraphJPanel != null && iGraphOverviewJPanel != null)
+    {
+      iGraphJPanel.setBounds(0, 0, currentSize.width, currentSize.height);
+      iGraphOverviewJPanel.setBounds(0, currentSize.height - OVERVIEW_HEIGHT,
+          OVERVIEW_WIDTH - BORDER_WIDTH, OVERVIEW_HEIGHT - BORDER_WIDTH);
 
-		// compute the position of select box
+      if (iGraphJPanel.getComponentCount() == 1
+          && iGraphOverviewJPanel.getComponentCount() > 1)
+      {
+        ((Display) iGraphJPanel.getComponent(0)).setSize(new Dimension(
+            size.width - BORDER_WIDTH * 2, size.height - BORDER_WIDTH * 2));
+        ((Display) iGraphOverviewJPanel.getComponent(1)).setBounds(
+            BORDER_WIDTH, BORDER_WIDTH, OVERVIEW_WIDTH - BORDER_WIDTH * 3,
+            OVERVIEW_HEIGHT - BORDER_WIDTH * 2);
+        ((Display) iGraphOverviewJPanel.getComponent(1)).setSize(new Dimension(
+            OVERVIEW_WIDTH - BORDER_WIDTH * 3, OVERVIEW_HEIGHT - BORDER_WIDTH
+                * 2));
+      }
+    }
 
-		// focus display x y
-		double dis_focus_x = dis_focus.getDisplayX();
-		double dis_focus_y = dis_focus.getDisplayY();
+    updateIGraphSelectBox();
+  }
 
-		// focus vis x y
-		Visualization vis_focus = dis_focus.getVisualization();
-		Rectangle2D visbounds_focus = vis_focus.getBounds(graphName);
-		double vis_focus_x = visbounds_focus.getX();
-		double vis_focus_y = visbounds_focus.getY();
 
-		// compute distance
-		int distance_x = (int) ((dis_focus_x - vis_focus_x) * ratio);
-		int distance_y = (int) ((dis_focus_y - vis_focus_y) * ratio);
+  /**
+   * Compute select box based on linear relationship between overview display
+   * and focus display
+   * 
+   * TODO this should be a part of the rectangle control or rectangle panel
+   * class, but I don't have the time to refactor that right now.
+   * 
+   * @param overviewPanel
+   *          JPanel for the overview display
+   * @param overviewDis
+   *          overview display
+   * @param focusDis
+   *          focus display
+   * @param graphName
+   *          name of the visualization in display
+   * @return [x, y, width, height, ratio(scale of overview over focus)] of
+   *         select box
+   */
+  private double[] computeSelectBox(JPanel overviewPanel, Display overviewDis,
+      Display focusDis, String graphName)
+  {
+    double[] result = new double[5];
 
-		// overview dis x y
-		double dis_overview_x = overviewDis.getDisplayX();
-		double dis_overview_y = overviewDis.getDisplayY();
+    // get insets of overviewPanel
+    Insets insets = overviewPanel.getInsets();
 
-		// overview vis x y
-		Visualization vis_overview = overviewDis.getVisualization();
-		Rectangle2D visbounds_overview = vis_overview.getBounds(graphName);
-		double vis_overview_x = visbounds_overview.getX() * ratio;
-		double vis_overview_y = visbounds_overview.getY() * ratio;
+    // compute the size of select box
+    int x, y, width, height;
 
-		// set x and y for select box upper-left corner
-		x = (int) vis_overview_x + (insets.left - (int) dis_overview_x)
-				+ distance_x;
-		y = (int) vis_overview_y + (insets.top - (int) dis_overview_y)
-				+ distance_y;
+    // focus display width height
+    Display dis_focus = focusDis;
+    double scale_focus = dis_focus.getScale();
+    int dis_focus_width = dis_focus.getVisibleRect().width;
+    int dis_focus_height = dis_focus.getVisibleRect().height;
 
-		result[0] = x;
-		result[1] = y;
-		result[2] = width;
-		result[3] = height;
-		result[4] = ratio;
-		return result;
-	}
+    // compute ratio
+    double scale_overview = overviewDis.getScale();
+    double ratio = scale_overview / scale_focus;
 
-	public Visualization getInfluenceGraphVisualization() {
-		if (iGraphJPanel.getComponentCount() > 0) {
-			return ((Display) iGraphJPanel.getComponent(0)).getVisualization();
-		} else {
-			return null;
-		}
-	}
+    // set width and height for select box
+    width = (int) (dis_focus_width * ratio);
+    height = (int) (dis_focus_height * ratio);
+
+    // compute the position of select box
+
+    // focus display x y
+    double dis_focus_x = dis_focus.getDisplayX();
+    double dis_focus_y = dis_focus.getDisplayY();
+
+    // focus vis x y
+    Visualization vis_focus = dis_focus.getVisualization();
+    Rectangle2D visbounds_focus = vis_focus.getBounds(graphName);
+    double vis_focus_x = visbounds_focus.getX();
+    double vis_focus_y = visbounds_focus.getY();
+
+    // compute distance
+    int distance_x = (int) ((dis_focus_x - vis_focus_x) * ratio);
+    int distance_y = (int) ((dis_focus_y - vis_focus_y) * ratio);
+
+    // overview dis x y
+    double dis_overview_x = overviewDis.getDisplayX();
+    double dis_overview_y = overviewDis.getDisplayY();
+
+    // overview vis x y
+    Visualization vis_overview = overviewDis.getVisualization();
+    Rectangle2D visbounds_overview = vis_overview.getBounds(graphName);
+    double vis_overview_x = visbounds_overview.getX() * ratio;
+    double vis_overview_y = visbounds_overview.getY() * ratio;
+
+    // set x and y for select box upper-left corner
+    x = (int) vis_overview_x + (insets.left - (int) dis_overview_x)
+        + distance_x;
+    y = (int) vis_overview_y + (insets.top - (int) dis_overview_y) + distance_y;
+
+    result[0] = x;
+    result[1] = y;
+    result[2] = width;
+    result[3] = height;
+    result[4] = ratio;
+    return result;
+  }
+
+
+  public Visualization getInfluenceGraphVisualization()
+  {
+    if (iGraphJPanel.getComponentCount() > 0)
+    {
+      return ((Display) iGraphJPanel.getComponent(0)).getVisualization();
+    }
+    else
+    {
+      return null;
+    }
+  }
 }

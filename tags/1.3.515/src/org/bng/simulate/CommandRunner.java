@@ -16,199 +16,236 @@ import editor.ConfigurationManager;
  * 
  * @param <T>
  */
-public class CommandRunner<T extends CommandInterface> {
-	private T m_command;
-	private File m_workingDirectory;
-	private String m_fullLog;
-	private String m_errorLog;
-	private String m_stdLog;
-	private String m_name;
+public class CommandRunner<T extends CommandInterface>
+{
+  private T m_command;
+  private File m_workingDirectory;
+  private String m_fullLog;
+  private String m_errorLog;
+  private String m_stdLog;
+  private String m_name;
 
-	private IProgressMonitor m_monitor;
+  private IProgressMonitor m_monitor;
 
-	private Process m_scanProc;
+  private Process m_scanProc;
 
-	/**
-	 * @param command
-	 *            The CommandInterface object that should be executed.
-	 * @param workingDirectory
-	 *            The working directory where it should be executed.
-	 * @param monitor
-	 */
-	public CommandRunner(T command, File workingDirectory, String name,
-			IProgressMonitor monitor) {
-		m_command = command;
-		m_workingDirectory = workingDirectory;
-		m_name = name;
 
-		m_monitor = monitor;
+  /**
+   * @param command
+   *          The CommandInterface object that should be executed.
+   * @param workingDirectory
+   *          The working directory where it should be executed.
+   * @param monitor
+   */
+  public CommandRunner(T command, File workingDirectory, String name,
+      IProgressMonitor monitor)
+  {
+    m_command = command;
+    m_workingDirectory = workingDirectory;
+    m_name = name;
 
-	}
+    m_monitor = monitor;
 
-	public boolean run() throws SimulationErrorException {
-		m_fullLog = "";
+  }
 
-		if (!m_workingDirectory.isDirectory()) {
-			m_workingDirectory.mkdirs();
-		}
 
-		System.out.println("Running command in: " + m_workingDirectory);
-		System.out.println("Using BNGFullPath: "
-				+ m_command.getBNGFullPath().substring(
-						0,
-						m_command.getBNGFullPath().lastIndexOf(
-								System.getProperty("file.separator"))));
+  public boolean run() throws SimulationErrorException
+  {
+    m_fullLog = "";
 
-		ProcessBuilder pb = new ProcessBuilder(m_command.getCommand());
-		Map<String, String> env = pb.environment();
-		env.put("CYGWIN", "nodosfilewarning");
-		env.put("BNGPATH",
-				m_command.getBNGFullPath().substring(
-						0,
-						m_command.getBNGFullPath().lastIndexOf(
-								System.getProperty("file.separator"))));
-		// env.remove("OTHERVAR");
-		// env.put("VAR2", env.get("VAR1") + "suffix");
-		pb.directory(m_workingDirectory);
-		// Process p = pb.start();
+    if (!m_workingDirectory.isDirectory())
+    {
+      m_workingDirectory.mkdirs();
+    }
 
-		// pb.environment().
+    System.out.println("Running command in: " + m_workingDirectory);
+    System.out.println("Using BNGFullPath: "
+        + m_command.getBNGFullPath().substring(
+            0,
+            m_command.getBNGFullPath().lastIndexOf(
+                System.getProperty("file.separator"))));
 
-		// Run the command
-		try {
-			m_scanProc = pb.start();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+    ProcessBuilder pb = new ProcessBuilder(m_command.getCommand());
+    Map<String, String> env = pb.environment();
+    env.put("CYGWIN", "nodosfilewarning");
+    env.put(
+        "BNGPATH",
+        m_command.getBNGFullPath().substring(
+            0,
+            m_command.getBNGFullPath().lastIndexOf(
+                System.getProperty("file.separator"))));
+    // env.remove("OTHERVAR");
+    // env.put("VAR2", env.get("VAR1") + "suffix");
+    pb.directory(m_workingDirectory);
+    // Process p = pb.start();
 
-		pb.redirectErrorStream(true);
-		StreamDisplayThread stdOut = new StreamDisplayThread(m_name,
-				m_scanProc.getInputStream(), true);
-		StreamDisplayThread errOut = new StreamDisplayThread(m_name,
-				m_scanProc.getErrorStream(), true);
+    // pb.environment().
 
-		stdOut.start();
-		errOut.start();
+    // Run the command
+    try
+    {
+      m_scanProc = pb.start();
+    }
+    catch (IOException e)
+    {
+      e.printStackTrace();
+    }
 
-		boolean done = false;
+    pb.redirectErrorStream(true);
+    StreamDisplayThread stdOut = new StreamDisplayThread(m_name,
+        m_scanProc.getInputStream(), true);
+    StreamDisplayThread errOut = new StreamDisplayThread(m_name,
+        m_scanProc.getErrorStream(), true);
 
-		while (!done) {
-			// Check to see if it has been cancelled.
-			if (m_monitor.isCanceled()) {
-				cancelled(stdOut, errOut);
-				return false;
-			}
+    stdOut.start();
+    errOut.start();
 
-			// Try to read the exit value. If the process is not done, then
-			// an exception will be thrown.
-			try {
-				m_scanProc.exitValue();
-				done = true;
-			} catch (IllegalThreadStateException e) {
-				System.out.println("Process not done...");
-			}
+    boolean done = false;
 
-			try {
-				// Wait before you try again.
-				System.out.println("\tSleeping...");
-				Thread.sleep(1000);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
+    while (!done)
+    {
+      // Check to see if it has been cancelled.
+      if (m_monitor.isCanceled())
+      {
+        cancelled(stdOut, errOut);
+        return false;
+      }
 
-		// Before we do anything else, wait for the command to finish.
-		/*
-		 * This is not necessary anymore due to the above block that looks for
-		 * cancelled state.
-		 * 
-		 * try { m_scanProc.waitFor(); } catch (InterruptedException e) {
-		 * e.printStackTrace(); } //
-		 */
+      // Try to read the exit value. If the process is not done, then
+      // an exception will be thrown.
+      try
+      {
+        m_scanProc.exitValue();
+        done = true;
+      }
+      catch (IllegalThreadStateException e)
+      {
+        System.out.println("Process not done...");
+      }
 
-		m_stdLog = stdOut.getLog();
-		m_errorLog = errOut.getLog();
-		m_fullLog = m_stdLog + System.getProperty("line.separator")
-				+ System.getProperty("line.separator") + m_errorLog;
+      try
+      {
+        // Wait before you try again.
+        System.out.println("\tSleeping...");
+        Thread.sleep(1000);
+      }
+      catch (InterruptedException e)
+      {
+        // TODO Auto-generated catch block
+        e.printStackTrace();
+      }
+    }
 
-		writeLogToResults();
+    // Before we do anything else, wait for the command to finish.
+    /*
+     * This is not necessary anymore due to the above block that looks for
+     * cancelled state.
+     * 
+     * try { m_scanProc.waitFor(); } catch (InterruptedException e) {
+     * e.printStackTrace(); } //
+     */
 
-		// DEBUG
-		System.out.println("Done running command.");
-		System.out.println("Errors: \n" + m_errorLog);
+    m_stdLog = stdOut.getLog();
+    m_errorLog = errOut.getLog();
+    m_fullLog = m_stdLog + System.getProperty("line.separator")
+        + System.getProperty("line.separator") + m_errorLog;
 
-		if (!m_errorLog.equals("")) {
-			throw new SimulationErrorException(m_errorLog);
-		}
+    writeLogToResults();
 
-		return true;
-	}
+    // DEBUG
+    System.out.println("Done running command.");
+    System.out.println("Errors: \n" + m_errorLog);
 
-	private void writeLogToResults() {
-		System.out.println("Writing log to " + m_workingDirectory);
+    if (!m_errorLog.equals(""))
+    {
+      throw new SimulationErrorException(m_errorLog);
+    }
 
-		String logFileName = m_workingDirectory
-				+ System.getProperty("file.separator") + "sim_log.log";
+    return true;
+  }
 
-		File logFile = new File(logFileName);
-		logFile.deleteOnExit();
 
-		PrintWriter pw = null;
-		try {
-			pw = new PrintWriter(logFile);
-		} catch (FileNotFoundException e1) {
-			e1.printStackTrace();
-		}
+  private void writeLogToResults()
+  {
+    System.out.println("Writing log to " + m_workingDirectory);
 
-		pw.print(m_fullLog);
-		pw.close();
+    String logFileName = m_workingDirectory
+        + System.getProperty("file.separator") + "sim_log.log";
 
-	}
+    File logFile = new File(logFileName);
+    logFile.deleteOnExit();
 
-	private void cancelled(StreamDisplayThread stdOut,
-			StreamDisplayThread errOut) {
+    PrintWriter pw = null;
+    try
+    {
+      pw = new PrintWriter(logFile);
+    }
+    catch (FileNotFoundException e1)
+    {
+      e1.printStackTrace();
+    }
 
-		m_scanProc.destroy();
+    pw.print(m_fullLog);
+    pw.close();
 
-		m_stdLog = stdOut.getLog();
-		m_errorLog = errOut.getLog();
-		m_fullLog = m_stdLog + System.getProperty("line.separator")
-				+ System.getProperty("line.separator") + m_errorLog;
+  }
 
-		// Windows Task Kill
-		if (ConfigurationManager.getConfigurationManager().getOSType() == 1) {
 
-			int pid = stdOut.getPID();
+  private void cancelled(StreamDisplayThread stdOut, StreamDisplayThread errOut)
+  {
 
-			System.out.println("Windows: Trying to kill pid " + pid);
+    m_scanProc.destroy();
 
-			try {
-				Runtime.getRuntime().exec("TaskKill /PID " + pid + " /F");
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
+    m_stdLog = stdOut.getLog();
+    m_errorLog = errOut.getLog();
+    m_fullLog = m_stdLog + System.getProperty("line.separator")
+        + System.getProperty("line.separator") + m_errorLog;
 
-		System.out.println("Command cancelled.");
+    // Windows Task Kill
+    if (ConfigurationManager.getConfigurationManager().getOSType() == 1)
+    {
 
-		// BNGEditor.displayOutput("\n\n******************\n\n" + m_fullLog);
-	}
+      int pid = stdOut.getPID();
 
-	public String getErrorLog() {
-		return m_errorLog;
-	}
+      System.out.println("Windows: Trying to kill pid " + pid);
 
-	public String getSTDLog() {
-		return m_stdLog;
-	}
+      try
+      {
+        Runtime.getRuntime().exec("TaskKill /PID " + pid + " /F");
+      }
+      catch (IOException e)
+      {
+        // TODO Auto-generated catch block
+        e.printStackTrace();
+      }
+    }
 
-	public String getFullLog() {
-		return m_fullLog;
-	}
+    System.out.println("Command cancelled.");
 
-	public void kill() {
-		m_scanProc.destroy();
-	}
+    // BNGEditor.displayOutput("\n\n******************\n\n" + m_fullLog);
+  }
+
+
+  public String getErrorLog()
+  {
+    return m_errorLog;
+  }
+
+
+  public String getSTDLog()
+  {
+    return m_stdLog;
+  }
+
+
+  public String getFullLog()
+  {
+    return m_fullLog;
+  }
+
+
+  public void kill()
+  {
+    m_scanProc.destroy();
+  }
 }

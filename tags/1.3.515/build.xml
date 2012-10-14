@@ -13,7 +13,7 @@
 	
 	The version is used in the filenames and should be 
 	changed for each release. -->
-	<property name = "rb.version" value = "1.3.515"/>
+	<property name = "rb.version" value = "1.3.520"/>
 	
 	<property name="basedir" value="/Users/mr_smith22586/Documents/workspace/BNGEditor trunk/" />
 	

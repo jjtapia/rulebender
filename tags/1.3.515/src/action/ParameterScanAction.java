@@ -14,35 +14,47 @@ import org.eclipse.swt.widgets.Composite;
  * @author mr_smith22586
  * 
  */
-public class ParameterScanAction implements ActionInterface {
+public class ParameterScanAction implements ActionInterface
+{
 
-	public String getName() {
-		return "Parameter Scan";
-	}
+  public String getName()
+  {
+    return "Parameter Scan";
+  }
 
-	public String getShortName() {
-		return "ParaScan";
-	}
 
-	/*****
-	 * Setup the parscan
-	 *****/
-	public Composite getComposite(Composite parent) {
-		// This should be the first time the view is retrieved.
-		Composite parScanForm = ParameterScanController
-				.getParameterScanController().getView(parent);
-		return parScanForm;
-	}
+  public String getShortName()
+  {
+    return "ParaScan";
+  }
 
-	public boolean hasComposite() {
-		return true;
-	}
 
-	public void executeAction() {
-	}
+  /*****
+   * Setup the parscan
+   *****/
+  public Composite getComposite(Composite parent)
+  {
+    // This should be the first time the view is retrieved.
+    Composite parScanForm = ParameterScanController
+        .getParameterScanController().getView(parent);
+    return parScanForm;
+  }
 
-	public Point getSize() {
-		return new Point(500, 325);
-	}
+
+  public boolean hasComposite()
+  {
+    return true;
+  }
+
+
+  public void executeAction()
+  {
+  }
+
+
+  public Point getSize()
+  {
+    return new Point(500, 325);
+  }
 
 }

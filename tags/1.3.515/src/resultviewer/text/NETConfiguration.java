@@ -13,37 +13,42 @@ import org.eclipse.jface.text.source.SourceViewerConfiguration;
  * Configuration class for NET files.
  * 
  */
-public class NETConfiguration extends SourceViewerConfiguration {
-	private PresentationReconciler reconciler;
+public class NETConfiguration extends SourceViewerConfiguration
+{
+  private PresentationReconciler reconciler;
 
-	public String[] getConfiguredContentTypes(ISourceViewer sourceViewer) {
 
-		return new String[] { IDocument.DEFAULT_CONTENT_TYPE,
-				NETPartitionScanner.NET_COMMENT };
-	}
+  public String[] getConfiguredContentTypes(ISourceViewer sourceViewer)
+  {
 
-	public IPresentationReconciler getPresentationReconciler(
-			ISourceViewer sourceViewer) {
-		if (reconciler != null)
-			return reconciler;
+    return new String[] { IDocument.DEFAULT_CONTENT_TYPE,
+        NETPartitionScanner.NET_COMMENT };
+  }
 
-		reconciler = new PresentationReconciler();
 
-		DefaultDamagerRepairer dr;
+  public IPresentationReconciler getPresentationReconciler(
+      ISourceViewer sourceViewer)
+  {
+    if (reconciler != null)
+      return reconciler;
 
-		// comments
+    reconciler = new PresentationReconciler();
 
-		dr = new DefaultDamagerRepairer(NETScanner.getCommentScanner());
-		reconciler.setDamager(dr, NETPartitionScanner.NET_COMMENT);
-		reconciler.setRepairer(dr, NETPartitionScanner.NET_COMMENT);
+    DefaultDamagerRepairer dr;
 
-		// default content
+    // comments
 
-		dr = new DefaultDamagerRepairer(NETScanner.getScanner());
-		reconciler.setDamager(dr, IDocument.DEFAULT_CONTENT_TYPE);
-		reconciler.setRepairer(dr, IDocument.DEFAULT_CONTENT_TYPE);
+    dr = new DefaultDamagerRepairer(NETScanner.getCommentScanner());
+    reconciler.setDamager(dr, NETPartitionScanner.NET_COMMENT);
+    reconciler.setRepairer(dr, NETPartitionScanner.NET_COMMENT);
 
-		return reconciler;
+    // default content
 
-	}
+    dr = new DefaultDamagerRepairer(NETScanner.getScanner());
+    reconciler.setDamager(dr, IDocument.DEFAULT_CONTENT_TYPE);
+    reconciler.setRepairer(dr, IDocument.DEFAULT_CONTENT_TYPE);
+
+    return reconciler;
+
+  }
 }

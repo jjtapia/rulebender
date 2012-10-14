@@ -10,150 +10,162 @@ import java.util.ArrayList;
 
 import org.eclipse.swt.widgets.Display;
 
-public class VersionCheckerThread implements Runnable {
+public class VersionCheckerThread implements Runnable
+{
 
-	/**
-	 * Default Constructor. Nothing needs to happen.
-	 */
-	public VersionCheckerThread() {
+  /**
+   * Default Constructor. Nothing needs to happen.
+   */
+  public VersionCheckerThread()
+  {
 
-	}
+  }
 
-	/**
-	 * run retrieves the version file from the server to see if there is a new
-	 * version available. If there is a new version, a shell is created and the
-	 * user can choose to travel to the page.
-	 * 
-	 * @author Adam M. Smith
-	 */
-	public void run() {
-		// DEBUG
-		System.out.println("Check Update: Starting");
-		long start = System.currentTimeMillis();
-		long stop;
 
-		URL updateFileURL = null;
-		URLConnection con = null;
-		InputStream inStream = null;
-		BufferedReader input = null;
+  /**
+   * run retrieves the version file from the server to see if there is a new
+   * version available. If there is a new version, a shell is created and the
+   * user can choose to travel to the page.
+   * 
+   * @author Adam M. Smith
+   */
+  public void run()
+  {
+    long start = System.currentTimeMillis();
+    long stop;
 
-		boolean haveConnection = true;
+    URL updateFileURL = null;
+    URLConnection con = null;
+    InputStream inStream = null;
+    BufferedReader input = null;
 
-		try {
-			// Create a URL
-			updateFileURL = new URL(
-					"http://vis.cs.pitt.edu/resources/docs/versions.vt");
+    boolean haveConnection = true;
 
-			// DEBUG
-			// System.out.println("UpdateFileURL object created");
-			// Create a connection using the url
-			con = updateFileURL.openConnection();
+    try
+    {
+      // Create a URL
+      updateFileURL = new URL(
+          "http://vis.cs.pitt.edu/resources/docs/versions.vt");
 
-			stop = System.currentTimeMillis();
-			// System.out.println("con opened after " + (stop-start) +
-			// " milliseconds");
+      // Create a connection using the url
+      con = updateFileURL.openConnection();
 
-			con.setConnectTimeout(5000);
+      stop = System.currentTimeMillis();
+      // System.out.println("con opened after " + (stop-start) +
+      // " milliseconds");
 
-			// Not sure what this does.
-			// con.setDoInput(true);
+      con.setConnectTimeout(5000);
 
-			// Get the input stream from the connection and URL
-			inStream = con.getInputStream();
+      // Not sure what this does.
+      // con.setDoInput(true);
 
-			// DEBUG
-			// System.out.println("Input stream received");
+      // Get the input stream from the connection and URL
+      inStream = con.getInputStream();
 
-			// Create a buffered reader from the input stream of the
-			// connection and url
-			input = new BufferedReader(new InputStreamReader(inStream));
+      // DEBUG
+      // System.out.println("Input stream received");
 
-			// DEBUG
-			// System.out.println("Buffered reader created.");
+      // Create a buffered reader from the input stream of the
+      // connection and url
+      input = new BufferedReader(new InputStreamReader(inStream));
 
-		} catch (Exception e) {
+      // DEBUG
+      // System.out.println("Buffered reader created.");
 
-			stop = System.currentTimeMillis();
+    }
+    catch (Exception e)
+    {
 
-			// DEBUG
-			// System.out.println("Check update giving up after " + (stop-start)
-			// + " milliseconds");
-			// e.printStackTrace();
-			haveConnection = false;
-		}
+      stop = System.currentTimeMillis();
 
-		if (haveConnection) {
-			// Get the line from the file .
-			// The line is just the version of the most recent software.
-			ArrayList<Version> versions = new ArrayList<Version>();
+      // DEBUG
+      // System.out.println("Check update giving up after " + (stop-start)
+      // + " milliseconds");
+      // e.printStackTrace();
+      haveConnection = false;
+    }
 
-			String readVersion = null;
-			String readChanges = null;
+    if (haveConnection)
+    {
+      // Get the line from the file .
+      // The line is just the version of the most recent software.
+      ArrayList<Version> versions = new ArrayList<Version>();
 
-			try {
-				while (input.ready()) {
-					String currentLine = input.readLine();
+      String readVersion = null;
+      String readChanges = null;
 
-					if (currentLine.toLowerCase().contains("version=")) {
-						readVersion = currentLine.split("\"")[1];
-					}
+      try
+      {
+        while (input.ready())
+        {
+          String currentLine = input.readLine();
 
-					readChanges = "";
+          if (currentLine.toLowerCase().contains("version="))
+          {
+            readVersion = currentLine.split("\"")[1];
+          }
 
-					currentLine = input.readLine();
+          readChanges = "";
 
-					if (currentLine.toLowerCase().contains("changes=")) {
-						readChanges += currentLine.substring(currentLine
-								.indexOf('\"') + 1);
+          currentLine = input.readLine();
 
-						if (readChanges.charAt(readChanges.length() - 1) != '\"') {
-							do {
-								currentLine = input.readLine().trim();
-								readChanges += currentLine + "\n";
+          if (currentLine.toLowerCase().contains("changes="))
+          {
+            readChanges += currentLine.substring(currentLine.indexOf('\"') + 1);
 
-							} while (currentLine != null
-									&& currentLine
-											.charAt(currentLine.length() - 1) != '\"');
-						}
+            if (readChanges.charAt(readChanges.length() - 1) != '\"')
+            {
+              do
+              {
+                currentLine = input.readLine().trim();
+                readChanges += currentLine + "\n";
 
-						readChanges = readChanges.substring(0,
-								readChanges.length() - 1);
-					}
+              } while (currentLine != null
+                  && currentLine.charAt(currentLine.length() - 1) != '\"');
+            }
 
-					versions.add(new Version(readVersion, readChanges));
-				}
+            readChanges = readChanges.substring(0, readChanges.length() - 1);
+          }
 
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+          versions.add(new Version(readVersion, readChanges));
+        }
 
-			String allNewChanges = "";
-			boolean foundfirst = false;
+      }
+      catch (IOException e)
+      {
+        // TODO Auto-generated catch block
+        e.printStackTrace();
+      }
 
-			for (Version vt : versions) {
-				// If the version on the server is older,
-				// then call getNewVersionDialogue
-				if (vt.compare() < 0 && !foundfirst) {
-					foundfirst = true;
-					allNewChanges += vt.versionString + vt.changesString;
-				} else if (vt.compare() < 0) {
-					allNewChanges += "\n\n" + vt.versionString
-							+ vt.changesString;
-				}
-			}
+      String allNewChanges = "";
+      boolean foundfirst = false;
 
-			if (foundfirst) {
-				Display.getDefault().syncExec(
-						new NewVersionWindow(Display.getDefault(),
-								allNewChanges));
-			}
+      for (Version vt : versions)
+      {
+        // If the version on the server is older,
+        // then call getNewVersionDialogue
+        if (vt.compare() < 0 && !foundfirst)
+        {
+          foundfirst = true;
+          allNewChanges += vt.versionString + vt.changesString;
+        }
+        else if (vt.compare() < 0)
+        {
+          allNewChanges += "\n\n" + vt.versionString + vt.changesString;
+        }
+      }
 
-			stop = System.currentTimeMillis();
+      if (foundfirst)
+      {
+        Display.getDefault().syncExec(
+            new NewVersionWindow(Display.getDefault(), allNewChanges));
+      }
 
-			// DEBUG
-			System.out.println("Check Update: Complete after " + (stop - start)
-					+ " milliseconds");
-		}
-	}
+      stop = System.currentTimeMillis();
+
+      // DEBUG
+      System.out.println("Check Update: Complete after " + (stop - start)
+          + " milliseconds");
+    }
+  }
 }

@@ -67,110 +67,126 @@ import java.util.ResourceBundle;
  * 
  * @since 1.0.12
  */
-public class ResourceBundleWrapper {
+public class ResourceBundleWrapper
+{
 
-	/**
-	 * A special class loader with no code base lookup. This field may be
-	 * <code>null</code> (the field is only initialised if removeCodeBase() is
-	 * called from an applet.
-	 */
-	private static URLClassLoader noCodeBaseClassLoader;
+  /**
+   * A special class loader with no code base lookup. This field may be
+   * <code>null</code> (the field is only initialised if removeCodeBase() is
+   * called from an applet.
+   */
+  private static URLClassLoader noCodeBaseClassLoader;
 
-	/**
-	 * Private constructor.
-	 */
-	private ResourceBundleWrapper() {
-		// all methods are static, no need to instantiate
-	}
 
-	/**
-	 * Instantiate a {@link URLClassLoader} for resource lookups where the
-	 * codeBase URL is removed. This method is typically called from an applet's
-	 * init() method. If this method is never called, the
-	 * <code>getBundle()</code> methods map to the standard
-	 * {@link ResourceBundle} lookup methods.
-	 * 
-	 * @param codeBase
-	 *            the codeBase URL.
-	 * @param urlClassLoader
-	 *            the class loader.
-	 */
-	public static void removeCodeBase(URL codeBase,
-			URLClassLoader urlClassLoader) {
-		List urlsNoBase = new ArrayList();
+  /**
+   * Private constructor.
+   */
+  private ResourceBundleWrapper()
+  {
+    // all methods are static, no need to instantiate
+  }
 
-		URL[] urls = urlClassLoader.getURLs();
-		for (int i = 0; i < urls.length; i++) {
-			if (!urls[i].sameFile(codeBase)) {
-				urlsNoBase.add(urls[i]);
-			}
-		}
-		// substitute the filtered URL list
-		URL[] urlsNoBaseArray = (URL[]) urlsNoBase.toArray(new URL[0]);
-		noCodeBaseClassLoader = URLClassLoader.newInstance(urlsNoBaseArray);
-	}
 
-	/**
-	 * Finds and returns the specified resource bundle.
-	 * 
-	 * @param baseName
-	 *            the base name.
-	 * 
-	 * @return The resource bundle.
-	 */
-	public static final ResourceBundle getBundle(String baseName) {
-		// the noCodeBaseClassLoader is configured by a call to the
-		// removeCodeBase() method, typically in the init() method of an
-		// applet...
-		if (noCodeBaseClassLoader != null) {
-			return ResourceBundle.getBundle(baseName, Locale.getDefault(),
-					noCodeBaseClassLoader);
-		} else {
-			// standard ResourceBundle behaviour
-			return ResourceBundle.getBundle(baseName);
-		}
-	}
+  /**
+   * Instantiate a {@link URLClassLoader} for resource lookups where the
+   * codeBase URL is removed. This method is typically called from an applet's
+   * init() method. If this method is never called, the <code>getBundle()</code>
+   * methods map to the standard {@link ResourceBundle} lookup methods.
+   * 
+   * @param codeBase
+   *          the codeBase URL.
+   * @param urlClassLoader
+   *          the class loader.
+   */
+  public static void removeCodeBase(URL codeBase, URLClassLoader urlClassLoader)
+  {
+    List urlsNoBase = new ArrayList();
 
-	/**
-	 * Finds and returns the specified resource bundle.
-	 * 
-	 * @param baseName
-	 *            the base name.
-	 * @param locale
-	 *            the locale.
-	 * 
-	 * @return The resource bundle.
-	 */
-	public static final ResourceBundle getBundle(String baseName, Locale locale) {
+    URL[] urls = urlClassLoader.getURLs();
+    for (int i = 0; i < urls.length; i++)
+    {
+      if (!urls[i].sameFile(codeBase))
+      {
+        urlsNoBase.add(urls[i]);
+      }
+    }
+    // substitute the filtered URL list
+    URL[] urlsNoBaseArray = (URL[]) urlsNoBase.toArray(new URL[0]);
+    noCodeBaseClassLoader = URLClassLoader.newInstance(urlsNoBaseArray);
+  }
 
-		// the noCodeBaseClassLoader is configured by a call to the
-		// removeCodeBase() method, typically in the init() method of an
-		// applet...
-		if (noCodeBaseClassLoader != null) {
-			return ResourceBundle.getBundle(baseName, locale,
-					noCodeBaseClassLoader);
-		} else {
-			// standard ResourceBundle behaviour
-			return ResourceBundle.getBundle(baseName, locale);
-		}
-	}
 
-	/**
-	 * Maps directly to <code>ResourceBundle.getBundle(baseName, locale,
-	 * loader)</code>.
-	 * 
-	 * @param baseName
-	 *            the base name.
-	 * @param locale
-	 *            the locale.
-	 * @param loader
-	 *            the class loader.
-	 * 
-	 * @return The resource bundle.
-	 */
-	public static ResourceBundle getBundle(String baseName, Locale locale,
-			ClassLoader loader) {
-		return ResourceBundle.getBundle(baseName, locale, loader);
-	}
+  /**
+   * Finds and returns the specified resource bundle.
+   * 
+   * @param baseName
+   *          the base name.
+   * 
+   * @return The resource bundle.
+   */
+  public static final ResourceBundle getBundle(String baseName)
+  {
+    // the noCodeBaseClassLoader is configured by a call to the
+    // removeCodeBase() method, typically in the init() method of an
+    // applet...
+    if (noCodeBaseClassLoader != null)
+    {
+      return ResourceBundle.getBundle(baseName, Locale.getDefault(),
+          noCodeBaseClassLoader);
+    }
+    else
+    {
+      // standard ResourceBundle behaviour
+      return ResourceBundle.getBundle(baseName);
+    }
+  }
+
+
+  /**
+   * Finds and returns the specified resource bundle.
+   * 
+   * @param baseName
+   *          the base name.
+   * @param locale
+   *          the locale.
+   * 
+   * @return The resource bundle.
+   */
+  public static final ResourceBundle getBundle(String baseName, Locale locale)
+  {
+
+    // the noCodeBaseClassLoader is configured by a call to the
+    // removeCodeBase() method, typically in the init() method of an
+    // applet...
+    if (noCodeBaseClassLoader != null)
+    {
+      return ResourceBundle.getBundle(baseName, locale, noCodeBaseClassLoader);
+    }
+    else
+    {
+      // standard ResourceBundle behaviour
+      return ResourceBundle.getBundle(baseName, locale);
+    }
+  }
+
+
+  /**
+   * Maps directly to <code>ResourceBundle.getBundle(baseName, locale,
+   * loader)</code>.
+   * 
+   * @param baseName
+   *          the base name.
+   * @param locale
+   *          the locale.
+   * @param loader
+   *          the class loader.
+   * 
+   * @return The resource bundle.
+   */
+  public static ResourceBundle getBundle(String baseName, Locale locale,
+      ClassLoader loader)
+  {
+    return ResourceBundle.getBundle(baseName, locale, loader);
+  }
 
 }

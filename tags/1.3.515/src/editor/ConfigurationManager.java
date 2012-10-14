@@ -15,244 +15,299 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.PrintWriter;
 
-public class ConfigurationManager {
-	private String bngFPath;
-	private String bngFName;
-	private String workspacePath;
-	private int osType;
+public class ConfigurationManager
+{
+  private String bngFPath;
+  private String bngFName;
+  private String workspacePath;
+  private int osType;
 
-	private String slash = "";
+  private String slash = "";
 
-	private static ConfigurationManager configMan;
+  private static ConfigurationManager configMan;
 
-	/**
-	 * Singleton
-	 */
-	private ConfigurationManager() {
-		bngFPath = null;
-		bngFName = null;
-		workspacePath = null;
-	}
 
-	public static synchronized ConfigurationManager getConfigurationManager() {
-		if (configMan == null)
-			configMan = new ConfigurationManager();
+  /**
+   * Singleton
+   */
+  private ConfigurationManager()
+  {
+    bngFPath = null;
+    bngFName = null;
+    workspacePath = null;
+  }
 
-		return configMan;
-	}
 
-	public void initConfigOptions() {
-		findOSType();
-		readConfigFile();
-	}
+  public static synchronized ConfigurationManager getConfigurationManager()
+  {
+    if (configMan == null)
+      configMan = new ConfigurationManager();
 
-	public void findOSType() {
-		String stemp = System.getProperty("os.name");
-		if (stemp.contains("Windows") || stemp.contains("WINDOWS")
-				|| stemp.contains("windows"))
-			setOSType(1);
-		else if (stemp.contains("Mac") || stemp.contains("MAC")
-				|| stemp.contains("mac"))
-			setOSType(2);
-		else
-			setOSType(3);
+    return configMan;
+  }
 
-		// Windows
-		if (getOSType() == 1) {
-			slash = "\\";
-		}
-		// Not Windows
-		else {
-			slash = "/";
-		}
-	}
 
-	/**
-	 * Reads the config file located in the user's home directory. This should
-	 * only be called once when the tool is being loaded because closing the
-	 * dialogue that lets the user choose a workspace will close the tool.
-	 */
-	public void readConfigFile() {
-		String userHome = System.getProperty("user.home");
-		System.out.println("User Home: " + userHome);
+  public void initConfigOptions()
+  {
+    findOSType();
+    readConfigFile();
+  }
 
-		File configFile = new File(userHome + slash + ".rulebender");
 
-		String possibleBNGFPath = null;
-		String possibleBNGFName = null;
+  public void findOSType()
+  {
+    String stemp = System.getProperty("os.name");
+    if (stemp.contains("Windows") || stemp.contains("WINDOWS")
+        || stemp.contains("windows"))
+      setOSType(1);
+    else if (stemp.contains("Mac") || stemp.contains("MAC")
+        || stemp.contains("mac"))
+      setOSType(2);
+    else
+      setOSType(3);
 
-		// There is a config file
-		if (configFile.exists()) {
-			try {
-				BufferedReader br1 = new BufferedReader(new FileReader(
-						configFile));
-				// setBNGFPath(br1.readLine());
-				// setBNGFName(br1.readLine());
+    // Windows
+    if (getOSType() == 1)
+    {
+      slash = "\\";
+    }
+    // Not Windows
+    else
+    {
+      slash = "/";
+    }
+  }
 
-				possibleBNGFPath = br1.readLine().trim();
-				possibleBNGFName = br1.readLine().trim();
-				setWorkspacePath(br1.readLine().trim());
-			}
 
-			catch (FileNotFoundException e1) {
-			} catch (IOException e1) {
-			}
+  /**
+   * Reads the config file located in the user's home directory. This should
+   * only be called once when the tool is being loaded because closing the
+   * dialogue that lets the user choose a workspace will close the tool.
+   */
+  public void readConfigFile()
+  {
+    String userHome = System.getProperty("user.home");
+    System.out.println("User Home: " + userHome);
 
-			// Check to make sure that the workspace exists and ask them
-			// to choose a new one if it does not.
-			// We do not need to do this for bngpath because they will be asked
-			// to define a new one if the file does not exists when they try to
-			// run
-			// a simulation.
-			File workspace = new File(workspacePath);
+    File configFile = new File(userHome + slash + ".rulebender");
 
-			if (!workspace.exists()) {
-				BNGEditor.displayOutput("Please choose a valid workspace");
-				(new SetWorkspaceDialogue(BNGEditor.getMainEditorShell(),
-						BNGEditor.getEditor(), false)).show();
-			}
+    String possibleBNGFPath = null;
+    String possibleBNGFName = null;
 
-			if (!possibleBNGFPath.equals("") && !possibleBNGFName.equals("")) {
-				setBNGFPath(possibleBNGFPath);
-				setBNGFName(possibleBNGFName);
-			}
-		} else {
-			setDefaultBNGPath();
-			(new SetWorkspaceDialogue(BNGEditor.getMainEditorShell(),
-					BNGEditor.getEditor(), false)).show();
-		}
+    // There is a config file
+    if (configFile.exists())
+    {
+      try
+      {
+        BufferedReader br1 = new BufferedReader(new FileReader(configFile));
+        // setBNGFPath(br1.readLine());
+        // setBNGFName(br1.readLine());
 
-		if (workspacePath == null || workspacePath == "") {
-			workspacePath = System.getProperty("user.home") + slash
-					+ "RuleBenderWorkspace";
-			File workspacePathCheck = new File(workspacePath);
-			if (!workspacePathCheck.exists()) {
-				workspacePathCheck.mkdir();
-			}
-		}
+        possibleBNGFPath = br1.readLine().trim();
+        possibleBNGFName = br1.readLine().trim();
+        setWorkspacePath(br1.readLine().trim());
+      }
 
-		BNGEditor.displayOutput("Workspace set to " + workspacePath);
-	}
+      catch (FileNotFoundException e1)
+      {
+      }
+      catch (IOException e1)
+      {
+      }
 
-	public void saveConfigFile() {
-		String userHome = System.getProperty("user.home");
+      // Check to make sure that the workspace exists and ask them
+      // to choose a new one if it does not.
+      // We do not need to do this for bngpath because they will be asked
+      // to define a new one if the file does not exists when they try to
+      // run
+      // a simulation.
+      File workspace = new File(workspacePath);
 
-		File configFile = new File(userHome + slash + ".rulebender");
+      if (!workspace.exists())
+      {
+        BNGEditor.displayOutput("Please choose a valid workspace");
+        (new SetWorkspaceDialogue(BNGEditor.getMainEditorShell(),
+            BNGEditor.getEditor(), false)).show();
+      }
 
-		if (configFile.exists())
-			configFile.delete();
+      if (!possibleBNGFPath.equals("") && !possibleBNGFName.equals(""))
+      {
+        setBNGFPath(possibleBNGFPath);
+        setBNGFName(possibleBNGFName);
+      }
+    }
+    else
+    {
+      setDefaultBNGPath();
+      (new SetWorkspaceDialogue(BNGEditor.getMainEditorShell(),
+          BNGEditor.getEditor(), false)).show();
+    }
 
-		PrintWriter pw = null;
-		try {
-			pw = new PrintWriter(configFile);
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		}
+    if (workspacePath == null || workspacePath == "")
+    {
+      workspacePath = System.getProperty("user.home") + slash
+          + "RuleBenderWorkspace";
+      File workspacePathCheck = new File(workspacePath);
+      if (!workspacePathCheck.exists())
+      {
+        workspacePathCheck.mkdir();
+      }
+    }
 
-		if (bngFPath != null)
-			pw.write(bngFPath);
+    BNGEditor.displayOutput("Workspace set to " + workspacePath);
+  }
 
-		pw.write("\n");
 
-		if (bngFName != null)
-			pw.write(bngFName);
+  public void saveConfigFile()
+  {
+    String userHome = System.getProperty("user.home");
 
-		pw.write("\n");
+    File configFile = new File(userHome + slash + ".rulebender");
 
-		if (workspacePath != null)
-			pw.write(workspacePath);
+    if (configFile.exists())
+      configFile.delete();
 
-		pw.write("\n");
+    PrintWriter pw = null;
+    try
+    {
+      pw = new PrintWriter(configFile);
+    }
+    catch (FileNotFoundException e)
+    {
+      e.printStackTrace();
+    }
 
-		pw.close();
+    if (bngFPath != null)
+      pw.write(bngFPath);
 
-		// windows
-		if (osType == 1) {
-			try {
-				Runtime.getRuntime().exec(
-						"attrib +H " + userHome + "\\.rulebender");
-			} catch (IOException e) {
-				//
-				e.printStackTrace();
-			}
-		}
-	}
+    pw.write("\n");
 
-	public void setDefaultBNGPath() {
-		String parentDir = System.getProperty("user.dir");
-		String bngpath = "";
+    if (bngFName != null)
+      pw.write(bngFName);
 
-		// Mac
-		if (getOSType() == 2) {
-			String appDir = "";
-			if (parentDir.indexOf("/Contents/MacOS") != -1) {
-				appDir = parentDir.substring(0,
-						parentDir.indexOf("/Contents/MacOS"));
-				appDir = appDir.substring(0, appDir.lastIndexOf("/"));
-				bngpath = appDir + slash + "BioNetGen-2.1.8r597";
-			} else {
-				bngpath = parentDir + slash + "BioNetGen-2.1.8r597";
-			}
+    pw.write("\n");
 
-			/*
-			 * System.out.println("appDir: " + appDir);
-			 * System.out.println("bngpath: " + bngpath);
-			 * System.out.println("parentDir: " + parentDir);
-			 */
-		}
-		// Not Mac
-		else {
-			bngpath = parentDir + slash + "BioNetGen-2.1.8r597";
-		}
+    if (workspacePath != null)
+      pw.write(workspacePath);
 
-		String bngname = "BNG2.pl";
+    pw.write("\n");
 
-		File bngfile = new File(bngpath + slash + bngname);
+    pw.close();
 
-		if (bngfile.exists()) {
-			setBNGFPath(bngpath);
-			setBNGFName(bngname);
-		}
-	}
+    // windows
+    if (osType == 1)
+    {
+      try
+      {
+        Runtime.getRuntime().exec("attrib +H " + userHome + "\\.rulebender");
+      }
+      catch (IOException e)
+      {
+        //
+        e.printStackTrace();
+      }
+    }
+  }
 
-	// ------------------ Getters and Setters ------------------
 
-	public void setBNGFPath(String bngFPath) {
-		this.bngFPath = bngFPath;
-		saveConfigFile();
-	}
+  public void setDefaultBNGPath()
+  {
+    String parentDir = System.getProperty("user.dir");
+    String bngpath = "";
 
-	public String getBNGFPath() {
-		return bngFPath;
-	}
+    // Mac
+    if (getOSType() == 2)
+    {
+      String appDir = "";
+      if (parentDir.indexOf("/Contents/MacOS") != -1)
+      {
+        appDir = parentDir.substring(0, parentDir.indexOf("/Contents/MacOS"));
+        appDir = appDir.substring(0, appDir.lastIndexOf("/"));
+        bngpath = appDir + slash + "BioNetGen-2.1.8r597";
+      }
+      else
+      {
+        bngpath = parentDir + slash + "BioNetGen-2.1.8r597";
+      }
 
-	public void setWorkspacePath(String workSpacePath) {
-		this.workspacePath = workSpacePath;
-		saveConfigFile();
-	}
+      /*
+       * System.out.println("appDir: " + appDir); System.out.println("bngpath: "
+       * + bngpath); System.out.println("parentDir: " + parentDir);
+       */
+    }
+    // Not Mac
+    else
+    {
+      bngpath = parentDir + slash + "BioNetGen-2.1.8r597";
+    }
 
-	public String getWorkspacePath() {
-		return workspacePath;
-	}
+    String bngname = "BNG2.pl";
 
-	public void setOSType(int osType) {
-		this.osType = osType;
-	}
+    File bngfile = new File(bngpath + slash + bngname);
 
-	public int getOSType() {
-		return osType;
-	}
+    if (bngfile.exists())
+    {
+      setBNGFPath(bngpath);
+      setBNGFName(bngname);
+    }
+  }
 
-	public void setBNGFName(String bngFName) {
-		this.bngFName = bngFName;
-		saveConfigFile();
-	}
 
-	public String getBNGFName() {
-		return bngFName;
-	}
+  // ------------------ Getters and Setters ------------------
 
-	public String getSlash() {
-		return slash;
-	}
+  public void setBNGFPath(String bngFPath)
+  {
+    this.bngFPath = bngFPath;
+    saveConfigFile();
+  }
+
+
+  public String getBNGFPath()
+  {
+    return bngFPath;
+  }
+
+
+  public void setWorkspacePath(String workSpacePath)
+  {
+    this.workspacePath = workSpacePath;
+    saveConfigFile();
+  }
+
+
+  public String getWorkspacePath()
+  {
+    return workspacePath;
+  }
+
+
+  public void setOSType(int osType)
+  {
+    this.osType = osType;
+  }
+
+
+  public int getOSType()
+  {
+    return osType;
+  }
+
+
+  public void setBNGFName(String bngFName)
+  {
+    this.bngFName = bngFName;
+    saveConfigFile();
+  }
+
+
+  public String getBNGFName()
+  {
+    return bngFName;
+  }
+
+
+  public String getSlash()
+  {
+    return slash;
+  }
 }

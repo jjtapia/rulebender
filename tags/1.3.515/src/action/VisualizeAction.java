@@ -5,32 +5,44 @@ import org.eclipse.swt.widgets.Composite;
 
 import visualizationviewer.VisualizationViewerController;
 
-public class VisualizeAction implements ActionInterface {
+public class VisualizeAction implements ActionInterface
+{
 
-	public String getName() {
-		return "Visualize";
-	}
+  public String getName()
+  {
+    return "Visualize";
+  }
 
-	public String getShortName() {
-		return "Visualize";
-	}
 
-	public boolean hasComposite() {
-		// TODO Auto-generated method stub
-		return false;
-	}
+  public String getShortName()
+  {
+    return "Visualize";
+  }
 
-	public Composite getComposite(Composite parent) {
-		return null;
-	}
 
-	public void executeAction() {
-		VisualizationViewerController.loadVisualizationViewController()
-				.openVisualizationViewerFrame();
-	}
+  public boolean hasComposite()
+  {
+    // TODO Auto-generated method stub
+    return false;
+  }
 
-	public Point getSize() {
-		return null;
-	}
+
+  public Composite getComposite(Composite parent)
+  {
+    return null;
+  }
+
+
+  public void executeAction()
+  {
+    VisualizationViewerController.loadVisualizationViewController()
+        .openVisualizationViewerFrame();
+  }
+
+
+  public Point getSize()
+  {
+    return null;
+  }
 
 }

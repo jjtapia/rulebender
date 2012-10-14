@@ -12,54 +12,58 @@ import prefuse.render.EdgeRenderer;
 import prefuse.visual.EdgeItem;
 import prefuse.visual.VisualItem;
 
-public class SelfReferenceRenderer extends EdgeRenderer {
+public class SelfReferenceRenderer extends EdgeRenderer
+{
 
-	private Ellipse2D m_ellipse = new Ellipse2D.Float();
+  private Ellipse2D m_ellipse = new Ellipse2D.Float();
 
-	protected Shape getRawShape(VisualItem item) {
 
-		try {
+  protected Shape getRawShape(VisualItem item)
+  {
 
-			EdgeItem edge = (EdgeItem) item;
+    try
+    {
 
-			VisualItem item1 = edge.getSourceItem();
+      EdgeItem edge = (EdgeItem) item;
 
-			VisualItem item2 = edge.getTargetItem();
+      VisualItem item1 = edge.getSourceItem();
 
-			// self interaction
+      VisualItem item2 = edge.getTargetItem();
 
-			if (item1 == item2) {
+      // self interaction
 
-				getAlignedPoint(m_tmpPoints[0], item1.getBounds(), m_xAlign1,
-						m_yAlign1);
+      if (item1 == item2)
+      {
 
-				getAlignedPoint(m_tmpPoints[1], item2.getBounds(), m_xAlign2,
-						m_yAlign2);
+        getAlignedPoint(m_tmpPoints[0], item1.getBounds(), m_xAlign1, m_yAlign1);
 
-				m_curWidth = (int) Math.round(m_width * getLineWidth(item));
+        getAlignedPoint(m_tmpPoints[1], item2.getBounds(), m_xAlign2, m_yAlign2);
 
-				// I'm going to just hack these values, but ideall they would be
-				// dependent on the
-				// size of the item.
-				m_ellipse.setFrame(m_tmpPoints[0].getX(),
-						m_tmpPoints[0].getY() - 11, 10, 25);
+        m_curWidth = (int) Math.round(m_width * getLineWidth(item));
 
-				return m_ellipse;
+        // I'm going to just hack these values, but ideall they would be
+        // dependent on the
+        // size of the item.
+        m_ellipse.setFrame(m_tmpPoints[0].getX(), m_tmpPoints[0].getY() - 11,
+            10, 25);
 
-			}
+        return m_ellipse;
 
-		}
+      }
 
-		catch (Exception ex) {
+    }
 
-			ex.printStackTrace();
+    catch (Exception ex)
+    {
 
-			return null;
+      ex.printStackTrace();
 
-		}
+      return null;
 
-		return super.getRawShape(item);
+    }
 
-	} // getRawShape
+    return super.getRawShape(item);
+
+  } // getRawShape
 
 }

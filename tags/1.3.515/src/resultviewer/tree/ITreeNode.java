@@ -7,14 +7,19 @@ import org.eclipse.swt.graphics.Image;
 /**
  * AN ABSTRACTION OF A TREE VIEWMODEL-ELEMENT + CONTROLLER PER NODE
  */
-interface ITreeNode {
-	public String getName();
+interface ITreeNode
+{
+  public String getName();
 
-	public Image getImage();
 
-	public List getChildren();
+  public Image getImage();
 
-	public boolean hasChildren();
 
-	public ITreeNode getParent();
+  public List getChildren();
+
+
+  public boolean hasChildren();
+
+
+  public ITreeNode getParent();
 }

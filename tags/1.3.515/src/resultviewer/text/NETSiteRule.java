@@ -11,27 +11,34 @@ import org.eclipse.jface.text.rules.Token;
  * Rule to extract bonding sites tokens.
  * 
  */
-public class NETSiteRule implements IRule {
-	private static final int UNDEFINED = -1;
-	private IToken fToken;
+public class NETSiteRule implements IRule
+{
+  private static final int UNDEFINED = -1;
+  private IToken fToken;
 
-	public NETSiteRule(IToken token) {
-		Assert.isNotNull(token);
-		fToken = token;
-	}
 
-	public IToken evaluate(ICharacterScanner scanner) {
-		int c = scanner.read();
-		if ((char) c == '(') {
+  public NETSiteRule(IToken token)
+  {
+    Assert.isNotNull(token);
+    fToken = token;
+  }
 
-			do {
-				c = scanner.read();
-			} while ((char) c != ')');
-			c = scanner.read();
-			scanner.unread();
-			return fToken;
-		}
-		scanner.unread();
-		return Token.UNDEFINED;
-	}
+
+  public IToken evaluate(ICharacterScanner scanner)
+  {
+    int c = scanner.read();
+    if ((char) c == '(')
+    {
+
+      do
+      {
+        c = scanner.read();
+      } while ((char) c != ')');
+      c = scanner.read();
+      scanner.unread();
+      return fToken;
+    }
+    scanner.unread();
+    return Token.UNDEFINED;
+  }
 }

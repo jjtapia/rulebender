@@ -10,93 +10,112 @@ import org.eclipse.swt.widgets.MessageBox;
 
 import editor.BNGEditor;
 
-public class BNGExecutionJob implements IRunnableWithProgress {
+public class BNGExecutionJob implements IRunnableWithProgress
+{
 
-	private String m_filePath;
-	private String m_bngFullPath;
-	private String m_resultsPath;
+  private String m_filePath;
+  private String m_bngFullPath;
+  private String m_resultsPath;
 
-	public BNGExecutionJob(String filePath, String bngFullPath,
-			String resultsPath) {
-		setFilePath(filePath);
-		setBNGFullPath(bngFullPath);
-		setResultsPath(resultsPath);
-	}
 
-	public void run(IProgressMonitor monitor) throws InterruptedException {
-		// Tell the monitor
-		monitor.beginTask("Validation Files...", 4);
+  public BNGExecutionJob(String filePath, String bngFullPath, String resultsPath)
+  {
+    setFilePath(filePath);
+    setBNGFullPath(bngFullPath);
+    setResultsPath(resultsPath);
+  }
 
-		if (!validateBNGLFile(m_filePath)) {
 
-			BNGEditor.displayOutput("Error in file path.");
-			return;
-		}
-		if (!validateBNGPath(m_bngFullPath)) {
-			BNGEditor.displayOutput("Error in bng path.");
-			return;
-		}
+  public void run(IProgressMonitor monitor) throws InterruptedException
+  {
+    // Tell the monitor
+    monitor.beginTask("Validation Files...", 4);
 
-		// MONITOR
-		monitor.setTaskName("Setting up the results directory");
-		monitor.worked(1);
+    if (!validateBNGLFile(m_filePath))
+    {
 
-		// Create the directory if necessary.
-		(new File(m_resultsPath)).mkdirs();
+      BNGEditor.displayOutput("Error in file path.");
+      return;
+    }
+    if (!validateBNGPath(m_bngFullPath))
+    {
+      BNGEditor.displayOutput("Error in bng path.");
+      return;
+    }
 
-		// TODO start here by copying the file to be simulated, then use that
-		// file for the simulations.
+    // MONITOR
+    monitor.setTaskName("Setting up the results directory");
+    monitor.worked(1);
 
-		// MONITOR
-		monitor.setTaskName("Generating Scripts...");
-		monitor.worked(1);
+    // Create the directory if necessary.
+    (new File(m_resultsPath)).mkdirs();
 
-		SimulateCommand simCommand = new SimulateCommand(m_filePath,
-				m_bngFullPath, m_resultsPath, true);
+    // TODO start here by copying the file to be simulated, then use that
+    // file for the simulations.
 
-		// MONITOR
-		monitor.setTaskName("Running Simulation...");
-		monitor.worked(1);
+    // MONITOR
+    monitor.setTaskName("Generating Scripts...");
+    monitor.worked(1);
 
-		// Run it in the commandRunner
-		CommandRunner<SimulateCommand> runner = new CommandRunner<SimulateCommand>(
-				simCommand, new File(m_resultsPath), "Simulation: "
-						+ m_filePath, monitor);
+    SimulateCommand simCommand = new SimulateCommand(m_filePath, m_bngFullPath,
+        m_resultsPath, true);
 
-		runner.run();
+    // MONITOR
+    monitor.setTaskName("Running Simulation...");
+    monitor.worked(1);
 
-		if (monitor.isCanceled()) {
-			throw new InterruptedException();
-		} else {
-			// MONITOR
-			monitor.setTaskName("Done.");
-			monitor.worked(1);
-		}
-	}
+    // Run it in the commandRunner
+    CommandRunner<SimulateCommand> runner = new CommandRunner<SimulateCommand>(
+        simCommand, new File(m_resultsPath), "Simulation: " + m_filePath,
+        monitor);
 
-	private static boolean validateBNGLFile(String path) {
-		if ((new File(path)).exists())
-			return true;
+    runner.run();
 
-		return false;
-	}
+    if (monitor.isCanceled())
+    {
+      throw new InterruptedException();
+    }
+    else
+    {
+      // MONITOR
+      monitor.setTaskName("Done.");
+      monitor.worked(1);
+    }
+  }
 
-	private static boolean validateBNGPath(String path) {
-		if ((new File(path)).exists())
-			return true;
 
-		return false;
-	}
+  private static boolean validateBNGLFile(String path)
+  {
+    if ((new File(path)).exists())
+      return true;
 
-	public void setFilePath(String path) {
-		m_filePath = path;
-	}
+    return false;
+  }
 
-	public void setBNGFullPath(String path) {
-		m_bngFullPath = path;
-	}
 
-	public void setResultsPath(String path) {
-		m_resultsPath = path;
-	}
+  private static boolean validateBNGPath(String path)
+  {
+    if ((new File(path)).exists())
+      return true;
+
+    return false;
+  }
+
+
+  public void setFilePath(String path)
+  {
+    m_filePath = path;
+  }
+
+
+  public void setBNGFullPath(String path)
+  {
+    m_bngFullPath = path;
+  }
+
+
+  public void setResultsPath(String path)
+  {
+    m_resultsPath = path;
+  }
 }

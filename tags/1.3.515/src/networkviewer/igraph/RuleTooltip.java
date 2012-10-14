@@ -7,31 +7,36 @@ import javax.swing.BorderFactory;
 
 import networkviewer.PrefuseTooltip;
 
-public class RuleTooltip extends PrefuseTooltip {
-	protected javax.swing.JLabel nameLabel;
-	protected javax.swing.JLabel moleLabel;
-	protected javax.swing.JPanel contentsPanel;
-	protected String gender;
+public class RuleTooltip extends PrefuseTooltip
+{
+  protected javax.swing.JLabel nameLabel;
+  protected javax.swing.JLabel moleLabel;
+  protected javax.swing.JPanel contentsPanel;
+  protected String gender;
 
-	public RuleTooltip(javax.swing.JComponent owner, String name) {
-		super(owner, 0, 1000);
 
-		contentsPanel = new javax.swing.JPanel();
-		contentsPanel.setLayout(new BorderLayout());
+  public RuleTooltip(javax.swing.JComponent owner, String name)
+  {
+    super(owner, 0, 1000);
 
-		nameLabel = new javax.swing.JLabel();
-		moleLabel = new javax.swing.JLabel();
+    contentsPanel = new javax.swing.JPanel();
+    contentsPanel.setLayout(new BorderLayout());
 
-		nameLabel.setText(name);
+    nameLabel = new javax.swing.JLabel();
+    moleLabel = new javax.swing.JLabel();
 
-		contentsPanel.add(nameLabel, BorderLayout.PAGE_START);
-		contentsPanel.add(moleLabel, BorderLayout.PAGE_END);
+    nameLabel.setText(name);
 
-		contentsPanel.setBorder(BorderFactory.createLineBorder(Color.gray));
-		contentsPanel.setBackground(new Color(255, 255, 255));
-	}
+    contentsPanel.add(nameLabel, BorderLayout.PAGE_START);
+    contentsPanel.add(moleLabel, BorderLayout.PAGE_END);
 
-	public java.awt.Component getContents() {
-		return contentsPanel;
-	}
+    contentsPanel.setBorder(BorderFactory.createLineBorder(Color.gray));
+    contentsPanel.setBackground(new Color(255, 255, 255));
+  }
+
+
+  public java.awt.Component getContents()
+  {
+    return contentsPanel;
+  }
 }
