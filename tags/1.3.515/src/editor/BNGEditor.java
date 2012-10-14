@@ -257,7 +257,9 @@ public class BNGEditor
       public void widgetSelected(org.eclipse.swt.events.SelectionEvent e)
       {
         MessageBox mb = new MessageBox(mainEditorShell, SWT.ICON_INFORMATION);
-        mb.setMessage("RuleBender 1.3.520 was written by\n\nAdam Smith, Wen Xu, Yao Sun\nDept. of Computer Science\nUniv. of Pittsburgh");
+        mb.setMessage("RuleBender 1.3.520 was written by\n\nAdam Smith, Wen Xu," +
+        		" Yao Sun\nDept. of Computer Science\nUniv. of Pittsburgh" +
+        		"\nVisit rulebender.org for more information, help, and the new version.");
         mb.setText("About RuleBender");
         mb.open();
       }
