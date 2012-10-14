@@ -396,13 +396,22 @@ public class IMapModel
 			return;
 		}
 		
-		// Pull out the name
-		if(rulestr.indexOf(":") != -1)
-		{
-			temprule.setLabel(rulestr.substring(0, rulestr.indexOf(":")));
-			rulestr = rulestr.substring(rulestr.indexOf(":")+1, rulestr.length()).trim();
-			temprule.setName(rulestr);
-		}
+		// Pull out the name. 
+	    // case 1: no label, no @:  false
+	    // case 2: no label, with @:  false
+	    // case 3: label, no @:  true
+	    // case 4: label and @: 
+	    int colonIndex = rulestr.indexOf(":");
+	    int cabbageIndex = rulestr.indexOf("@");
+	    if (colonIndex >= 0 && 
+	        ( (cabbageIndex < 0) || (colonIndex < cabbageIndex)))
+	    {
+	      temprule.setLabel(rulestr.substring(0, rulestr.indexOf(":")));
+	      rulestr = rulestr.substring(rulestr.indexOf(":") + 1, rulestr.length())
+	          .trim();
+	      temprule.setName(rulestr);
+	    }
+	  
 		
 		// Check to see if the rule is bidirectional.
 		if(rulestr.indexOf('<')!=-1)

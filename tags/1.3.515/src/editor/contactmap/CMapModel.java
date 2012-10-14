@@ -446,15 +446,22 @@ public class CMapModel
 			return;
 		}
 		
-		// Pull out the name
-		if(rulestr.indexOf(":") != -1)
-		{
-			temprule.setLabel(rulestr.substring(0, rulestr.indexOf(":")));
-			rulestr = rulestr.substring(rulestr.indexOf(":")+1, rulestr.length()).trim();
-			temprule.setName(rulestr);
-			// System.out.println("\t\t Found name: " + temprule.getLabel());
-		}
-		
+		// Pull out the name. 
+	    // case 1: no label, no @:  false
+	    // case 2: no label, with @:  false
+	    // case 3: label, no @:  true
+	    // case 4: label and @: 
+	    int colonIndex = rulestr.indexOf(":");
+	    int cabbageIndex = rulestr.indexOf("@");
+	    if (colonIndex >= 0 && 
+	        ( (cabbageIndex < 0) || (colonIndex < cabbageIndex)))
+	    {
+	      temprule.setLabel(rulestr.substring(0, rulestr.indexOf(":")));
+	      rulestr = rulestr.substring(rulestr.indexOf(":") + 1, rulestr.length())
+	          .trim();
+	      temprule.setName(rulestr);
+	    }
+	  
 		if(rulestr.indexOf('<')!=-1)
 		{
 			temprule.setBidirection(true);

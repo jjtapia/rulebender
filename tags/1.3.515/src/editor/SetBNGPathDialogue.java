@@ -31,14 +31,14 @@ public class SetBNGPathDialogue
 		setBNGPathDialogue = new Shell(parentShell, SWT.DIALOG_TRIM | SWT.APPLICATION_MODAL);
 		
 		// Set the text in the title bar
-		setBNGPathDialogue.setText("Set Path to BNG Root");
+		setBNGPathDialogue.setText("Set (absolute) Path to BNG Root");
 		
 		// set grid layout
 		setBNGPathDialogue.setLayout(new GridLayout(5, true));
 		
 		// current BNG path
 		Label BNGPathlabel1 = new Label(setBNGPathDialogue, SWT.NONE);
-		BNGPathlabel1.setText("Current BNG Path:");
+		BNGPathlabel1.setText("Current (absolute) BNG Path:");
 		GridData gridData = new GridData();
 		gridData.horizontalSpan = 1;
 		BNGPathlabel1.setLayoutData(gridData);
