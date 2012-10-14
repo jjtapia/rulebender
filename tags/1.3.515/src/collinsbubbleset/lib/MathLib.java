@@ -9,13 +9,12 @@ public class MathLib {
 	private MathLib() {
 		throw new AssertionError("Don't instantiate MathLib.");
 	}
-	
+
 	public final static double EPSILON = 1e-6;
-	
+
 	public static boolean doublePointsEqual(Point2D p1, Point2D p2) {
 		return (p1.distance(p2) < EPSILON);
 	}
-	
 
 	public static double mean(int[] list) {
 		double sum = 0;
@@ -31,7 +30,7 @@ public class MathLib {
 
 	public static double median(int[] list) {
 		Arrays.sort(list);
-		return list[(int) Math.floor(list.length/2)];
+		return list[(int) Math.floor(list.length / 2)];
 	}
 
 	// calculate Mode (value that occurs most often in list)
@@ -47,7 +46,7 @@ public class MathLib {
 		}
 		int size = max - min;
 
-		int[] count = new int[size+1];
+		int[] count = new int[size + 1];
 
 		for (int i = 0; i < list.length; i++) {
 			count[list[i] - min]++;
@@ -64,7 +63,7 @@ public class MathLib {
 	}
 
 	public static final double TWO_PI = 2 * Math.PI;
-	
+
 	public static double clamp(double low, double value, double high) {
 		if (value < low)
 			return low;
@@ -72,7 +71,7 @@ public class MathLib {
 			return high;
 		return value;
 	}
-	
+
 	public static float clamp(float low, float value, float high) {
 		if (value < low)
 			return low;
@@ -82,13 +81,12 @@ public class MathLib {
 	}
 
 	public static double max3(double a, double b, double c) {
-		return Math.max(Math.max(a,b),c);
+		return Math.max(Math.max(a, b), c);
 	}
-	
+
 	public static double min3(double a, double b, double c) {
-		return Math.min(Math.min(a,b),c);
+		return Math.min(Math.min(a, b), c);
 	}
-	
 
 	public static double sinh(double x) {
 		if (Double.isNaN(x))
@@ -119,22 +117,28 @@ public class MathLib {
 			return x > 0 ? +1.0 : -1.0;
 		return sinh(x) / cosh(x);
 	}
-	
+
 	public static int sign(double x) {
-		if (x > 0) return 1; else
-		if (x < 0) return -1; else
-		return 0;
+		if (x > 0)
+			return 1;
+		else if (x < 0)
+			return -1;
+		else
+			return 0;
 	}
-	
+
 	/**
 	 * Linear interpolation between two values: computes t*y+(1-t)*x.
-	 * @param x First value.
-	 * @param y Second value.
-	 * @param t Interpolation constant.
+	 * 
+	 * @param x
+	 *            First value.
+	 * @param y
+	 *            Second value.
+	 * @param t
+	 *            Interpolation constant.
 	 * @return The interpolated value: t*y+(1-t)*x.
 	 */
-	public static double interpolate(double x, double y, double t)
-	{
-		return t*y+(1-t)*x;
+	public static double interpolate(double x, double y, double t) {
+		return t * y + (1 - t) * x;
 	}
 }

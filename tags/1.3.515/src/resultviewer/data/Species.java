@@ -5,7 +5,8 @@ import java.util.ArrayList;
 public class Species {
 	int id; // species id
 	String expression; // species expression
-	ArrayList<SMolecule> molecules; // list of molecules involved in this species
+	ArrayList<SMolecule> molecules; // list of molecules involved in this
+									// species
 	ArrayList<SBond> bonds; // list of inside bonds in this species
 
 	/**

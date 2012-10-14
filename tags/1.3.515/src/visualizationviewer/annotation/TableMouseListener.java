@@ -10,15 +10,13 @@ import javax.swing.JTable;
 
 import org.eclipse.swt.program.Program;
 
-public class TableMouseListener implements MouseListener 
-{
-	public void mouseClicked(MouseEvent e) 
-	{
+public class TableMouseListener implements MouseListener {
+	public void mouseClicked(MouseEvent e) {
 		JTable table = (JTable) e.getSource();
 		Point pt = e.getPoint();
 		int crow = table.rowAtPoint(pt);
 		int ccol = table.columnAtPoint(pt);
-		
+
 		// molecule name, the second column
 		String molename = ((String) table.getValueAt(0, 1)).trim();
 		String address = "";
@@ -28,9 +26,9 @@ public class TableMouseListener implements MouseListener
 		if (columnContent == null) {
 			return;
 		}
-		
+
 		// UniProt
-		if (columnContent.equals("UniProt")) {		
+		if (columnContent.equals("UniProt")) {
 			address = "http://www.uniprot.org/uniprot/?query=";
 			address += molename;
 			address += "&sort=score";
@@ -83,36 +81,36 @@ public class TableMouseListener implements MouseListener
 			address = "http://www.ncbi.nlm.nih.gov/sites/entrez?db=pccompound&term=";
 			address += molename;
 		}
-		
+
 		if (!address.equals("")) {
 			// link to address
-			
-			// This breaks java 1.5 compatibility 
-		
-			/* 
-			java.net.URI uri;
- 
-			try {
-				uri = new java.net.URI(address);
-				java.awt.Desktop.getDesktop().browse(uri);
-			} catch (URISyntaxException e1) {
-				e1.printStackTrace();
-			} catch (IOException e2) {
-				e2.printStackTrace();
-			}
-			*/
-			
+
+			// This breaks java 1.5 compatibility
+
+			/*
+			 * java.net.URI uri;
+			 * 
+			 * try { uri = new java.net.URI(address);
+			 * java.awt.Desktop.getDesktop().browse(uri); } catch
+			 * (URISyntaxException e1) { e1.printStackTrace(); } catch
+			 * (IOException e2) { e2.printStackTrace(); }
+			 */
+
 			// This does not break java 1.5 compatibility
 			Program.launch(address);
 		}
 
 	}
 
-	public void mouseEntered(MouseEvent e) {}
+	public void mouseEntered(MouseEvent e) {
+	}
 
-	public void mouseExited(MouseEvent e) {}
+	public void mouseExited(MouseEvent e) {
+	}
 
-	public void mousePressed(MouseEvent e) {}
+	public void mousePressed(MouseEvent e) {
+	}
 
-	public void mouseReleased(MouseEvent e) {}	
+	public void mouseReleased(MouseEvent e) {
+	}
 }

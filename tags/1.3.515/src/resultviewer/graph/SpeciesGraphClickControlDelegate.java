@@ -54,12 +54,12 @@ public class SpeciesGraphClickControlDelegate extends ControlAdapter {
 	/**
 	 * Called when no VisualItem is hit and right click.
 	 */
-	public void mouseClicked(MouseEvent e) 
-	{
+	public void mouseClicked(MouseEvent e) {
 
 		// Right Click
-		if (e.getButton() == MouseEvent.BUTTON3 || (e.getButton() == MouseEvent.BUTTON1 && e.isControlDown())) {
-			
+		if (e.getButton() == MouseEvent.BUTTON3
+				|| (e.getButton() == MouseEvent.BUTTON1 && e.isControlDown())) {
+
 			JPopupMenu popupMenu = new JPopupMenu();
 			// save as
 			JMenuItem saveAsMenuItem = new JMenuItem("Save as...");
@@ -178,11 +178,13 @@ public class SpeciesGraphClickControlDelegate extends ControlAdapter {
 
 		else if (e.getButton() == MouseEvent.BUTTON1) {
 			// left click
-			//System.out.println("Click: (" + e.getX() + ", " + e.getY() + ")");
+			// System.out.println("Click: (" + e.getX() + ", " + e.getY() +
+			// ")");
 
 			// empty annotation table
-			System.out.println("Sending null to the visviewer controller because " +
-					"the mouse was clicked in the species browser");
+			System.out
+					.println("Sending null to the visviewer controller because "
+							+ "the mouse was clicked in the species browser");
 			visviewer.updateAnnotationTable(null);
 		}
 
@@ -191,7 +193,7 @@ public class SpeciesGraphClickControlDelegate extends ControlAdapter {
 	/**
 	 * Called when VisualItem is hit.
 	 */
-//	public void itemClicked(VisualItem item, MouseEvent event) {}
+	// public void itemClicked(VisualItem item, MouseEvent event) {}
 
 	/**
 	 * Called when mouse entered VisualItem
@@ -242,28 +244,23 @@ public class SpeciesGraphClickControlDelegate extends ControlAdapter {
 		activeTooltip.startShowing((int) e.getX() + 10, (int) e.getY());
 	}
 
-	public void mouseDragged(MouseEvent e) 
-	{
+	public void mouseDragged(MouseEvent e) {
 		visviewer.updateSpeciesBrowserSelectBox();
 	}
 
-	public void mouseWheelMoved(MouseWheelEvent e) 
-	{
+	public void mouseWheelMoved(MouseWheelEvent e) {
 		visviewer.updateSpeciesBrowserSelectBox();
 	}
 
-	public void itemDragged(VisualItem item, MouseEvent e) 
-	{
+	public void itemDragged(VisualItem item, MouseEvent e) {
 		visviewer.updateSpeciesBrowserSelectBox();
 	}
 
-	public void itemMoved(VisualItem item, MouseEvent e) 
-	{
+	public void itemMoved(VisualItem item, MouseEvent e) {
 		visviewer.updateSpeciesBrowserSelectBox();
 	}
 
-	public void itemWheelMoved(VisualItem item, MouseWheelEvent e) 
-	{
+	public void itemWheelMoved(VisualItem item, MouseWheelEvent e) {
 		visviewer.updateSpeciesBrowserSelectBox();
 	}
 }

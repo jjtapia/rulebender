@@ -5,7 +5,6 @@ import java.awt.geom.Rectangle2D;
 
 import java.util.Iterator;
 
-
 import prefuse.action.layout.Layout;
 import prefuse.data.Graph;
 import prefuse.data.Schema;
@@ -250,19 +249,17 @@ public class ForceDirectedLayoutMagic extends Layout {
 		if (m_runonce) {
 
 			/*
-			Point2D anchor = getLayoutAnchor();
-
-			System.out.println("Anchor is at " + anchor.getX() + " "
-					+ anchor.getY());
-
-			Iterator iter = getMagicIterator(m_nodeGroup);
-
-			while (iter.hasNext()) {
-				VisualItem item = (NodeItem) iter.next();
-				item.setX(anchor.getX());
-				item.setY(anchor.getY());
-			}
-			*/
+			 * Point2D anchor = getLayoutAnchor();
+			 * 
+			 * System.out.println("Anchor is at " + anchor.getX() + " " +
+			 * anchor.getY());
+			 * 
+			 * Iterator iter = getMagicIterator(m_nodeGroup);
+			 * 
+			 * while (iter.hasNext()) { VisualItem item = (NodeItem)
+			 * iter.next(); item.setX(anchor.getX()); item.setY(anchor.getY());
+			 * }
+			 */
 
 			m_fsim.clear();
 			long timestep = 500L;
@@ -274,7 +271,7 @@ public class ForceDirectedLayoutMagic extends Layout {
 				long step = 30 + timestep;
 				// run simulator
 				m_fsim.runSimulator(step);
-				
+
 			}
 			updateNodePositions();
 			moveToCenter();
@@ -372,15 +369,13 @@ public class ForceDirectedLayoutMagic extends Layout {
 
 		while (iter.hasNext()) {
 			VisualItem item = (VisualItem) iter.next();
-			
+
 			double x = item.getX();
 			double y = item.getY();
-			
+
 			/*
-			if (x > 453) {
-				x++;
-			}
-			*/
+			 * if (x > 453) { x++; }
+			 */
 
 			// find max x
 			if (x > x1) {
@@ -407,11 +402,11 @@ public class ForceDirectedLayoutMagic extends Layout {
 		// center position of current graph
 		double center_x = (x1 + x2) / 2;
 		double center_y = (y1 + y2) / 2;
-		
+
 		// center position of the window
 		double window_center_x = windowbounds.getCenterX();
 		double window_center_y = windowbounds.getCenterY();
-		
+
 		// compute the offset
 		double offset_x = window_center_x - center_x;
 		double offset_y = window_center_y - center_y;
@@ -512,7 +507,7 @@ public class ForceDirectedLayoutMagic extends Layout {
 			if (type == null) {
 				return -1.f;
 			}
-			
+
 			// component node
 			if (type.equals("component")) {
 				return 2.0f;
@@ -520,12 +515,11 @@ public class ForceDirectedLayoutMagic extends Layout {
 			// state node
 			else if (type.equals("state")) {
 				return 1.0f;
-			}
-			else {
+			} else {
 				return 1.0f;
 			}
 		}
-		
+
 		return -1.f;
 	}
 
@@ -543,26 +537,20 @@ public class ForceDirectedLayoutMagic extends Layout {
 		if (type == null) {
 			return -1.f;
 		}
-		
+
 		if (type.equals("componentVisible_edge")) {
 			return 80.0f;
-		}
-		else if (type.equals("componentInvisible_edge")) {
+		} else if (type.equals("componentInvisible_edge")) {
 			return 50.0f;
-		}
-		else if (type.equals("stateVisible_edge")) {
+		} else if (type.equals("stateVisible_edge")) {
 			return 80.0f;
-		}
-		else if (type.equals("stateInvisible_edge")) {
+		} else if (type.equals("stateInvisible_edge")) {
 			return 5.0f;
-		}
-		else if (type.equals("compartment_edge")) {
+		} else if (type.equals("compartment_edge")) {
 			return 150.0f;
-		}
-		else if (type.equals("moleConnection")) {
+		} else if (type.equals("moleConnection")) {
 			return 50.0f;
-		}
-		else {
+		} else {
 			return -1.f;
 		}
 	}

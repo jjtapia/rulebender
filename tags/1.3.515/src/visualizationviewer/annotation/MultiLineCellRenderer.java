@@ -12,14 +12,14 @@ import java.util.ArrayList;
  */
 
 public class MultiLineCellRenderer extends JTextArea implements
-		TableCellRenderer{
+		TableCellRenderer {
 
 	private static Color color_SlateGray2 = new Color(185, 211, 238);
 	private static Color color_SlateGray3 = new Color(159, 182, 205);
 	private static Color color_RoyalBlue = new Color(65, 105, 225);
 	private static Color color_grey = new Color(190, 190, 190);
 	private static Color color_White = new Color(255, 255, 255);
-	
+
 	public MultiLineCellRenderer() {
 		setLineWrap(true);
 		setWrapStyleWord(true);
@@ -28,7 +28,7 @@ public class MultiLineCellRenderer extends JTextArea implements
 
 	public Component getTableCellRendererComponent(JTable table, Object value,
 			boolean isSelected, boolean hasFocus, int row, int column) {
-		
+
 		// select
 		if (isSelected) {
 			setForeground(table.getSelectionForeground());
@@ -37,8 +37,7 @@ public class MultiLineCellRenderer extends JTextArea implements
 			setForeground(table.getForeground());
 			setBackground(table.getBackground());
 		}
-		
-		
+
 		// focus
 		if (hasFocus) {
 			setBorder(UIManager.getBorder("Table.focusCellHighlightBorder"));
@@ -48,12 +47,10 @@ public class MultiLineCellRenderer extends JTextArea implements
 				setBorder(new MatteBorder(3, 3, 3, 3, color_SlateGray3));
 			}
 		} else {
-			//border
+			// border
 			setBorder(new MatteBorder(1, 1, 1, 1, color_grey));
 		}
-		
-		
-		
+
 		// foreground color
 		ArrayList<String> database = new ArrayList<String>();
 		database.add("UniProt");
@@ -66,11 +63,11 @@ public class MultiLineCellRenderer extends JTextArea implements
 		database.add("KEGG");
 		database.add("ChEBI");
 		database.add("PubChem");
-		String columnContent = (String) table.getModel().getValueAt(row, column);
+		String columnContent = (String) table.getModel()
+				.getValueAt(row, column);
 		if (database.contains(columnContent)) {
 			setForeground(color_RoyalBlue);
-		}
-		else {
+		} else {
 			setForeground(table.getForeground());
 		}
 		// font
@@ -85,7 +82,7 @@ public class MultiLineCellRenderer extends JTextArea implements
 		int height = (int) getPreferredSize().getHeight();
 		if (height > table.getRowHeight(row))
 			table.setRowHeight(row, height + 10);
-		
+
 		return this;
 	}
 }

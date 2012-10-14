@@ -5,12 +5,12 @@ import org.eclipse.swt.widgets.Composite;
 
 import editor.BNGEditor;
 
-public class GenerateModelGuideAction implements ActionInterface{
+public class GenerateModelGuideAction implements ActionInterface {
 
 	public String getName() {
 		return "Generate Model Guide";
 	}
-	
+
 	public String getShortName() {
 		return "Modelguide";
 	}
@@ -24,7 +24,8 @@ public class GenerateModelGuideAction implements ActionInterface{
 	}
 
 	public void executeAction() {
-		BNGEditor.getInputfiles().get(BNGEditor.getFileselection()).generateModelGuide();
+		BNGEditor.getInputfiles().get(BNGEditor.getFileselection())
+				.generateModelGuide();
 	}
 
 	public Point getSize() {

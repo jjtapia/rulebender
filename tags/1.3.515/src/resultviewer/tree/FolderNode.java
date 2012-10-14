@@ -9,8 +9,7 @@ import org.eclipse.swt.graphics.Image;
 
 /**
  * 
- * Folder Node.
- * Contains FileNode children.
+ * Folder Node. Contains FileNode children.
  * 
  */
 public class FolderNode extends TreeNode {

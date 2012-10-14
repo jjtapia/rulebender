@@ -2,9 +2,8 @@ package editor.contactmap.cdata;
 
 import java.util.ArrayList;
 
-public class Rule 
-{
-	private String label;  // label of the rule, could be empty
+public class Rule {
+	private String label; // label of the rule, could be empty
 	private String name; // expression of rule, including rates
 	private boolean bidirection;
 	private String rate1;
@@ -12,27 +11,24 @@ public class Rule
 	private ArrayList<RulePattern> reactantpatterns = new ArrayList<RulePattern>();
 	private ArrayList<RulePattern> productpatterns = new ArrayList<RulePattern>();
 	private ArrayList<BondAction> bondactions = new ArrayList<BondAction>();
-	//TODO: molecule actions, Non-trivial, refer to BNG bible to see different cases
-	
-	public Rule()
-	{
+
+	// TODO: molecule actions, Non-trivial, refer to BNG bible to see different
+	// cases
+
+	public Rule() {
 		setRate1(null);
 		setRate2(null);
 	}
-	
-	
+
 	public String getLabel() {
 		return label;
 	}
-
 
 	public void setLabel(String label) {
 		this.label = label;
 	}
 
-
-	public String getName()
-	{
+	public String getName() {
 		return name;
 	}
 

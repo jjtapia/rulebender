@@ -61,15 +61,16 @@ public class SpeciesGraph {
 	SpeciesViewer nv;
 
 	Species species;
-	
+
 	private Dimension overviewDimension;
 
-	public SpeciesGraph(int id, String speciesExp, Dimension mainDimension, Dimension overviewDimension) {
+	public SpeciesGraph(int id, String speciesExp, Dimension mainDimension,
+			Dimension overviewDimension) {
 		// parse the species expression
 		this.parseSpecies(id, speciesExp);
 
 		this.overviewDimension = overviewDimension;
-		
+
 		// Instantiate the NetworkViewer object.
 		nv = new SpeciesViewer(mainDimension);
 
@@ -89,10 +90,10 @@ public class SpeciesGraph {
 	 */
 	private void parseSpecies(int id, String speciesExp) {
 
-		//System.out.println("Parsing species: " + speciesExp);
+		// System.out.println("Parsing species: " + speciesExp);
 		// create species
 		species = new Species(id, speciesExp);
-		
+
 		// create molecules
 
 		// if there are more than one molecule
@@ -529,7 +530,7 @@ public class SpeciesGraph {
 					.get(tbond.getLeftM() + "." + tbond.getLeftC());
 			Node rightnode = nodes.get(tbond.getRightM() + "."
 					+ tbond.getRightC());
-			
+
 			if (rightnode == null) {
 				continue;
 			}

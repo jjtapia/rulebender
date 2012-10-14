@@ -1,43 +1,39 @@
 package editor.influencegraph.idata;
 
-public class Influence
-{
+public class Influence {
 	private int startrulenodeindex;
 	private int endrulenodeindex;
-	private int activation;//-1: None, 0: possible, 1: definite
-	private int inhibition;//-1: None, 0: possible, 1: definite
-	
-	public Influence(int in1, int in2)
-	{
+	private int activation;// -1: None, 0: possible, 1: definite
+	private int inhibition;// -1: None, 0: possible, 1: definite
+
+	public Influence(int in1, int in2) {
 		setStartrulenodeindex(in1);
 		setEndrulenodeindex(in2);
 		setActivation(-1);
 		setInhibition(-1);
 	}
-	
-	public void setInhibition(boolean definite)
-	{
-		if(definite)
+
+	public void setInhibition(boolean definite) {
+		if (definite)
 			inhibition = 1;
-		else if(inhibition == -1)
+		else if (inhibition == -1)
 			inhibition = 0;
 		else
-			;//Do Nothing	
+			;// Do Nothing
 	}
-	
-	public void setActivation(boolean definite)
-	{
-		if(definite)
+
+	public void setActivation(boolean definite) {
+		if (definite)
 			activation = 1;
-		else if(activation == -1)
+		else if (activation == -1)
 			activation = 0;
 		else
-			;//Do Nothing	
+			;// Do Nothing
 	}
-	
-	boolean equals(Influence in)
-	{
-		if(in.getStartrulenodeindex() == this.getStartrulenodeindex() && in.getEndrulenodeindex() == this.getEndrulenodeindex())
+
+	boolean equals(Influence in) {
+		if (in.getStartrulenodeindex() == this.getStartrulenodeindex()
+				&& in.getEndrulenodeindex() == this.getEndrulenodeindex())
 			return true;
 		return false;
 	}

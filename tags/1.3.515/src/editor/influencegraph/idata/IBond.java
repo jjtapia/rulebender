@@ -3,8 +3,7 @@ package editor.influencegraph.idata;
 import java.awt.Color;
 import java.util.ArrayList;
 
-public class IBond
-{
+public class IBond {
 	private int molecule1;
 	private int component1;
 	private int state1;
@@ -12,12 +11,11 @@ public class IBond
 	private int component2;
 	private int state2;
 	private boolean CanGenerate;
-	
+
 	Color color = null;
 	ArrayList<IPoint> position = new ArrayList<IPoint>();
-	
-	public IBond()
-	{
+
+	public IBond() {
 		setMolecule1(-1);
 		setComponent1(-1);
 		setState1(-1);

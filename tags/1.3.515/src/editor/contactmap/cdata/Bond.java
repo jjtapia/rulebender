@@ -3,9 +3,7 @@ package editor.contactmap.cdata;
 import java.awt.Color;
 import java.util.ArrayList;
 
-
-public class Bond 
-{
+public class Bond {
 	private int molecule1;
 	private int component1;
 	private int state1;
@@ -13,12 +11,11 @@ public class Bond
 	private int component2;
 	private int state2;
 	private boolean CanGenerate;
-	
+
 	Color color = null;
 	ArrayList<Point> position = new ArrayList<Point>();
-	
-	public Bond()
-	{
+
+	public Bond() {
 		setMolecule1(-1);
 		setComponent1(-1);
 		setState1(-1);

@@ -8,34 +8,29 @@ import editor.NewFileDialogue;
 
 public class NewAction implements ActionInterface {
 
-	public String getName() 
-	{
-		return "New";
-	}
-	
-	public String getShortName() 
-	{
+	public String getName() {
 		return "New";
 	}
 
-	public boolean hasComposite() 
-	{
+	public String getShortName() {
+		return "New";
+	}
+
+	public boolean hasComposite() {
 		return false;
 	}
 
-	public Composite getComposite(Composite parent)
-	{
+	public Composite getComposite(Composite parent) {
 		return null;
 	}
 
-	public void executeAction() 
-	{
-		NewFileDialogue newfilediag = new NewFileDialogue(BNGEditor.getMainEditorShell(), BNGEditor.getEditor());		
+	public void executeAction() {
+		NewFileDialogue newfilediag = new NewFileDialogue(
+				BNGEditor.getMainEditorShell(), BNGEditor.getEditor());
 		newfilediag.show();
 	}
 
-	public Point getSize() 
-	{
+	public Point getSize() {
 		return null;
 	}
 

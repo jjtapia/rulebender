@@ -33,8 +33,7 @@ import prefuse.visual.VisualItem;
 import prefuse.visual.VisualTupleSet;
 import prefuse.visual.expression.InGroupPredicate;
 
-public class CMAPNetworkViewer 
-{
+public class CMAPNetworkViewer {
 	// These strings all define a 'group' that is a part of the visualization.
 	// It is the internal string ID that prefuse uses for these collections
 	// of visual items.
@@ -52,7 +51,7 @@ public class CMAPNetworkViewer
 
 	// Group for Aggregates
 	private static String AGG;
-	
+
 	// This is a label for aggregates of component with states
 	private static String AGG_COMP = "aggregates_component";
 
@@ -61,7 +60,7 @@ public class CMAPNetworkViewer
 	private Visualization vis;
 
 	private Display mainDisplay;
-	
+
 	private ControlAdapter clickControlDelegate;
 
 	private HoverTooltip tooltipDelegate;
@@ -74,27 +73,26 @@ public class CMAPNetworkViewer
 
 	/**
 	 * Constructor accepts a graph structure.
-	 * @param mainDisplaySize 
+	 * 
+	 * @param mainDisplaySize
 	 */
-	public CMAPNetworkViewer(Dimension mainDisplaySize) 
-	{
+	public CMAPNetworkViewer(Dimension mainDisplaySize) {
 		vis = new Visualization();
-		
+
 		// create the visual group for the object that is selected.
 		vis.addFocusGroup("selected");
-		
+
 		mainDisplay = new Display();
 		mainDisplay.setSize(mainDisplaySize);
 	}
-	
-	public void build()
-	{
+
+	public void build() {
 		setUpRenderers();
 
 		setUpActions();
-		
+
 		setUpDisplay();
-		
+
 	}
 
 	/**
@@ -183,7 +181,6 @@ public class CMAPNetworkViewer
 	public void setDraggableAggregates(boolean b) {
 		draggableAggregates = b;
 	}
-	
 
 	/**
 	 * Sets up the renderers,actions and controls.
@@ -191,11 +188,10 @@ public class CMAPNetworkViewer
 	 * @return Display The display object that you embed in a JPanel
 	 */
 	public void setUpDisplay() {
-		
 
 		// Create a object to hold the visualization
 		mainDisplay.setVisualization(vis);
-		
+
 		// Turn on prettiness and antialiasing
 		mainDisplay.setHighQuality(true);
 
@@ -228,17 +224,16 @@ public class CMAPNetworkViewer
 
 		// Zoom with the mouse wheel
 		if (zoomControlEnabled) {
-			//mainDisplay.addControlListener(new WheelZoomControl());
+			// mainDisplay.addControlListener(new WheelZoomControl());
 			mainDisplay.addControlListener(new ReverseWheelZoomControl());
 			mainDisplay.addControlListener(new CustomizedZoomToFitControl());
 		}
-		
 
 		vis.run("color");
 		// start up the animated layout
 		vis.run("layout");
-//		vis.run("complayout");
-//		vis.run("compartmentlayout");
+		// vis.run("complayout");
+		// vis.run("compartmentlayout");
 	}
 
 	/*
@@ -274,7 +269,7 @@ public class CMAPNetworkViewer
 		rf.add("ingroup('" + AGG + "')", polyR);
 		rf.add("ingroup('" + AGG_COMP + "')", polyR);
 		rf.add("ingroup('bubbles')", polyR);
-		
+
 		// Add the aggregate decorater renderer
 		rf.add(new InGroupPredicate(AGG_DEC), new LabelRenderer(AGG_CAT_LABEL));
 
@@ -288,16 +283,17 @@ public class CMAPNetworkViewer
 	private void setUpActions() {
 		// The DataColorAction chooses a color given a palette based on the
 		// data column that is passed to the constructor.
-		
-		// normal component, state with bonds, component with states, state without bonds,
+
+		// normal component, state with bonds, component with states, state
+		// without bonds,
 		// component with state change, hub node
 		int[] palette = new int[] { ColorLib.rgba(254, 224, 139, 150),
 				ColorLib.rgba(166, 217, 106, 150),
 				ColorLib.rgba(253, 174, 97, 150),
 				ColorLib.rgba(240, 240, 240, 150),
 				ColorLib.rgba(153, 112, 171, 150),
-				ColorLib.rgba(189, 189, 189, 150)};
-		
+				ColorLib.rgba(189, 189, 189, 150) };
+
 		// Color the component nodes.
 		ComponentColorAction fill = new ComponentColorAction(COMPONENT_GRAPH
 				+ ".nodes", VisualItem.FILLCOLOR, palette);
@@ -305,22 +301,25 @@ public class CMAPNetworkViewer
 		// Color the text
 		ColorAction text = new ColorAction(COMPONENT_GRAPH + ".nodes",
 				VisualItem.TEXTCOLOR, ColorLib.rgb(0, 0, 0));
-		
+
 		// FontAction for node text
-		FontAction textFont = new FontAction(COMPONENT_GRAPH + ".nodes", FontLib.getFont("Arial", Font.PLAIN, 12));
+		FontAction textFont = new FontAction(COMPONENT_GRAPH + ".nodes",
+				FontLib.getFont("Arial", Font.PLAIN, 12));
 
 		// Change the color of the strokes.
-		ColorAction nodeStroke = new ColorAction(COMPONENT_GRAPH + ".nodes", VisualItem.STROKECOLOR, ColorLib.rgb(20, 20, 20));
+		ColorAction nodeStroke = new ColorAction(COMPONENT_GRAPH + ".nodes",
+				VisualItem.STROKECOLOR, ColorLib.rgb(20, 20, 20));
 		nodeStroke.add("ingroup('selected')", ColorLib.rgb(225, 100, 100));
-		
-		//TODO If the node is selected, use a different color.
+
+		// TODO If the node is selected, use a different color.
 
 		// Color the egdes
-		ColorAction edgeStroke = new ColorAction(COMPONENT_GRAPH + ".edges", VisualItem.STROKECOLOR, ColorLib.rgb(105, 105, 105));
+		ColorAction edgeStroke = new ColorAction(COMPONENT_GRAPH + ".edges",
+				VisualItem.STROKECOLOR, ColorLib.rgb(105, 105, 105));
 
-		//TODO if the edge is selected, use a different color
+		// TODO if the edge is selected, use a different color
 		edgeStroke.add("ingroup('selected')", ColorLib.rgb(225, 100, 100));
-		
+
 		// Use these to change the size of the strokes.
 		StrokeAction nodeStrokea = new StrokeAction(COMPONENT_GRAPH + ".nodes",
 				StrokeLib.getStroke(1.0f));
@@ -332,7 +331,7 @@ public class CMAPNetworkViewer
 		// stroke color the aggregates
 		ColorAction aStroke = new ColorAction(AGG, VisualItem.STROKECOLOR,
 				ColorLib.rgb(10, 10, 10));
-		
+
 		// TODO If the aggregate is selected, use a different color.
 		aStroke.add("ingroup('selected')", ColorLib.rgb(225, 100, 100));
 
@@ -345,18 +344,18 @@ public class CMAPNetworkViewer
 		// Fill the aggregates (molecules) with gray.
 		ColorAction aFill = new ColorAction(AGG, VisualItem.FILLCOLOR,
 				ColorLib.rgb(240, 240, 240));
-		
-		
+
 		// stroke color the for compartment aggregates
-	//	ColorAction aStroke_compartment = new ColorAction("compartments", VisualItem.STROKECOLOR,
-	//			ColorLib.rgba(10, 10, 10, 100));
+		// ColorAction aStroke_compartment = new ColorAction("compartments",
+		// VisualItem.STROKECOLOR,
+		// ColorLib.rgba(10, 10, 10, 100));
 		// Fill the aggregates (compartments)
-		
-		//TODO Color the selected compartments. 
-		
-		ColorAction aFill_compartment = new ColorAction("compartments", VisualItem.FILLCOLOR,
-				ColorLib.rgba(103, 169, 207, 40));
-		
+
+		// TODO Color the selected compartments.
+
+		ColorAction aFill_compartment = new ColorAction("compartments",
+				VisualItem.FILLCOLOR, ColorLib.rgba(103, 169, 207, 40));
+
 		// edge fill color, for arrows
 		ColorAction edgeFill = new ColorAction(COMPONENT_GRAPH + ".edges",
 				VisualItem.FILLCOLOR, ColorLib.rgba(105, 105, 105, 50));
@@ -377,46 +376,42 @@ public class CMAPNetworkViewer
 		color.add(aFill);
 		color.add(decText);
 		color.add(decFont);
-//		color.add(aStroke_compartment);
+		// color.add(aStroke_compartment);
 		color.add(aFill_compartment);
 		color.add(edgeFill);
 		color.add(new RepaintAction());
 
 		// layout
-//		ActionList layout = new ActionList(3500);
+		// ActionList layout = new ActionList(3500);
 		ActionList layout = new ActionList();
-		
+
 		// Create the force directed layout that uses invisible edges in force
 		// calculations as well as the visible ones.
 		ForceDirectedLayoutMagic f;
-		f = new ForceDirectedLayoutMagic(
-				COMPONENT_GRAPH, true, true);
+		f = new ForceDirectedLayoutMagic(COMPONENT_GRAPH, true, true);
 		f.setMagicEdges(true);
 		f.getForceSimulator().setSpeedLimit(3);
-		
-		// set bounds based on graph size		
+
+		// set bounds based on graph size
 		Rectangle2D bounds;
 		System.out.println("graph size: " + vis.size(COMPONENT_GRAPH));
-		if (vis.size(COMPONENT_GRAPH) > 100) 
-		{
+		if (vis.size(COMPONENT_GRAPH) > 100) {
 			bounds = new Rectangle2D.Double(-1200, -1200, 2400, 2400);
-		}
-		else 
-		{
+		} else {
 			bounds = new Rectangle2D.Double(-600, -600, 1200, 1200);
 		}
 		f.setEnforceBounds(bounds);
-		
-		f.setReferrer((VisualItem)vis.items().next());
-		
+
+		f.setReferrer((VisualItem) vis.items().next());
+
 		// Currently the anchor is only used for runonce mode
 		f.setLayoutAnchor(new Point2D.Double(500, 600));
-		   
+
 		layout.add(f);
-		
+
 		ComponentLayout cl = new ComponentLayout(COMPONENT_GRAPH);
 		layout.add(cl);
-		
+
 		// I am probably doing twice as much work by adding this here and to the
 		// color action list,
 		// but otherwise I am having trouble getting it to update.
@@ -424,7 +419,7 @@ public class CMAPNetworkViewer
 		layout.add(new AggregateLayout(AGG));
 		layout.add(new LabelLayout(AGG_DEC));
 		layout.add(new RepaintAction());
-		
+
 		ActionList complayout = new ActionList();
 		// to layout state nodes beside component nodes
 
@@ -432,14 +427,15 @@ public class CMAPNetworkViewer
 		complayout.add(new AggregateLayout(AGG));
 		complayout.add(new LabelLayout(AGG_DEC));
 		complayout.add(new RepaintAction());
-		
+
 		ActionList compartmentlayout = new ActionList();
 		// to layout state nodes beside component nodes
 
 		compartmentlayout.add(new AggregateLayout(AGG));
 		compartmentlayout.add(new LabelLayout(AGG_DEC));
 		compartmentlayout.add(new AggregateLayout("compartments"));
-//		compartmentlayout.add(new BubbleSetLayout("compartments", COMPONENT_GRAPH));
+		// compartmentlayout.add(new BubbleSetLayout("compartments",
+		// COMPONENT_GRAPH));
 		complayout.add(new RepaintAction());
 
 		vis.putAction("color", color);
@@ -447,9 +443,8 @@ public class CMAPNetworkViewer
 		vis.putAction("complayout", complayout);
 		vis.putAction("compartmentlayout", compartmentlayout);
 	}
-	
-	public Display getDisplay()
-	{
+
+	public Display getDisplay() {
 		return mainDisplay;
 	}
 } // Close NetworkViewer

@@ -8,14 +8,13 @@ import java.io.IOException;
 
 /**
  * 
- * FileData for plain text file types.
- * Types: .log, .pl, .m, .xml, .rxn, .cfg
- *
+ * FileData for plain text file types. Types: .log, .pl, .m, .xml, .rxn, .cfg
+ * 
  */
-public class LogFileData extends FileData{
+public class LogFileData extends FileData {
 
 	private StringBuffer content; // content of the file
-	
+
 	/**
 	 * 
 	 * @param file
@@ -48,9 +47,9 @@ public class LogFileData extends FileData{
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		
+
 	}
-	
+
 	/**
 	 * 
 	 * @return string of file content

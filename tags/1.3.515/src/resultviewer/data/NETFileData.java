@@ -16,14 +16,14 @@ import resultviewer.tree.SpeciesNode;
 /**
  * 
  * Store all the information for NET files
- *
+ * 
  */
 public class NETFileData extends FileData {
 	private StringBuffer content; // content of the NET file
 	private ArrayList<String> itemList; // list of items which store the name,
 										// offset, and length for each
 										// begin...end block
-	
+
 	private String selectedItem;
 
 	private NETFolderNode netFolderNode;
@@ -92,7 +92,7 @@ public class NETFileData extends FileData {
 					// add a newline before each begin statement
 					content.append("\n");
 					// get the name of the begin...end block
-					
+
 					String itemName = "";
 					if (line.indexOf("#") != -1) {
 						// delete comment

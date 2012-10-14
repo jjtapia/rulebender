@@ -47,7 +47,8 @@ public class IMapVisual {
 	Display mainDisplay;
 	Display overviewDisplay;
 
-	public IMapVisual(IMapModel model_in, Dimension mainDisplaySize_in, Dimension overviewDisplaySize_in) {
+	public IMapVisual(IMapModel model_in, Dimension mainDisplaySize_in,
+			Dimension overviewDisplaySize_in) {
 		model = model_in;
 		// directed graph
 		iGraph = new Graph(true);
@@ -56,7 +57,7 @@ public class IMapVisual {
 		mainDisplay = new Display();
 
 		vis.addGraph("igraph", iGraph);
-		
+
 		vis.addFocusGroup("selected");
 
 		setUpGraph();
@@ -84,16 +85,17 @@ public class IMapVisual {
 		for (int i = 0; i < model.getRuleNodes().size(); i++) {
 			// direction of the rule
 			int direction = (model.getRuleNodes().get(i).isForward() ? 1 : 0);
-			
+
 			Node currentNode = iGraph.addNode();
 			nodeList.add(currentNode);
-			
+
 			currentNode.set("forward", direction);
-			
+
 			// label of the rule
 			String label = "";
-						
-			// create label based on actual rule label defined by user in BNGL model
+
+			// create label based on actual rule label defined by user in BNGL
+			// model
 			label = model.getRuleNodes().get(i).getLabel();
 			if (label == "") {
 				// create label based on definition index
@@ -102,8 +104,7 @@ public class IMapVisual {
 				if (direction == 0) {
 					label += "'";
 				}
-			}
-			else {
+			} else {
 				// create label based on definition index
 				int index = model.getRuleNodes().get(i).getIruleindex() + 1;
 				label += "(R" + index;
@@ -112,7 +113,7 @@ public class IMapVisual {
 				}
 				label += ")";
 			}
-			
+
 			currentNode.set(VisualItem.LABEL, label);
 			// rule name
 			String rulename = parseTwoDirectionRule(model.getRuleNodes().get(i)
@@ -130,10 +131,11 @@ public class IMapVisual {
 								.getStartrulenodeindex()),
 						nodeList.get(model.getInfluences().get(i)
 								.getEndrulenodeindex()));
-				e_a.set("activation", model.getInfluences().get(i).getActivation());
+				e_a.set("activation", model.getInfluences().get(i)
+						.getActivation());
 				e_a.set("inhibition", -1);
 			}
-			
+
 			// edge for inhibition
 			if (model.getInfluences().get(i).getInhibition() != -1) {
 				Edge e_i = iGraph.addEdge(
@@ -142,41 +144,39 @@ public class IMapVisual {
 						nodeList.get(model.getInfluences().get(i)
 								.getEndrulenodeindex()));
 				e_i.set("activation", -1);
-				e_i.set("inhibition", model.getInfluences().get(i).getInhibition());
+				e_i.set("inhibition", model.getInfluences().get(i)
+						.getInhibition());
 			}
 		}
 	}
 
 	private String parseTwoDirectionRule(String ruleText, int forward) {
-		
+
 		String res = "";
 		// forward
 		if (forward == 1) {
 			String constraints = "";
 			// two direction , only keep forward
-			if (ruleText.indexOf("<") != -1) 
-			{
+			if (ruleText.indexOf("<") != -1) {
 				// delete <
 				res = ruleText.replace("<", "");
 				// delete second rate
-				if (res.indexOf("exclude")!=-1 || res.indexOf("include")!=-1) 
-				{
+				if (res.indexOf("exclude") != -1
+						|| res.indexOf("include") != -1) {
 					constraints = res.substring(res.lastIndexOf(" ")).trim();
 					res = res.substring(0, res.lastIndexOf(" ")).trim();
 				}
-				
-				if (res.lastIndexOf(",") > 0) 
-				{
+
+				if (res.lastIndexOf(",") > 0) {
 					res = res.substring(0, res.lastIndexOf(","));
 				}
-				
+
 				// add constraints if has
 				res += " " + constraints;
 				res = res.trim();
-			} 
-			
-			else 
-			{
+			}
+
+			else {
 				// change nothing
 				res = ruleText;
 			}
@@ -189,12 +189,13 @@ public class IMapVisual {
 				// keep the second half of the rule, includes product and rates
 				res += ruleText.substring(ruleText.indexOf(">") + 1).trim();
 
-				//delete constrains
-				if (res.indexOf("exclude")!=-1 || res.indexOf("include")!=-1) {
+				// delete constrains
+				if (res.indexOf("exclude") != -1
+						|| res.indexOf("include") != -1) {
 					constraints = res.substring(res.lastIndexOf(" ")).trim();
 					res = res.substring(0, res.lastIndexOf(" ")).trim();
 				}
-				
+
 				// delete rate
 				if (res.lastIndexOf(",") != -1) {
 					secondrate = res.substring(res.lastIndexOf(",") + 1,
@@ -265,7 +266,7 @@ public class IMapVisual {
 
 		// Change the color of the stroke for the selected nodes
 		nodeStroke.add("ingroup('selected')", ColorLib.rgb(225, 100, 100));
-		
+
 		int alpha = 200;
 		ColorAction edgeStroke = new ColorAction("igraph.edges",
 				VisualItem.STROKECOLOR, ColorLib.rgba(105, 105, 105, alpha));
@@ -291,7 +292,7 @@ public class IMapVisual {
 
 		// For selected
 		nodeStrokea.add("ingroup('selected')", StrokeLib.getStroke(4.0f));
-		
+
 		StrokeAction edgeStrokea = new StrokeAction("igraph.edges",
 				StrokeLib.getStroke(3.0f));
 
@@ -303,7 +304,7 @@ public class IMapVisual {
 		Predicate inhibitn0dashes = (Predicate) ExpressionParser
 				.parse("inhibition == 0");
 		edgeStrokea.add(inhibitn0dashes, StrokeLib.getStroke(3.0f, dashes));
-		
+
 		// edge fill color, for arrows
 		ColorAction edgeFill = new ColorAction("igraph.edges",
 				VisualItem.FILLCOLOR, ColorLib.rgba(105, 105, 105, alpha));
@@ -343,8 +344,7 @@ public class IMapVisual {
 		vis.putAction("color", color);
 	}
 
-	public void setUpMainDisplay(Dimension mainDisplaySize_in) 
-	{
+	public void setUpMainDisplay(Dimension mainDisplaySize_in) {
 
 		// Add the vis object to the display
 		mainDisplay.setVisualization(vis);
@@ -374,8 +374,7 @@ public class IMapVisual {
 		vis.run("layout");
 	}
 
-	public void setUpOverviewDisplay(Dimension overviewDisplaySize_in) 
-	{
+	public void setUpOverviewDisplay(Dimension overviewDisplaySize_in) {
 		overviewDisplay = new Display(vis);
 		overviewDisplay.setHighQuality(true);
 		overviewDisplay.setSize(overviewDisplaySize_in);

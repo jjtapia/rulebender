@@ -1,16 +1,15 @@
 package editor.influencegraph.idata;
 
-public class IRuleNode
-{
+public class IRuleNode {
 	int index;
 	private int iruleindex;
-	private String label;  // label of the rule, could be empty
-	private String name;  // expression of rule, including rates
+	private String label; // label of the rule, could be empty
+	private String name; // expression of rule, including rates
 	private boolean forward;
-	int[] position = new int[4];//xmin, xmax, ymin, ymax
-	
-	public IRuleNode(int in1, int in2, boolean in3, String rulename, String rulelabel)
-	{
+	int[] position = new int[4];// xmin, xmax, ymin, ymax
+
+	public IRuleNode(int in1, int in2, boolean in3, String rulename,
+			String rulelabel) {
 		index = in1;
 		setIruleindex(in2);
 		setForward(in3);

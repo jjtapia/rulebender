@@ -16,77 +16,78 @@ import editor.CurrentFile;
 
 public class OpenAction implements ActionInterface {
 
-	public String getName() 
-	{
-		return "Open";
-	}
-	
-	public String getShortName() 
-	{
+	public String getName() {
 		return "Open";
 	}
 
-	public boolean hasComposite() 
-	{
+	public String getShortName() {
+		return "Open";
+	}
+
+	public boolean hasComposite() {
 		return false;
 	}
 
-	public Composite getComposite(Composite parent) 
-	{
+	public Composite getComposite(Composite parent) {
 		return null;
 	}
 
-	public void executeAction() 
-	{
+	public void executeAction() {
 		Shell mainEditorShell = BNGEditor.getMainEditorShell();
-		
+
 		FileDialog opendiag = new FileDialog(mainEditorShell, SWT.OPEN);
-		opendiag.setFilterExtensions(new String[]{"*.bngl","*.txt","*.*"});
-		opendiag.setFilterPath(ConfigurationManager.getConfigurationManager().getWorkspacePath());
+		opendiag.setFilterExtensions(new String[] { "*.bngl", "*.txt", "*.*" });
+		opendiag.setFilterPath(ConfigurationManager.getConfigurationManager()
+				.getWorkspacePath());
 		opendiag.open();
 		String fpath = opendiag.getFilterPath(), fname = opendiag.getFileName();
-		
-		if(fname.equals("") || fname==null)
+
+		if (fname.equals("") || fname == null)
 			return;
-		else
-		{
+		else {
 			CurrentFile tempfile;
 			boolean fileexist = false;
-			for(int i = 0;i< BNGEditor.getInputfiles().size();i++)
-				if(BNGEditor.getInputfiles().get(i).getFilepath()!=null)
-					if(BNGEditor.getInputfiles().get(i).getFilepath().equals(fpath) && BNGEditor.getInputfiles().get(i).getFileName().equals(fname))
-						{
-							MessageBox mb = new MessageBox(mainEditorShell, SWT.ICON_INFORMATION);
-							mb.setMessage("File has already been opened !");
-							mb.setText("Error info");
-							mb.open();
-							BNGEditor.getTextFolder().setSelection(i);
-							fileexist = true;
-							return;
-						}
-			
-			if(!fileexist)
-			{
-				tempfile = new CurrentFile(fpath,fname,ConfigurationManager.getConfigurationManager().getOSType(),false, -1);
+			for (int i = 0; i < BNGEditor.getInputfiles().size(); i++)
+				if (BNGEditor.getInputfiles().get(i).getFilepath() != null)
+					if (BNGEditor.getInputfiles().get(i).getFilepath()
+							.equals(fpath)
+							&& BNGEditor.getInputfiles().get(i).getFileName()
+									.equals(fname)) {
+						MessageBox mb = new MessageBox(mainEditorShell,
+								SWT.ICON_INFORMATION);
+						mb.setMessage("File has already been opened !");
+						mb.setText("Error info");
+						mb.open();
+						BNGEditor.getTextFolder().setSelection(i);
+						fileexist = true;
+						return;
+					}
+
+			if (!fileexist) {
+				tempfile = new CurrentFile(fpath, fname, ConfigurationManager
+						.getConfigurationManager().getOSType(), false, -1);
 				BNGEditor.getInputfiles().add(tempfile);
-				BNGEditor.setFileselection(BNGEditor.getInputfiles().size()-1);
-				
+				BNGEditor
+						.setFileselection(BNGEditor.getInputfiles().size() - 1);
+
 				// Tell the viewer that we have a focus file.
-				VisualizationViewerController.loadVisualizationViewController().fileBecomesFocus(tempfile);
-				
-				ParameterScanController.getParameterScanController().fileSelectionChange(tempfile);
-				
-				BNGEditor.getTextFolder().setSelection(BNGEditor.getFileselection());	
-				if(ConfigurationManager.getConfigurationManager().getOSType()==1)
-					BNGEditor.getShowfilepath().setText(fpath+"\\"+fname);
+				VisualizationViewerController.loadVisualizationViewController()
+						.fileBecomesFocus(tempfile);
+
+				ParameterScanController.getParameterScanController()
+						.fileSelectionChange(tempfile);
+
+				BNGEditor.getTextFolder().setSelection(
+						BNGEditor.getFileselection());
+				if (ConfigurationManager.getConfigurationManager().getOSType() == 1)
+					BNGEditor.getShowfilepath().setText(fpath + "\\" + fname);
 				else
-					BNGEditor.getShowfilepath().setText(fpath+"/"+fname);
+					BNGEditor.getShowfilepath().setText(fpath + "/" + fname);
 			}
 		}
 	}
-	
-	public Point getSize() 
-	{
+
+	public Point getSize() {
 		return null;
 	}
 

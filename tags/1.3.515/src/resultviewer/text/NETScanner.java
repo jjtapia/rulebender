@@ -21,12 +21,13 @@ public class NETScanner extends RuleBasedScanner {
 	private static Color color_grey34 = new Color(null, 87, 87, 87);
 	private static Color color_brown4 = new Color(null, 139, 35, 35);
 
-	
 	private static String[] words = { "begin", "end", "parameters", "molecule",
-			"Molecules", "types", "observables", "species", "Species", "reaction", "reactions",
-			"rules", "reaction_rules", "groups", "rates", "reaction_rates", "MatchOnce", "substanceUnits", "setOption",
-			"model", "generate_network", "setConcentration", "resetConcentrations", "saveConcentrations",
-			"writeSBML", "writeMfile", "simulate_ode", "simulate_ssa", "compartments"};
+			"Molecules", "types", "observables", "species", "Species",
+			"reaction", "reactions", "rules", "reaction_rules", "groups",
+			"rates", "reaction_rates", "MatchOnce", "substanceUnits",
+			"setOption", "model", "generate_network", "setConcentration",
+			"resetConcentrations", "saveConcentrations", "writeSBML",
+			"writeMfile", "simulate_ode", "simulate_ssa", "compartments" };
 
 	public static RuleBasedScanner getScanner() {
 		RuleBasedScanner scanner = new RuleBasedScanner();
@@ -42,7 +43,7 @@ public class NETScanner extends RuleBasedScanner {
 
 		rules[0] = new WhitespaceRule(whitespaceDetector);
 
-		//keywords
+		// keywords
 		IToken keyword = new Token(new TextAttribute(color_purple));
 		WordRule keywordRule = new WordRule(new IWordDetector() {
 			public boolean isWordStart(char ch) {
@@ -66,30 +67,33 @@ public class NETScanner extends RuleBasedScanner {
 		}
 
 		rules[1] = keywordRule;
-		
-		//index number
-		NETIndexNumberRule indexNumberRule = new NETIndexNumberRule(new Token(new TextAttribute(color_grey)));
+
+		// index number
+		NETIndexNumberRule indexNumberRule = new NETIndexNumberRule(new Token(
+				new TextAttribute(color_grey)));
 		// set the largest column the pattern starts
-		indexNumberRule.setColumnConstraint(5); 
-		rules[2] = indexNumberRule;		
-		
-		//variable
+		indexNumberRule.setColumnConstraint(5);
+		rules[2] = indexNumberRule;
+
+		// variable
 		IToken variableToken = new Token(new TextAttribute(color_brown4));
 		IToken moleToken = new Token(new TextAttribute(color_Blue));
-		NETVaraibleRule variableRule = new NETVaraibleRule(variableToken, moleToken);
+		NETVaraibleRule variableRule = new NETVaraibleRule(variableToken,
+				moleToken);
 		// set the largest column the pattern starts
-		//parameterRule.setColumnConstraint(7);
+		// parameterRule.setColumnConstraint(7);
 		rules[3] = variableRule;
-		
-		//site
-		NETSiteRule siteRule = new NETSiteRule(new Token(new TextAttribute(color_grey34)));
+
+		// site
+		NETSiteRule siteRule = new NETSiteRule(new Token(new TextAttribute(
+				color_grey34)));
 		rules[4] = siteRule;
-		
+
 		scanner.setRules(rules);
 		return scanner;
 	}
 
-	//comment
+	// comment
 	public static RuleBasedScanner getCommentScanner() {
 		RuleBasedScanner scanner = new RuleBasedScanner();
 		scanner.setDefaultReturnToken(new Token(new TextAttribute(

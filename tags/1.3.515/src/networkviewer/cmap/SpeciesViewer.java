@@ -33,8 +33,7 @@ import prefuse.visual.VisualTupleSet;
 import prefuse.visual.expression.InGroupPredicate;
 
 @SuppressWarnings("serial")
-public class SpeciesViewer 
-{
+public class SpeciesViewer {
 	// These strings all define a 'group' that is a part of the visualization.
 	// It is the internal string ID that prefuse uses for these collections
 	// of visual items.
@@ -52,7 +51,7 @@ public class SpeciesViewer
 
 	// Group for Aggregates
 	private static String AGG;
-	
+
 	// This is a label for aggregates of component with states
 	private static String AGG_COMP = "aggregates_component";
 
@@ -61,7 +60,7 @@ public class SpeciesViewer
 	private Visualization vis;
 
 	private Display mainDisplay;
-	
+
 	private ControlAdapter clickControlDelegate;
 
 	private HoverTooltip tooltipDelegate;
@@ -80,15 +79,14 @@ public class SpeciesViewer
 		mainDisplay = new Display();
 		mainDisplay.setSize(mainDimension);
 	}
-	
-	public void build()
-	{
+
+	public void build() {
 		setUpRenderers();
 
 		setUpActions();
-		
+
 		setUpDisplay();
-		
+
 	}
 
 	/**
@@ -177,7 +175,6 @@ public class SpeciesViewer
 	public void setDraggableAggregates(boolean b) {
 		draggableAggregates = b;
 	}
-	
 
 	/**
 	 * Sets up the renderers,actions and controls.
@@ -185,7 +182,6 @@ public class SpeciesViewer
 	 * @return Display The display object that you embed in a JPanel
 	 */
 	public void setUpDisplay() {
-		
 
 		// Create a object to hold the visualization
 		mainDisplay.setVisualization(vis);
@@ -223,11 +219,11 @@ public class SpeciesViewer
 			mainDisplay.addControlListener(new WheelZoomControl());
 			mainDisplay.addControlListener(new CustomizedZoomToFitControl());
 		}
-		
+
 		vis.run("color");
 		// start up the animated layout
 		vis.run("layout");
-//		vis.run("complayout");
+		// vis.run("complayout");
 	}
 
 	/*
@@ -259,7 +255,8 @@ public class SpeciesViewer
 		rf.setDefaultEdgeRenderer(srr);
 
 		// Add the aggregate renderer for the items in the group 'aggregates'.
-		rf.add("ingroup('" + AGG + "') OR ingroup('bubbles') OR ingroup('" + AGG_COMP + "')", polyR);
+		rf.add("ingroup('" + AGG + "') OR ingroup('bubbles') OR ingroup('"
+				+ AGG_COMP + "')", polyR);
 
 		// Add the aggregate decorater renderer
 		rf.add(new InGroupPredicate(AGG_DEC), new LabelRenderer(AGG_CAT_LABEL));
@@ -274,13 +271,14 @@ public class SpeciesViewer
 	private void setUpActions() {
 		// The DataColorAction chooses a color given a palette based on the
 		// data column that is passed to the constructor.
-		
-		// component, state, component with states, state without bonds, component with state change
+
+		// component, state, component with states, state without bonds,
+		// component with state change
 		int[] palette = new int[] { ColorLib.rgba(254, 224, 139, 150),
 				ColorLib.rgba(166, 217, 106, 150),
 				ColorLib.rgba(253, 174, 97, 150),
 				ColorLib.rgba(240, 240, 240, 150),
-				ColorLib.rgba(153, 112, 171, 150)};
+				ColorLib.rgba(153, 112, 171, 150) };
 		ComponentColorAction fill = new ComponentColorAction(COMPONENT_GRAPH
 				+ ".nodes", VisualItem.FILLCOLOR, palette);
 
@@ -288,8 +286,8 @@ public class SpeciesViewer
 		ColorAction text = new ColorAction(COMPONENT_GRAPH + ".nodes",
 				VisualItem.TEXTCOLOR, ColorLib.rgb(0, 0, 0));
 		// FontAction for node text
-		FontAction textFont = new FontAction(COMPONENT_GRAPH + ".nodes", FontLib.getFont("Arial",
-				Font.PLAIN, 12));
+		FontAction textFont = new FontAction(COMPONENT_GRAPH + ".nodes",
+				FontLib.getFont("Arial", Font.PLAIN, 12));
 
 		// Change the color of the strokes.
 		ColorAction nodeStroke = new ColorAction(COMPONENT_GRAPH + ".nodes",
@@ -341,48 +339,46 @@ public class SpeciesViewer
 		color.add(new RepaintAction());
 
 		// layout
-//		ActionList layout = new ActionList(3500);
+		// ActionList layout = new ActionList(3500);
 		ActionList layout = new ActionList();
-		
+
 		// Create the force directed layout that uses invisible edges in force
 		// calculations as well as the visible ones.
 		ForceDirectedLayoutMagic f;
-		f = new ForceDirectedLayoutMagic(
-				COMPONENT_GRAPH, true, true);
+		f = new ForceDirectedLayoutMagic(COMPONENT_GRAPH, true, true);
 		f.setMagicEdges(true);
 		f.getForceSimulator().setSpeedLimit(3);
-		
-		// set bounds based on graph size		
+
+		// set bounds based on graph size
 		Rectangle2D bounds;
-//		System.out.println("graph size: " + vis.size(COMPONENT_GRAPH));
+		// System.out.println("graph size: " + vis.size(COMPONENT_GRAPH));
 		if (vis.size(COMPONENT_GRAPH) > 200) {
 			bounds = new Rectangle2D.Double(-1200, -1200, 2400, 2400);
-		}
-		else {
+		} else {
 			bounds = new Rectangle2D.Double(-600, -600, 1200, 1200);
 		}
 		f.setEnforceBounds(bounds);
-		
-//		System.out.println("numItems: " + vis.size(COMPONENT_GRAPH));
-//		System.out.println("iterator has next: " + vis.items().hasNext());
-		
-		f.setReferrer((VisualItem)vis.items().next());
-		
+
+		// System.out.println("numItems: " + vis.size(COMPONENT_GRAPH));
+		// System.out.println("iterator has next: " + vis.items().hasNext());
+
+		f.setReferrer((VisualItem) vis.items().next());
+
 		// Currently the anchor is only used for runonce mode
 		f.setLayoutAnchor(new Point2D.Double(500, 600));
 
 		layout.add(f);
-		
+
 		ComponentLayout cl = new ComponentLayout(COMPONENT_GRAPH);
 		layout.add(cl);
-		
+
 		// I am probably doing twice as much work by adding this here and to the
 		// color action list,
 		// but otherwise I am having trouble getting it to update.
 		layout.add(new AggregateLayout(AGG));
 		layout.add(new LabelLayout(AGG_DEC));
 		layout.add(new RepaintAction());
-		
+
 		ActionList complayout = new ActionList();
 		// to layout state nodes beside component nodes
 
@@ -395,9 +391,8 @@ public class SpeciesViewer
 		vis.putAction("color", color);
 		vis.putAction("complayout", complayout);
 	}
-	
-	public Display getDisplay()
-	{
+
+	public Display getDisplay() {
 		return mainDisplay;
 	}
 } // Close NetworkViewer

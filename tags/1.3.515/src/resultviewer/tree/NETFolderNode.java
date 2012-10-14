@@ -7,8 +7,7 @@ import org.eclipse.swt.graphics.Image;
 
 /**
  * 
- * NET file folder node. 
- * Contains NETItemNode children.
+ * NET file folder node. Contains NETItemNode children.
  * 
  */
 public class NETFolderNode extends TreeNode {

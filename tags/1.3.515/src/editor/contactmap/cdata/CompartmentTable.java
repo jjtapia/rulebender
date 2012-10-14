@@ -11,39 +11,40 @@ public class CompartmentTable {
 	private Compartment root;
 	private Hashtable compartments;
 	private List cmptList;
-	
+
 	public CompartmentTable() {
 		root = null;
 		compartments = new Hashtable<String, Compartment>();
 	}
-	
+
 	public Compartment getRoot() {
 		return root;
 	}
+
 	public void setRoot(Compartment root) {
 		this.root = root;
 	}
-	
-	public void addCompartment(Compartment compartment) {		
+
+	public void addCompartment(Compartment compartment) {
 		compartments.put(compartment.getName(), compartment);
 		if (compartment.getParent() == null) {
 			this.root = compartment;
 		}
 	}
-	
+
 	public Compartment getCompartment(String name) {
-		return (Compartment)compartments.get(name);
+		return (Compartment) compartments.get(name);
 	}
-	
+
 	public List getCompartmentsList(boolean update) {
 		if (update == true && cmptList != null) {
 			return cmptList;
 		} else {
-			
+
 			if (root == null) {
 				return null;
 			}
-			
+
 			// update cmptList
 			// width first search
 			cmptList = new ArrayList<Compartment>();
@@ -66,15 +67,17 @@ public class CompartmentTable {
 		}
 		return cmptList;
 	}
-	
+
 	/**
 	 * 
-	 * @param cur name of current compartment
-	 * @param parent name of parent compartment
+	 * @param cur
+	 *            name of current compartment
+	 * @param parent
+	 *            name of parent compartment
 	 * @return true if parent compartment is real parent for current compartment
 	 */
 	public boolean isChild(String cur, String parent) {
-		Compartment curCmpt = (Compartment)compartments.get(cur);
+		Compartment curCmpt = (Compartment) compartments.get(cur);
 		if (curCmpt == null)
 			return false;
 		Compartment parentCmpt = curCmpt.getParent();
@@ -86,7 +89,7 @@ public class CompartmentTable {
 		}
 		return false;
 	}
-	
+
 	public void print() {
 		for (Enumeration e = compartments.keys(); e.hasMoreElements();) {
 			Compartment cur = (Compartment) compartments.get(e.nextElement());

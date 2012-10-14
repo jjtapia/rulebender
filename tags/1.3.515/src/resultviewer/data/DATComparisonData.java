@@ -19,7 +19,7 @@ public class DATComparisonData extends FileData {
 
 	private String xAxisName; // name of x axis
 	private XYSeriesCollection seriesCollection; // data for plotting
-	
+
 	private boolean allValueLargerThanZero_X = true;
 	private boolean allValueLargerThanZero_Y = true;
 	private double minX = Double.MAX_VALUE;
@@ -50,22 +50,22 @@ public class DATComparisonData extends FileData {
 			fileDataList.get(i).setSelectedObservableName(null);
 			fileDataList.get(i).setSelectedSpeciesName(null);
 		}
-		
-		if (data1.isAllValueLargerThanZero_X() == false 
-				|| data2.isAllValueLargerThanZero_X() == false ) {
+
+		if (data1.isAllValueLargerThanZero_X() == false
+				|| data2.isAllValueLargerThanZero_X() == false) {
 			this.allValueLargerThanZero_X = false;
 		}
-		
-		if (data1.isAllValueLargerThanZero_Y() == false 
-				|| data2.isAllValueLargerThanZero_Y() == false ) {
+
+		if (data1.isAllValueLargerThanZero_Y() == false
+				|| data2.isAllValueLargerThanZero_Y() == false) {
 			this.allValueLargerThanZero_Y = false;
 		}
-		
+
 		this.minX = data1.getMinX();
 		if (data2.getMinX() < this.minX) {
 			this.minX = data2.getMinX();
 		}
-		
+
 		this.minY = data1.getMinY();
 		if (data2.getMinY() < this.minY) {
 			this.minY = data2.getMinY();

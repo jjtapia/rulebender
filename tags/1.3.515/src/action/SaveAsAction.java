@@ -7,36 +7,30 @@ import editor.BNGEditor;
 
 public class SaveAsAction implements ActionInterface {
 
-	public String getName() 
-	{
+	public String getName() {
 		return "Save As";
 	}
-	
-	public String getShortName() 
-	{
+
+	public String getShortName() {
 		return "SaveAs";
 	}
 
-	public boolean hasComposite() 
-	{
+	public boolean hasComposite() {
 		return false;
 	}
 
-	public Composite getComposite(Composite parent)
-	{
+	public Composite getComposite(Composite parent) {
 		return null;
 	}
 
-	public void executeAction() 
-	{
-		if(BNGEditor.getTextFolder().getSelection() == null)
+	public void executeAction() {
+		if (BNGEditor.getTextFolder().getSelection() == null)
 			return;
-		
+
 		(BNGEditor.getInputfiles().get(BNGEditor.getFileselection())).saveas();
 	}
 
-	public Point getSize() 
-	{
+	public Point getSize() {
 		return null;
 	}
 

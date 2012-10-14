@@ -8,7 +8,7 @@ import org.eclipse.jface.text.rules.FastPartitioner;
 /**
  * 
  * Create partitioned NET Document object based on string of file content.
- *
+ * 
  */
 public class NETDocumentProvider {
 	public Document createDocument(String content) {
@@ -17,8 +17,8 @@ public class NETDocumentProvider {
 		// partitioner
 		IDocumentPartitioner partitioner = new FastPartitioner(
 				new NETPartitionScanner(), new String[] {
-					IDocument.DEFAULT_CONTENT_TYPE, 	
-					NETPartitionScanner.NET_COMMENT});
+						IDocument.DEFAULT_CONTENT_TYPE,
+						NETPartitionScanner.NET_COMMENT });
 		partitioner.connect(document);
 		document.setDocumentPartitioner(partitioner);
 		return document;

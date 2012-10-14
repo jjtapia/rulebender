@@ -199,7 +199,7 @@ public class IMAPLayout extends Layout {
 			 */
 
 			// line
-			String label = (String)(n.get(VisualItem.LABEL));
+			String label = (String) (n.get(VisualItem.LABEL));
 			// set the separation be the length of the node label
 			int separation = label.length() * 10;
 			// set the minimum separation
@@ -207,7 +207,7 @@ public class IMAPLayout extends Layout {
 				separation = 80;
 			}
 			separation += nn * 6;
-			
+
 			curOffset += separation;
 			x = cx + curOffset;
 			y = cy;

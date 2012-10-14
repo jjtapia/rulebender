@@ -77,7 +77,7 @@ public class SComponent {
 	public void addState(String state) {
 		this.states.add(state);
 	}
-	
+
 	/**
 	 * Get state id
 	 * 

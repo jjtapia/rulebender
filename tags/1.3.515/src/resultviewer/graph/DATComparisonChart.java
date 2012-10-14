@@ -29,7 +29,7 @@ public class DATComparisonChart {
 			Color.magenta.darker().darker(), Color.cyan.darker().darker(),
 			Color.pink.darker().darker(), Color.gray.darker().darker(),
 			Color.orange.darker().darker() };
-	
+
 	private static DATComparisonData fileData;
 
 	/**
@@ -96,7 +96,7 @@ public class DATComparisonChart {
 	 */
 	public static JFreeChart plotChart(DATComparisonData fileData,
 			ArrayList<String> chartType) {
-		DATComparisonChart.fileData =fileData;
+		DATComparisonChart.fileData = fileData;
 		JFreeChart chart = null;
 		if (fileData == null)
 			return chart;

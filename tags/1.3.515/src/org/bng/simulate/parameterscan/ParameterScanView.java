@@ -15,13 +15,12 @@ import org.eclipse.swt.widgets.Text;
 
 import editor.BNGEditor;
 
-public class ParameterScanView extends Composite
-{
+public class ParameterScanView extends Composite {
 	private ParameterScanController controller;
-	
-	// A static Composite object that is the form itself. 
-	//private static Composite parScanForm;
-	
+
+	// A static Composite object that is the form itself.
+	// private static Composite parScanForm;
+
 	// These are the gui objects that receive the values given by the user.
 	final Text paramNameInput;
 	final Text paramMinValueInput;
@@ -31,21 +30,21 @@ public class ParameterScanView extends Composite
 	final Button steadyStateInput;
 	final Text simTimeInput;
 	final Text timePointsInput;
-	
+
 	/**
 	 * 
 	 * @param parent
 	 */
-	public ParameterScanView(ParameterScanController controller_in, final Composite parent)
-	{
+	public ParameterScanView(ParameterScanController controller_in,
+			final Composite parent) {
 		// Call the superclass
 		super(parent, SWT.NONE);
-	
+
 		controller = controller_in;
-		
+
 		// parameter scan
 		ParameterScanView parScanForm = this;
-		
+
 		// grid layout
 		parScanForm.setLayout(new GridLayout(5, true));
 
@@ -72,7 +71,8 @@ public class ParameterScanView extends Composite
 
 		// max value
 		Label paramMaxValueLabel = new Label(parScanForm, SWT.NONE);
-		paramMaxValueLabel.setText("  Parameter Max Value (Real Number > Min Value)");
+		paramMaxValueLabel
+				.setText("  Parameter Max Value (Real Number > Min Value)");
 		paramMaxValueLabel.setLayoutData(labelGridData);
 
 		paramMaxValueInput = new Text(parScanForm, SWT.BORDER);
@@ -80,7 +80,8 @@ public class ParameterScanView extends Composite
 
 		// number of points
 		Label pointsToScanLabel = new Label(parScanForm, SWT.NONE);
-		pointsToScanLabel.setText("  Number of Points to Scan (Positive Integer)");
+		pointsToScanLabel
+				.setText("  Number of Points to Scan (Positive Integer)");
 		pointsToScanLabel.setLayoutData(labelGridData);
 
 		pointsToScanInput = new Text(parScanForm, SWT.BORDER);
@@ -88,7 +89,8 @@ public class ParameterScanView extends Composite
 
 		// log scale
 		Label logScaleLabel = new Label(parScanForm, SWT.NONE);
-		logScaleLabel.setText("  Log Scale ? (Error if checked & Min Value <= 0)");
+		logScaleLabel
+				.setText("  Log Scale ? (Error if checked & Min Value <= 0)");
 		logScaleLabel.setLayoutData(labelGridData);
 
 		logScaleInput = new Button(parScanForm, SWT.CHECK);
@@ -116,7 +118,6 @@ public class ParameterScanView extends Composite
 
 		timePointsInput.setLayoutData(textGridData);
 
-
 		// empty label to contro layout
 		new Label(parScanForm, SWT.NONE).setText("");
 		new Label(parScanForm, SWT.NONE).setText("");
@@ -128,20 +129,24 @@ public class ParameterScanView extends Composite
 		GridData gridData = new GridData();
 		gridData.widthHint = 80;
 		cancelbutton.setLayoutData(gridData);
-		
+
 		// add listener for cancel button
-		cancelbutton.addMouseListener(new MouseListener()
-		{
-			public void mouseDoubleClick(MouseEvent arg0) {}
-			public void mouseDown(MouseEvent arg0) {}
+		cancelbutton.addMouseListener(new MouseListener() {
+			public void mouseDoubleClick(MouseEvent arg0) {
+			}
+
+			public void mouseDown(MouseEvent arg0) {
+			}
+
 			public void mouseUp(MouseEvent arg0) {
 				controller.disposeOfWindow();
-			}});
-		
+			}
+		});
+
 		// OK button
 		Button okButton = new Button(parScanForm, SWT.NONE);
 		okButton.setText("OK");
-		
+
 		okButton.setLayoutData(gridData);
 
 		// pack
@@ -149,20 +154,17 @@ public class ParameterScanView extends Composite
 
 		// add listener for OK button
 		okButton.addSelectionListener(new SelectionListener() {
-			public void widgetDefaultSelected(SelectionEvent arg0) 
-			{
+			public void widgetDefaultSelected(SelectionEvent arg0) {
 				// do nothing
 			}
 
-			public void widgetSelected(SelectionEvent arg0) 
-			{
+			public void widgetSelected(SelectionEvent arg0) {
 				// Create the data object that will hold the user values.
 				final ParameterScanData scanData = new ParameterScanData();
-				
+
 				boolean verified = true;
-				
-				try 
-				{
+
+				try {
 					if (paramNameInput.getText().trim().length() == 0)
 						verified = false;
 					if (Float.parseFloat(paramMaxValueInput.getText().trim()) <= Float
@@ -177,32 +179,33 @@ public class ParameterScanView extends Composite
 						verified = false;
 					if (Integer.parseInt(timePointsInput.getText().trim()) <= 0)
 						verified = false;
-				} 
-				catch (NumberFormatException e) 
-				{
+				} catch (NumberFormatException e) {
 					verified = false;
 				}
 
 				if (!verified) {
-					MessageBox mb = new MessageBox(BNGEditor.getMainEditorShell(),
-							SWT.ICON_INFORMATION);
+					MessageBox mb = new MessageBox(BNGEditor
+							.getMainEditorShell(), SWT.ICON_INFORMATION);
 					mb.setText("Error Info");
 					mb.setMessage("There exists invalid arguments, please check again !");
 					mb.open();
 					return;
-				} 
-				else 
-				{	
+				} else {
 					scanData.setName(paramNameInput.getText());
-					scanData.setMinValue(Float.parseFloat(paramMinValueInput.getText()));
-					scanData.setMaxValue(Float.parseFloat(paramMaxValueInput.getText()));
-					scanData.setPointsToScan(Integer.parseInt(pointsToScanInput.getText()));
-					scanData.setSimulationTime(Float.parseFloat(simTimeInput.getText()));
-					scanData.setNumTimePoints(Integer.parseInt(timePointsInput.getText()));
+					scanData.setMinValue(Float.parseFloat(paramMinValueInput
+							.getText()));
+					scanData.setMaxValue(Float.parseFloat(paramMaxValueInput
+							.getText()));
+					scanData.setPointsToScan(Integer.parseInt(pointsToScanInput
+							.getText()));
+					scanData.setSimulationTime(Float.parseFloat(simTimeInput
+							.getText()));
+					scanData.setNumTimePoints(Integer.parseInt(timePointsInput
+							.getText()));
 					scanData.setLogScale(logScaleInput.getSelection());
 					scanData.setSteadyState(steadyStateInput.getSelection());
 				}
-	
+
 				/*
 				 * String[] psresult = new String[1];
 				 * psresult[0]=prefix+".scan"; if(!stemp2.contains("open") &&
@@ -212,43 +215,39 @@ public class ParameterScanView extends Composite
 				 * new Viewer(null,psresult,new String[0]); } catch (IOException
 				 * e) {} }
 				 */
-			
-			// save the data
-			controller.saveData(scanData);
-			
-			controller.disposeOfWindow();
-			
-			// Display console output.
-			BNGEditor.displayOutput(BNGEditor.getConsoleLineDelimeter() + "Running Parameter Scan...");
-			
-			BNGEditor.getMainEditorShell().forceFocus();
-			
-			
-			
-			// send the data to the parscan method.
-			controller.runParameterScan(scanData);
+
+				// save the data
+				controller.saveData(scanData);
+
+				controller.disposeOfWindow();
+
+				// Display console output.
+				BNGEditor.displayOutput(BNGEditor.getConsoleLineDelimeter()
+						+ "Running Parameter Scan...");
+
+				BNGEditor.getMainEditorShell().forceFocus();
+
+				// send the data to the parscan method.
+				controller.runParameterScan(scanData);
 			}
 		});
 	}
-	
-	public void setFormText(ParameterScanData data)
-	{
-		if(data != null)
-		{
+
+	public void setFormText(ParameterScanData data) {
+		if (data != null) {
 			paramNameInput.setText(data.getName());
-			paramMinValueInput.setText(data.getMinValue()+"");
-			paramMaxValueInput.setText(data.getMaxValue()+"");
-			pointsToScanInput.setText(data.getPointsToScan()+"");
-			simTimeInput.setText(data.getSimulationTime()+"");
-			timePointsInput.setText(data.getNumTimePoints()+"");
+			paramMinValueInput.setText(data.getMinValue() + "");
+			paramMaxValueInput.setText(data.getMaxValue() + "");
+			pointsToScanInput.setText(data.getPointsToScan() + "");
+			simTimeInput.setText(data.getSimulationTime() + "");
+			timePointsInput.setText(data.getNumTimePoints() + "");
 			if (data.isLogScale())
 				logScaleInput.setSelection(true);
 			if (data.isSteadyState())
 				steadyStateInput.setSelection(true);
 		}
-		
-		else
-		{
+
+		else {
 			paramNameInput.setText("");
 			paramMinValueInput.setText("");
 			paramMaxValueInput.setText("");

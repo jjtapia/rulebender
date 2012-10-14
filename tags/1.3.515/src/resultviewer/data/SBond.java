@@ -17,7 +17,7 @@ public class SBond {
 	 * @param leftC
 	 *            component id on the left side of the bond
 	 * @param leftS
-	 * 			  state id on the left side of the bond
+	 *            state id on the left side of the bond
 	 */
 	public SBond(int id, int leftM, int leftC, int leftS) {
 		this.id = id;
@@ -34,15 +34,16 @@ public class SBond {
 	 * @param leftC
 	 *            component id on the left side of the bond
 	 * @param leftS
-	 * 			  state id on the left side of the bond
+	 *            state id on the left side of the bond
 	 * @param rightM
 	 *            molecule id on the right side of the bond
 	 * @param rightC
 	 *            component id on the right side of the bond
 	 * @param rightS
-	 * 			  state id on the right side of the bond
+	 *            state id on the right side of the bond
 	 */
-	public SBond(int id, int leftM, int leftC, int leftS, int rightM, int rightC, int rightS) {
+	public SBond(int id, int leftM, int leftC, int leftS, int rightM,
+			int rightC, int rightS) {
 		this.id = id;
 		this.leftM = leftM;
 		this.leftC = leftC;
@@ -75,7 +76,7 @@ public class SBond {
 	public int getLeftC() {
 		return leftC;
 	}
-	
+
 	/**
 	 * 
 	 * @return state id on the left side of the bond
@@ -99,7 +100,7 @@ public class SBond {
 	public int getRightC() {
 		return rightC;
 	}
-	
+
 	/**
 	 * 
 	 * @return state id on the right side of the bond
@@ -115,7 +116,7 @@ public class SBond {
 	 * @param rightC
 	 *            component id on the right side of the bond
 	 * @param rightS
-	 * 			  state id on the right side of the bond
+	 *            state id on the right side of the bond
 	 */
 	public void setRightPart(int rightM, int rightC, int rightS) {
 		this.rightM = rightM;

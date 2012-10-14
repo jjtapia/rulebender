@@ -30,7 +30,7 @@ public class DATFileData extends FileData {
 	// data for plotting
 	private XYSeriesCollection seriesCollection;
 	private ArrayList<XYSeries> seriesList;
-	
+
 	private boolean allValueLargerThanZero_X = true;
 	private boolean allValueLargerThanZero_Y = true;
 	private double minX = Double.MAX_VALUE;
@@ -68,8 +68,7 @@ public class DATFileData extends FileData {
 	 * 
 	 * @return name of x axis
 	 */
-	public String getXAxisName() 
-	{
+	public String getXAxisName() {
 		return this.xAxisName;
 	}
 
@@ -77,27 +76,24 @@ public class DATFileData extends FileData {
 	 * 
 	 * @return the data set use to plot a chart.
 	 */
-	public XYSeriesCollection getSeriesCollection() 
-	{
+	public XYSeriesCollection getSeriesCollection() {
 		// clear data
 		seriesCollection.removeAllSeries();
 
 		// create a SeriesCollection object from the seriesList
-		if (this.fileName.endsWith(".cdat")) 
-		{
+		if (this.fileName.endsWith(".cdat")) {
 			// CDAT
 			for (int i = 0; i < seriesList.size(); i++) {
 				String id = (String) seriesList.get(i).getKey();
-				
-				// The S prefix to the column number was introduced with BNG 2.2.0
-				if(id.substring(0,1).equals("S"))
-				{
+
+				// The S prefix to the column number was introduced with BNG
+				// 2.2.0
+				if (id.substring(0, 1).equals("S")) {
 					id = id.substring(1);
 				}
-				
+
 				// add checked species series only
-				if (checkedSpecies.containsKey(Integer.parseInt(id)) == true) 
-				{
+				if (checkedSpecies.containsKey(Integer.parseInt(id)) == true) {
 					seriesCollection.addSeries(seriesList.get(i));
 				}
 			}
@@ -178,14 +174,13 @@ public class DATFileData extends FileData {
 				String line = in.nextLine();
 				line = line.substring(line.indexOf(' '), line.length()).trim();
 				double time = processNum(line.substring(0, line.indexOf(' '))); // time
-				
+
 				if (time <= 0) {
 					allValueLargerThanZero_X = false;
-				}
-				else if (time < minX) {
+				} else if (time < minX) {
 					minX = time;
 				}
-				
+
 				// delete time
 				line = line.substring(line.indexOf(' '), line.length()).trim();
 
@@ -199,11 +194,10 @@ public class DATFileData extends FileData {
 						number = line; // last number, no space
 
 					double concentration = processNum(number); // concentration
-					
+
 					if (concentration <= 0) {
 						allValueLargerThanZero_Y = false;
-					}
-					else if (concentration < minY) {
+					} else if (concentration < minY) {
 						minY = concentration;
 					}
 
@@ -640,8 +634,8 @@ public class DATFileData extends FileData {
 	 */
 	public void setChartType(String chartType) {
 		this.chartType = chartType;
-	}	
-	
+	}
+
 	public boolean isAllValueLargerThanZero_X() {
 		return allValueLargerThanZero_X;
 	}
@@ -653,7 +647,6 @@ public class DATFileData extends FileData {
 	public double getMinX() {
 		return minX;
 	}
-
 
 	public double getMinY() {
 		return minY;

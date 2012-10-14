@@ -1,11 +1,10 @@
 package editor.contactmap.cdata;
 
-public class Point 
-{
+public class Point {
 	int x;
 	int y;
-	Point(int inx, int iny)
-	{
+
+	Point(int inx, int iny) {
 		x = inx;
 		y = iny;
 	}

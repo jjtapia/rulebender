@@ -33,27 +33,31 @@ public class ComponentLayout extends Layout {
 				// get node type
 				String nodetype = item.getString("type");
 				if (nodetype != null && nodetype.equals("component")) {
-					ArrayList<Node> state_nodes = (ArrayList<Node>)item.get("state_nodes");
-					
+					ArrayList<Node> state_nodes = (ArrayList<Node>) item
+							.get("state_nodes");
+
 					if (state_nodes == null)
-						continue ;
-					
+						continue;
+
 					int offset = 0;
-					
+
 					for (int i = 0; i < state_nodes.size(); i++) {
-						VisualItem stateitem = m_vis.getVisualItem(m_group, state_nodes.get(i));
-						
+						VisualItem stateitem = m_vis.getVisualItem(m_group,
+								state_nodes.get(i));
+
 						// get bounds of parent component
 						Rectangle2D compBounds = item.getBounds();
 						// get bounds of state
 						Rectangle2D stateBounds = stateitem.getBounds();
-						
-						
+
 						if (stateitem.isVisible()) {
-							offset ++;
+							offset++;
 							// set position
-							setX(stateitem, null, compBounds.getX() + compBounds.getWidth() + stateBounds.getWidth()/2 - 2);
-							setY(stateitem, null, compBounds.getY() + offset * compBounds.getHeight());
+							setX(stateitem, null,
+									compBounds.getX() + compBounds.getWidth()
+											+ stateBounds.getWidth() / 2 - 2);
+							setY(stateitem, null, compBounds.getY() + offset
+									* compBounds.getHeight());
 						}
 					}
 				}

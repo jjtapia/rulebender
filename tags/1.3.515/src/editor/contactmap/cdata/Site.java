@@ -1,13 +1,11 @@
 package editor.contactmap.cdata;
 
-public class Site 
-{
+public class Site {
 	private int molecule;
 	private int component;
 	private int state;
-	
-	public Site(int in1, int in2, int in3)
-	{
+
+	public Site(int in1, int in2, int in3) {
 		setMolecule(in1);
 		setComponent(in2);
 		setState(in3);

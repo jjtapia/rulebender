@@ -57,13 +57,13 @@ public class DATChart {
 	 */
 	private static JFreeChart plotXYLineChart(DATFileData fileData,
 			String xAxisType, String yAxisType) {
-		
+
 		JFreeChart chart = null;
 		if (fileData == null) {
 			return chart;
 		}
 		XYSeriesCollection seriesCollection = fileData.getSeriesCollection();
-		
+
 		// XYLineChart
 		if (seriesCollection.getSeries().size() > 30
 				&& fileData.getFileName().endsWith(".cdat")) {
@@ -138,7 +138,7 @@ public class DATChart {
 	private static JFreeChart plotScatterChart(DATFileData fileData,
 			String xAxisType, String yAxisType) {
 		boolean showWarning = false;
-		
+
 		JFreeChart chart = null;
 		if (fileData == null)
 			return chart;
@@ -356,5 +356,5 @@ public class DATChart {
 
 		return chart;
 	}
-	
+
 }
