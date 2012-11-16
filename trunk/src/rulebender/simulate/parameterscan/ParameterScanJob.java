@@ -37,8 +37,9 @@ public class ParameterScanJob extends Job
   private String m_scriptFullPath;
   private ParameterScanData m_data;
   private String m_resultsPath;
-  private IFile  m_iFile;
-  private String m_scanPath; 
+  private IFile m_iFile;
+  private String m_scanPath;
+
 
   public ParameterScanJob(String name, IFile iFile, String bngPath,
       String scriptFullPath, ParameterScanData data, String resultsPath)
@@ -57,6 +58,7 @@ public class ParameterScanJob extends Job
     setProperty(IProgressConstants.KEEP_PROPERTY, true);
   }
 
+
   @Override
   protected IStatus run(IProgressMonitor monitor)
   {
@@ -65,17 +67,18 @@ public class ParameterScanJob extends Job
 
     if (!validateBNGLFile(m_absoluteFilePath))
     {
-      Console.displayOutput(m_absoluteFilePath, "Error in file path.");
+      Console.displayOutput(m_relativeFilePath, "Error in file path.");
       return Status.CANCEL_STATUS;
     }
     if (!validateBNGPath(m_bngPath))
     {
-      Console.displayOutput(m_bngPath, "Error bng path.");
+      Console.displayOutput(m_relativeFilePath, "Error in BNG path. Use the "
+          + "Window->Preferences menu to set the correct path to BNG.");
       return Status.CANCEL_STATUS;
     }
     if (!validateScriptPath(m_scriptFullPath))
     {
-      Console.displayOutput(m_scriptFullPath, "Error in script path.");
+      Console.displayOutput(m_relativeFilePath, "Error in script path.");
       return Status.CANCEL_STATUS;
     }
 
@@ -95,18 +98,17 @@ public class ParameterScanJob extends Job
     // Get a parameterscan command
     ParameterScanCommand command = new ParameterScanCommand(m_absoluteFilePath,
         m_bngPath, m_scriptFullPath, m_resultsPath, m_data);
-    
+
     String prefix = command.constructPrefix() + "_" + m_data.getName();
     setScanPath(m_resultsPath + prefix + ".scan");
-    //System.out.println("PREFIX gleaned from command: " + m_scanPath);
-    		
+    // System.out.println("PREFIX gleaned from command: " + m_scanPath);
+
     // MONITOR
     monitor.setTaskName("Running Parameter Scan...");
     monitor.worked(1);
 
     // Run it in the commandRunner
-    CommandRunner<ParameterScanCommand> runner = 
-        new CommandRunner<ParameterScanCommand>(
+    CommandRunner<ParameterScanCommand> runner = new CommandRunner<ParameterScanCommand>(
         command, new File(m_resultsPath), m_relativeFilePath, monitor);
 
     try
@@ -136,6 +138,7 @@ public class ParameterScanJob extends Job
     return Status.OK_STATUS;
   }
 
+
   private void undoSimulation()
   {
     try
@@ -144,68 +147,82 @@ public class ParameterScanJob extends Job
     }
     catch (FileNotFoundException e)
     {
-      // TODO Auto-generated catch block
       e.printStackTrace();
     }
 
     Console.displayOutput(m_relativeFilePath, "Parameter Scan Cancelled!\n\n");
   }
-  
-	/**
-	 * Display the generated scan file after simulation
-	 */
-	private void showResults() {
-		
-		final String scanFileToOpen = m_scanPath; // provided by scan command
-		//System.out.println("gdatFileToOpen = "+ gdatFileToOpen);
-		
-		// Calculate the path of the project folder for RuleBender
-		String workspacePath = Platform.getInstanceLocation().getURL().getPath().toString();
-		//System.out.println("workspacePath: " + workspacePath);
-		String projectPath = m_iFile.getProject().getLocation().toFile().getName();
-		//System.out.println("projectPath: " + projectPath);
-		String completeProjectPath = new String(workspacePath + projectPath);
-		//System.out.println("completeProjectPath = " + completeProjectPath);
-		
-		// Turn absolute gdat path into a path relative to RB project folder
-		final String relScanFileToOpen = scanFileToOpen.replaceAll(completeProjectPath, "");
-		//System.out.println("relGdatFileToOpen: " + relGdatFileToOpen);
-		
-		// Prepare to pass off file to an editor
-		IPath path = new Path(relScanFileToOpen);
-		IFile file = m_iFile.getProject().getFile(path);
-		
-		final IEditorInput editorInput = new FileEditorInput(file);
 
-		// Figure out what page is open right now. There must be a better way to do this...
-		IWorkbenchPage page_last = null;
-		//IWorkbenchWindow w = null;
-		for (IWorkbenchWindow window : PlatformUI.getWorkbench().getWorkbenchWindows()) {
-		    //w = window;
-			for (IWorkbenchPage page : window.getPages()) {
-		    	page_last = page;
-		        //for (IEditorReference editor : page.getEditorReferences()) {
-		            //System.out.println(page.getLabel() + " -> " + editor.getName());
-		        //}
-		    }
-		}
-		final IWorkbenchPage p = page_last;
-		//final IWorkbenchWindow w2open = w;
-		
-		// In the UI thread open the scan editor
-		Display.getDefault().asyncExec(new Runnable() {
-		 
-			public void run() {
-				try {
-					p.openEditor(editorInput, FileInputUtility.getEditorId(new File(relScanFileToOpen)));
-				} catch (PartInitException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} 
-			}
-		});
-		
-	}
+
+  /**
+   * Display the generated scan file after simulation
+   */
+  private void showResults()
+  {
+
+    final String scanFileToOpen = m_scanPath; // provided by scan command
+
+    // Calculate the path of the project folder for RuleBender
+    String workspacePath = Platform.getInstanceLocation().getURL().getPath()
+        .toString();
+    // System.out.println("workspacePath: " + workspacePath);
+    String projectPath = m_iFile.getProject().getLocation().toFile().getName();
+    // System.out.println("projectPath: " + projectPath);
+    String completeProjectPath = new String(workspacePath + projectPath);
+    // System.out.println("completeProjectPath = " + completeProjectPath);
+
+    // Turn absolute gdat path into a path relative to RB project folder
+    final String relScanFileToOpen = scanFileToOpen.replaceAll(
+        completeProjectPath, "");
+    // System.out.println("relGdatFileToOpen: " + relGdatFileToOpen);
+
+    // Prepare to pass off file to an editor
+    IPath path = new Path(relScanFileToOpen);
+    IFile file = m_iFile.getProject().getFile(path);
+
+    if (!file.exists())
+    {
+      System.out.println("No results created.");
+      return;
+    }
+
+    final IEditorInput editorInput = new FileEditorInput(file);
+
+    // Figure out what page is open right now. There must be a better way to do
+    // this...
+    IWorkbenchPage page_last = null;
+    // IWorkbenchWindow w = null;
+    for (IWorkbenchWindow window : PlatformUI.getWorkbench()
+        .getWorkbenchWindows())
+    {
+      // w = window;
+      for (IWorkbenchPage page : window.getPages())
+      {
+        page_last = page;
+      }
+    }
+    final IWorkbenchPage p = page_last;
+
+    // In the UI thread open the scan editor
+    Display.getDefault().asyncExec(new Runnable()
+    {
+      public void run()
+      {
+        try
+        {
+          p.openEditor(editorInput,
+              FileInputUtility.getEditorId(new File(relScanFileToOpen)));
+        }
+        catch (PartInitException e)
+        {
+          // TODO Auto-generated catch block
+          e.printStackTrace();
+        }
+      }
+    });
+
+  }
+
 
   private boolean deleteRecursive(File path) throws FileNotFoundException
   {
@@ -221,6 +238,7 @@ public class ParameterScanJob extends Job
     }
     return ret && path.delete();
   }
+
 
   private void updateTrees()
   {
@@ -238,6 +256,7 @@ public class ParameterScanJob extends Job
 
   }
 
+
   private static boolean validateBNGLFile(String path)
   {
     if ((new File(path)).exists())
@@ -245,6 +264,7 @@ public class ParameterScanJob extends Job
 
     return false;
   }
+
 
   private static boolean validateBNGPath(String path)
   {
@@ -254,6 +274,7 @@ public class ParameterScanJob extends Job
     return false;
   }
 
+
   private static boolean validateScriptPath(String path)
   {
     if ((new File(path)).exists())
@@ -262,44 +283,52 @@ public class ParameterScanJob extends Job
     return false;
   }
 
+
   public void setBNGPath(String path)
   {
     m_bngPath = path;
   }
+
 
   public void setScriptFullPath(String path)
   {
     m_scriptFullPath = path;
   }
 
+
   public void setData(ParameterScanData data)
   {
     m_data = data;
   }
+
 
   private void setResultsPath(String resultsPath)
   {
     m_resultsPath = resultsPath;
   }
 
+
   public void setAbsoluteFilePath(String path)
   {
     m_absoluteFilePath = path;
   }
 
+
   public void setRelativeFilePath(String path)
   {
     m_relativeFilePath = path;
   }
-  
+
+
   public void setIfile(IFile ifile)
   {
-	  m_iFile = ifile;
+    m_iFile = ifile;
   }
-  
+
+
   public void setScanPath(String path)
   {
-	  m_scanPath = path;
+    m_scanPath = path;
   }
 
 }

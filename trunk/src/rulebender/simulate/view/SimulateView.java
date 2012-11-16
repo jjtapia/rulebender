@@ -168,7 +168,6 @@ public class SimulateView extends ViewPart
 
 		      public void widgetDefaultSelected(SelectionEvent e) 
 		      {
-		        //System.out.println("Default selected index: " + combo.getSelectionIndex() + ", selected item: " + (combo.getSelectionIndex() == -1 ? "<null>" : combo.getItem(combo.getSelectionIndex())) + ", text content in the text field: " + combo.getText());
 		      }
 		    });
 		
@@ -181,7 +180,6 @@ public class SimulateView extends ViewPart
 		stackedCompositeFormData.top = new FormAttachment(actionSelect, 10);
 		stackedCompositeFormData.left = new FormAttachment(0, 10);
 		stackedCompositeFormData.right = new FormAttachment(100, 10);
-		//stackedCompositeFormData.bottom = new FormAttachment(100, 10);
 		
 		stackedComposite.setLayoutData(stackedCompositeFormData);
 		
@@ -202,13 +200,14 @@ public class SimulateView extends ViewPart
 		buttonData.right = new FormAttachment(100, -10);
 		runButton.setLayoutData(buttonData);
 		
-		final SimulateView instance = this;
-		
 		runButton.addSelectionListener(new SelectionListener()
 		{
 			public void widgetSelected(SelectionEvent e) 
 			{
-				Console.displayOutput(getSelectedFile().getFullPath().toOSString(), Console.getConsoleLineDelimeter() + "Running File...");
+				Console.displayOutput(getSelectedFile().getFullPath().toOSString(), 
+				    Console.getConsoleLineDelimeter() + "Running File...");
+				
+				Console.showConsole(getSelectedFile().getFullPath().toOSString());
 				
 				// Run the parameter scan.  This returns a boolean, but for now I am ignoring it.  
 				BioNetGenUtility.runBNGLFile(getSelectedFile(),
@@ -252,7 +251,6 @@ public class SimulateView extends ViewPart
 	
 	public void setSelectedResource(IFile selectedObject) 
 	{
-		//fileText.setText(selectedObject.getRawLocation().makeAbsolute().toOSString());
 	  fileText.setText(selectedObject.getFullPath().toOSString());
 		m_selectedFile = selectedObject;
 	}

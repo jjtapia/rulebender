@@ -248,6 +248,11 @@ public class Console implements IPartListener, IStartup
     getMessageConsole(title).clearConsole();
 
   }
+  
+  public static void showConsole(String title)
+  {
+    getMessageConsole(title).activate();
+  }
 
 
   @Override
