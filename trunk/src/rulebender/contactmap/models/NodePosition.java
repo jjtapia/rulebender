@@ -3,12 +3,14 @@ package rulebender.contactmap.models;
 public class NodePosition {
 	private String molecule;
 	private String component;
+	private String id;
 	private double x;
 	private double y;
 	
-	public NodePosition(String molecule, String component, double newX, double newY) {
+	public NodePosition(String molecule, String component, String id, double newX, double newY) {
 		setMolecule(molecule);
 		setComponent(component);
+		setID(id);
 		setX(newX);
 		setY(newY);
 	} //Position (constructor)
@@ -20,6 +22,10 @@ public class NodePosition {
 	public String getComponent() {
 		return component;
 	} //getComponent
+	
+	public String getID() {
+		return id;
+	} //getID
 	
 	public double getX() {
 		return x;
@@ -36,6 +42,10 @@ public class NodePosition {
 	public void setComponent(String newComponent) {
 		component = newComponent; 
 	} //setComponent
+	
+	public void setID(String newID) {
+		id = newID;
+	} //setID
 	
 	public void setX(double newX) {
 		x = newX;

@@ -404,7 +404,7 @@ public class CMAPNetworkViewer
 		
 		// Pass in filepath to force simulator
 		f.setPositionFilepath(m_filePath);
-				
+		/*		
 		// set bounds based on graph size		
 		Rectangle2D bounds;
 		System.out.println("graph size: " + vis.size(COMPONENT_GRAPH));
@@ -417,11 +417,11 @@ public class CMAPNetworkViewer
 			bounds = new Rectangle2D.Double(-600, -600, 1200, 1200);
 		}
 		f.setEnforceBounds(bounds);
-		
+		*/
 		f.setReferrer((VisualItem)vis.items().next());
 		
 		// Currently the anchor is only used for runonce mode
-		f.setLayoutAnchor(new Point2D.Double(500, 600));
+		//f.setLayoutAnchor(new Point2D.Double(500, 600));
 		
 		layout.add(f);
 		

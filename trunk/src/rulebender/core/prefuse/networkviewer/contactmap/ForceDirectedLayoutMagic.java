@@ -1,9 +1,11 @@
 package rulebender.core.prefuse.networkviewer.contactmap;
 
+import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.StringTokenizer;
 
 
 import prefuse.action.layout.Layout;
@@ -273,15 +275,90 @@ public class ForceDirectedLayoutMagic extends Layout {
 		// run-continuously layout
 		if (m_runonce) {
 
-			/*
+			
 			Point2D anchor = getLayoutAnchor();
 
-			System.out.println("Anchor is at " + anchor.getX() + " "
-					+ anchor.getY());
-			*/
+			//System.out.println("Anchor is at " + anchor.getX() + " "
+			//		+ anchor.getY());
+			
 			
 			// Retrieve the node positions from the file
 			ArrayList<NodePosition> positionMap = ContactMapPosition.loadMoleculePositions(m_filePath);
+			
+			// Temp find the average of all positions, and set that to the anchor point
+			float x = 0, y = 0;
+			String mol = null;
+			int count = 0;
+			String boundsLine = null;
+			
+			if (positionMap != null) {
+				Iterator fileIter = positionMap.iterator();
+				while (fileIter.hasNext()) {
+					NodePosition fileItem = (NodePosition) fileIter.next();
+					mol = fileItem.getMolecule();
+					
+					// Don't include the special case line for bounds
+					if (!mol.equals("BOUNDS")) {
+						x += fileItem.getX();
+						y += fileItem.getY();
+						count++;						
+					} else {
+						// While we're looping through, let's pick up the bounds and parse it
+						boundsLine = fileItem.getComponent();
+					} //if-else
+
+				} //while
+				
+				x /= count;
+				y /= count;
+			} //if
+			
+			// Set a temporary anchor point
+			//Point2D tempAnchor = new Point2D.Double(x, y);
+			//setLayoutAnchor(tempAnchor);
+			
+			// Begin bounds stuff
+			
+			Rectangle2D bounds;
+			double boundsCenterX, boundsCenterY, boundsHeight, boundsWidth;
+			
+			// Parse the bounds line
+			if (boundsLine != null) {
+				StringTokenizer st;
+				st = new StringTokenizer(boundsLine, "|");
+				
+				st.nextToken(); //Skip the first token, it just says "BOUNDS"
+				boundsCenterX = Double.parseDouble(st.nextToken());
+				boundsCenterY = Double.parseDouble(st.nextToken());
+				boundsHeight = Double.parseDouble(st.nextToken());
+				boundsWidth = Double.parseDouble(st.nextToken());
+			} else {
+				// If there was no position file, set the bounds based on the old defaults
+				Iterator iter = getMagicIterator(m_nodeGroup);
+				int i = 0;
+				while (iter.hasNext()) {
+					VisualItem item = (NodeItem) iter.next();
+					i++;
+				} //while
+				
+				if (i > 100) {
+					boundsCenterX = -1200;
+					boundsCenterY = -1200;
+					boundsHeight = 2400;
+					boundsWidth = 2400;
+				} else { 
+					boundsCenterX = -600;
+					boundsCenterY = -600;
+					boundsHeight = 1200;
+					boundsWidth = 1200;
+				} //if-else
+				
+			} //if-else
+			
+			bounds = new Rectangle2D.Double(boundsCenterX, boundsCenterY, boundsWidth, boundsHeight);
+			setEnforceBounds(bounds);
+			
+			// End bounds stuff
 
 			// Skip this position loader if the position file doesn't exist (or if a problem occurred when loading the positionMap)
 			if (positionMap != null) {
@@ -298,8 +375,8 @@ public class ForceDirectedLayoutMagic extends Layout {
 				
 					// Correction for the null items
 					if (molecule == null) {
-						molecule = id;
-						component = id;
+						molecule = "null";
+						//component = "IGNORE";
 					} //if					
 					
 					// Iterate over all node positions in the file
@@ -308,7 +385,7 @@ public class ForceDirectedLayoutMagic extends Layout {
 						NodePosition fileItem = (NodePosition) fileIter.next();
 				
 						// If we found a matching ID, set the position of that VisualItem and fix the item in place 
-						if ((molecule.equals(fileItem.getMolecule())) && (component.equals(fileItem.getComponent()))) {
+						if ((molecule.equals(fileItem.getMolecule())) && (component.equals(fileItem.getComponent())) && (id.equals(fileItem.getID()))) {
 							item.setX(fileItem.getX());
 							item.setY(fileItem.getY());
 							item.setFixed(true);

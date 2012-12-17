@@ -1,5 +1,6 @@
 package rulebender.core.prefuse.networkviewer.contactmap;
 
+import java.awt.geom.Rectangle2D;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
@@ -25,7 +26,7 @@ public class ContactMapPosition {
 		File positionsFile = new File(modifyFilePath(filepath));
 		StringTokenizer st;
 		Scanner s;
-		String line, molecule, component, x, y;
+		String line, molecule, component, id = null, x, y;
 				
 		// If a positions file exists, generate an ArrayList containing molecule/component names and positions.
 		// If it doesn't exist, then return null
@@ -41,15 +42,25 @@ public class ContactMapPosition {
 					// Ignore the blank line that may exist at the end of the file
 					if (!(line.equals(""))) {
 						st = new StringTokenizer(line, "|");
-	
-						// The first token is the molecule name, the second is the component name, the third is the x-position, the fourth is the y-position
-						molecule = st.nextToken();
-						component = st.nextToken();
-						x = st.nextToken();
-						y = st.nextToken();
-			
+						
+						// If there are 5 tokens, then this is the special case bounds line
+						if (st.countTokens() == 6) {
+							molecule = st.nextToken();
+							component = line;
+							id = "";
+							x = "0";
+							y = "0";
+						} else {
+							// The first token is the molecule name, the second is the component name, the third is the x-position, the fourth is the y-position
+							molecule = st.nextToken();
+							component = st.nextToken();
+							id = st.nextToken();
+							x = st.nextToken();
+							y = st.nextToken();
+						} //if-else
+						
 						// Create a new Position object to add the (x,y) values to
-						NodePosition myPosition = new NodePosition(molecule, component, Double.parseDouble(x), Double.parseDouble(y));
+						NodePosition myPosition = new NodePosition(molecule, component, id, Double.parseDouble(x), Double.parseDouble(y));
 				
 						// Store the <molecule, Position> in the ArrayList
 						positionMap.add(myPosition);
@@ -74,8 +85,9 @@ public class ContactMapPosition {
 	//public void writeNodeLocations(String filepath, ContactMapVisual visualization) {
 	public static void writeNodeLocations(String filepath, Visualization visualization) {
 		ArrayList<NodePosition> positionMap = generatePositionList(visualization);
+		Rectangle2D bounds = visualization.getBounds(COMPONENT_GRAPH);
 		String newFilepath = modifyFilePath(filepath);
-		saveMoleculePositions(newFilepath, positionMap);
+		saveMoleculePositions(newFilepath, positionMap, bounds);
 	} //writeNodeLocations
 	
 	public static String modifyFilePath(String bnglFilePath) {
@@ -94,7 +106,7 @@ public class ContactMapPosition {
 		return positionFilePath.toString();
 	} //modifyFilePath
 		
-	public static void saveMoleculePositions(String filepath, ArrayList<NodePosition> positionMap) {
+	public static void saveMoleculePositions(String filepath, ArrayList<NodePosition> positionMap, Rectangle2D bounds) {
 		StringBuilder sb;
 		
 		try {
@@ -110,6 +122,8 @@ public class ContactMapPosition {
 				sb.append("|");
 				sb.append(pos.getComponent());
 				sb.append("|");
+				sb.append(pos.getID());
+				sb.append("|");
 				sb.append(pos.getX());
 				sb.append("|");
 				sb.append(pos.getY());
@@ -117,6 +131,22 @@ public class ContactMapPosition {
 				
 				out.write(sb.toString());
 			} //for
+			
+			sb = new StringBuilder();
+			sb.append("BOUNDS");
+			sb.append("|");
+			sb.append(bounds.getCenterX());
+			sb.append("|");
+			sb.append(bounds.getCenterY());
+			sb.append("|");
+			sb.append(bounds.getHeight());
+			sb.append("|");
+			sb.append(bounds.getWidth());
+			sb.append("|");
+			sb.append("BOUNDS");
+			sb.append("\n");
+			
+			out.write(sb.toString());
 			
 			// Close the output stream
 			out.close();
@@ -152,16 +182,17 @@ public class ContactMapPosition {
 			component = item.getString(VisualItem.LABEL);
 			
 			// Correction for the null items
-			if (molecule == null) {
+			/*if (molecule == null) {
+				//continue;
 				molecule = id;
 				component = id;
-			} //if
+			}*/ //if
 			
 			x = item.getX();
 			y = item.getY();
 			
 			//temp = new NodePosition(molecule, component, x, y);
-			temp = new NodePosition(molecule, component, x, y);
+			temp = new NodePosition(molecule, component, id, x, y);
 			positionMap.add(temp);	
 			
 		} //while

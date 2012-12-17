@@ -20,7 +20,11 @@
             id="rulebender.perspective"
             name="Default">
       </perspective>
-
+      <perspective
+            class="rulebender.perspective.Custom2Perspective"
+            id="rulebender.perspective.Custom2"
+            name="Custom2">
+      </perspective>
    </extension>
    <extension
          point="org.eclipse.ui.perspectiveExtensions">
@@ -105,7 +109,25 @@
                visible="true">
          </view>
       </perspectiveExtension>
-
+      <perspectiveExtension
+            targetID="rulebender.perspective.Custom2">
+         <view
+               id="rulebender.cnf.CommonNavigator"
+               minimized="false"
+               ratio="0.2f"
+               relationship="left"
+               relative="org.eclipse.ui.editorss"
+               visible="true">
+         </view>
+         <view
+               id="rulebender.simulationjournaling.view.smallmultiplesview"
+               minimized="false"
+               ratio="0.1f"
+               relationship="right"
+               relative="org.eclipse.ui.editorss"
+               visible="true">
+         </view>
+      </perspectiveExtension>
    </extension>
    <extension
          point="org.eclipse.ui.views">
@@ -434,7 +456,7 @@
          </property>
          <property
                name="aboutText"
-               value="RuleBender 2.0r271&#x0A;&#x0A;RuleBender is a front end to cell signaling simulation that is developed at the University of Pittsburgh in the Computer Science Viz Lab.  The BioNetGen simulator is a product of the Faeder Lab in the Systems and Computational Biology Department.  NFSim is developed by the Emonet Lab at Yale.&#x0A;&#x0A;Please send all feedback and questions to help@rulebender.org.">
+               value="RuleBender 2.0r278&#x0A;&#x0A;RuleBender is a front end to cell signaling simulation that is developed at the University of Pittsburgh in the Computer Science Viz Lab.  The BioNetGen simulator is a product of the Faeder Lab in the Systems and Computational Biology Department.  NFSim is developed by the Emonet Lab at Yale.&#x0A;&#x0A;Please send all feedback and questions to help@rulebender.org.">
          </property>
          <property
                name="windowImages"

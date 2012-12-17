@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="RuleBender" id="rulebender.product" application="rulebender.application" useFeatures="false" includeLaunchers="true">
+<product name="RuleBender" id="rulebender.product" application="rulebender.application" version="2.0.278" useFeatures="false" includeLaunchers="true">
 
    <aboutInfo>
       <text>
@@ -41,6 +41,7 @@ Please send all feedback and questions to help@rulebender.org.
       <solaris include="false">org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6</solaris>
       <windows include="false">org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6</windows>
    </vm>
+
 
    <plugins>
       <plugin id="com.ibm.icu"/>

@@ -43,6 +43,7 @@ import rulebender.core.prefuse.networkviewer.contactmap.JMenuItemRuleHolder;
 import rulebender.core.prefuse.networkviewer.contactmap.VisualRule;
 import rulebender.preferences.OS;
 import rulebender.preferences.PreferencesClerk;
+import rulebender.simulationjournaling.comparison.AdjacencyMatrix;
 
 
 import prefuse.Constants;
@@ -111,6 +112,9 @@ public class CMapClickControlDelegate extends ControlAdapter implements ISelecti
 	
 	// The path of the source bngl file.
 	private String m_sourcePath;
+	
+	// Sets to true when the mouse is being dragged, so the position file isn't saved on every click
+	private boolean beingDragged = false;
 	
 	/**
 	 * Constructor: Takes a view, a source path, and a Visualization.
@@ -387,6 +391,11 @@ public class CMapClickControlDelegate extends ControlAdapter implements ISelecti
 			// Clear the selections.  
 			clearSelection(true);
 			setSelection(new StructuredSelection());
+			
+			// Call save position function, save node positions on mouse-up		
+			if (e.getID() == MouseEvent.MOUSE_RELEASED) {
+				ContactMapPosition.writeNodeLocations(m_sourcePath, m_vis);
+			} //if
 		} 
 	}
 	
@@ -1098,7 +1107,7 @@ public class CMapClickControlDelegate extends ControlAdapter implements ISelecti
 	public void itemReleased(VisualItem item, MouseEvent e) {
 		// Call save position function, save node positions on mouse-up		
 		if (e.getID() == MouseEvent.MOUSE_RELEASED) {
-			ContactMapPosition.writeNodeLocations(m_sourcePath, m_vis);
+			ContactMapPosition.writeNodeLocations(m_sourcePath, m_vis);			
 		} //if
 	} //itemReleased
 	
@@ -1133,9 +1142,17 @@ public class CMapClickControlDelegate extends ControlAdapter implements ISelecti
 		activeTooltip.startShowing((int) e.getX() + 10, (int) e.getY());
 	}
  
-	public void mouseDragged(MouseEvent e) 
-	{		
-    }
+	public void mouseDragged(MouseEvent e) {		
+		beingDragged = true;
+    } //mouseDragged
+	
+	public void mouseReleased(MouseEvent e) {
+		if (beingDragged) {
+			// Save the positions and boundaries of the contact map, and reset the flag
+			ContactMapPosition.writeNodeLocations(m_sourcePath, m_vis);
+			beingDragged = false;
+		} //if
+	} //mouseReleased
 	
 	public void mouseWheelMoved(MouseWheelEvent e) 
 	{
