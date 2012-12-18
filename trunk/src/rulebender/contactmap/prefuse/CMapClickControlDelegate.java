@@ -43,7 +43,6 @@ import rulebender.core.prefuse.networkviewer.contactmap.JMenuItemRuleHolder;
 import rulebender.core.prefuse.networkviewer.contactmap.VisualRule;
 import rulebender.preferences.OS;
 import rulebender.preferences.PreferencesClerk;
-import rulebender.simulationjournaling.comparison.AdjacencyMatrix;
 
 
 import prefuse.Constants;
