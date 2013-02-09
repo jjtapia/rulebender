@@ -20,11 +20,7 @@
             id="rulebender.perspective"
             name="Default">
       </perspective>
-      <perspective
-            class="rulebender.perspective.Custom2Perspective"
-            id="rulebender.perspective.Custom2"
-            name="Custom2">
-      </perspective>
+
    </extension>
    <extension
          point="org.eclipse.ui.perspectiveExtensions">
