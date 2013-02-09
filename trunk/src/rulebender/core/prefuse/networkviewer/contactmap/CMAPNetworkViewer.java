@@ -57,6 +57,9 @@ public class CMAPNetworkViewer
 	// Filepath to the BNGL source
 	private String m_filePath;
 	
+	// Filepath to the position file
+	private String m_posPath;
+	
 	// The visualization itself. We give the data to this, set
 	// its renderers and whatnot.
 	private Visualization vis;
@@ -142,6 +145,10 @@ public class CMAPNetworkViewer
 	public void setFilepath(String path) {
 		m_filePath = path;
 	} //setFilepath
+	
+	public void setPosPath(String path) {
+		m_posPath = path;
+	} //setPosPath
 	
 	/**
 	 * Set the click control delegate that will handle the clicks.
@@ -403,7 +410,13 @@ public class CMAPNetworkViewer
 		f.getForceSimulator().setSpeedLimit(3);
 		
 		// Pass in filepath to force simulator
-		f.setPositionFilepath(m_filePath);
+		// Check to see if a position file is given.  If so, pass in the position file.  Otherwise, pass in the BNGL source path.
+		if (m_posPath == null) {
+			f.setPositionFilepath(m_filePath);
+		} else {
+			f.setPositionFilepath(m_posPath);			
+		} //if-else
+
 		/*		
 		// set bounds based on graph size		
 		Rectangle2D bounds;
@@ -418,7 +431,7 @@ public class CMAPNetworkViewer
 		}
 		f.setEnforceBounds(bounds);
 		*/
-		f.setReferrer((VisualItem)vis.items().next());
+		//f.setReferrer((VisualItem)vis.items().next());
 		
 		// Currently the anchor is only used for runonce mode
 		//f.setLayoutAnchor(new Point2D.Double(500, 600));
@@ -432,7 +445,7 @@ public class CMAPNetworkViewer
 		// I am probably doing twice as much work by adding this here and to the
 		// color action list,
 		// but otherwise I am having trouble getting it to update.
-
+	
 		layout.add(new AggregateLayout(AGG));
 		layout.add(new LabelLayout(AGG_DEC));
 		layout.add(new RepaintAction());

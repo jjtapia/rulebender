@@ -15,6 +15,7 @@ import prefuse.util.PrefuseLib;
 import prefuse.visual.VisualItem;
 
 import rulebender.contactmap.models.NodePosition;
+import rulebender.simulationjournaling.model.MoleculeCounter;
 
 public class ContactMapPosition {
 	
@@ -23,12 +24,20 @@ public class ContactMapPosition {
 	public static ArrayList<NodePosition> loadMoleculePositions(String filepath) {
 
 		ArrayList<NodePosition> positionMap = new ArrayList<NodePosition>();
-		File positionsFile = new File(modifyFilePath(filepath));
+		File positionsFile;
 		StringTokenizer st;
 		Scanner s;
 		String line, molecule, component, id = null, x, y;
 				
-		// If a positions file exists, generate an ArrayList containing molecule/component names and positions.
+		// Test to see if the parameter is a .BNGL file that needs to be modified, or if it is a .POS file is given and can be loaded directly  
+		if ((filepath.substring(filepath.length()-5, filepath.length()).equals(".bngl")) || (filepath.substring(filepath.length()-5, filepath.length()).equals(".BNGL"))) {
+			positionsFile = new File(modifyFilePath(filepath));
+		} else {
+			positionsFile = new File(filepath);
+		} //if-else
+		
+		
+		// If the positionsFile exists, generate an ArrayList containing molecule/component names and positions.
 		// If it doesn't exist, then return null
 		if (positionsFile.exists()) {
 			
@@ -51,7 +60,7 @@ public class ContactMapPosition {
 							x = "0";
 							y = "0";
 						} else {
-							// The first token is the molecule name, the second is the component name, the third is the x-position, the fourth is the y-position
+							// The first token is the molecule name, the second is the component name, the third is the ID, the fourth is the x-position, the fifth is the y-position
 							molecule = st.nextToken();
 							component = st.nextToken();
 							id = st.nextToken();
@@ -105,7 +114,7 @@ public class ContactMapPosition {
 		
 		return positionFilePath.toString();
 	} //modifyFilePath
-		
+	
 	public static void saveMoleculePositions(String filepath, ArrayList<NodePosition> positionMap, Rectangle2D bounds) {
 		StringBuilder sb;
 		
@@ -164,8 +173,11 @@ public class ContactMapPosition {
 		ArrayList<NodePosition> positionMap = new ArrayList<NodePosition>();
 		NodePosition temp;
 		double x, y;
-		String molecule, component, id;
+		String molecule, component, id = "0";
 		StringTokenizer st;
+		
+		ArrayList<MoleculeCounter> tracker = new ArrayList<MoleculeCounter>();
+		boolean found = false;
 		
 		// Get the collection of all nodes from the visualization
 		//Hashtable<String, Node> nodeCollection = visualization.getNodeIndex();
@@ -177,28 +189,53 @@ public class ContactMapPosition {
 		while (iter.hasNext()) {
 			VisualItem item = (VisualItem) iter.next();
 			
-			id = item.getString("ID");
+			//id = item.getString("ID");
 			molecule = item.getString("molecule");
 			component = item.getString(VisualItem.LABEL);
 			
 			// Correction for the null items
-			/*if (molecule == null) {
+			if (molecule == null) {
 				//continue;
-				molecule = id;
-				component = id;
-			}*/ //if
+				molecule = "null";
+				//component = id;
+			} //if
 			
 			x = item.getX();
 			y = item.getY();
 			
-			//temp = new NodePosition(molecule, component, x, y);
+			// Keep track of how many of each molecule/component pair have been found
+			for (int i = 0; i < tracker.size(); i++) {
+				if ((molecule.equals(tracker.get(i).getMolecule())) && (component.equals(tracker.get(i).getComponent()))) {
+					MoleculeCounter tempMol = new MoleculeCounter(molecule, component, tracker.get(i).getCount() + 1);
+
+					//tracker.get(i).setCount(tracker.get(i).getCount() + 1);
+					id = Integer.toString(tracker.get(i).getCount() + 1);
+
+					tracker.remove(i);
+					tracker.add(tempMol);
+					
+					found = true;
+					break;
+				} //if
+			} //for
+			
+			// If we find a new molecule/component pair, add a new item to the array
+			if (!found) {
+				MoleculeCounter tempMol = new MoleculeCounter(molecule, component, 0);
+				tracker.add(tempMol);
+				id = Integer.toString(0);
+			} //if
+			
+			//temp = new NodePosition(molecule, component, x, y); //old position line
 			temp = new NodePosition(molecule, component, id, x, y);
 			positionMap.add(temp);	
+			found = false;
 			
 		} //while
 		
 		return positionMap;
 		
 	} //generatePositionList
+	
 	
 } //ContactMapPosition

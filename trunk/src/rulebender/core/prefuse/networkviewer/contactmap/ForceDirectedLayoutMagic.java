@@ -21,6 +21,7 @@ import prefuse.visual.EdgeItem;
 import prefuse.visual.NodeItem;
 import prefuse.visual.VisualItem;
 import rulebender.contactmap.models.NodePosition;
+import rulebender.simulationjournaling.model.MoleculeCounter;
 
 /**
  * A modification of the ForceDirectedLayout, which allows to set all edges
@@ -49,6 +50,8 @@ public class ForceDirectedLayoutMagic extends Layout {
 	protected String m_edgeGroup;
 	
 	private String m_filePath;
+	
+	private boolean positionMapExists = false;
 
 	/**
 	 * Create a new ForceDirectedLayoutMagic. By default, this layout will not
@@ -283,6 +286,7 @@ public class ForceDirectedLayoutMagic extends Layout {
 			
 			
 			// Retrieve the node positions from the file
+			// ContactMapPosition class will determine whether it's a BNGL or POS path
 			ArrayList<NodePosition> positionMap = ContactMapPosition.loadMoleculePositions(m_filePath);
 			
 			// Temp find the average of all positions, and set that to the anchor point
@@ -292,6 +296,13 @@ public class ForceDirectedLayoutMagic extends Layout {
 			String boundsLine = null;
 			
 			if (positionMap != null) {
+				positionMapExists = true; // Note that we have position info for the nodes
+				
+				// Test - initialize the simulator, see if that fixes things
+				m_fsim.clear();
+				long timestep = 500L;
+				initSimulator(m_fsim); 
+				
 				Iterator fileIter = positionMap.iterator();
 				while (fileIter.hasNext()) {
 					NodePosition fileItem = (NodePosition) fileIter.next();
@@ -363,6 +374,9 @@ public class ForceDirectedLayoutMagic extends Layout {
 			// Skip this position loader if the position file doesn't exist (or if a problem occurred when loading the positionMap)
 			if (positionMap != null) {
 			
+				ArrayList<MoleculeCounter> tracker = new ArrayList<MoleculeCounter>();
+				boolean found = false;
+				
 				// Iterate over all nodes in the graph
 				Iterator iter = getMagicIterator(m_nodeGroup);
 				while (iter.hasNext()) {
@@ -379,6 +393,29 @@ public class ForceDirectedLayoutMagic extends Layout {
 						//component = "IGNORE";
 					} //if					
 					
+					// Add the current molecule to the tracker
+					for (int i = 0; i < tracker.size(); i++) {
+						if ((molecule.equals(tracker.get(i).getMolecule())) && (component.equals(tracker.get(i).getComponent()))) {
+							MoleculeCounter tempMol = new MoleculeCounter(molecule, component, tracker.get(i).getCount() + 1);
+
+							//tracker.get(i).setCount(tracker.get(i).getCount() + 1);
+							id = Integer.toString(tracker.get(i).getCount() + 1);
+
+							tracker.remove(i);
+							tracker.add(tempMol);
+							
+							found = true;
+							break;
+						} //if
+					} //for
+					
+					// If we find a new molecule/component pair, add a new item to the array
+					if (!found) {
+						MoleculeCounter tempMol = new MoleculeCounter(molecule, component, 0);
+						tracker.add(tempMol);
+						id = Integer.toString(0);
+					} //if
+					
 					// Iterate over all node positions in the file
 					Iterator fileIter = positionMap.iterator();
 					while (fileIter.hasNext()) {
@@ -392,24 +429,28 @@ public class ForceDirectedLayoutMagic extends Layout {
 							break;
 						} //if
 					} //while
+					
+					found = false;
 				
 				} //while
 			
-			} //if
-			
-
-			m_fsim.clear();
-			long timestep = 500L;
-			initSimulator(m_fsim);
-
-			for (int i = 0; i < m_iterations; i++) {
-				// use an annealing schedule to set time step
-				timestep *= (1.0 - i / (double) m_iterations);
-				long step = 30 + timestep;
-				// run simulator
-				m_fsim.runSimulator(step);
+			} else { 
 				
-			}
+				// Run force computations if no position file exists
+				m_fsim.clear();
+				long timestep = 500L;
+				initSimulator(m_fsim);
+
+				for (int i = 0; i < m_iterations; i++) {
+					// use an annealing schedule to set time step
+					timestep *= (1.0 - i / (double) m_iterations);
+					long step = 30 + timestep;
+					// run simulator
+					m_fsim.runSimulator(step);
+				
+				} //for
+			} //if-else
+			
 			updateNodePositions();
 			moveToCenter();
 		}
@@ -451,25 +492,33 @@ public class ForceDirectedLayoutMagic extends Layout {
 
 		while (iter.hasNext()) {
 			VisualItem item = (VisualItem) iter.next();
-			ForceItem fitem = (ForceItem) item.get(FORCEITEM);
+			
+			//try {
+				ForceItem fitem = (ForceItem) item.get(FORCEITEM);
 
-			if (item.isFixed()) {
-				// clear any force computations
-				fitem.force[0] = 0.0f;
-				fitem.force[1] = 0.0f;
-				fitem.velocity[0] = 0.0f;
-				fitem.velocity[1] = 0.0f;
+				if (item.isFixed()) {
+					// clear any force computations
+					fitem.force[0] = 0.0f;
+					fitem.force[1] = 0.0f;
+					fitem.velocity[0] = 0.0f;
+					fitem.velocity[1] = 0.0f;
+				
+					if (Double.isNaN(item.getX())) {
+						super.setX(item, referrer, 0.0);
+						super.setY(item, referrer, 0.0);
+					} //if
+					continue;
+				} //if
 
-				if (Double.isNaN(item.getX())) {
-					super.setX(item, referrer, 0.0);
-					super.setY(item, referrer, 0.0);
-				}
-				continue;
-			}
-
-			double x = fitem.location[0];
-			double y = fitem.location[1];
-
+				double x = fitem.location[0];
+				double y = fitem.location[1];
+			//} catch (Exception e) {
+				//TODO: figure out why ForceItem line crashes on every iteration after the first...
+				//x = item.getX();
+				//y = item.getY();
+			//} //try-catch
+						
+			
 			if (m_enforceBounds && bounds != null) {
 				Rectangle2D b = item.getBounds();
 				double hw = b.getWidth() / 2;
@@ -482,12 +531,12 @@ public class ForceDirectedLayoutMagic extends Layout {
 					y = y2 - hh;
 				if (y - hh < y1)
 					y = y1 + hh;
-			}
+			} //if
 
 			// set the actual position
 			super.setX(item, referrer, x);
 			super.setY(item, referrer, y);
-		}
+		} //while
 	}
 
 	private void moveToCenter() {
@@ -510,11 +559,11 @@ public class ForceDirectedLayoutMagic extends Layout {
 			double x = item.getX();
 			double y = item.getY();
 			
-			/*
-			if (x > 453) {
-				x++;
-			}
-			*/
+			
+			//if (x > 453) {
+			//	x++;
+			//}
+			
 
 			// find max x
 			if (x > x1) {
