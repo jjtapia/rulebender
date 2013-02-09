@@ -4,6 +4,8 @@ import java.awt.Dimension;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import javax.swing.JLabel;
+
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.awt.SWT_AWT;
 import org.eclipse.swt.events.ControlAdapter;
@@ -124,7 +126,9 @@ public class SmallMultiplesView extends ViewPart {
 	 */
 	public void setSmallMultiple(prefuse.Display d) {
 		if (d == null) {
-			// TODO  Set a label with a message about not data for the contact map or something like that
+			JLabel temp = new JLabel();
+			temp.setText("The Contact Map data for this model failed to load properly.  Please try again.");
+			smPanel.add(temp);
 		} //if
 		
 		// Set the display in the layered pane

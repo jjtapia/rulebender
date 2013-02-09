@@ -8,8 +8,7 @@ import rulebender.core.prefuse.overview.FitOverviewListener;
 import rulebender.core.prefuse.overview.OverviewControl;
 
 /**
- *
- * @author Juanjo Vega
+ * @author John Wenskovitch
  */
 public class SmallMultipleOverview extends Display {
 

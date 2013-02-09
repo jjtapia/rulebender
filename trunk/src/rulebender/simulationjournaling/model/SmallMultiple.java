@@ -111,7 +111,7 @@ public class SmallMultiple {
     // The set contains all the involved nodes in a rule.
     private Hashtable<Set<Node>, Node> m_hubNodes;
 	
-	public SmallMultiple(SmallMultiplesView view, ContactMapModel model_in, Dimension cMapSize) 
+	public SmallMultiple(ContactMapModel model_in, Dimension cMapSize, String layoutPath) 
 	{
 
 		m_model = model_in;
@@ -132,7 +132,6 @@ public class SmallMultiple {
 		// Ideally I wanted to remove all interaction with the Visualization object,
 		// but I didn't quite finish it yet.  
 		m_vis = m_networkViewer.getVisualization();
-		
 		
 		// Graphs (and all other data structures in prefuse) are table-based data structures.  Each node is a row in the
 		// table and the columns hold data about the node.  Here we add a 
@@ -570,6 +569,9 @@ public class SmallMultiple {
 		
 		// Pass the BNGL source file into the CMAPNetworkViewer object
 		m_networkViewer.setFilepath(m_model.getSourcePath());
+		
+		// Pass the POS source file into the CMAPNetworkViewer object
+		m_networkViewer.setPosPath(layoutPath);
 					
 		m_networkViewer.build();
 		
