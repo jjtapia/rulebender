@@ -16,11 +16,52 @@ import rulebender.editors.common.VariableRule;
 public class BNGLScanner extends RuleBasedScanner
 {
 	// Define the keywords.
-	private static String[] words = { "begin", "end", "parameters", "molecule",
-		"Molecules", "types", "observables", "species", "Species", "reaction", "reactions",
-		"rules", "reaction_rules", "groups", "rates", "reaction_rates", "MatchOnce", "substanceUnits", "setOption",
-		"model", "generate_network", "setConcentration", "resetConcentrations", "saveConcentrations",
-		"writeSBML", "writeMfile", "simulate_ode", "simulate_ssa", "compartments"};
+	private static String[] words = { 
+		"begin", 
+		"end", 
+		"model", 
+		"parameters", 
+		"compartments", 
+		"molecule", 
+		"types", 
+		"seed", 
+		"species", 
+		"observables", 
+		"functions",
+		"reaction", 
+		"rules", 
+//		"reaction_rules", 
+		"population", 
+		"maps",
+		"actions",
+		"reactions", // NET file block
+		"groups",    // NET file block
+//		"rates", 
+//		"reaction_rates", 
+		"Molecules", // Observable type
+		"Species",   // Observable type
+		"MatchOnce", 
+		"DeleteMolecules",
+		"MoveConnected",
+		"include_reactants",
+		"exclude_reactants",
+		"include_products",
+		"exclude_products"
+//		"substanceUnits", 
+//		"setOption",
+//		"generate_network", 
+//		"setConcentration", 
+//		"resetConcentrations", 
+//		"saveConcentrations",
+//		"writeSBML", 
+//		"writeMfile", 
+//		"writeMexfile",
+//		"simulate_ode", 
+//		"simulate_ssa", 
+//		"simulate_pla", 
+//		"simulate_nf",
+//		"simulate"
+		};
 	
 	
 	/**
