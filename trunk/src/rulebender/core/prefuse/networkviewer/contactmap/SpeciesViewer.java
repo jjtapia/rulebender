@@ -368,6 +368,8 @@ public class SpeciesViewer
 		
 		// Currently the anchor is only used for runonce mode
 		f.setLayoutAnchor(new Point2D.Double(500, 600));
+		
+		f.setPositionFilepath(null);
 
 		layout.add(f);
 		

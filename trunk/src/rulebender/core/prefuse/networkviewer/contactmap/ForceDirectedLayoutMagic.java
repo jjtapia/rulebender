@@ -287,21 +287,26 @@ public class ForceDirectedLayoutMagic extends Layout {
 			
 			// Retrieve the node positions from the file
 			// ContactMapPosition class will determine whether it's a BNGL or POS path
-			ArrayList<NodePosition> positionMap = ContactMapPosition.loadMoleculePositions(m_filePath);
+			ArrayList<NodePosition> positionMap;
+			try {
+				 positionMap = ContactMapPosition.loadMoleculePositions(m_filePath);
+			} catch (Exception e) {
+				positionMap = null;
+			} //try-catch
 			
 			// Temp find the average of all positions, and set that to the anchor point
 			float x = 0, y = 0;
 			String mol = null;
 			int count = 0;
 			String boundsLine = null;
+
+			// Initialize the simulator
+			m_fsim.clear();
+			long timestep = 500L;
+			initSimulator(m_fsim); 
 			
 			if (positionMap != null) {
 				positionMapExists = true; // Note that we have position info for the nodes
-				
-				// Test - initialize the simulator, see if that fixes things
-				m_fsim.clear();
-				long timestep = 500L;
-				initSimulator(m_fsim); 
 				
 				Iterator fileIter = positionMap.iterator();
 				while (fileIter.hasNext()) {
@@ -374,71 +379,82 @@ public class ForceDirectedLayoutMagic extends Layout {
 			// Skip this position loader if the position file doesn't exist (or if a problem occurred when loading the positionMap)
 			if (positionMap != null) {
 			
-				ArrayList<MoleculeCounter> tracker = new ArrayList<MoleculeCounter>();
-				boolean found = false;
-				
-				// Iterate over all nodes in the graph
-				Iterator iter = getMagicIterator(m_nodeGroup);
-				while (iter.hasNext()) {
-					VisualItem item = (NodeItem) iter.next();
-					
-					// Get the properties of that VisualItem
-					String id = item.getString("ID");
-					String molecule = item.getString("molecule");
-					String component = item.getString(VisualItem.LABEL);
-				
-					// Correction for the null items
-					if (molecule == null) {
-						molecule = "null";
-						//component = "IGNORE";
-					} //if					
-					
-					// Add the current molecule to the tracker
-					for (int i = 0; i < tracker.size(); i++) {
-						if ((molecule.equals(tracker.get(i).getMolecule())) && (component.equals(tracker.get(i).getComponent()))) {
-							MoleculeCounter tempMol = new MoleculeCounter(molecule, component, tracker.get(i).getCount() + 1);
-
-							//tracker.get(i).setCount(tracker.get(i).getCount() + 1);
-							id = Integer.toString(tracker.get(i).getCount() + 1);
-
-							tracker.remove(i);
-							tracker.add(tempMol);
+				for (int j = 0; j < m_iterations; j++) {
+					// use an annealing schedule to set time step
+					timestep *= (1.0 - j / (double) m_iterations);
+					long step = 30 + timestep;
+					// run simulator
+					m_fsim.runSimulator(step);
 							
-							found = true;
-							break;
-						} //if
-					} //for
-					
-					// If we find a new molecule/component pair, add a new item to the array
-					if (!found) {
-						MoleculeCounter tempMol = new MoleculeCounter(molecule, component, 0);
-						tracker.add(tempMol);
-						id = Integer.toString(0);
-					} //if
-					
-					// Iterate over all node positions in the file
-					Iterator fileIter = positionMap.iterator();
-					while (fileIter.hasNext()) {
-						NodePosition fileItem = (NodePosition) fileIter.next();
+					// Molecule tracker, to keep track of how many times we've seen each molecule/component pair
+					ArrayList<MoleculeCounter> tracker = new ArrayList<MoleculeCounter>();
+					boolean found = false;
 				
-						// If we found a matching ID, set the position of that VisualItem and fix the item in place 
-						if ((molecule.equals(fileItem.getMolecule())) && (component.equals(fileItem.getComponent())) && (id.equals(fileItem.getID()))) {
-							item.setX(fileItem.getX());
-							item.setY(fileItem.getY());
-							item.setFixed(true);
-							break;
+					// Iterate over all nodes in the graph
+					Iterator iter = getMagicIterator(m_nodeGroup);
+					while (iter.hasNext()) {
+						VisualItem item = (NodeItem) iter.next();
+						
+						item.setFixed(false);
+						
+						// Get the properties of that VisualItem
+						String id = item.getString("ID");
+						String molecule = item.getString("molecule");
+						String component = item.getString(VisualItem.LABEL);
+						
+						// Correction for the null items
+						if (molecule == null) {
+							molecule = "null";
+							//component = "IGNORE";
+						} //if					
+					
+						// Add the current molecule to the tracker
+						for (int i = 0; i < tracker.size(); i++) {
+							if ((molecule.equals(tracker.get(i).getMolecule())) && (component.equals(tracker.get(i).getComponent()))) {
+								MoleculeCounter tempMol = new MoleculeCounter(molecule, component, tracker.get(i).getCount() + 1);
+
+								id = Integer.toString(tracker.get(i).getCount() + 1);
+
+								tracker.remove(i);
+								tracker.add(tempMol);
+							
+								found = true;
+								break;
+							} //if
+						} //for
+					
+						// If we find a new molecule/component pair, add a new item to the array
+						if (!found) {
+							MoleculeCounter tempMol = new MoleculeCounter(molecule, component, 0);
+							tracker.add(tempMol);
+							id = Integer.toString(0);
 						} //if
+					
+						// Iterate over all node positions in the file
+						Iterator fileIter = positionMap.iterator();
+						while (fileIter.hasNext()) {
+							NodePosition fileItem = (NodePosition) fileIter.next();
+				
+							// If we found a matching ID, set the position of that VisualItem and fix the item in place 
+							if ((molecule.equals(fileItem.getMolecule())) && (component.equals(fileItem.getComponent())) && (id.equals(fileItem.getID()))) {
+								item.setX(fileItem.getX());
+								item.setY(fileItem.getY());
+								item.setFixed(true);
+								break;
+							} //if
+						} //while
+					
+						found = false;
+				
 					} //while
-					
-					found = false;
 				
-				} //while
+				} //for
 			
 			} else { 
 				
 				// Run force computations if no position file exists
 				m_fsim.clear();
-				long timestep = 500L;
+				timestep = 500L;
 				initSimulator(m_fsim);
 
 				for (int i = 0; i < m_iterations; i++) {
