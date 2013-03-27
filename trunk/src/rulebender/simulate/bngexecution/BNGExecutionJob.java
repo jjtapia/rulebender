@@ -8,6 +8,7 @@ import java.util.Vector;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
@@ -162,29 +163,32 @@ public class BNGExecutionJob extends Job
 		final String resultsFileToOpen = m_resultsPath + resultsFiles.get(i);
 		
 	    // Calculate the path of the project folder for RuleBender
-	    String workspacePath = Platform.getInstanceLocation().getURL().getPath()
-	        .toString();
+	    //String workspacePath = Platform.getLocation().toString();
 	    // System.out.println("workspacePath: " + workspacePath);
-	    String projectPath = m_iFile.getProject().getLocation().toFile().getName();
+	    //String projectPath = m_iFile.getProject().getLocation().toFile().getName();
 	    // System.out.println("projectPath: " + projectPath);
-	    String completeProjectPath = new String(workspacePath + projectPath);
+	    //String completeProjectPath = new String(workspacePath + projectPath);
 	    // System.out.println("completeProjectPath = " + completeProjectPath);
 	
 	    // Turn absolute gdat path into a path relative to RB project folder
-	    final String relGdatFileToOpen = resultsFileToOpen.replaceAll(
-	        completeProjectPath, "");
+	    //final String relGdatFileToOpen = resultsFileToOpen.replaceAll(
+	        //completeProjectPath, "");
 	    // System.out.println("relGdatFileToOpen: " + relGdatFileToOpen);
 	
 	    // Prepare to pass off file to an editor
-	    IPath path = new Path(relGdatFileToOpen);
-	    IFile file = m_iFile.getProject().getFile(path);
-	
-	    if (!file.exists())
+	    //IPath path = new Path(resultsFileToOpen);
+	    //IFile file = m_iFile.getProject().getFile(path);
+	    
+	    IWorkspace workspace = ResourcesPlugin.getWorkspace();   
+	    IPath location = Path.fromOSString(resultsFileToOpen);
+	    IFile iFile = workspace.getRoot().getFileForLocation(location);
+	    
+	    if (!iFile.exists())
 	    {
 	      return;
 	    }
 	
-	    final IEditorInput editorInput = new FileEditorInput(file);
+	    final IEditorInput editorInput = new FileEditorInput((IFile) iFile);
 	
 	    // Figure out what page is open right now. There must be a better way to do
 	    // this...
