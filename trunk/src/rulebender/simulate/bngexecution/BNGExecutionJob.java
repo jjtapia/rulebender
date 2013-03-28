@@ -1,10 +1,14 @@
 package rulebender.simulate.bngexecution;
 
 import java.io.File;
-
 import java.io.FileNotFoundException;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
 
 import java.util.Vector;
+
+import java.nio.channels.FileChannel;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
@@ -79,14 +83,14 @@ public class BNGExecutionJob extends Job
 
     // Create the directory if necessary.
     (new File(m_resultsPath)).mkdirs();
-
+    
     // MONITOR
     monitor.setTaskName("Generating Scripts...");
     monitor.worked(1);
 
     SimulateCommand simCommand = new SimulateCommand(m_absoluteFilePath,
         m_bngFullPath, m_resultsPath, true);
-
+    
     // MONITOR
     monitor.setTaskName("Running Simulation...");
     monitor.worked(1);
@@ -94,7 +98,7 @@ public class BNGExecutionJob extends Job
     // Run it in the commandRunner
     CommandRunner<SimulateCommand> runner = new CommandRunner<SimulateCommand>(
         simCommand, new File(m_resultsPath), m_relativeFilePath, monitor);
-
+    
     try
     {
       runner.run();
@@ -115,13 +119,17 @@ public class BNGExecutionJob extends Job
     {
       // MONITOR
    	  monitor.setTaskName("Opening Results File(s)...");
-//      monitor.setTaskName("Done.");
       monitor.worked(1);
     }
 
+    System.out.println("Copying " + m_absoluteFilePath + " to " + m_resultsPath);
+	try {
+		copyBNGLFileToResults();
+	} catch (IOException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	}
     updateTrees();
-//    monitor.setTaskName("Opening Results File(s)");
-//    monitor.worked(1);
     showResults();
     monitor.setTaskName("Done.");
     monitor.worked(1);
@@ -131,7 +139,7 @@ public class BNGExecutionJob extends Job
 
 
   /**
-   * Display the generated gdat file after simulation
+   * Display the generated GDAT and/or SCAN files after simulation
    */
   private void showResults()
   {
@@ -227,7 +235,57 @@ public class BNGExecutionJob extends Job
 	}
   }
 
+  
+  private void copyBNGLFileToResults() throws IOException {
+	  
+	  File sourceFile = new File(m_absoluteFilePath);
+	  File destFile = new File(m_resultsPath + (new File(m_absoluteFilePath).getName()));
+	  
+	  // Don't copy BNGL if it already exists in the results directory, e.g., due to call to writeModel()
+	  if(!destFile.exists()) {
+		  try {
+			  destFile.createNewFile();
+		  } catch (IOException e) {
+			  // TODO Auto-generated catch block
+			  e.printStackTrace();
+		  }
+	  
+		  FileChannel source = null;
+		  FileChannel destination = null;
+	
+		  try {
+			  source = new FileInputStream(sourceFile).getChannel();
+			  destination = new FileOutputStream(destFile).getChannel();
+			  destination.transferFrom(source, 0, source.size());
+		  } catch (FileNotFoundException e) {
+			  // TODO Auto-generated catch block
+			  e.printStackTrace();
+		  } catch (IOException e) {
+			  // TODO Auto-generated catch block
+			  e.printStackTrace();
+		  }
+		  finally {
+			  if(source != null) {
+				  try {
+					  source.close();
+				  } catch (IOException e) {
+					  // TODO Auto-generated catch block
+					  e.printStackTrace();
+				  }
+			  }
+			  if(destination != null) {
+				  try {
+					  destination.close();
+				  } catch (IOException e) {
+					  // TODO Auto-generated catch block
+					  e.printStackTrace();
+				  }
+			  }
+		  }
+	  }
+  }
 
+  
   private boolean deleteRecursive(File path) throws FileNotFoundException
   {
     if (!path.exists())
@@ -256,7 +314,7 @@ public class BNGExecutionJob extends Job
       e.printStackTrace();
     }
 
-    Console.displayOutput(m_relativeFilePath, "Simulation Cancelled!\n\n");
+    Console.displayOutput(m_relativeFilePath, "Simulation Canceled!\n\n");
   }
 
 

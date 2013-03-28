@@ -81,7 +81,7 @@ public class CommandRunner<T extends CommandInterface>
     // env.put("VAR2", env.get("VAR1") + "suffix");
     pb.directory(m_workingDirectory);
     // Process p = pb.start();
-
+    
     // Run the command
     try
     {
@@ -253,7 +253,7 @@ public class CommandRunner<T extends CommandInterface>
       }
     }
 
-    System.out.println("Command cancelled.");
+    System.out.println("Command canceled.");
   }
 
   public String getErrorLog()
