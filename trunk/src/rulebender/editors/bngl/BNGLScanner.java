@@ -33,6 +33,8 @@ public class BNGLScanner extends RuleBasedScanner
 //		"reaction_rules", 
 		"population", 
 		"maps",
+		"energy",
+		"patterns",
 		"actions",
 		"reactions", // NET file block
 		"groups",    // NET file block
