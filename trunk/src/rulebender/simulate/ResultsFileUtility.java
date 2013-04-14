@@ -47,7 +47,8 @@ public class ResultsFileUtility
 	private static String getCurrentDateAndTime() 
 	{
 		Date dateNow = new Date();
-		SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MMM-yy_HH-mm-ss");
+//		SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MMM-yy_HH-mm-ss");
+		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss");
 		String curTime = dateFormat.format(dateNow);
 		return curTime;
 	}
