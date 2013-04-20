@@ -183,13 +183,18 @@ public class BNGLEditor extends TextEditor implements ISelectionListener,
     PrintStream old = System.err;
 
     Console.clearConsole(((FileEditorInput) ((IEditorInput) getEditorInput()))
-        .getPath().toOSString());
+        .getFile().getFullPath().makeRelative().toOSString());
 
     // Set the error out to a new printstream that will only display the antlr
     // output.
+    String relative = ((FileEditorInput) ((IEditorInput) getEditorInput()))
+                                                         .getFile()
+                                                         .getFullPath()
+                                                         .makeRelative()
+                                                         .toOSString();
+    
     ANTLRFilteredPrintStream errorStream = new ANTLRFilteredPrintStream(
-        Console.getMessageConsoleStream(((FileEditorInput) ((IEditorInput) 
-            getEditorInput())).getPath().toOSString()),
+        Console.getMessageConsoleStream(relative),
         ((FileEditorInput) ((IEditorInput) getEditorInput())).getPath()
             .toOSString(), old,
         ((FileEditorInput) ((IEditorInput) getEditorInput())).getPath()
@@ -500,3 +505,4 @@ public class BNGLEditor extends TextEditor implements ISelectionListener,
     }
   }
 }
+

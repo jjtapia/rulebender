@@ -13,11 +13,12 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IFileEditorInput;
-import org.eclipse.ui.IPartListener;
+import org.eclipse.ui.IPartListener2;
 import org.eclipse.ui.ISelectionListener;
 import org.eclipse.ui.IStartup;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchPart;
+import org.eclipse.ui.IWorkbenchPartReference;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
@@ -34,7 +35,8 @@ import rulebender.editors.dat.DATMultiPageEditor;
 import rulebender.logging.Logger;
 import rulebender.logging.Logger.LOG_LEVELS;
 
-public class Console implements IPartListener, IStartup, ISelectionListener
+public class Console 
+  implements IStartup, ISelectionListener, IPartListener2
 {
   private static Console m_instance;
 
@@ -72,14 +74,18 @@ public class Console implements IPartListener, IStartup, ISelectionListener
    * 
    * @param console
    * @param output
+   * @throws Exception 
    */
   public static void displayOutput(String console, String output)
   {
+    System.out.println("Get called for " + console + "\n\toutput: " + output);
+    
     getMessageConsoleStream(console).println(output);
   }
 
 
   /**
+   * Adds a hyperlink to a line in an editor.  
    * 
    * @param name
    * @param offset
@@ -108,6 +114,8 @@ public class Console implements IPartListener, IStartup, ISelectionListener
           e.printStackTrace();
         }
 
+
+        
         // ABORT:\s+.*\s+at line \d+
         Logger.log(LOG_LEVELS.INFO, this.getClass(), "text: " + errorText);
 
@@ -200,12 +208,24 @@ public class Console implements IPartListener, IStartup, ISelectionListener
   public static MessageConsoleStream getMessageConsoleStream(String console)
   {
     // Get the stream
+    System.out.println("Getting the stream");
+    
+   
     return getMessageConsole(console).newMessageStream();
   }
 
 
   private static MessageConsole getMessageConsole(String console)
   {
+    
+    System.out.println("Getting: " + console);
+
+    if (console.startsWith("/"))
+    {
+      Thread.dumpStack();
+    }
+    
+    
     // Try to get it based on the name.
     MessageConsole messageConsole = m_messageConsoles.get(console);
 
@@ -254,54 +274,8 @@ public class Console implements IPartListener, IStartup, ISelectionListener
   
   public static void showConsole(String title)
   {
+    Logger.log(LOG_LEVELS.WARNING, Console.class, "Showing: " + title);
     getMessageConsole(title).activate();
-  }
-
-
-  @Override
-  public void partActivated(IWorkbenchPart part)
-  {
-    // Do Nothing.
-  }
-
-
-  @Override
-  public void partBroughtToTop(IWorkbenchPart part)
-  {
-    // Do Nothing
-  }
-
-
-  @Override
-  public void partClosed(IWorkbenchPart part)
-  {
-    // If it's an editor
-    if (part instanceof BNGLEditor)
-    {
-      String path = ((IFileEditorInput) ((BNGLEditor) part).getEditorInput())
-          .getFile().getFullPath().toOSString();
-
-      m_editors.remove(path);
-    }
-
-  }
-
-
-  @Override
-  public void partDeactivated(IWorkbenchPart part)
-  {
-    // Do Nothing
-  }
-
-
-  @Override
-  public void partOpened(IWorkbenchPart part)
-  {
-    // If it's an editor
-    if (part instanceof BNGLEditor)
-    {
-      addEditor((BNGLEditor) part);
-    }
   }
 
 
@@ -329,8 +303,20 @@ public class Console implements IPartListener, IStartup, ISelectionListener
       {
         try
         {
-          PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
-              .addPartListener(Console.getConsoleInstance());
+
+          // Register the view as a listener for workbench selections.
+             PlatformUI
+             .getWorkbench()
+             .getActiveWorkbenchWindow()
+             .getActivePage()
+             .addPostSelectionListener(Console.this);
+
+             // Register the view as a part listener.
+             PlatformUI
+             .getWorkbench()
+             .getActiveWorkbenchWindow()
+             .getActivePage()
+             .addPartListener(Console.this);
         }
         catch (Exception e)
         {
@@ -400,7 +386,7 @@ public class Console implements IPartListener, IStartup, ISelectionListener
     // If it's not a bngl file
     else
     {
-      // Do nothing.
+      Logger.log(LOG_LEVELS.WARNING, Console.class, "Selection changed, but I don't care.");
     }    
   }
   
@@ -415,6 +401,11 @@ public class Console implements IPartListener, IStartup, ISelectionListener
     showConsole(osString);
   }
   
+  /**
+   * 
+   * @param part
+   * @param selection
+   */
   private void focusEditor(IWorkbenchPart part, ISelection selection)
   {
     // Get the string that represents the current file.
@@ -422,5 +413,74 @@ public class Console implements IPartListener, IStartup, ISelectionListener
         .getFile().getFullPath().makeRelative().toOSString();
 
     showConsole(osString);
+  }
+  
+
+  @Override
+  public void partActivated(IWorkbenchPartReference partRef)
+  {
+    // TODO Auto-generated method stub
+  }
+
+  @Override
+  public void partBroughtToTop(IWorkbenchPartReference partRef)
+  {
+    // TODO Auto-generated method stub
+  }
+
+  @Override
+  public void partClosed(IWorkbenchPartReference partRef)
+  {
+    IWorkbenchPart part = partRef.getPart(false);
+    
+    // If it's an editor
+    if (part instanceof BNGLEditor)
+    {
+      String path = ((IFileEditorInput) ((BNGLEditor) part).getEditorInput())
+          .getFile().getFullPath().toOSString();
+
+      m_editors.remove(path);
+    }    
+  }
+
+
+  @Override
+  public void partDeactivated(IWorkbenchPartReference partRef)
+  {
+    // TODO Auto-generated method stub
+  }
+
+
+  @Override
+  public void partOpened(IWorkbenchPartReference partRef)
+  {
+    IWorkbenchPart part = partRef.getPart(false);
+    
+    // If it's an editor
+    if (part instanceof BNGLEditor)
+    {
+      addEditor((BNGLEditor) part);
+    }    
+  }
+
+
+  @Override
+  public void partHidden(IWorkbenchPartReference partRef)
+  {
+    // TODO Auto-generated method stub
+  }
+
+
+  @Override
+  public void partVisible(IWorkbenchPartReference partRef)
+  {
+    // TODO Auto-generated method stub
+  }
+
+
+  @Override
+  public void partInputChanged(IWorkbenchPartReference partRef)
+  {
+    // TODO Auto-generated method stub
   }
 }

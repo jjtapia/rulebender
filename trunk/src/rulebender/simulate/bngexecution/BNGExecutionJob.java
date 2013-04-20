@@ -50,7 +50,7 @@ public class BNGExecutionJob extends Job
   {
     super(name);
     setAbsoluteFilePath(ifile.getLocation().makeAbsolute().toOSString());
-    setRelativeFilePath(ifile.getFullPath().toOSString());
+    setRelativeFilePath(ifile.getFullPath().makeRelative().toOSString());
     setBNGFullPath(bngFullPath);
     setResultsPath(resultsPath);
     setFile(ifile);

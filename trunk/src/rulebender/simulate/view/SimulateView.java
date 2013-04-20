@@ -204,10 +204,10 @@ public class SimulateView extends ViewPart
 		{
 			public void widgetSelected(SelectionEvent e) 
 			{
-				Console.displayOutput(getSelectedFile().getFullPath().toOSString(), 
+				Console.displayOutput(getSelectedFile().getFullPath().makeRelative().toOSString(), 
 				    Console.getConsoleLineDelimeter() + "Running File...");
 				
-				Console.showConsole(getSelectedFile().getFullPath().toOSString());
+				Console.showConsole(getSelectedFile().getFullPath().makeRelative().toOSString());
 				
 				// Run the parameter scan.  This returns a boolean, 
 				// but for now I am ignoring it.  

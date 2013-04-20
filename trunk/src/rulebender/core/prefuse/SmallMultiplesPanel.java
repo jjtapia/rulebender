@@ -453,7 +453,7 @@ public class SmallMultiplesPanel extends JLayeredPane implements ActionListener 
 
 	    // Save a link to the orinal error out.
 	    PrintStream old = System.err;
-
+	    
 	    Console.clearConsole(sourcePath);
 
 	    // Set the error out to a new printstream that will only display the antlr

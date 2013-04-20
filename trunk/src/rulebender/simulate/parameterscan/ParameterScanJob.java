@@ -47,7 +47,7 @@ public class ParameterScanJob extends Job
     super(name);
 
     setAbsoluteFilePath(iFile.getLocation().makeAbsolute().toOSString());
-    setRelativeFilePath(iFile.getFullPath().toOSString());
+    setRelativeFilePath(iFile.getFullPath().makeRelative().toOSString());
 
     setBNGPath(bngPath);
     setScriptFullPath(scriptFullPath);
