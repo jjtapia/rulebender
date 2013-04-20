@@ -72,6 +72,7 @@ public class BioNetGenUtility
 	                               String bngFullPath, 
 	                               String resultsPath)
 	{
+	  // Make sure that the prerequisites are in place
 		if(!PreReqChecker.isPerlInPath())
 		{
 			MessageBox errorMessage = 
@@ -85,6 +86,7 @@ public class BioNetGenUtility
 			
 			errorMessage.open();
 		}
+		// Run the file.  
 		else
 		{
 			String relPath = iFile.getFullPath().toOSString();

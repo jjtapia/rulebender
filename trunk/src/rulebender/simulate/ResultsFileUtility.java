@@ -5,37 +5,69 @@ import java.util.Date;
 
 import org.eclipse.core.resources.IFile;
 
+import rulebender.logging.Logger;
+
 public class ResultsFileUtility 
 {	
+  public static final String SLASH = System.getProperty("file.separator");
 	
+  /**
+   * Gets the result directory for the bngl ifile parameter.
+   * @param selectedFile
+   * @return
+   */
 	private static String getResultsDirectoryForIFile(IFile selectedFile) 
 	{
 		// Get the path location of the project
-		String pathToReturn = selectedFile.getProject().getLocation().makeAbsolute().toOSString()+ System.getProperty("file.separator");
+		String pathToReturn = 
+		    selectedFile
+		    .getProject()
+		    .getLocation()
+		    .makeAbsolute()
+		    .toOSString() 
+		    + SLASH;
 		
 		// Add the results directory
-		pathToReturn += "results" + System.getProperty("file.separator");
+		pathToReturn += "results" + SLASH;
 		
 		// Add the name of the file
-		pathToReturn += selectedFile.getName().substring(0, selectedFile.getName().indexOf(".bngl")) + System.getProperty("file.separator");
+		pathToReturn += 
+		    selectedFile
+		    .getName()
+		    .substring(0, selectedFile.getName().indexOf(".bngl"))
+		    + SLASH;
 		
-		System.out.println("Returning Path: " + pathToReturn);
+		Logger.log(Logger.LOG_LEVELS.INFO, 
+		           ResultsFileUtility.class, 
+		           "Returning Path: " + pathToReturn);
 		
 		return pathToReturn;
 	}
 
+	
+	/**
+	 * Uses {@link getResultsDirectoryForIfile} to get the directory, and then 
+	 * adds the 'parascan' tag in the dir name with the date and time.
+	 * @param selectedFile
+	 * @return
+	 */
 	public static String getParameterScanResultsDirectoryForIFile(IFile selectedFile) 
 	{
 		return (getResultsDirectoryForIFile(selectedFile) + 
-				"parascan-" + getCurrentDateAndTime() + 
-				System.getProperty("file.separator"));
+				"parascan-" + getCurrentDateAndTime() + SLASH);
 	}
 	
+	
+	/**
+	 * Uses {@link getResultsDirectoryForIfile} to get the directory and then 
+	 * adds the date and time.
+	 * @param selectedFile
+	 * @return
+	 */
 	public static String getSimulationResultsDirectoryForIFile(IFile selectedFile) 
 	{
 		return (getResultsDirectoryForIFile(selectedFile) + 
-				getCurrentDateAndTime() + 
-				System.getProperty("file.separator"));
+				getCurrentDateAndTime() + SLASH);
 	}
 	
 	/**

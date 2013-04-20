@@ -254,8 +254,6 @@ public class BNGLEditor extends TextEditor implements ISelectionListener,
         marker.setAttribute(IMarker.CHAR_START, region.getOffset());
         marker.setAttribute(IMarker.CHAR_END,
             region.getOffset() + region.getLength());
-
-        System.out.println("Made the marker!");
       }
       catch (Exception exception)
       {
@@ -470,18 +468,19 @@ public class BNGLEditor extends TextEditor implements ISelectionListener,
     });
   }
 
-  // TODO this is not being called.
+  
   /**
    * Closes all project files on project close.
    */
   public void resourceChanged(final IResourceChangeEvent event)
   {
-    Logger.log(Logger.LOG_LEVELS.INFO, 
-        this.getClass(),
-        "Resource Changed Event: " + event.getType());
-
+  
     if (event.getType() == IResourceChangeEvent.PRE_CLOSE)
     {
+      Logger.log(Logger.LOG_LEVELS.INFO, 
+          this.getClass(),
+          "Resource PRE_CLOSE Event: " + event.getType());
+      
       Display.getDefault().asyncExec(new Runnable()
       {
         public void run()

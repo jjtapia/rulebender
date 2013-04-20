@@ -463,7 +463,9 @@ public class SmallMultiplesPanel extends JLayeredPane implements ActionListener 
 
 	    try {
 	    	toReturn = produceParseData(sourcePath).getParser().prog();
-	    } catch (Exception e) {
+	    }
+	    catch (Exception e) 
+	    {
 	      e.printStackTrace();
 	      System.out.println("Caught in the getAST Method.");
 	    } //try-catch

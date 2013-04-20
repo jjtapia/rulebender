@@ -19,7 +19,10 @@ public class SimulateCommand implements CommandInterface
 	 * 
 	 * @param bngFile - The string location of the file to run the scan on.
 	 */
-	public SimulateCommand(String bngFile, String bngFullPath, String resultsDirectory, boolean viewResults)
+	public SimulateCommand(String bngFile, 
+	                       String bngFullPath, 
+	                       String resultsDirectory,
+	                       boolean viewResults)
 	{
 		m_bnglFile = bngFile;
 		m_viewResults = viewResults;
@@ -43,7 +46,8 @@ public class SimulateCommand implements CommandInterface
 		instructionAL.add("-outdir");
 		instructionAL.add(m_resultsDirectory);
 		
-		if (m_viewResults == false) {
+		if (m_viewResults == false) 
+		{
 			// Check model, not run
 			instructionAL.add("-check");
 		}
@@ -58,13 +62,6 @@ public class SimulateCommand implements CommandInterface
 		// instruction arraylist. 
 		m_command = instructionAL.toArray(template);
 			
-		// DEBUG
-		for(String s : m_command)
-		{
-			System.out.print(s + " ");
-		}
-		System.out.println("\n");
-		
 		return m_command;
 	}
 

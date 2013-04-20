@@ -41,12 +41,12 @@ mv $rbReleaseDir/win32.win32.x86/RuleBender/ $rbReleaseDir/zips/RuleBender-$vers
 mv $rbReleaseDir/win32.win32.x86_64/RuleBender/ $rbReleaseDir/zips/RuleBender-$version-win64/
 
 # rename and move all of the RuleBender dirs
-rm $rbReleaseDir/linux.gtk.x86/
-rm $rbReleaseDir/linux.gtk.x86_64/
-rm $rbReleaseDir/macosx.cocoa.x86/
-rm $rbReleaseDir/macosx.cocoa.x86_64/
-rm $rbReleaseDir/win32.win32.x86/
-rm $rbReleaseDir/win32.win32.x86_64/
+rm -rf $rbReleaseDir/linux.gtk.x86/
+rm -rf $rbReleaseDir/linux.gtk.x86_64/
+rm -rf $rbReleaseDir/macosx.cocoa.x86/
+rm -rf $rbReleaseDir/macosx.cocoa.x86_64/
+rm -rf $rbReleaseDir/win32.win32.x86/
+rm -rf $rbReleaseDir/win32.win32.x86_64/
 
 echo "Copying simulation resources"
 # copy the simulation stuff into the directory. 
@@ -62,7 +62,7 @@ echo "Removing unnecessary binaries from lin32"
 # linux 32
 rm $rbReleaseDir/zips/RuleBender-$version-lin32/BioNetGen-2.2.2/bin/cyggcc_s-1.dll
 rm $rbReleaseDir/zips/RuleBender-$version-lin32/BioNetGen-2.2.2/bin/cygstdc++-6.dll
-rm $rbReleaseDir/zips/RuleBender-$version-lin32/BioNetGen-2.2.2/bin/cygwin.dll
+rm $rbReleaseDir/zips/RuleBender-$version-lin32/BioNetGen-2.2.2/bin/cygwin1.dll
 rm $rbReleaseDir/zips/RuleBender-$version-lin32/BioNetGen-2.2.2/bin/NFsim_i386-darwin
 rm $rbReleaseDir/zips/RuleBender-$version-lin32/BioNetGen-2.2.2/bin/NFsim_i686-cygwin.exe
 rm $rbReleaseDir/zips/RuleBender-$version-lin32/BioNetGen-2.2.2/bin/NFsim_x86_64-linux
@@ -132,12 +132,13 @@ rm $rbReleaseDir/zips/RuleBender-$version-win64/BioNetGen-2.2.2/bin/run_network_
 rm $rbReleaseDir/zips/RuleBender-$version-win64/BioNetGen-2.2.2/bin/run_network_i386-darwin
 rm $rbReleaseDir/zips/RuleBender-$version-win64/BioNetGen-2.2.2/bin/run_network_i686-linux
 
+#cd to zips dir to avoid more dirs in zip
+cd $rbReleaseDir/zips/
+
 # zip that garbage
-zip -r $rbReleaseDir/zips/RuleBender-$version-lin32.zip $rbReleaseDir/zips/RuleBender-$version-lin32
-zip -r $rbReleaseDir/zips/RuleBender-$version-lin64.zip $rbReleaseDir/zips/RuleBender-$version-lin64
-zip -r $rbReleaseDir/zips/RuleBender-$version-osx32.zip $rbReleaseDir/zips/RuleBender-$version-osx32
-zip -r $rbReleaseDir/zips/RuleBender-$version-osx64.zip $rbReleaseDir/zips/RuleBender-$version-osx64
-zip -r $rbReleaseDir/zips/RuleBender-$version-win32.zip $rbReleaseDir/zips/RuleBender-$version-win32
-zip -r $rbReleaseDir/zips/RuleBender-$version-win64.zip $rbReleaseDir/zips/RuleBender-$version-win64
-
-
+zip -r RuleBender-$version-lin32.zip RuleBender-$version-lin32
+zip -r RuleBender-$version-lin64.zip RuleBender-$version-lin64
+zip -r RuleBender-$version-osx32.zip RuleBender-$version-osx32
+zip -r RuleBender-$version-osx64.zip RuleBender-$version-osx64
+zip -r RuleBender-$version-win32.zip RuleBender-$version-win32
+zip -r RuleBender-$version-win64.zip RuleBender-$version-win64

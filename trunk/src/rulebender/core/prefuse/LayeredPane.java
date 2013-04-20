@@ -83,9 +83,9 @@ public class LayeredPane extends JLayeredPane
 	/**
 	 * Use this to set the Display object to use.
 	 * 
-	 * @param d - The prefuse.Display object for the visualization. 
+	 * @param display - The prefuse.Display object for the visualization. 
 	 */
-	public void setDisplay(Display d)
+	public void setDisplay(Display display)
 	{
 		
 		//DEBUG
@@ -102,13 +102,13 @@ public class LayeredPane extends JLayeredPane
 		}	
 		
 		// If the passed in display is not null.
-		if(d != null)
+		if(display != null)
 		{
 			// Add the display to the main panel
-			mainJPanel.add(d);
+			mainJPanel.add(display);
 						
 	     	// add overview display to panel
-			overviewJPanel.add(new Overview(d));
+			overviewJPanel.add(new Overview(display));
 		}
 		
 		myResize();

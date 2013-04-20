@@ -8,11 +8,13 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IRegion;
+import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.IPartListener;
+import org.eclipse.ui.ISelectionListener;
 import org.eclipse.ui.IStartup;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchPart;
@@ -28,10 +30,11 @@ import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.ui.texteditor.ITextEditor;
 
 import rulebender.editors.bngl.BNGLEditor;
+import rulebender.editors.dat.DATMultiPageEditor;
 import rulebender.logging.Logger;
 import rulebender.logging.Logger.LOG_LEVELS;
 
-public class Console implements IPartListener, IStartup
+public class Console implements IPartListener, IStartup, ISelectionListener
 {
   private static Console m_instance;
 
@@ -379,5 +382,45 @@ public class Console implements IPartListener, IStartup
         editor.selectAndReveal(lineInfo.getOffset(), lineInfo.getLength());
       }
     }
+  }
+
+
+  @Override
+  public void selectionChanged(IWorkbenchPart part, ISelection selection)
+  {
+    // If it's from the BNGLEditor then we want to set the contact map.
+    if (part instanceof BNGLEditor)
+    {
+      focusEditor(part, selection);
+    }
+    else if (part instanceof DATMultiPageEditor)
+    {
+      focusResults(part, selection); 
+    }
+    // If it's not a bngl file
+    else
+    {
+      // Do nothing.
+    }    
+  }
+  
+  private void focusResults(IWorkbenchPart part, ISelection selection)
+  {
+    // TODO strip out the bngl file name and keep displaying that console.
+    
+    // Get the string that represents the current file.
+    String osString = ((FileEditorInput) ((BNGLEditor) part).getEditorInput())
+        .getFile().getFullPath().toOSString();
+
+    showConsole(osString);
+  }
+  
+  private void focusEditor(IWorkbenchPart part, ISelection selection)
+  {
+    // Get the string that represents the current file.
+    String osString = ((FileEditorInput) ((BNGLEditor) part).getEditorInput())
+        .getFile().getFullPath().makeRelative().toOSString();
+
+    showConsole(osString);
   }
 }

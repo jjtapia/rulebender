@@ -85,7 +85,7 @@ public class ContactMapSelectionListener implements ISelectionListener,
     // If it's not a bngl file
     else
     {
-      // Do something else maybe sometime.
+      // TODO clear the contact map.
     }
   }
 
@@ -277,8 +277,7 @@ public class ContactMapSelectionListener implements ISelectionListener,
   {
 
     // If it's a bngl editor. (Cannot remember why there is id and instanceof
-    // checking
-    // but I would not change it without serious testing.)
+    // checking but I would not change it without serious testing.)
     if (partRef.getId().equals("rulebender.editors.bngl")
         && partRef.getPart(false) instanceof BNGLEditor)
     {

@@ -209,10 +209,12 @@ public class SimulateView extends ViewPart
 				
 				Console.showConsole(getSelectedFile().getFullPath().toOSString());
 				
-				// Run the parameter scan.  This returns a boolean, but for now I am ignoring it.  
+				// Run the parameter scan.  This returns a boolean, 
+				// but for now I am ignoring it.  
 				BioNetGenUtility.runBNGLFile(getSelectedFile(),
 						PreferencesClerk.getFullBNGPath(), 
-						ResultsFileUtility.getSimulationResultsDirectoryForIFile(getSelectedFile()));
+						ResultsFileUtility
+						.getSimulationResultsDirectoryForIFile(getSelectedFile()));
 			}
 
 			public void widgetDefaultSelected(SelectionEvent e) 
