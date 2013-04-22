@@ -130,6 +130,7 @@ public class BNGExecutionJob extends Job
 		e.printStackTrace();
 	}
     updateTrees();
+    openSpeciesGraphView();
     showResults();
     monitor.setTaskName("Done.");
     monitor.worked(1);
@@ -137,6 +138,23 @@ public class BNGExecutionJob extends Job
     return Status.OK_STATUS;
   }
 
+  private void openSpeciesGraphView() {
+	    Display.getDefault().asyncExec(new Runnable()
+	    {
+	
+	      public void run()
+	      {
+	    	  try {
+	    		  PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().showView("rulebender.speciesgraph.SpeciesGraphView");
+		          //PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().showView("rulebender.editors.dat");  	  
+	    	  } catch (PartInitException e) {
+	    		  e.printStackTrace();
+	    	  } //try-catch
+	      } //run
+	      
+	    });
+      
+  } //openSpeciesGraphView
 
   /**
    * Display the generated GDAT and/or SCAN files after simulation
@@ -224,7 +242,9 @@ public class BNGExecutionJob extends Job
 	        {
 	          p.openEditor(editorInput,
 	              FileInputUtility.getEditorId(new File(resultsFileToOpen)));
+	          
 	        }
+	        
 	        catch (PartInitException e)
 	        {
 	          // TODO Auto-generated catch block
