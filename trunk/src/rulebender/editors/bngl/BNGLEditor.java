@@ -45,6 +45,7 @@ import rulebender.logging.Logger;
  * This class defines the editor for bngl.
  * 
  * The ISelectionListener implementation listens for selections in the tool.
+ * 
  * @author adammatthewsmith
  * 
  */
@@ -55,6 +56,7 @@ public class BNGLEditor extends TextEditor implements ISelectionListener,
   private BNGLModel m_model;
   // The color manager for the syntax highlighting.
   private BNGLColorManager m_colorManager;
+
 
   // private String m_path;
   public BNGLEditor()
@@ -85,6 +87,7 @@ public class BNGLEditor extends TextEditor implements ISelectionListener,
     ResourcesPlugin.getWorkspace().addResourceChangeListener(this);
   }
 
+
   /*
    * @Override public void initializeEditor() { super.initializeEditor(); }
    */
@@ -93,9 +96,17 @@ public class BNGLEditor extends TextEditor implements ISelectionListener,
   public void editorSaved()
   {
     clearMarkers("rulebender.markers.bnglerrormarker");
+    
+    if (m_model == null)
+    {
+      m_model = new BNGLModel(
+          ((FileEditorInput) ((IEditorInput) getEditorInput())).getPath()
+              .toOSString());
+    }
 
-    setAST(getAST());
+    m_model.setAST(getAST());
   }
+
 
   private void clearMarkers(String markerId)
   {
@@ -113,6 +124,7 @@ public class BNGLEditor extends TextEditor implements ISelectionListener,
     }
   }
 
+
   private BNGParseData produceParseData()
   {
     // Get the text in the document.
@@ -121,20 +133,6 @@ public class BNGLEditor extends TextEditor implements ISelectionListener,
     return BNGParserUtility.produceParserInfoForBNGLText(text);
   }
 
-  private void setAST(prog_return ast)
-  {
-    if (m_model == null)
-    {
-      m_model = new BNGLModel(
-          ((FileEditorInput) ((IEditorInput) getEditorInput())).getPath()
-              .toOSString());
-      m_model.setAST(ast);
-    }
-    else
-    {
-      m_model.setAST(ast);
-    }
-  }
 
   /**
    * Getter for the ast data structure. The
@@ -153,18 +151,21 @@ public class BNGLEditor extends TextEditor implements ISelectionListener,
 
     return m_model;
   }
-  
+
+
   /**
    * Returns a BNGL model given a specific source path
    * 
    * @param src
    * @return
    */
-  public BNGLModel getModel(String src) {
-	  BNGLModel mdl = new BNGLModel(src);
-	  mdl.setAST(getAST());
-	  return mdl;
-  } //getModel
+  public BNGLModel getModel(String src)
+  {
+    BNGLModel mdl = new BNGLModel(src);
+    mdl.setAST(getAST());
+    return mdl;
+  } // getModel
+
 
   /**
    * Returns the AST for the text in the editor, or null if there are errors.
@@ -188,11 +189,8 @@ public class BNGLEditor extends TextEditor implements ISelectionListener,
     // Set the error out to a new printstream that will only display the antlr
     // output.
     String relative = ((FileEditorInput) ((IEditorInput) getEditorInput()))
-                                                         .getFile()
-                                                         .getFullPath()
-                                                         .makeRelative()
-                                                         .toOSString();
-    
+        .getFile().getFullPath().makeRelative().toOSString();
+
     ANTLRFilteredPrintStream errorStream = new ANTLRFilteredPrintStream(
         Console.getMessageConsoleStream(relative),
         ((FileEditorInput) ((IEditorInput) getEditorInput())).getPath()
@@ -218,6 +216,7 @@ public class BNGLEditor extends TextEditor implements ISelectionListener,
 
     return toReturn;
   }
+
 
   private void setErrors(ArrayList<BNGLError> errorList)
   {
@@ -267,6 +266,7 @@ public class BNGLEditor extends TextEditor implements ISelectionListener,
     }
   }
 
+
   public void dispose()
   {
     clearMarkers("rulebender.markers.bnglerrormarker");
@@ -275,11 +275,13 @@ public class BNGLEditor extends TextEditor implements ISelectionListener,
     super.dispose();
   }
 
+
   @Override
   public boolean isEditable()
   {
     return true;
   }
+
 
   @Override
   public boolean isEditorInputModifiable()
@@ -287,31 +289,26 @@ public class BNGLEditor extends TextEditor implements ISelectionListener,
     return true;
   }
 
+
   @Override
   public boolean isEditorInputReadOnly()
   {
     return false;
   }
 
+
   @Override
   public void selectionChanged(IWorkbenchPart part, ISelection selection)
   {
-    Logger.log(Logger.LOG_LEVELS.INFO, 
-        this.getClass(),
+    Logger.log(Logger.LOG_LEVELS.INFO, this.getClass(),
         "Part: " + part.getTitle());
-    Logger.log(Logger.LOG_LEVELS.INFO, 
-        this.getClass(),
-        "selection: " + selection.toString());
-    Logger.log(Logger.LOG_LEVELS.INFO,
-        this.getClass(),
-        "empty selection? " + selection.isEmpty());
-    Logger.log(Logger.LOG_LEVELS.INFO,
-        this.getClass(),
-        "structured selection? "
-        + (selection instanceof IStructuredSelection));
-    Logger.log(Logger.LOG_LEVELS.INFO, 
-        this.getClass(),
-        "text selection? "
+    Logger.log(Logger.LOG_LEVELS.INFO, this.getClass(), "selection: "
+        + selection.toString());
+    Logger.log(Logger.LOG_LEVELS.INFO, this.getClass(), "empty selection? "
+        + selection.isEmpty());
+    Logger.log(Logger.LOG_LEVELS.INFO, this.getClass(),
+        "structured selection? " + (selection instanceof IStructuredSelection));
+    Logger.log(Logger.LOG_LEVELS.INFO, this.getClass(), "text selection? "
         + (selection instanceof ITextSelection));
 
     // If it is an IStructuredSelection
@@ -365,13 +362,14 @@ public class BNGLEditor extends TextEditor implements ISelectionListener,
     }
     else if (selection instanceof ITextSelection)
     {
-      //System.out.println(((ITextSelection) selection).toString());
+      // System.out.println(((ITextSelection) selection).toString());
     }
     else
     {
       clearMarkers("rulebender.markers.textinstance");
     }
   }
+
 
   private void searchableTextObjectCollectionSelected(
       IBNGLLinkedElementCollection collection)
@@ -384,17 +382,18 @@ public class BNGLEditor extends TextEditor implements ISelectionListener,
     }
   }
 
+
   private void searchableTextObjectSelected(IBNGLLinkedElement source)
   {
     clearMarkers("rulebender.markers.textinstance");
     selectFromRegExp(source.getRegex());
   }
 
+
   private void selectFromRegExp(String regExp)
   {
-    Logger.log(Logger.LOG_LEVELS.INFO, 
-        this.getClass(),
-        "Search for regex: " + regExp);
+    Logger.log(Logger.LOG_LEVELS.INFO, this.getClass(), "Search for regex: "
+        + regExp);
 
     // Get the ifile reference for this editor input.
     IFile file = ((FileEditorInput) ((IEditorInput) getEditorInput()))
@@ -426,6 +425,7 @@ public class BNGLEditor extends TextEditor implements ISelectionListener,
     }
   }
 
+
   public void setSelection(final int lineNumber)
   {
     doSetSelection(new ITextSelection()
@@ -438,12 +438,14 @@ public class BNGLEditor extends TextEditor implements ISelectionListener,
         return false;
       }
 
+
       @Override
       public int getOffset()
       {
         // TODO Auto-generated method stub
         return 0;
       }
+
 
       @Override
       public int getLength()
@@ -452,17 +454,20 @@ public class BNGLEditor extends TextEditor implements ISelectionListener,
         return 0;
       }
 
+
       @Override
       public int getStartLine()
       {
         return lineNumber;
       }
 
+
       @Override
       public int getEndLine()
       {
         return lineNumber;
       }
+
 
       @Override
       public String getText()
@@ -473,19 +478,18 @@ public class BNGLEditor extends TextEditor implements ISelectionListener,
     });
   }
 
-  
+
   /**
    * Closes all project files on project close.
    */
   public void resourceChanged(final IResourceChangeEvent event)
   {
-  
+
     if (event.getType() == IResourceChangeEvent.PRE_CLOSE)
     {
-      Logger.log(Logger.LOG_LEVELS.INFO, 
-          this.getClass(),
+      Logger.log(Logger.LOG_LEVELS.INFO, this.getClass(),
           "Resource PRE_CLOSE Event: " + event.getType());
-      
+
       Display.getDefault().asyncExec(new Runnable()
       {
         public void run()
@@ -505,4 +509,3 @@ public class BNGLEditor extends TextEditor implements ISelectionListener,
     }
   }
 }
-
