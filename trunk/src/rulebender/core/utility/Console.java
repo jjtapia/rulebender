@@ -392,13 +392,19 @@ public class Console
   
   private void focusResults(IWorkbenchPart part, ISelection selection)
   {
-    // TODO strip out the bngl file name and keep displaying that console.
+	  // TODO strip out the bngl file name and keep displaying that console.
     
-    // Get the string that represents the current file.
-    String osString = ((FileEditorInput) ((BNGLEditor) part).getEditorInput())
-        .getFile().getFullPath().toOSString();
-
-    showConsole(osString);
+	  // Get the string that represents the current file.
+	  String osString = "";
+	  if (part instanceof BNGLEditor){
+		  osString = ((FileEditorInput) ((BNGLEditor) part).getEditorInput())
+				  .getFile().getFullPath().toOSString();
+	  }
+	  else if (part instanceof DATMultiPageEditor){
+		  osString = ((FileEditorInput) ((DATMultiPageEditor) part).getEditorInput())
+				  .getFile().getFullPath().toOSString();
+	  }
+	  showConsole(osString);
   }
   
   /**

@@ -27,7 +27,7 @@ public class SpeciesGraphSelectionListener implements ISelectionListener
 	public void selectionChanged(IWorkbenchPart part, ISelection selection) 
 	{	
 		// DEBUG
-		System.out.println("Selection:\n\t" + "\tpart: " + part.getTitle() +
+		System.out.println("Selection:\n" + "\tpart: " + part.getTitle() +
 				           "\n\tselection: " + selection.toString());
 		System.out.println("\tclass: " + part.getClass().toString());
 		
