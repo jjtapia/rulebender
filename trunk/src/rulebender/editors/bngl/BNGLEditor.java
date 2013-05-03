@@ -183,9 +183,6 @@ public class BNGLEditor extends TextEditor implements ISelectionListener,
     // Save a link to the orinal error out.
     PrintStream old = System.err;
 
-    Console.clearConsole(((FileEditorInput) ((IEditorInput) getEditorInput()))
-        .getFile().getFullPath().makeRelative().toOSString());
-
     // Set the error out to a new printstream that will only display the antlr
     // output.
     String relative = ((FileEditorInput) ((IEditorInput) getEditorInput()))
