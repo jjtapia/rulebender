@@ -276,8 +276,12 @@ public class ForceDirectedLayoutMagic extends Layout {
 	public void run(double frac) {
 		// perform different actions if this is a run-once or
 		// run-continuously layout
+		
+		//reset();
 		if (m_runonce) {
 
+			// Un-fix all node positions
+			unfixNodePositions();
 			
 			Point2D anchor = getLayoutAnchor();
 
@@ -299,7 +303,7 @@ public class ForceDirectedLayoutMagic extends Layout {
 			String mol = null;
 			int count = 0;
 			String boundsLine = null;
-
+ 
 			// Initialize the simulator
 			m_fsim.clear();
 			long timestep = 500L;
@@ -327,7 +331,10 @@ public class ForceDirectedLayoutMagic extends Layout {
 				
 				x /= count;
 				y /= count;
-			} //if
+				
+			} else {
+				positionMapExists = false;
+			} //if-else
 			
 			// Set a temporary anchor point
 			//Point2D tempAnchor = new Point2D.Double(x, y);
@@ -354,14 +361,20 @@ public class ForceDirectedLayoutMagic extends Layout {
 				int i = 0;
 				while (iter.hasNext()) {
 					VisualItem item = (NodeItem) iter.next();
+					//item.setX(0);
+					//item.setY(0);
 					i++;
 				} //while
 				
 				if (i > 100) {
-					boundsCenterX = -1200;
-					boundsCenterY = -1200;
-					boundsHeight = 2400;
-					boundsWidth = 2400;
+					//boundsCenterX = -1200;
+					//boundsCenterY = -1200;
+					//boundsHeight = 2400;
+					//boundsWidth = 2400;
+					boundsCenterX = -600;
+					boundsCenterY = -600;
+					boundsHeight = 1200;
+					boundsWidth = 1200;
 				} else { 
 					boundsCenterX = -600;
 					boundsCenterY = -600;
@@ -447,10 +460,16 @@ public class ForceDirectedLayoutMagic extends Layout {
 						found = false;
 				
 					} //while
+					
+					updateNodePositions();
+					moveToCenter();
 				
 				} //for
 			
 			} else { 
+				
+				// Un-fix all node positions
+				unfixNodePositions();
 				
 				// Run force computations if no position file exists
 				m_fsim.clear();
@@ -469,9 +488,9 @@ public class ForceDirectedLayoutMagic extends Layout {
 			
 			updateNodePositions();
 			moveToCenter();
-		}
-
-		else {
+		
+		
+		} else {
 			// get timestep
 			if (m_lasttime == -1)
 				m_lasttime = System.currentTimeMillis() - 20;
@@ -481,6 +500,7 @@ public class ForceDirectedLayoutMagic extends Layout {
 
 			// run force simulator
 			m_fsim.clear();
+			timestep = 500L;
 			initSimulator(m_fsim);
 
 			m_fsim.runSimulator(timestep);
@@ -493,6 +513,14 @@ public class ForceDirectedLayoutMagic extends Layout {
 		}
 	}
 
+	private void unfixNodePositions() {
+		Iterator iter = getMagicIterator(m_nodeGroup);
+		while (iter.hasNext()) {
+			VisualItem item = (NodeItem) iter.next();
+			item.setFixed(false);
+		} //while
+	} //unfixNodePositions
+	
 	private void updateNodePositions() {
 		Rectangle2D bounds = enforceBounds;
 		double x1 = 0, x2 = 0, y1 = 0, y2 = 0;
@@ -666,6 +694,7 @@ public class ForceDirectedLayoutMagic extends Layout {
 
 		float startX = (referrer == null ? 0f : (float) referrer.getX());
 		float startY = (referrer == null ? 0f : (float) referrer.getY());
+		
 		startX = Float.isNaN(startX) ? 0f : startX;
 		startY = Float.isNaN(startY) ? 0f : startY;
 
