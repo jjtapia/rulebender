@@ -102,6 +102,12 @@ The licensing tab allows the specification of the license.
 
 After the product file is defined, return to the Overview tab and click "Launch an Eclipse application" to test your product.  This should bring up !RuleBender.  If it does not, then generally something is not right in the product file.  After this test works, use the Eclipse Product Export Wizard on the right to export.  Be sure to select 'Export for Multiple Platforms' before clicking 'Next' so that you can select all of the platforms that should be supported.  This will put all of the !RuleBender files wherever you specify, but you will have to manually put the simulators in place before zipping up for the release.  Also, be sure to manually delete all of the exported !RuleBender files before each export, otherwise the release exports stack and bloat the directory.  
 
+
+TODO ADD:
+- script for packaging
+- better delta instructions (now in repo, how to set up in eclipse).
+ 
+
 = 1.x =
 
 Coming soon... The short version is run 'ant package-all'.  See build.xml for full details until this tutorial is finished.
