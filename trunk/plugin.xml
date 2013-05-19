@@ -451,11 +451,11 @@
          </property>
          <property
                name="aboutText"
-               value="RuleBender 2.0r63&#x0A;&#x0A;RuleBender is currently developed by Adam M. Smith at the University of Pittsburgh under the direction of James R. Faeder and Elisabeta G. Marai. &#x0A;&#x0A;Please send all feedback and questions to help@rulebender.org.">
+               value="RuleBender 2.0r271&#x0A;&#x0A;RuleBender is a front end to cell signaling simulation that is developed at the University of Pittsburgh in the Computer Science Viz Lab.  The BioNetGen simulator is a product of the Faeder Lab in the Systems and Computational Biology Department.  NFSim is developed by the Emonet Lab at Yale.&#x0A;&#x0A;Please send all feedback and questions to help@rulebender.org.">
          </property>
          <property
-               name="startupProgressRect"
-               value="5,275,445,15">
+               name="windowImages"
+               value="icons/system/RB-16.gif,icons/system/RB-32.gif,icons/system/RB-48.gif,icons/system/RB-64.gif,icons/system/RB-128.gif">
          </property>
       </product>
    </extension>
