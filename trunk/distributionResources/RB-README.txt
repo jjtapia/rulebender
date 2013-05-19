@@ -1,0 +1,137 @@
+RuleBender is licensed under the Eclipse Public License v 1.0 and 
+includes the BioNetGen (BNG) language and simulator distribution along with
+the NFSim simulator package.  
+
+For more information:
+RuleBender: rulebender.org 
+RuleBender source: rulebender.googlecode.com
+BioNetGen: bionetgen.org 
+NFSim: http://emonet.biology.yale.edu/nfsim/
+
+Also, the Simulators directory includes additional resources and 
+README files for both BNG and NFSim.
+
+BioNetGen source is packaged with RuleBender in BioNetGen-2.2.4/Perl2,
+and the BioNetGen-2.2.4/bin/ directory includes all necessary binary 
+files.  
+
+For NFSim, the binary is included in the BioNetGen-2.2.4/bin/ directory, 
+and the source is included separately in NFSim-1.11-src.  If 
+you want to replace this packaged version, you must replace the NFSim 
+executables in BioNetGen-2.2.4/bin/.
+
+
+######################################################################
+
+BioNetGen Credits:
+
+The following people have contributed to BioNetGen code development:
+
+Michael L. Blinov <blinov@uchc.edu>
+   * Original author.
+   * Testing and development of new ideas.
+   * Developed interface to Virtual Cell.
+
+James R. Faeder <faeder@lanl.gov>
+   * Primary BioNetGen developer since version 1.0.
+   * Testing and development of new ideas.
+   * Code maintainer.
+   * Current project co-PI.
+
+William S. Hlavacek <wish@lanl.gov>
+   * Driving force in the development.
+   * Testing and development of new ideas.
+   * Current project PI.
+
+Byron Goldstein <bxg@lanl.gov>
+   * Pioneered concept of signaling models based on multivalent interactions.
+   * Original project PI.
+
+Justin Hogg <justinshogg@gmail.com>
+   * Compartmental BNGL (cBNGL).
+   * General maintenance.
+
+Leonard Harris <lh64@cornell.edu>
+   * Network3 development: global functions, accelerated stochastics (PLA)
+
+Ilya Korsunsky
+   * Initial deployment of global functions for Network3.
+
+John Sekar <johnarul.sekar@gmail.com>
+   * Development team member.
+
+Jose Juan Tapia <jjtapia@pitt.edu>
+   * BioNetGen grammars development and implementation
+   * SBML2BNGL developer
+
+Adam Smith
+   * RuleBender developer
+      
+Michael Sneddon <michael.sneddon@yale.edu>
+   * Author and maintainer of NFsim.
+   * Contributor to BNGXML and maintainer of BNG-NFsim interface.      
+
+Thierry Emonet <thierry.emonet@yale.edu>
+   * NFsim PI 
+   
+Jeremy Kozdon
+   * Code for use of sparse Jacobian in CVODE calls, which greatly accelerates
+ODE integration for large networks (sparse=>1 option).
+
+Nathan Lemons
+   * HNauty code for canonical labeling of hierarchical graphs, which is (optionally) used
+in network generation,.
+
+Matthew Fricke <matthew@gofigure.org>
+   * Primary author of RuleBuilder.
+
+Leigh Fanning <leigh@verseira.net>
+   * Contributor to RuleBuilder development.
+   * Developed RuleBuilder help system.
+
+Robert Seletsky <robert1unm@yahoo.com>
+   * Testing of BioNetGen and RuleBuilder.
+
+Sarah Faeder <smgfaeder@gmail.com>
+   * Contributor of PhiBPlot.
+   * Testing and bug fixes for RuleBuilder.
+
+Nikolay Borisov <nikolay.borisov@jefferson.edu>
+   * Primary developer of Macro module.
+   * Testing of BioNetGen.
+
+Mikhail Kravchenko <krmisha@rambler.ru>
+   * Implementation of macro code.
+   * Streamlining of BioNetGen interface.
+
+Alexander S. Chistopolsky <eroxi@savelovo.net>
+   * Developer of macro algorithm
+
+Marc Birtwistle <mrbirdy@udel.edu>
+   * Contributor of parameter sensitivity code.
+
+######################################################################
+
+NFSim Credits:
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                   %
+%     @@    @  @@@@@                %
+%     @ @   @  @                    %
+%     @  @  @  @@@@  ___            %
+%     @   @ @  @    /__  | |\ /|    %
+%     @    @@  @    ___\ | | v |    %
+%                                   %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+NFsim - the network free stochastic simulator, v1.11
+
+michael w. sneddon
+justin s. hogg
+james r. faeder
+thierry emonet
+
+Yale University
+University of Pittsburgh
+funded by the National Science Foundation
+

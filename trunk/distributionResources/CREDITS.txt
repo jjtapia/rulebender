@@ -1,0 +1,11 @@
+RuleBender was developed at the University of Pittsburgh under the direction of Dr. G. Elisabeta Marai in the Department of Computer Science, and Dr. James R. Faeder in the Department of Systems and Computational Biology.  
+
+RuleBender Committers:
+Adam M. Smith
+John Wenskovich
+Leonard Harris
+
+Previous Committers:
+Yao Sun
+Wen Xu
+
