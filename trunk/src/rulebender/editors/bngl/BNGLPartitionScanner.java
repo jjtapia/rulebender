@@ -1,5 +1,6 @@
 package rulebender.editors.bngl;
 
+import org.eclipse.jface.text.rules.EndOfLineRule;
 import org.eclipse.jface.text.rules.IPredicateRule;
 import org.eclipse.jface.text.rules.IToken;
 import org.eclipse.jface.text.rules.RuleBasedPartitionScanner;
@@ -36,7 +37,7 @@ public class BNGLPartitionScanner extends RuleBasedPartitionScanner
 		
 		IPredicateRule[] rules = new IPredicateRule[1];
 		
-		rules[0] = new SingleLineRule("#", null, bnglComment); // parameters
+		rules[0] = new EndOfLineRule("#", bnglComment); // parameters
 		//rules[1] = new MultiLineRule("begin parameters", "end parameters", bnglParametersBlock); // parameters		
 		//rules[2] = new MultiLineRule("begin molecule types", "end molecule types", bnglMoleculeTypesBlock); // parameters
 		//rules[3] = new MultiLineRule("begin species", "end species", bnglSpeciesBlock); // parameters

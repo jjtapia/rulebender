@@ -99,13 +99,23 @@ public class SimulateView extends ViewPart
 		actionSelect.setLayout(new FormLayout());
 		
 		// Create the filename Text widget
+    Label helpLabel = new Label(actionSelect, SWT.NULL);
+    //fileLabel.setSize(actionSelect.getBorderWidth()-50, 10);
+    helpLabel.setText("Select a BNGL file in the Navigator.");
+    
+    // Put this in the upper left corner of the actionSelect Composite.
+    FormData helpLabelFormData = new FormData();
+    helpLabelFormData.top = new FormAttachment(0, 0);
+    helpLabelFormData.left = new FormAttachment(0, 0);
+    helpLabel.setLayoutData(helpLabelFormData);
+    
+		// Create the filename Text widget
 		Label fileLabel = new Label(actionSelect, SWT.NULL);
-		//fileLabel.setSize(actionSelect.getBorderWidth()-50, 10);
 		fileLabel.setText("File:");
 		
-		// Put this in the upper left corner of the actionSelect Composite.
+		// Put this below the help text.
 		FormData fileLabelFormData = new FormData();
-		fileLabelFormData.top = new FormAttachment(0, 0);
+		fileLabelFormData.top = new FormAttachment(helpLabel, 10);
 		fileLabelFormData.left = new FormAttachment(0, 0);
 		fileLabel.setLayoutData(fileLabelFormData);
 		
@@ -114,12 +124,14 @@ public class SimulateView extends ViewPart
 		fileText.setEditable(false);
 		
 		FormData fileTextFormData = new FormData();
+		fileTextFormData.top = new FormAttachment(helpLabel, 10);
 		fileTextFormData.left = new FormAttachment(fileLabel, 10);
 		fileTextFormData.right = new FormAttachment(100, -10);
 		fileText.setLayoutData(fileTextFormData);
 		
 		// Add a verifier that makes sure that the text forms a correct file path.
-		/*fileText.addListener (SWT.Verify, new Listener () {
+		/*fileText.addListener (SWT.Verify, new Listener () 
+		{
 			public void handleEvent (Event e) 
 			{
 				String string = e.text;
@@ -134,7 +146,7 @@ public class SimulateView extends ViewPart
 				}
 			}
 		});
-		*/
+		// */
 		
 		// The model will be selected by either writing the path into the text box,
 		// or selecting the node in the navigator. 
