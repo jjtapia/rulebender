@@ -19,7 +19,6 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.swt.widgets.Display;
@@ -33,6 +32,7 @@ import org.eclipse.ui.progress.IProgressConstants;
 
 import rulebender.core.utility.Console;
 import rulebender.core.utility.FileInputUtility;
+import rulebender.logging.Logger;
 import rulebender.simulate.CommandRunner;
 import rulebender.simulate.SimulationErrorException;
 
@@ -63,7 +63,7 @@ public class BNGExecutionJob extends Job
   protected IStatus run(IProgressMonitor monitor)
   {
     // Tell the monitor
-    monitor.beginTask("Validation Files...", 4);
+    monitor.beginTask("Validation Files...", 5);
 
     if (!validateBNGLFile(m_absoluteFilePath))
     {
@@ -83,14 +83,14 @@ public class BNGExecutionJob extends Job
 
     // Create the directory if necessary.
     (new File(m_resultsPath)).mkdirs();
-    
+
     // MONITOR
     monitor.setTaskName("Generating Scripts...");
     monitor.worked(1);
 
     SimulateCommand simCommand = new SimulateCommand(m_absoluteFilePath,
         m_bngFullPath, m_resultsPath, true);
-    
+
     // MONITOR
     monitor.setTaskName("Running Simulation...");
     monitor.worked(1);
@@ -98,13 +98,14 @@ public class BNGExecutionJob extends Job
     // Run it in the commandRunner
     CommandRunner<SimulateCommand> runner = new CommandRunner<SimulateCommand>(
         simCommand, new File(m_resultsPath), m_relativeFilePath, monitor);
-    
+
     try
     {
       runner.run();
     }
     catch (SimulationErrorException e)
     {
+//      Logger.log(Logger.LOG_LEVELS.INFO, BNGExecutionJob.class, "===== Simulation error exception!");
       updateTrees();
       return Status.CANCEL_STATUS;
     }
@@ -118,194 +119,229 @@ public class BNGExecutionJob extends Job
     else
     {
       // MONITOR
-   	  monitor.setTaskName("Opening Results File(s)...");
+      monitor.setTaskName("Opening Results File(s)...");
       monitor.worked(1);
     }
 
-    System.out.println("Copying " + m_absoluteFilePath + " to " + m_resultsPath);
-	try {
-		copyBNGLFileToResults();
-	} catch (IOException e) {
-		// TODO Auto-generated catch block
-		e.printStackTrace();
-	}
+    try
+    {
+      copyBNGLFileToResults();
+    }
+    catch (IOException e)
+    {
+      // TODO do something about it.  
+      e.printStackTrace();
+    }
+    
     updateTrees();
     openSpeciesGraphView();
     showResults();
     monitor.setTaskName("Done.");
     monitor.worked(1);
-    
+
     return Status.OK_STATUS;
   }
 
-  private void openSpeciesGraphView() {
-	    Display.getDefault().asyncExec(new Runnable()
-	    {
-	
-	      public void run()
-	      {
-	    	  try {
-	    		  PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().showView("rulebender.speciesgraph.SpeciesGraphView");
-		          //PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().showView("rulebender.editors.dat");  	  
-	    	  } catch (PartInitException e) {
-	    		  e.printStackTrace();
-	    	  } //try-catch
-	      } //run
-	      
-	    });
-      
-  } //openSpeciesGraphView
+
+  private void openSpeciesGraphView()
+  {
+    Display.getDefault().asyncExec(new Runnable()
+    {
+
+      public void run()
+      {
+        try
+        {
+          PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
+              .showView("rulebender.speciesgraph.SpeciesGraphView");
+          // PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().showView("rulebender.editors.dat");
+        }
+        catch (PartInitException e)
+        {
+          e.printStackTrace();
+        } // try-catch
+      } // run
+
+    });
+
+  } // openSpeciesGraphView
+
 
   /**
    * Display the generated GDAT and/or SCAN files after simulation
    */
   private void showResults()
   {
-	// Find all GDAT and SCAN files in output directory
-//	System.out.println(m_resultsPath);
-	String[] allfiles = new File(m_resultsPath).list();
-	Vector<String> resultsFiles = new Vector<String>();
-	for (int i=0;i < allfiles.length;i++){
-//		System.out.println(allfiles[i]);
-		if (allfiles[i].endsWith("gdat") || allfiles[i].endsWith("scan")){
-			resultsFiles.add(allfiles[i]);
-		}
-	}
-//	System.out.println("Results files:");
-//	for (int i=0;i < gdatfiles.size();i++){
-//		System.out.println(gdatfiles.get(i));
-//	}
+    // Find all GDAT and SCAN files in output directory
+    // System.out.println(m_resultsPath);
+    
+    String[] allfiles = new File(m_resultsPath).list();
+    Vector<String> resultsFiles = new Vector<String>();
+    
+    for (int i = 0; i < allfiles.length; i++)
+    {
+      if (allfiles[i].endsWith("gdat") || allfiles[i].endsWith("scan"))
+      {
+        resultsFiles.add(allfiles[i]);
+      }
+    }
+    
+    // Open all results files
+    for (int i = 0; i < resultsFiles.size(); i++)
+    {
 
-	// Open all results files
-	for (int i=0;i < resultsFiles.size();i++){  
+      // Get the full absolute path to the gdat file
+      // String baseFileName = new File(m_relativeFilePath).getName();
+      // System.out.println("baseFileName = "+ baseFileName);
+      // String updated = baseFileName.replaceAll(".bngl", ".gdat");
+      // final String gdatFileToOpen = m_resultsPath + updated;
+      // System.out.println("gdatFileToOpen = "+ gdatFileToOpen);
 
-	    // Get the full absolute path to the gdat file
-//	    String baseFileName = new File(m_relativeFilePath).getName();
-	    // System.out.println("baseFileName = "+ baseFileName);
-//	    String updated = baseFileName.replaceAll(".bngl", ".gdat");
-//	    final String gdatFileToOpen = m_resultsPath + updated;
-	    // System.out.println("gdatFileToOpen = "+ gdatFileToOpen);
-	
-		final String resultsFileToOpen = m_resultsPath + resultsFiles.get(i);
-		
-	    // Calculate the path of the project folder for RuleBender
-	    //String workspacePath = Platform.getLocation().toString();
-	    // System.out.println("workspacePath: " + workspacePath);
-	    //String projectPath = m_iFile.getProject().getLocation().toFile().getName();
-	    // System.out.println("projectPath: " + projectPath);
-	    //String completeProjectPath = new String(workspacePath + projectPath);
-	    // System.out.println("completeProjectPath = " + completeProjectPath);
-	
-	    // Turn absolute gdat path into a path relative to RB project folder
-	    //final String relGdatFileToOpen = resultsFileToOpen.replaceAll(
-	        //completeProjectPath, "");
-	    // System.out.println("relGdatFileToOpen: " + relGdatFileToOpen);
-	
-	    // Prepare to pass off file to an editor
-	    //IPath path = new Path(resultsFileToOpen);
-	    //IFile file = m_iFile.getProject().getFile(path);
-	    
-	    IWorkspace workspace = ResourcesPlugin.getWorkspace();   
-	    IPath location = Path.fromOSString(resultsFileToOpen);
-	    IFile iFile = workspace.getRoot().getFileForLocation(location);
-	    
-	    if (!iFile.exists())
-	    {
-	      return;
-	    }
-	
-	    final IEditorInput editorInput = new FileEditorInput((IFile) iFile);
-	
-	    // Figure out what page is open right now. There must be a better way to do
-	    // this...
-	    IWorkbenchPage page_last = null;
-	    // IWorkbenchWindow w = null;
-	    for (IWorkbenchWindow window : PlatformUI.getWorkbench()
-	        .getWorkbenchWindows())
-	    {
-	      // w = window;
-	      for (IWorkbenchPage page : window.getPages())
-	      {
-	        page_last = page;
-	      }
-	    }
-	    final IWorkbenchPage p = page_last;
-	    // final IWorkbenchWindow w2open = w;
-	
-	    // In the UI thread open the gdat editor
-	    Display.getDefault().asyncExec(new Runnable()
-	    {
-	
-	      public void run()
-	      {
-	        try
-	        {
-	          p.openEditor(editorInput,
-	              FileInputUtility.getEditorId(new File(resultsFileToOpen)));
-	          
-	        }
-	        
-	        catch (PartInitException e)
-	        {
-	          // TODO Auto-generated catch block
-	          e.printStackTrace();
-	        }
-	      }
-	    });
-	}
+      final String resultsFileToOpen = m_resultsPath + resultsFiles.get(i);
+
+      // Calculate the path of the project folder for RuleBender
+      // String workspacePath = Platform.getLocation().toString();
+      // System.out.println("workspacePath: " + workspacePath);
+      // String projectPath =
+      // m_iFile.getProject().getLocation().toFile().getName();
+      // System.out.println("projectPath: " + projectPath);
+      // String completeProjectPath = new String(workspacePath + projectPath);
+      // System.out.println("completeProjectPath = " + completeProjectPath);
+
+      // Turn absolute gdat path into a path relative to RB project folder
+      // final String relGdatFileToOpen = resultsFileToOpen.replaceAll(
+      // completeProjectPath, "");
+      // System.out.println("relGdatFileToOpen: " + relGdatFileToOpen);
+
+      // Prepare to pass off file to an editor
+      // IPath path = new Path(resultsFileToOpen);
+      // IFile file = m_iFile.getProject().getFile(path);
+
+      Logger.log(Logger.LOG_LEVELS.INFO, BNGExecutionJob.class, resultsFileToOpen);
+      
+      IWorkspace workspace = ResourcesPlugin.getWorkspace();
+      IPath location = Path.fromOSString(resultsFileToOpen);
+      IFile iFile = workspace.getRoot().getFileForLocation(location);
+
+      if (!iFile.exists())
+      {
+        return;
+      }
+
+      final IEditorInput editorInput = new FileEditorInput((IFile) iFile);
+
+      // Figure out what page is open right now. There must be a better way to
+      // do
+      // this...
+      IWorkbenchPage page_last = null;
+      // IWorkbenchWindow w = null;
+      for (IWorkbenchWindow window : PlatformUI.getWorkbench()
+          .getWorkbenchWindows())
+      {
+        // w = window;
+        for (IWorkbenchPage page : window.getPages())
+        {
+          page_last = page;
+        }
+      }
+      final IWorkbenchPage p = page_last;
+      // final IWorkbenchWindow w2open = w;
+
+      // In the UI thread open the gdat editor
+      Display.getDefault().asyncExec(new Runnable()
+      {
+
+        public void run()
+        {
+          try
+          {
+            p.openEditor(editorInput,
+                FileInputUtility.getEditorId(new File(resultsFileToOpen)));
+
+          }
+
+          catch (PartInitException e)
+          {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+          }
+        }
+      });
+    }
   }
 
-  
-  private void copyBNGLFileToResults() throws IOException {
-	  
-	  File sourceFile = new File(m_absoluteFilePath);
-	  File destFile = new File(m_resultsPath + (new File(m_absoluteFilePath).getName()));
-	  
-	  // Don't copy BNGL if it already exists in the results directory, e.g., due to call to writeModel()
-	  if(!destFile.exists()) {
-		  try {
-			  destFile.createNewFile();
-		  } catch (IOException e) {
-			  // TODO Auto-generated catch block
-			  e.printStackTrace();
-		  }
-	  
-		  FileChannel source = null;
-		  FileChannel destination = null;
-	
-		  try {
-			  source = new FileInputStream(sourceFile).getChannel();
-			  destination = new FileOutputStream(destFile).getChannel();
-			  destination.transferFrom(source, 0, source.size());
-		  } catch (FileNotFoundException e) {
-			  // TODO Auto-generated catch block
-			  e.printStackTrace();
-		  } catch (IOException e) {
-			  // TODO Auto-generated catch block
-			  e.printStackTrace();
-		  }
-		  finally {
-			  if(source != null) {
-				  try {
-					  source.close();
-				  } catch (IOException e) {
-					  // TODO Auto-generated catch block
-					  e.printStackTrace();
-				  }
-			  }
-			  if(destination != null) {
-				  try {
-					  destination.close();
-				  } catch (IOException e) {
-					  // TODO Auto-generated catch block
-					  e.printStackTrace();
-				  }
-			  }
-		  }
-	  }
+
+  private void copyBNGLFileToResults() throws IOException
+  {
+
+    File sourceFile = new File(m_absoluteFilePath);
+    File destFile = new File(m_resultsPath
+        + (new File(m_absoluteFilePath).getName()));
+
+    // Don't copy BNGL if it already exists in the results directory, e.g., due
+    // to call to writeModel()
+    if (!destFile.exists())
+    {
+      try
+      {
+        destFile.createNewFile();
+      }
+      catch (IOException e)
+      {
+        // TODO Auto-generated catch block
+        e.printStackTrace();
+      }
+
+      FileChannel source = null;
+      FileChannel destination = null;
+
+      try
+      {
+        source = new FileInputStream(sourceFile).getChannel();
+        destination = new FileOutputStream(destFile).getChannel();
+        destination.transferFrom(source, 0, source.size());
+      }
+      catch (FileNotFoundException e)
+      {
+        // TODO Auto-generated catch block
+        e.printStackTrace();
+      }
+      catch (IOException e)
+      {
+        // TODO Auto-generated catch block
+        e.printStackTrace();
+      }
+      finally
+      {
+        if (source != null)
+        {
+          try
+          {
+            source.close();
+          }
+          catch (IOException e)
+          {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+          }
+        }
+        if (destination != null)
+        {
+          try
+          {
+            destination.close();
+          }
+          catch (IOException e)
+          {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+          }
+        }
+      }
+    }
   }
 
-  
+
   private boolean deleteRecursive(File path) throws FileNotFoundException
   {
     if (!path.exists())

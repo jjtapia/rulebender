@@ -66,7 +66,7 @@ public class CommandRunner<T extends CommandInterface>
       m_workingDirectory.mkdirs();
     }
 
-    System.out.println("Running command in: " + m_workingDirectory);
+//    System.out.println("Running command in: " + m_workingDirectory);
 
     ProcessBuilder pb = new ProcessBuilder(m_command.getCommand());
     Map<String, String> env = pb.environment();
@@ -120,13 +120,12 @@ public class CommandRunner<T extends CommandInterface>
       }
       catch (IllegalThreadStateException e)
       {
-        System.out.println("Process not done...");
+        // The process is not done. 
       }
 
       try
       {
         // Wait before you try again.
-        System.out.println("\tSleeping...");
         Thread.sleep(1000);
       }
       catch (InterruptedException e)
@@ -153,7 +152,6 @@ public class CommandRunner<T extends CommandInterface>
     writeLogToResults();
 
     // DEBUG
-    System.out.println("Done running command.");
     System.out.println("Errors: \n" + m_errorLog);
 
     if (!m_errorLog.equals(""))

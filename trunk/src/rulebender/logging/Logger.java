@@ -20,10 +20,7 @@ public class Logger
      */
   public static void log(LOG_LEVELS level, Class className, String message)
   {
-    if (level == LOG_LEVELS.WARNING 
-        || level == LOG_LEVELS.ERROR 
-        || level == LOG_LEVELS.SEVERE
-        )
+//    if (level == some threshold value set somewhere )
     {
       String[] split = className.getName().split("\\.");
       

@@ -78,8 +78,6 @@ public class Console
    */
   public static void displayOutput(String console, String output)
   {
-    System.out.println("Get called for " + console + "\n\toutput: " + output);
-    
     getMessageConsoleStream(console).println(output);
   }
 
@@ -100,8 +98,8 @@ public class Console
       @Override
       public void linkActivated()
       {
-        Logger.log(LOG_LEVELS.INFO, this.getClass(), "Link activated for "
-            + getMessageConsole(name).getName());
+//        Logger.log(LOG_LEVELS.INFO, this.getClass(), "Link activated for "
+//            + getMessageConsole(name).getName());
 
         String errorText = "";
 
@@ -117,7 +115,7 @@ public class Console
 
         
         // ABORT:\s+.*\s+at line \d+
-        Logger.log(LOG_LEVELS.INFO, this.getClass(), "text: " + errorText);
+//        Logger.log(LOG_LEVELS.INFO, this.getClass(), "text: " + errorText);
 
         String[] textArray = errorText.split("\\s+");
 
@@ -207,24 +205,17 @@ public class Console
    */
   public static MessageConsoleStream getMessageConsoleStream(String console)
   {
-    // Get the stream
-    System.out.println("Getting the stream");
-    
-   
     return getMessageConsole(console).newMessageStream();
   }
 
 
   private static MessageConsole getMessageConsole(String console)
   {
-    
-    System.out.println("Getting: " + console);
-
-    if (console.startsWith("/"))
-    {
-      Thread.dumpStack();
-    }
-    
+//    if (console.startsWith("/"))
+//    {
+//      // DEBUGGING
+//      Thread.dumpStack();
+//    }
     
     // Try to get it based on the name.
     MessageConsole messageConsole = m_messageConsoles.get(console);
@@ -381,7 +372,10 @@ public class Console
     }
     else if (part instanceof DATMultiPageEditor)
     {
-      focusResults(part, selection); 
+      // TODO needs some work.  We want to keep the console for this model
+      // showing, but that is not encoded in the directory for the results. 
+      
+//      focusResults(part, selection); 
     }
     // If it's not a bngl file
     else
@@ -396,14 +390,12 @@ public class Console
     
 	  // Get the string that represents the current file.
 	  String osString = "";
-	  if (part instanceof BNGLEditor){
-		  osString = ((FileEditorInput) ((BNGLEditor) part).getEditorInput())
-				  .getFile().getFullPath().toOSString();
-	  }
-	  else if (part instanceof DATMultiPageEditor){
+
+	  if (part instanceof DATMultiPageEditor){
 		  osString = ((FileEditorInput) ((DATMultiPageEditor) part).getEditorInput())
 				  .getFile().getFullPath().toOSString();
 	  }
+	  
 	  showConsole(osString);
   }
   
