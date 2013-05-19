@@ -1,16 +1,25 @@
 #!/bin/bash
 # This is a quick and dirty script for prepping the release files for RB.  It can be 
 # improved or a more robust build system that works with eclipse builder (and is windows
-# friendly) can be used in long run, but for now this saves a ton of time.
+# friendly) can be used in the long run, but for now this saves a ton of time.
 # 
 # Build Step 1: Make sure that BNG and NFSim are at most recent version.
 # Build Step 2: Make sure that BNGParser.jar is at most recent version.
 # Build Step 3: Prepare the eclipse files for release through the plugin development environment.
-# Build Step 4: Put the files in the right place (see below) and run this script.
+# Build Step 4: Put the files in the right place (see below) and 
+# Build Step 5: run this script.
 
 # The release that eclipse generates should be in rbReleaseDir ("RB-Release" here) in the 
 # root rulebender trunk, and the script should also be run in the root (e.g. parent of
-# rbReleaseDir defined below and distributionResources).
+# rbReleaseDir).
+
+# This script does the following:
+# 1. Remove the jre folders from the eclipse output.
+# 2. Create a 'zip' directory and move all of the eclipse outputs to that directory
+#    while renaming the package names to RuleBender-<version>-<platform>
+# 3. Copy the simulation resources (BNG, NFSim, and SampleModels) to each of the packages,
+#    and delete the irrelevant binaries for each platform.
+# 4. COPY the CREDITS.txt, RB-README.txt, and LICENSE.txt files. 
 
 # version number only used for file names.  All other version branding is done in
 # the .project file.
@@ -40,7 +49,7 @@ mv $rbReleaseDir/macosx.cocoa.x86_64/RuleBender/ $rbReleaseDir/zips/RuleBender-$
 mv $rbReleaseDir/win32.win32.x86/RuleBender/ $rbReleaseDir/zips/RuleBender-$version-win32/
 mv $rbReleaseDir/win32.win32.x86_64/RuleBender/ $rbReleaseDir/zips/RuleBender-$version-win64/
 
-# rename and move all of the RuleBender dirs
+# remove unnecessary directories.
 rm -rf $rbReleaseDir/linux.gtk.x86/
 rm -rf $rbReleaseDir/linux.gtk.x86_64/
 rm -rf $rbReleaseDir/macosx.cocoa.x86/
@@ -131,6 +140,16 @@ rm $rbReleaseDir/zips/RuleBender-$version-win64/BioNetGen-2.2.2/bin/NFsim_i386-d
 rm $rbReleaseDir/zips/RuleBender-$version-win64/BioNetGen-2.2.2/bin/run_network_x86_64-linux
 rm $rbReleaseDir/zips/RuleBender-$version-win64/BioNetGen-2.2.2/bin/run_network_i386-darwin
 rm $rbReleaseDir/zips/RuleBender-$version-win64/BioNetGen-2.2.2/bin/run_network_i686-linux
+
+# Copy the RB-README.txt, LICENSE.txt, and CREDITS.txt files
+echo "Copying RB-README.txt, LICENSE.txt, and CREDITS.txt"
+cp distributionResources/*.txt $rbReleaseDir/zips/RuleBender-$version-lin32/
+cp distributionResources/*.txt $rbReleaseDir/zips/RuleBender-$version-lin64/
+cp distributionResources/*.txt $rbReleaseDir/zips/RuleBender-$version-osx32/
+cp distributionResources/*.txt $rbReleaseDir/zips/RuleBender-$version-osx64/
+cp distributionResources/*.txt $rbReleaseDir/zips/RuleBender-$version-win32/
+cp distributionResources/*.txt $rbReleaseDir/zips/RuleBender-$version-win64/
+
 
 #cd to zips dir to avoid more dirs in zip
 cd $rbReleaseDir/zips/
