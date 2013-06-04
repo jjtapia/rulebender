@@ -23,8 +23,9 @@
 
 # version number only used for file names.  All other version branding is done in
 # the .project file.
-version="2.0.271"
+version="2.0.320"
 rbReleaseDir="RB-Release"
+bngdirname="BioNetGen-2.2.4"
 
 echo "Removing JREs"
 
@@ -69,77 +70,81 @@ cp -r distributionResources/Simulation/* $rbReleaseDir/zips/RuleBender-$version-
 echo "Removing unnecessary binaries from lin32"
 # remove the useless exes
 # linux 32
-rm $rbReleaseDir/zips/RuleBender-$version-lin32/BioNetGen-2.2.2/bin/cyggcc_s-1.dll
-rm $rbReleaseDir/zips/RuleBender-$version-lin32/BioNetGen-2.2.2/bin/cygstdc++-6.dll
-rm $rbReleaseDir/zips/RuleBender-$version-lin32/BioNetGen-2.2.2/bin/cygwin1.dll
-rm $rbReleaseDir/zips/RuleBender-$version-lin32/BioNetGen-2.2.2/bin/NFsim_i386-darwin
-rm $rbReleaseDir/zips/RuleBender-$version-lin32/BioNetGen-2.2.2/bin/NFsim_i686-cygwin.exe
-rm $rbReleaseDir/zips/RuleBender-$version-lin32/BioNetGen-2.2.2/bin/NFsim_x86_64-linux
-rm $rbReleaseDir/zips/RuleBender-$version-lin32/BioNetGen-2.2.2/bin/NFsim_MSWin32.exe
-rm $rbReleaseDir/zips/RuleBender-$version-lin32/BioNetGen-2.2.2/bin/run_network_i386-darwin
-rm $rbReleaseDir/zips/RuleBender-$version-lin32/BioNetGen-2.2.2/bin/run_network_i686-cygwin
-rm $rbReleaseDir/zips/RuleBender-$version-lin32/BioNetGen-2.2.2/bin/run_network_MSWin32.exe
-rm $rbReleaseDir/zips/RuleBender-$version-lin32/BioNetGen-2.2.2/bin/run_network_x86_64-linux
+rm $rbReleaseDir/zips/RuleBender-$version-lin32/$bngdirname/bin/cyggcc_s-1.dll
+rm $rbReleaseDir/zips/RuleBender-$version-lin32/$bngdirname/bin/cygstdc++-6.dll
+rm $rbReleaseDir/zips/RuleBender-$version-lin32/$bngdirname/bin/cygwin1.dll
+rm $rbReleaseDir/zips/RuleBender-$version-lin32/$bngdirname/bin/msvcirt.dll
+rm $rbReleaseDir/zips/RuleBender-$version-lin32/$bngdirname/bin/NFsim_i386-darwin
+rm $rbReleaseDir/zips/RuleBender-$version-lin32/$bngdirname/bin/NFsim_i686-cygwin
+rm $rbReleaseDir/zips/RuleBender-$version-lin32/$bngdirname/bin/NFsim_x86_64-linux
+rm $rbReleaseDir/zips/RuleBender-$version-lin32/$bngdirname/bin/NFsim_MSWin32.exe
+rm $rbReleaseDir/zips/RuleBender-$version-lin32/$bngdirname/bin/run_network_i386-darwin
+rm $rbReleaseDir/zips/RuleBender-$version-lin32/$bngdirname/bin/run_network_i686-cygwin
+rm $rbReleaseDir/zips/RuleBender-$version-lin32/$bngdirname/bin/run_network_MSWin32.exe
+rm $rbReleaseDir/zips/RuleBender-$version-lin32/$bngdirname/bin/run_network_x86_64-linux
 
 echo "Removing unnecessary binaries from lin64"
 #linux 64
-rm $rbReleaseDir/zips/RuleBender-$version-lin64/BioNetGen-2.2.2/bin/cyggcc_s-1.dll
-rm $rbReleaseDir/zips/RuleBender-$version-lin64/BioNetGen-2.2.2/bin/cygstdc++-6.dll
-rm $rbReleaseDir/zips/RuleBender-$version-lin64/BioNetGen-2.2.2/bin/cygwin1.dll
-rm $rbReleaseDir/zips/RuleBender-$version-lin64/BioNetGen-2.2.2/bin/NFsim_i386-darwin
-rm $rbReleaseDir/zips/RuleBender-$version-lin64/BioNetGen-2.2.2/bin/NFsim_i686-cygwin.exe
-rm $rbReleaseDir/zips/RuleBender-$version-lin64/BioNetGen-2.2.2/bin/NFsim_i686-linux
-rm $rbReleaseDir/zips/RuleBender-$version-lin64/BioNetGen-2.2.2/bin/NFsim_MSWin32.exe
-rm $rbReleaseDir/zips/RuleBender-$version-lin64/BioNetGen-2.2.2/bin/run_network_i386-darwin
-rm $rbReleaseDir/zips/RuleBender-$version-lin64/BioNetGen-2.2.2/bin/run_network_i686-cygwin
-rm $rbReleaseDir/zips/RuleBender-$version-lin64/BioNetGen-2.2.2/bin/run_network_MSWin32.exe
-rm $rbReleaseDir/zips/RuleBender-$version-lin64/BioNetGen-2.2.2/bin/run_network_i686-linux
+rm $rbReleaseDir/zips/RuleBender-$version-lin64/$bngdirname/bin/cyggcc_s-1.dll
+rm $rbReleaseDir/zips/RuleBender-$version-lin64/$bngdirname/bin/cygstdc++-6.dll
+rm $rbReleaseDir/zips/RuleBender-$version-lin64/$bngdirname/bin/cygwin1.dll
+rm $rbReleaseDir/zips/RuleBender-$version-lin64/$bngdirname/bin/msvcirt.dll
+rm $rbReleaseDir/zips/RuleBender-$version-lin64/$bngdirname/bin/NFsim_i386-darwin
+rm $rbReleaseDir/zips/RuleBender-$version-lin64/$bngdirname/bin/NFsim_i686-cygwin
+rm $rbReleaseDir/zips/RuleBender-$version-lin64/$bngdirname/bin/NFsim_i686-linux
+rm $rbReleaseDir/zips/RuleBender-$version-lin64/$bngdirname/bin/NFsim_MSWin32.exe
+rm $rbReleaseDir/zips/RuleBender-$version-lin64/$bngdirname/bin/run_network_i386-darwin
+rm $rbReleaseDir/zips/RuleBender-$version-lin64/$bngdirname/bin/run_network_i686-cygwin
+rm $rbReleaseDir/zips/RuleBender-$version-lin64/$bngdirname/bin/run_network_MSWin32.exe
+rm $rbReleaseDir/zips/RuleBender-$version-lin64/$bngdirname/bin/run_network_i686-linux
 
 echo "Removing unnecessary binaries from osx32"
 # osx 32
-rm $rbReleaseDir/zips/RuleBender-$version-osx32/BioNetGen-2.2.2/bin/cyggcc_s-1.dll
-rm $rbReleaseDir/zips/RuleBender-$version-osx32/BioNetGen-2.2.2/bin/cygstdc++-6.dll
-rm $rbReleaseDir/zips/RuleBender-$version-osx32/BioNetGen-2.2.2/bin/cygwin1.dll
-rm $rbReleaseDir/zips/RuleBender-$version-osx32/BioNetGen-2.2.2/bin/NFsim_x86_64-linux
-rm $rbReleaseDir/zips/RuleBender-$version-osx32/BioNetGen-2.2.2/bin/NFsim_i686-cygwin.exe
-rm $rbReleaseDir/zips/RuleBender-$version-osx32/BioNetGen-2.2.2/bin/NFsim_i686-linux
-rm $rbReleaseDir/zips/RuleBender-$version-osx32/BioNetGen-2.2.2/bin/NFsim_MSWin32.exe
-rm $rbReleaseDir/zips/RuleBender-$version-osx32/BioNetGen-2.2.2/bin/run_network_x86_64-linux
-rm $rbReleaseDir/zips/RuleBender-$version-osx32/BioNetGen-2.2.2/bin/run_network_i686-cygwin
-rm $rbReleaseDir/zips/RuleBender-$version-osx32/BioNetGen-2.2.2/bin/run_network_MSWin32.exe
-rm $rbReleaseDir/zips/RuleBender-$version-osx32/BioNetGen-2.2.2/bin/run_network_i686-linux
+rm $rbReleaseDir/zips/RuleBender-$version-osx32/$bngdirname/bin/cyggcc_s-1.dll
+rm $rbReleaseDir/zips/RuleBender-$version-osx32/$bngdirname/bin/cygstdc++-6.dll
+rm $rbReleaseDir/zips/RuleBender-$version-osx32/$bngdirname/bin/cygwin1.dll
+rm $rbReleaseDir/zips/RuleBender-$version-osx32/$bngdirname/bin/msvcirt.dll
+rm $rbReleaseDir/zips/RuleBender-$version-osx32/$bngdirname/bin/NFsim_x86_64-linux
+rm $rbReleaseDir/zips/RuleBender-$version-osx32/$bngdirname/bin/NFsim_i686-cygwin
+rm $rbReleaseDir/zips/RuleBender-$version-osx32/$bngdirname/bin/NFsim_i686-linux
+rm $rbReleaseDir/zips/RuleBender-$version-osx32/$bngdirname/bin/NFsim_MSWin32.exe
+rm $rbReleaseDir/zips/RuleBender-$version-osx32/$bngdirname/bin/run_network_x86_64-linux
+rm $rbReleaseDir/zips/RuleBender-$version-osx32/$bngdirname/bin/run_network_i686-cygwin
+rm $rbReleaseDir/zips/RuleBender-$version-osx32/$bngdirname/bin/run_network_MSWin32.exe
+rm $rbReleaseDir/zips/RuleBender-$version-osx32/$bngdirname/bin/run_network_i686-linux
 
 echo "Removing unnecessary binaries from osx64"
 # osx 64
-rm $rbReleaseDir/zips/RuleBender-$version-osx64/BioNetGen-2.2.2/bin/cyggcc_s-1.dll
-rm $rbReleaseDir/zips/RuleBender-$version-osx64/BioNetGen-2.2.2/bin/cygstdc++-6.dll
-rm $rbReleaseDir/zips/RuleBender-$version-osx64/BioNetGen-2.2.2/bin/cygwin1.dll
-rm $rbReleaseDir/zips/RuleBender-$version-osx64/BioNetGen-2.2.2/bin/NFsim_x86_64-linux
-rm $rbReleaseDir/zips/RuleBender-$version-osx64/BioNetGen-2.2.2/bin/NFsim_i686-cygwin.exe
-rm $rbReleaseDir/zips/RuleBender-$version-osx64/BioNetGen-2.2.2/bin/NFsim_i686-linux
-rm $rbReleaseDir/zips/RuleBender-$version-osx64/BioNetGen-2.2.2/bin/NFsim_MSWin32.exe
-rm $rbReleaseDir/zips/RuleBender-$version-osx64/BioNetGen-2.2.2/bin/run_network_x86_64-linux
-rm $rbReleaseDir/zips/RuleBender-$version-osx64/BioNetGen-2.2.2/bin/run_network_i686-cygwin
-rm $rbReleaseDir/zips/RuleBender-$version-osx64/BioNetGen-2.2.2/bin/run_network_MSWin32.exe
-rm $rbReleaseDir/zips/RuleBender-$version-osx64/BioNetGen-2.2.2/bin/run_network_i686-linux
+rm $rbReleaseDir/zips/RuleBender-$version-osx64/$bngdirname/bin/cyggcc_s-1.dll
+rm $rbReleaseDir/zips/RuleBender-$version-osx64/$bngdirname/bin/cygstdc++-6.dll
+rm $rbReleaseDir/zips/RuleBender-$version-osx64/$bngdirname/bin/cygwin1.dll
+rm $rbReleaseDir/zips/RuleBender-$version-osx64/$bngdirname/bin/msvcirt.dll
+rm $rbReleaseDir/zips/RuleBender-$version-osx64/$bngdirname/bin/NFsim_x86_64-linux
+rm $rbReleaseDir/zips/RuleBender-$version-osx64/$bngdirname/bin/NFsim_i686-cygwin
+rm $rbReleaseDir/zips/RuleBender-$version-osx64/$bngdirname/bin/NFsim_i686-linux
+rm $rbReleaseDir/zips/RuleBender-$version-osx64/$bngdirname/bin/NFsim_MSWin32.exe
+rm $rbReleaseDir/zips/RuleBender-$version-osx64/$bngdirname/bin/run_network_x86_64-linux
+rm $rbReleaseDir/zips/RuleBender-$version-osx64/$bngdirname/bin/run_network_i686-cygwin
+rm $rbReleaseDir/zips/RuleBender-$version-osx64/$bngdirname/bin/run_network_MSWin32.exe
+rm $rbReleaseDir/zips/RuleBender-$version-osx64/$bngdirname/bin/run_network_i686-linux
 
 echo "Removing unnecessary binaries from win32"
 #windows 32
-rm $rbReleaseDir/zips/RuleBender-$version-win32/BioNetGen-2.2.2/bin/NFsim_x86_64-linux
-rm $rbReleaseDir/zips/RuleBender-$version-win32/BioNetGen-2.2.2/bin/NFsim_i686-linux
-rm $rbReleaseDir/zips/RuleBender-$version-win32/BioNetGen-2.2.2/bin/NFsim_i386-darwin
-rm $rbReleaseDir/zips/RuleBender-$version-win32/BioNetGen-2.2.2/bin/run_network_x86_64-linux
-rm $rbReleaseDir/zips/RuleBender-$version-win32/BioNetGen-2.2.2/bin/run_network_i386-darwin
-rm $rbReleaseDir/zips/RuleBender-$version-win32/BioNetGen-2.2.2/bin/run_network_i686-linux
+rm $rbReleaseDir/zips/RuleBender-$version-win32/$bngdirname/bin/NFsim_x86_64-linux
+rm $rbReleaseDir/zips/RuleBender-$version-win32/$bngdirname/bin/NFsim_i686-linux
+rm $rbReleaseDir/zips/RuleBender-$version-win32/$bngdirname/bin/NFsim_i386-darwin 
+rm $rbReleaseDir/zips/RuleBender-$version-win32/$bngdirname/bin/run_network_x86_64-linux
+rm $rbReleaseDir/zips/RuleBender-$version-win32/$bngdirname/bin/run_network_i386-darwin
+rm $rbReleaseDir/zips/RuleBender-$version-win32/$bngdirname/bin/run_network_i686-linux
 
 echo "Removing unnecessary binaries from win64"
 #windows 64
-rm $rbReleaseDir/zips/RuleBender-$version-win64/BioNetGen-2.2.2/bin/NFsim_x86_64-linux
-rm $rbReleaseDir/zips/RuleBender-$version-win64/BioNetGen-2.2.2/bin/NFsim_i686-linux
-rm $rbReleaseDir/zips/RuleBender-$version-win64/BioNetGen-2.2.2/bin/NFsim_i386-darwin
-rm $rbReleaseDir/zips/RuleBender-$version-win64/BioNetGen-2.2.2/bin/run_network_x86_64-linux
-rm $rbReleaseDir/zips/RuleBender-$version-win64/BioNetGen-2.2.2/bin/run_network_i386-darwin
-rm $rbReleaseDir/zips/RuleBender-$version-win64/BioNetGen-2.2.2/bin/run_network_i686-linux
+rm $rbReleaseDir/zips/RuleBender-$version-win64/$bngdirname/bin/NFsim_x86_64-linux
+rm $rbReleaseDir/zips/RuleBender-$version-win64/$bngdirname/bin/NFsim_i686-linux
+rm $rbReleaseDir/zips/RuleBender-$version-win64/$bngdirname/bin/NFsim_i386-darwin
+rm $rbReleaseDir/zips/RuleBender-$version-win64/$bngdirname/bin/run_network_x86_64-linux
+rm $rbReleaseDir/zips/RuleBender-$version-win64/$bngdirname/bin/run_network_i386-darwin
+rm $rbReleaseDir/zips/RuleBender-$version-win64/$bngdirname/bin/run_network_i686-linux
 
 # Copy the RB-README.txt, LICENSE.txt, and CREDITS.txt files
 echo "Copying RB-README.txt, LICENSE.txt, and CREDITS.txt"
@@ -153,6 +158,9 @@ cp distributionResources/*.txt $rbReleaseDir/zips/RuleBender-$version-win64/
 
 #cd to zips dir to avoid more dirs in zip
 cd $rbReleaseDir/zips/
+
+# remove the any svn files
+find . -type d -name .svn -exec rm -rf '{}' \;
 
 # zip that garbage
 zip -r RuleBender-$version-lin32.zip RuleBender-$version-lin32
