@@ -36,7 +36,6 @@ import bngparser.grammars.BNGGrammar.prog_return;
 import rulebender.core.utility.ANTLRFilteredPrintStream;
 import rulebender.core.utility.Console;
 import rulebender.editors.bngl.BNGLConfiguration;
-import rulebender.editors.bngl.BNGLDocumentProvider;
 import rulebender.editors.bngl.model.BNGLModel;
 import rulebender.errorview.model.BNGLError;
 import rulebender.logging.Logger;
@@ -57,7 +56,6 @@ public class BNGLEditor extends TextEditor implements ISelectionListener,
   // The color manager for the syntax highlighting.
   private BNGLColorManager m_colorManager;
 
-
   // private String m_path;
   public BNGLEditor()
   {
@@ -73,8 +71,9 @@ public class BNGLEditor extends TextEditor implements ISelectionListener,
 
     // Set the DocumentProvider which handles the representation of the file
     // and how the text is partitioned.
-    setDocumentProvider(new BNGLDocumentProvider());
-
+    setDocumentProvider(new ColoringDocumentProvider());
+     
+    
     // Can't create the m_model here because we need the part name,
     // and the part name is not set until after the constructor.
     // So i used a lazy load in the getter.
@@ -481,7 +480,8 @@ public class BNGLEditor extends TextEditor implements ISelectionListener,
    */
   public void resourceChanged(final IResourceChangeEvent event)
   {
-
+    
+    // Closing
     if (event.getType() == IResourceChangeEvent.PRE_CLOSE)
     {
       Logger.log(Logger.LOG_LEVELS.INFO, this.getClass(),
@@ -504,5 +504,10 @@ public class BNGLEditor extends TextEditor implements ISelectionListener,
         }
       });
     }
+//    // Rename
+//    else if (event.getType() == IResourceChangeEvent.POST_CHANGE)
+//    {
+//      event.getDelta().getKind();
+//    }
   }
 }
