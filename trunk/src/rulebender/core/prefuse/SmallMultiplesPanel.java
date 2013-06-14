@@ -579,7 +579,7 @@ public class SmallMultiplesPanel extends JLayeredPane implements ActionListener 
 		similarityScores = computeModelSimilarityScores(largestModelIndex, smScores);
 		
 		for (int i = 0; i < m_numFiles; i++) {
-			for (int j = 0; j < (m_numFiles - 1); j++) {
+			for (int j = 0; j < (m_numFiles - (i + 1)); j++) {
 				if (similarityScores[j] < similarityScores[j+1]) {
 					swapModels(j, j+1);
 				} //if
