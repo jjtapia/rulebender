@@ -7,8 +7,7 @@ public class Custom2Perspective implements IPerspectiveFactory {
 
 	@Override
 	public void createInitialLayout(IPageLayout layout) {
-		// TODO Auto-generated method stub
-		layout.setEditorAreaVisible(true);
+		layout.setEditorAreaVisible(false);
 		layout.setFixed(false);
 	}
 
