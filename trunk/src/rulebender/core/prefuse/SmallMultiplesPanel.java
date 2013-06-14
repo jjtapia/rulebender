@@ -6,12 +6,11 @@ import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.PrintStream;
-import java.util.ArrayList;
+import java.io.File;
+import java.util.HashMap;
 import java.util.Iterator;
 
+import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JLayeredPane;
@@ -20,38 +19,17 @@ import javax.swing.SwingConstants;
 import javax.swing.border.Border;
 import javax.swing.border.LineBorder;
 
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IMarker;
-import org.eclipse.jface.text.BadLocationException;
-import org.eclipse.jface.text.IDocument;
-import org.eclipse.jface.text.IRegion;
-import org.eclipse.ui.IEditorInput;
-import org.eclipse.ui.part.FileEditorInput;
-
-import bngparser.BNGParseData;
-import bngparser.BNGParserUtility;
-import bngparser.grammars.BNGGrammar.prog_return;
-
 import prefuse.Display;
 import prefuse.Visualization;
 import prefuse.data.Edge;
 import prefuse.data.Graph;
+import prefuse.util.ColorLib;
 import prefuse.util.PrefuseLib;
 import prefuse.visual.VisualItem;
-import rulebender.contactmap.models.CMapModelBuilder;
-import rulebender.contactmap.models.ContactMapModel;
-import rulebender.contactmap.prefuse.ContactMapVisual;
-import rulebender.contactmap.view.ContactMapView;
-import rulebender.core.prefuse.overview.Overview;
-import rulebender.core.utility.ANTLRFilteredPrintStream;
-import rulebender.core.utility.Console;
-import rulebender.editors.bngl.model.BNGASTReader;
-import rulebender.editors.bngl.model.BNGLModel;
-import rulebender.errorview.model.BNGLError;
 import rulebender.simulationjournaling.comparison.SimilarityMatrices;
+import rulebender.simulationjournaling.model.BackgroundFileLoader;
 import rulebender.simulationjournaling.model.SmallMultiple;
 import rulebender.simulationjournaling.view.SmallMultiplesView;
-
 
 /**
  * This class defines the pane that contains an array of prefuse.Display objects,
@@ -64,22 +42,34 @@ public class SmallMultiplesPanel extends JLayeredPane implements ActionListener 
 	private static final long serialVersionUID = -5595319590026393256L;
 	private static String COMPONENT_GRAPH = "component_graph";
 	
-	// Temporary values for while I'm just hardcoding in the layout
-	//private int m_numFiles = 12;
-	private int m_numFiles = 4;
-	//private int m_numFiles = 8;
+	// Temporary values for while I'm just hardcoding in the directory
+	// TODO: get this directory path automatically from a user's RuleBender interactions
+	//private String m_directory = "C:\\Users\\John\\runtime-rulebender.product\\TLR\\TLR\\";
+	//private String m_directory = "C:\\Users\\John\\runtime-rulebender.product\\egfr_net\\egfr_net\\";
+	//private String m_directory = "C:\\Users\\John\\runtime-rulebender.product\\fceri\\models\\";
+	private String m_directory = "C:\\Users\\John\\runtime-rulebender.product\\stat\\stat\\";
+	
+	private int m_numFiles;
+	
 	private int rows;
 	private int cols;	
+	String sourcePath[];
 	
 	// The width of the borders in pixels
 	private final int BORDER_WIDTH = 1;
+	private final int WIDE_BORDER = 3;
 	
 	// Defines the size of the overall panel, as well as the size of each of the small multiple panels
 	private Dimension m_overallSize;
 	private Dimension m_individualSize;
 	
+	// The buttons to auto-populate the layout and to clear the layout
+	private JButton btnPopulate;
+	private JButton btnClear;
+	
 	// The border object that separates the inner JPanels
 	private Border border;
+	private Border highlightBorder;
 	
 	// The panel that holds the entire view
 	private JPanel fullPanel;
@@ -100,16 +90,38 @@ public class SmallMultiplesPanel extends JLayeredPane implements ActionListener 
 	// The array of contact maps, one for each of the panels
 	private Display[] smallMultiple;
 	
-	// Temporary variable to hold a contact map small multiple
-	//SmallMultiple sm;
-	Display sm[];
+	// The state of the grid (for when the layout is updated)
+	private boolean displayBlank = true;
+	
+	// Highlight background color
+	private Color highlightBackgroundColor;
+	
+	// Holds a contact map small multiple
+	SmallMultiple sm[];
 	
 	// The collection of similarity matrices
 	SimilarityMatrices matrixLayout;
 	
 	// The scores of the matrix comparison
 	double[] similarityScores;
+	
+	// The SmallMultiplesView that this panel is associated with
+	SmallMultiplesView m_view;
+	
+	// The last panel index that was selected (for recognizing deselection)
+	private int m_lastPanelSelected;
+	
+	// If something is currently highlighted in the interface
+	private boolean m_currentlyHighlighted;
+	
+	// A HashMap that holds any pre-existing but not currently displayed
+	// contact map prefuse visualizations. This is so that a new contact map
+	// is not created every time a user selects a new bngl editor tab.
+	private HashMap<String, SmallMultiple> m_contactMapRegistry;
 		
+	// A HashMap that holds the name of a position file and its path
+	private HashMap<String, String> m_positionLookup;
+	
 	/**
 	 * Two functions:
 	 *   1. Set the size of the overall panel
@@ -117,16 +129,30 @@ public class SmallMultiplesPanel extends JLayeredPane implements ActionListener 
 	 * 
 	 * @param size - the size of the panel
 	 */
-	public SmallMultiplesPanel(Dimension size) { 
+	public SmallMultiplesPanel(Dimension size, SmallMultiplesView view) { 
+		
 		m_overallSize = size;
 		
-		//TODO: figure out the number of multiples are in the folder
-		// m_numFiles = findNumberOfSmallMultiples();
+		m_view = view;
+		
+		m_lastPanelSelected = -1;
+		m_currentlyHighlighted = false;
+		
+		highlightBorder = new LineBorder(Color.RED, WIDE_BORDER);
+		highlightBackgroundColor = Color.getHSBColor(0.1472f, 0.1472f, 1f);
+		
+		m_contactMapRegistry = new HashMap<String, SmallMultiple>();
+		m_positionLookup = new HashMap<String, String>();
+		
+		// Figure out the number of multiples are in the folder
+		m_numFiles = findNumberOfSmallMultiples(m_directory);
 		
 		// Set the layout of the small multiples panel
 		selectLayout(m_numFiles);
 		
 		m_individualSize = findIndividualPanelSize(m_overallSize);
+		
+		sm = new SmallMultiple[m_numFiles];
 		
 		// Initialize the label and dropdown list for the layouts
 		lblLayouts = new JLabel();
@@ -136,14 +162,17 @@ public class SmallMultiplesPanel extends JLayeredPane implements ActionListener 
 		lblLayouts.setText("Choose layout: ");
 		lblLayouts.setHorizontalAlignment(SwingConstants.RIGHT);
 		
-		ddlLayouts.addItem("-- Use default layouts --");
-		// TODO: Automatically pull these from the active directory
-		ddlLayouts.addItem("egfr_net.pos");
-		ddlLayouts.addItem("egfr_net_1.pos");
-		ddlLayouts.addItem("egfr_net_2.pos");
-		//ddlLayouts.addItem("egfr_net_3.pos");
+		populatePositionDropdown(m_directory);
+		
 		ddlLayouts.setSelectedIndex(0);
 		ddlLayouts.addActionListener(this);
+		
+		// Initialize the buttons and add listener
+		btnPopulate = new JButton("Populate from Folder");
+		btnClear = new JButton("Clear the Canvas");
+		
+		btnPopulate.addActionListener(this);
+		btnClear.addActionListener(this);
 		
 		// Initialize the major panels
 		fullPanel = new JPanel();
@@ -152,7 +181,7 @@ public class SmallMultiplesPanel extends JLayeredPane implements ActionListener 
 		
 		// Set the layout on the panels and the RCP View
 		fullPanel.setLayout(new BorderLayout());
-		upperPanel.setLayout(new GridLayout(1, 2));
+		upperPanel.setLayout(new GridLayout(1, 4));
 		lowerPanel.setLayout(new GridLayout(rows, cols, -1, -1));
 		this.setLayout(new GridLayout(1, 1));
 		
@@ -160,10 +189,13 @@ public class SmallMultiplesPanel extends JLayeredPane implements ActionListener 
 		myPanel = new JPanel[m_numFiles];
 		for (int i = 0; i < m_numFiles; i++) {
 			myPanel[i] = new JPanel();
+			myPanel[i].setName(""+i);
+			myPanel[i].setToolTipText("testing");
 		} //for
 		
 		// Initialize the small multiples layout
 		initializeSmallMultiplesDisplay((String)ddlLayouts.getSelectedItem());
+		//initializeBlankDisplay();
 		
 		for (int i = 0; i < m_numFiles; i++) {
 			lowerPanel.add(myPanel[i]);
@@ -172,6 +204,8 @@ public class SmallMultiplesPanel extends JLayeredPane implements ActionListener 
 		// Add the dropdown list and label to the upper panel
 		upperPanel.add(lblLayouts);
 		upperPanel.add(ddlLayouts);
+		upperPanel.add(btnPopulate);
+		upperPanel.add(btnClear);
 					
 		// Add the upper and lower panels to the main panel
 		fullPanel.add(upperPanel, BorderLayout.NORTH);
@@ -185,25 +219,113 @@ public class SmallMultiplesPanel extends JLayeredPane implements ActionListener 
 		
 	} //SmallMultiplesPanel (constructor)
 	
+	private void populatePositionDropdown(String directory) {
+		File dir = new File(directory);
+		
+		ddlLayouts.addItem("-- Use default layouts --");
+		m_positionLookup.put("-- Use default layouts --", null);
+		
+		// Only try to iterate across all files if we're passed in a directory
+		if (dir.isDirectory()) {
+			for (File child : dir.listFiles()) {
+				if (isPositionFile(child)) {
+					// Add position file to the dropdown list
+					ddlLayouts.addItem(child.getName());
+					
+					// Add position file to the HashMap that stores the absolute location
+					m_positionLookup.put(child.getName(), child.getAbsolutePath());
+					
+				} //if
+			} //for
+		} //if
+		
+	} //populatePositionDropdown
+	
+	private String lookupPosition(String selection) {
+		return m_positionLookup.get(selection);
+	} //lookupPosition
+	
+	private boolean isPositionFile(File child) {
+		String filepath = child.getPath();
+		return ((filepath.substring(filepath.length()-4, filepath.length()).equals(".pos")) || (filepath.substring(filepath.length()-4, filepath.length()).equals(".POS")));
+	} //isPositionFile
+	
+	private boolean isBNGLFile(File child) {
+		String filepath = child.getPath();
+		return ((filepath.substring(filepath.length()-5, filepath.length()).equals(".bngl")) || (filepath.substring(filepath.length()-5, filepath.length()).equals(".BNGL")));
+	} //isBNGLFile
+	
+	private void populateSmallMultiplesDisplay(String directory, String layoutChoice) {
+		File dir = new File(directory);
+		int currentMultiple = 0;
+		
+		// Only try to iterate across all files if we're passed in a directory
+		if (dir.isDirectory()) {
+			for (File child : dir.listFiles()) {
+				if (isBNGLFile(child)) {
+					
+					if (sm[currentMultiple] == null) {
+						SmallMultiple loadModel = lookupDisplay(child.getAbsolutePath());
+						
+						if (loadModel == null) {
+							// If the model hasn't already been loaded, load it (using the thread class), then store it in the registry
+							SmallMultipleLoaderThread thread = new SmallMultipleLoaderThread(currentMultiple, child, layoutChoice);
+							thread.run();
+						} else {
+							// If the model has already been loaded, retrieve it from the HashMap, and make sure it's using the right layout
+							sm[currentMultiple] = loadModel;
+							sm[currentMultiple].setLayoutPath(lookupPosition(layoutChoice));
+						} //if-else
+						
+					} else {
+						sm[currentMultiple].setLayoutPath(lookupPosition(layoutChoice));
+						
+					} //if-else
+					
+					currentMultiple++;
+				} //if
+			} //for
+		} //if
+		
+	} //populateSmallMultiplesDisplay
+	
+	private String[] populateModelNames(String directory) {
+		File dir = new File(directory);
+		String modelNames[] = new String[m_numFiles];
+		int currentModel = 0;
+		
+		// Only try to iterate across all files if we're passed in a directory
+		if (dir.isDirectory()) {
+			for (File child : dir.listFiles()) {
+				if (isBNGLFile(child)) {
+					modelNames[currentModel] = child.getName();
+					currentModel++;
+				} //if
+			} //for
+		} //if
+		
+		return modelNames;
+	} //populateModelNames
+	
 	public void initializeSmallMultiplesDisplay(String layoutChoice) {
-				
-		// Instantiate each of the JPanels and set their borders
+		
+		// Remove old components (if necessary) from the grid
 		for (int i = 0; i < m_numFiles; i++) {
-			if (myPanel[i].getComponentCount() != 0) {
-				myPanel[i].remove(0);
-			} //if
-		} //for
-				
-		sm = new Display[m_numFiles];
-				
-		// Load the small multiples
-		for (int i = 0; i < m_numFiles; i++) {
-			sm[i] = loadTempContactMap(i, layoutChoice);
+			
+			//myPanel[i].removeAll();
+			/*
+			MouseListener[] listeners = getMouseListeners();
+			
+			for (int j = 0; j < listeners.length; j++) {
+				myPanel[i].removeMouseListener(listeners[j]);
+			} //for
+			*/
 		} //for
 		
-		//String[] modelNames = {"egfr_net", "egfr_net_1", "egfr_net_2", "egfr_net_3", "TLR4_RPS_v1", /*"TLR4_RPS_v2", "TLR4_RPS_v3",*/ "TLR4_RPS_v4", "TLR4_RPS_v5", "TLR_v1", "TLR_v15", "TLR_v16", "TLR_v24", "TLR_v25"};
-		String[] modelNames = {"egfr_net", "egfr_net_1", "egfr_net_2", "egfr_net_3"};
-		//String[] modelNames = {"TLR4_RPS_v1", "TLR4_RPS_v4", "TLR4_RPS_v5", "TLR_v1", "TLR_v15", "TLR_v16", "TLR_v24", "TLR_v25"};
+		// Load the small multiples if they don't exist in the array already
+		populateSmallMultiplesDisplay(m_directory, layoutChoice);
+		
+		String[] modelNames = populateModelNames(m_directory);
 		matrixLayout = new SimilarityMatrices(modelNames, sm);		
 				
 		matrixLayout.fillSimilarityMatrices();
@@ -218,23 +340,157 @@ public class SmallMultiplesPanel extends JLayeredPane implements ActionListener 
 				
 		// Add each of the sorted small multiple panels to the lower Panel
 		for (int i = 0; i < m_numFiles; i++) {
-			myPanel[i].add(sm[i]);
+			
+			sm[i].getDisplay().getVisualization().run("layout");
+			sm[i].getDisplay().getVisualization().run("color");
+			sm[i].getDisplay().getVisualization().run("bubbleLayout");
+			sm[i].getDisplay().getVisualization().run("bubbleColor");
+			
+			if (myPanel[i].getComponentCount() == 0) {
+				myPanel[i].add(sm[i].getDisplay());
+			} //if
+			
+			myPanel[i].setBorder(border);
+			myPanel[i].setBackground(Color.WHITE);
+			myPanel[i].repaint();
+			sm[i].getDisplay().repaint();
+		} //for
+				
+		// Display is no longer blank
+		displayBlank = false;
+		
+	} //initializeSmallMultiplesDisplay
+	
+	public int getLastPanelSelected() {
+		return m_lastPanelSelected;
+	} //getLastPanelSelected
+	
+	public void setLastPanelSelected(int sel) {
+		// If an old panel is being de-selected, remove all highlighting
+		// If a new panel is being selected, highlight that panel.
+		if (sel != -1) {
+			if (m_lastPanelSelected == sel) {
+				removeHighlighting();
+			} else {
+				highlightPanel(sel, true);
+			} //if-else
+		} //if
+
+		m_lastPanelSelected = sel;
+	} //setLastPanelSelected
+	
+	private SmallMultiple lookupDisplay(String filepath) {
+	    return m_contactMapRegistry.get(filepath);
+	} //lookupDisplay
+	
+	public void highlightPanel(int panelIndex, boolean resetHighlighting) {
+		// First reset all panels to the gray border without highlighting
+		if (resetHighlighting) {
+			removeHighlighting();	
+		} //if
+				
+		// Now highlight the red border
+		//myPanel[panelIndex].setBorder(highlightBorder);
+		myPanel[panelIndex].setBackground(highlightBackgroundColor);
+		sm[panelIndex].getDisplay().setBackground(highlightBackgroundColor);
+		sm[panelIndex].getDisplay().setSize(myPanel[panelIndex].getWidth() - 2, myPanel[panelIndex].getHeight() - 2);
+		sm[panelIndex].getDisplay().repaint();
+		sm[panelIndex].getDisplay().getVisualization().repaint();
+		myPanel[panelIndex].repaint();
+	} //highlightPanel
+	
+	public void highlightPanels(int panelIndex1, int panelIndex2) {
+		highlightPanel(panelIndex1, true);
+		highlightPanel(panelIndex2, false);
+	} //highlightPanels
+	
+	public void removeHighlighting() {
+		for (int i = 0; i < m_numFiles; i++) {
+			myPanel[i].setBackground(Color.WHITE);
+			sm[i].getDisplay().setBackground(Color.WHITE);
+			myPanel[i].setBorder(border);
+			sm[i].getDisplay().setSize(myPanel[i].getWidth() - 2, myPanel[i].getHeight() - 2);
+			sm[i].getDisplay().repaint();
+			sm[i].getDisplay().getVisualization().repaint();
+			myPanel[i].repaint();
+		} //for
+	} //removeHighlighting
+	
+	public boolean isCurrentlyHighlighted() {
+		return m_currentlyHighlighted;
+	} //isCurrentlyHighlighted
+	
+	public void setCurrentlyHighlighted(boolean high) {
+		m_currentlyHighlighted = high;
+	} //setCurrentlyHighlighted
+	
+	public void initializeBlankDisplay() {
+		
+		// Remove old components (if necessary) from the grid
+		for (int i = 0; i < m_numFiles; i++) {
+			while (myPanel[i].getComponentCount() != 0) {
+				myPanel[i].remove(0);
+			} //while
+		} //for
+				
+		// Repaint blank grid
+		for (int i = 0; i < m_numFiles; i++) {
 			myPanel[i].setBorder(border);
 			myPanel[i].setBackground(Color.WHITE);
 			myPanel[i].repaint();
 		} //for
+		
+		// Display is now blank
+		displayBlank = true;
 				
-	} //initializeSmallMultiplesDisplay
+	} //initializeBlankDisplay
 	
+	public JPanel[] getSmallMultiplesPanels() {
+		return myPanel;
+	} //getSmallMultiplesPanels
+	
+	public void setVisualization(Visualization vis, int index) {
+		sm[index].getDisplay().setVisualization(vis);
+		sm[index].getDisplay().repaint();
+	} //setVisualization
+		
 	/**
 	 * Whenever the dropdown list selection is modified, regenerate the contact maps with the newly selected layout
 	 */
 	@Override
 	public void actionPerformed(ActionEvent e) {
-        JComboBox cb = (JComboBox)e.getSource();
-        String layoutChoice = (String)cb.getSelectedItem();
-        System.out.println(layoutChoice);
-        initializeSmallMultiplesDisplay(layoutChoice);
+		
+		if (e.getSource() == ddlLayouts) {
+	        String layoutChoice = (String)ddlLayouts.getSelectedItem();
+	        System.out.println(layoutChoice);
+	        
+	        if (displayBlank) {
+	        	initializeBlankDisplay();
+	        } else {
+	        	for (int i = 0; i < m_numFiles; i++) {
+	        		SmallMultiplePositionThread positionThread = new SmallMultiplePositionThread(i, layoutChoice);
+	        		positionThread.run();
+	        	} //for
+	        	//initializeSmallMultiplesDisplay(layoutChoice);	
+	        } //if-else
+	        
+	        if (!m_currentlyHighlighted) {
+	        	m_lastPanelSelected = -1;	
+	        } //if
+	        
+	        	        
+		} else if (e.getSource() == btnPopulate) {
+			initializeSmallMultiplesDisplay((String)ddlLayouts.getSelectedItem());
+			
+		} else if (e.getSource() == btnClear) {
+			initializeBlankDisplay();
+			
+		} //if-else
+		
+
+		
+		
+        
 	} //actionPerformed
 	
 	/**
@@ -244,11 +500,16 @@ public class SmallMultiplesPanel extends JLayeredPane implements ActionListener 
 	 */
 	public int findMostCompleteModel() {
 		int largestModelIndex = 0;
-		int largestModelSize = countLabels(sm[0].getVisualization());
+		
+		if (m_numFiles == 0) {
+			return -1;
+		} //if
+		
+		int largestModelSize = countLabels(sm[0].getDisplay().getVisualization());
 		
 		for (int i = 1; i < m_numFiles; i++) {
-			if (countLabels(sm[i].getVisualization()) > largestModelSize) {
-				largestModelSize = countLabels(sm[i].getVisualization());
+			if (countLabels(sm[i].getDisplay().getVisualization()) > largestModelSize) {
+				largestModelSize = countLabels(sm[i].getDisplay().getVisualization());
 				largestModelIndex = i;
 			} //if
 		} //for
@@ -256,145 +517,15 @@ public class SmallMultiplesPanel extends JLayeredPane implements ActionListener 
 		return largestModelIndex;
 	} //findMostCompleteModel
 	
-	/**
-	 * Sort the models based on the computed similarity scores
-	 * 
-	 * @param largestModelIndex - index of the most complete model
-	 * @param smScores - the computed similarity matrices
-	 */
-	public void sortModels(int largestModelIndex, SimilarityMatrices smScores) {
-		similarityScores = computeModelSimilarityScores(largestModelIndex, smScores);
-		
-		for (int i = 0; i < m_numFiles; i++) {
-			for (int j = i; j < (m_numFiles - 1); j++) {
-				if (similarityScores[j] < similarityScores[j+1]) {
-					swapModels(j, j+1);
-				} //if
-			} //for			
-		} //for
-	
-	} //sortModels
-	
-	/**
-	 * Swap the ordering of two of the models in the sm array
-	 * 
-	 * @param index1 - index of the first model
-	 * @param index2 - index of the second model
-	 */
-	public void swapModels(int index1, int index2) {
-		Display temp = sm[index1];
-		double tempScore = similarityScores[index1];
-		
-		sm[index1] = sm[index2];
-		similarityScores[index1] = similarityScores[index2];
-		
-		sm[index2] = temp;
-		similarityScores[index2] = tempScore;
-		
-	} //swap
-	
-	/**
-	 * Compute the similarity scores of each of the models.  
-	 * Set the score of the largest model to something big, so it goes first
-	 * 
-	 * @param largestModelIndex - index of the most complete model
-	 * @param smScores - the similarity matrices that were computed earlier
-	 * 
-	 * @return - the similarity scores of each of the models computed by the formula
-	 */
-	public double[] computeModelSimilarityScores(int largestModelIndex, SimilarityMatrices smScores) {
-		double[] similarityScores = new double[m_numFiles];
-		
-		for (int i = 0; i < m_numFiles; i++) {
-			if (i == largestModelIndex) {
-				similarityScores[i] = 9999;
-			} else {
-				similarityScores[i] = (smScores.getSimilarVerticesMatrix().getSimilarityValue(largestModelIndex, i) * smScores.getPercentSimilarVerticesMatrix().getSimilarityValue(largestModelIndex, i)) + ((smScores.getSimilarEdgesMatrix().getSimilarityValue(largestModelIndex, i) * smScores.getPercentSimilarEdgesMatrix().getSimilarityValue(largestModelIndex, i)));
-			} //if
-			
-		} //for
-		
-		return similarityScores;
-	} //computerModelSimilarityScores
+	public Visualization getVisualization(int i) {
+		return sm[i].getDisplay().getVisualization();
+	} //getVisualization
 	
 	
-	
-	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	// Temporary methods to load a sample contact map into each small multiple
-	//
-	//public prefuse.Display loadTempContactMap() {
-	public prefuse.Display loadTempContactMap(int i, String layoutChoice) {
-		
-		//TODO: get the sourcePath and the AST for the model
-		//String sourcePath[] = new String[14];
-		String sourcePath[] = new String[4];
-		//String sourcePath[] = new String[8];
-		String layoutPath = null;
-							
-		sourcePath[0] = new String("C:\\Users\\John\\runtime-rulebender.product\\egfr_net\\egfr_net\\egfr_net.bngl");
-		sourcePath[3] = new String("C:\\Users\\John\\runtime-rulebender.product\\egfr_net\\egfr_net\\egfr_net_1.bngl");
-		sourcePath[1] = new String("C:\\Users\\John\\runtime-rulebender.product\\egfr_net\\egfr_net\\egfr_net_2.bngl");
-		sourcePath[2] = new String("C:\\Users\\John\\runtime-rulebender.product\\egfr_net\\egfr_net\\egfr_net_3.bngl");
-		//sourcePath[0] = new String("C:\\Users\\John\\runtime-rulebender.product\\TLR\\TLR\\TLR4_RPS_v1.bngl");
-		//sourcePath[1] = new String("C:\\Users\\John\\runtime-rulebender.product\\TLR\\TLR\\TLR4_RPS_v4.bngl");
-		//sourcePath[2] = new String("C:\\Users\\John\\runtime-rulebender.product\\TLR\\TLR\\TLR4_RPS_v5.bngl");
-		//sourcePath[3] = new String("C:\\Users\\John\\runtime-rulebender.product\\TLR\\TLR\\TLR4_v1.bngl");
-		//sourcePath[4] = new String("C:\\Users\\John\\runtime-rulebender.product\\TLR\\TLR\\TLR4_v15.bngl");
-		//sourcePath[5] = new String("C:\\Users\\John\\runtime-rulebender.product\\TLR\\TLR\\TLR4_v16.bngl");
-		//sourcePath[6] = new String("C:\\Users\\John\\runtime-rulebender.product\\TLR\\TLR\\TLR4_v24.bngl");
-		//sourcePath[7] = new String("C:\\Users\\John\\runtime-rulebender.product\\TLR\\TLR\\TLR4_v25.bngl");
-		
-		prog_return ast = getModel(sourcePath[i]).getAST();
-		
-		// Create the builder for the cmap
-		CMapModelBuilder cmapModelBuilder = new CMapModelBuilder();
-		
-		// Create the astReader and register the cmapModelBuilder
-		BNGASTReader astReader = new BNGASTReader(cmapModelBuilder);
-				
-		// Use the reader to construct the model for the given ast.
-		// Sometimes an ast is not null, but is not complete due to errors. 
-		// This try/catch block catches those situations.
-		try {
-			astReader.buildWithAST(ast);	
-		} catch(NullPointerException e)	{
-			// e.printStackTrace();
-			//Debug
-			System.out.println("Failed to produce CMapModel on ast:\n" + ast.toString());
-		 	return null;
-		} //try-catch
-		
-		// Get the model from the builder.		
-		ContactMapModel cModel = cmapModelBuilder.getCMapModel();
-		
-		cModel.setSourcePath(sourcePath[i]);
-		
-		// Set a dimension
-		//Dimension dim = m_view.getSize();
-		Dimension dim = m_individualSize;
-				
-		// Determine which layout to use given the dropdown list selection
-		if (layoutChoice.equals("-- Use default layouts --")) {
-			layoutPath = null;
-		} else if (layoutChoice.equals("egfr_net.pos")) {
-			layoutPath = "C:\\Users\\John\\runtime-rulebender.product\\egfr_net\\egfr_net\\egfr_net.pos";
-		} else if (layoutChoice.equals("egfr_net_1.pos")) {
-			layoutPath = "C:\\Users\\John\\runtime-rulebender.product\\egfr_net\\egfr_net\\egfr_net_1.pos";
-		} else if (layoutChoice.equals("egfr_net_2.pos")) {
-			layoutPath = "C:\\Users\\John\\runtime-rulebender.product\\egfr_net\\egfr_net\\egfr_net_2.pos";
-		} else if (layoutChoice.equals("egfr_net_3.pos")) {
-			layoutPath = "C:\\Users\\John\\runtime-rulebender.product\\egfr_net\\egfr_net\\egfr_net_3.pos";
-		} // if-else
-		
-		
-		// Get the CMapVisual object for the CMapModel
-		//SmallMultiple cVisual = new SmallMultiple(m_view, cModel, dim);
-		SmallMultiple cVisual = new SmallMultiple(cModel, dim, layoutPath);
-		//SmallMultiple cVisual = new SmallMultiple(m_view[i], cModel, dim);
-		
-		return cVisual.getDisplay();
-		
-	} //loadTempContactMap
+	public SmallMultiple getMultiple(int i) {
+		return sm[i];
+	} //getMultiple
+
 	
 	private int countLabels(Visualization vis) { 
 		int count = 0;
@@ -433,122 +564,71 @@ public class SmallMultiplesPanel extends JLayeredPane implements ActionListener 
 		return count;
 	} //countLabels
 	
-	
-	public BNGLModel getModel(String sourcePath) {
-		BNGLModel m_model = null;
+	/**
+	 * Sort the models based on the computed similarity scores
+	 * 
+	 * @param largestModelIndex - index of the most complete model
+	 * @param smScores - the computed similarity matrices
+	 */
+
+	public void sortModels(int largestModelIndex, SimilarityMatrices smScores) {
+		if (largestModelIndex == -1) {
+			return;
+		} //if
 		
-		if (m_model == null) {
-	    	
-	    	m_model = new BNGLModel(sourcePath);
-	    	m_model.setAST(getAST(sourcePath));
-	    } //if
-
-	    return m_model;
-	} //getModel
-	
-	private prog_return getAST(String sourcePath) {
-	    // The abstract syntax tree that will be returned.
-	    // On a failure, it will be null.
-	    prog_return toReturn = null;
-
-	    // Save a link to the orinal error out.
-	    PrintStream old = System.err;
-	    
-	    Console.clearConsole(sourcePath);
-
-	    // Set the error out to a new printstream that will only display the antlr
-	    // output.
-	    ANTLRFilteredPrintStream errorStream = new ANTLRFilteredPrintStream(Console.getMessageConsoleStream(sourcePath), sourcePath, old, sourcePath);
-	    System.setErr(errorStream);
-
-	    try {
-	    	toReturn = produceParseData(sourcePath).getParser().prog();
-	    }
-	    catch (Exception e) 
-	    {
-	      e.printStackTrace();
-	      System.out.println("Caught in the getAST Method.");
-	    } //try-catch
-
-	    //setErrors(errorStream.getErrorList());
-
-	    System.err.flush();
-	    System.setErr(old);
-
-	    return toReturn;
-	} //getAST
-	
-	private BNGParseData produceParseData(String src) {
-	    // Get the text in the document.
-	    //String text = this.getSourceViewer().getDocument().get();
-		String text = readFileAsString(src);
-
-	    return BNGParserUtility.produceParserInfoForBNGLText(text);
-	} //produceParseData
-	
-	private static String readFileAsString(String filePath) {
-		StringBuffer fileData = new StringBuffer(1000);
+		similarityScores = computeModelSimilarityScores(largestModelIndex, smScores);
 		
-		try {
-			BufferedReader reader = new BufferedReader(new FileReader(filePath));
-			char[] buf = new char[1024];
-			int numRead=0;
-			while((numRead=reader.read(buf)) != -1) {
-				String readData = String.valueOf(buf, 0, numRead);
-				fileData.append(readData);
-				buf = new char[1024];
-			} //while
-			reader.close();
-		} catch (Exception e){ 
-			System.out.println("wtf");
-		} //try-catch
+		for (int i = 0; i < m_numFiles; i++) {
+			for (int j = 0; j < (m_numFiles - 1); j++) {
+				if (similarityScores[j] < similarityScores[j+1]) {
+					swapModels(j, j+1);
+				} //if
+			} //for			
+		} //for
+	
+	} //sortModels
+	
+	/**
+	 * Swap the ordering of two of the models in the sm array
+	 * 
+	 * @param index1 - index of the first model
+	 * @param index2 - index of the second model
+	 */
+	public void swapModels(int index1, int index2) {
+		SmallMultiple temp = sm[index1];
+		double tempScore = similarityScores[index1];
 		
-		return fileData.toString();
-	} //readFileAsString
-	/*
-	private void setErrors(ArrayList<BNGLError> errorList) {
-	    // Add the error list to the model
-	    m_model.setErrors(errorList);
-
-	    // Get the document.
-	    IDocument document = getDocumentProvider().getDocument(getEditorInput());
-
-	    // Get the ifile reference for this editor input.
-	    IFile file = ((FileEditorInput) ((IEditorInput) getEditorInput())).getFile();
-
-	    // Create a reference to a region that will be used to hold information
-	    // about the error location.
-	    IRegion region = null;
-
-	    // Set the annotations.
-	    for (BNGLError error : errorList) {
-	    	// Get the information about the location.
-	    	try {
-	    		region = document.getLineInformation(error.getLineNumber() - 1);
-	    	} catch (BadLocationException exception) {
-	    		exception.printStackTrace();
-	    	} //try-catch
-
-	    	// make a marker
-	    	IMarker marker = null;
-	    	try {
-	    		marker = file.createMarker("rulebender.markers.bnglerrormarker");
-	        	marker.setAttribute(IMarker.SEVERITY, IMarker.SEVERITY_ERROR);
-	        	marker.setAttribute(IMarker.MESSAGE, error.getMessage());
-	        	marker.setAttribute(IMarker.LINE_NUMBER, error.getLineNumber() - 1);
-	        	marker.setAttribute(IMarker.CHAR_START, region.getOffset());
-	        	marker.setAttribute(IMarker.CHAR_END, region.getOffset() + region.getLength());
-
-	        	System.out.println("Made the marker!");
-	    	} catch (Exception exception) {
-	    		exception.printStackTrace();
-	    	} //try-catch
-	    } //for
-	} //setErrors
-	*/
+		sm[index1] = sm[index2];
+		similarityScores[index1] = similarityScores[index2];
+		
+		sm[index2] = temp;
+		similarityScores[index2] = tempScore;
+		
+	} //swap
 	
-	
-	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	/**
+	 * Compute the similarity scores of each of the models.  
+	 * Set the score of the largest model to something big, so it goes first
+	 * 
+	 * @param largestModelIndex - index of the most complete model
+	 * @param smScores - the similarity matrices that were computed earlier
+	 * 
+	 * @return - the similarity scores of each of the models computed by the formula
+	 */
+	public double[] computeModelSimilarityScores(int largestModelIndex, SimilarityMatrices smScores) {
+		double[] similarityScores = new double[m_numFiles];
+		
+		for (int i = 0; i < m_numFiles; i++) {
+			if (i == largestModelIndex) {
+				similarityScores[i] = 9999;
+			} else {
+				similarityScores[i] = (smScores.getSimilarVerticesMatrix().getSimilarityValue(largestModelIndex, i) * smScores.getPercentSimilarVerticesMatrix().getSimilarityValue(largestModelIndex, i)) + ((smScores.getSimilarEdgesMatrix().getSimilarityValue(largestModelIndex, i) * smScores.getPercentSimilarEdgesMatrix().getSimilarityValue(largestModelIndex, i)));
+			} //if
+			
+		} //for
+		
+		return similarityScores;
+	} //computerModelSimilarityScores
 	
 
 	/**
@@ -570,11 +650,20 @@ public class SmallMultiplesPanel extends JLayeredPane implements ActionListener 
 	 * Determine the number of BNGL files in the current working directory - this should be the number of
 	 * small multiples that we need to make space for and layout
 	 */
-	public int findNumberOfSmallMultiples() {
+	public int findNumberOfSmallMultiples(String directory) {
 		int fileCount = 0;
 		
-		//TODO: figure out what the current working directory is, and count the number of BNGL files
+		// Loop through all files, and count the number of .BNGL files
+		File dir = new File(directory);
 		
+		// Only try to iterate across all files if we're passed in a directory
+		if (dir.isDirectory()) {
+			for (File child : dir.listFiles()) {
+				if (isBNGLFile(child)) {
+					fileCount++;
+				} //if
+			} //for
+		} //if
 		
 		return fileCount;
 	} //findNumberOfSmallMultiples
@@ -621,6 +710,50 @@ public class SmallMultiplesPanel extends JLayeredPane implements ActionListener 
 	
 	
 	/*
+	 * Class to load the Small Multiples in a Thread rather than sequentially
+	 */
+	public class SmallMultipleLoaderThread extends Thread {
+		
+		int m_currentMultiple;
+		File m_child;
+		String m_layoutChoice;
+		
+		public SmallMultipleLoaderThread(int currentMultiple, File child, String layoutChoice) {
+			m_currentMultiple = currentMultiple;
+			m_child = child;
+			m_layoutChoice = layoutChoice;
+		} //SmallMultipleThreadLoader (constructor)
+		
+		public void run() {
+			// Loads the small multiple into memory, then adds the multiple to the registry
+			sm[m_currentMultiple] = BackgroundFileLoader.loadContactMap(m_child.getAbsolutePath(), lookupPosition(m_layoutChoice), m_individualSize, m_view);
+			m_contactMapRegistry.put(sm[m_currentMultiple].getNetworkViewer().getFilepath(), sm[m_currentMultiple]);
+		} //run
+		
+	} //SmallMultipleLoaderThread (inner class)
+	
+	/*
+	 * Class to update the positions of the Small Multiple nodes in a Thread rather than sequentially
+	 */
+	public class SmallMultiplePositionThread extends Thread {
+		
+		int m_currentMultiple;
+		String m_layoutChoice;
+		
+		public SmallMultiplePositionThread(int i, String layoutChoice) {
+			m_currentMultiple = i;
+			m_layoutChoice = layoutChoice;
+		} //SmallMultiplePositionThread (constructor)
+		
+		public void run() {
+			sm[m_currentMultiple].setLayoutPath(lookupPosition(m_layoutChoice));
+			sm[m_currentMultiple].getDisplay().getVisualization().run("layout");
+			sm[m_currentMultiple].getDisplay().getVisualization().run("bubbleLayout");
+		} //run
+		
+	} //SmallMultiplePositionThread
+	
+	/*
 	 * Grabbed from LayeredPane - needs to be updated to reflect the new layout
 	 */
 	
@@ -653,6 +786,8 @@ public class SmallMultiplesPanel extends JLayeredPane implements ActionListener 
 				((Display) myPanel[i].getComponent(0)).setSize(new Dimension(m_individualSize.width-BORDER_WIDTH*2, m_individualSize.height-BORDER_WIDTH*2));				
 				((Display) myPanel[i].getComponent(0)).setBounds(BORDER_WIDTH, BORDER_WIDTH, m_individualSize.width-BORDER_WIDTH*2, m_individualSize.height-BORDER_WIDTH*2);
 			} //if
+			
+			sm[i].getDisplay().getVisualization().run("layout");
 			
 		} //for
 		
