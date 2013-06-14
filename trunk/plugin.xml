@@ -20,6 +20,11 @@
             id="rulebender.perspective"
             name="Default">
       </perspective>
+      <perspective
+            class="rulebender.perspective.Custom2Perspective"
+            id="rulebender.perspective.custom2perspective"
+            name="Custom2">
+      </perspective>      
    </extension>
    <extension
          point="org.eclipse.ui.perspectiveExtensions">
@@ -75,6 +80,15 @@
          </view>
          <view
                closeable="true"
+               id="rulebender.simulationjournaling.views.timelineview"
+               minimized="false"
+               moveable="true"
+               relationship="stack"
+               relative="rulebender.views.Console"
+               visible="true">
+         </view>
+         <view
+               closeable="true"
                id="rulebender.speciesgraph.SpeciesGraphView"
                minimized="false"
                moveable="true"
@@ -105,21 +119,35 @@
          </view>
       </perspectiveExtension>
       <perspectiveExtension
-            targetID="rulebender.perspective.Custom2">
-         <view
+            targetID="rulebender.perspective.custom2perspective">
+		<view
+               closeable="true"
                id="rulebender.cnf.CommonNavigator"
                minimized="false"
+               moveable="true"
                ratio="0.2f"
                relationship="left"
                relative="org.eclipse.ui.editorss"
                visible="true">
-         </view>
+         </view>         
          <view
+         	   closeable="true"
                id="rulebender.simulationjournaling.view.smallmultiplesview"
                minimized="false"
-               ratio="0.1f"
+               moveable="true"
+               ratio="0.8f"
                relationship="right"
                relative="org.eclipse.ui.editorss"
+               visible="true">
+         </view>
+         <view
+               closeable="true"
+               id="rulebender.simulationjournaling.view.timelineview"
+               minimized="false"
+               moveable="true"
+               ratio="0.8f"
+               relationship="bottom"
+               relative="rulebender.simulationjournaling.view.smallmultiplesview"
                visible="true">
          </view>
       </perspectiveExtension>
@@ -132,6 +160,14 @@
             icon="icons/views/console_view.gif"
             id="rulebender.views.Console"
             name="Console"
+            restorable="true">
+      </view>
+      <view
+            allowMultiple="false"
+            class="rulebender.simulationjournaling.view.TimelineView"
+            icon="icons/views/timeline.gif"
+            id="rulebender.simulationjournaling.views.timelineview"
+            name="Timeline"
             restorable="true">
       </view>
       <view
@@ -202,6 +238,12 @@
             name="Small Multiples"
             restorable="true">
       </view>
+      <view
+            class="rulebender.simulationjournaling.view.TimelineView"
+            id="rulebender.simulationjournaling.view.timelineview"
+            name="Timeline"
+            restorable="true">
+      </view>      
       <view
             class="rulebender.example.ExampleView"
             icon="icons/views/example.gif"
@@ -451,11 +493,11 @@
          </property>
          <property
                name="aboutText"
-               value="RuleBender 2.0r271&#x0A;&#x0A;RuleBender is a front end to cell signaling simulation that is developed at the University of Pittsburgh in the Computer Science Viz Lab.  The BioNetGen simulator is a product of the Faeder Lab in the Systems and Computational Biology Department.  NFSim is developed by the Emonet Lab at Yale.&#x0A;&#x0A;Please send all feedback and questions to help@rulebender.org.">
+               value="RuleBender 2.0r63&#x0A;&#x0A;RuleBender is currently developed by Adam M. Smith at the University of Pittsburgh under the direction of James R. Faeder and Elisabeta G. Marai. &#x0A;&#x0A;Please send all feedback and questions to help@rulebender.org.">
          </property>
          <property
-               name="windowImages"
-               value="icons/system/RB-16.gif,icons/system/RB-32.gif,icons/system/RB-48.gif,icons/system/RB-64.gif,icons/system/RB-128.gif">
+               name="startupProgressRect"
+               value="5,275,445,15">
          </property>
       </product>
    </extension>
