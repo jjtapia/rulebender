@@ -312,7 +312,7 @@ public class ForceDirectedLayoutMagic extends Layout {
 			if (positionMap != null) {
 				positionMapExists = true; // Note that we have position info for the nodes
 				
-				Iterator fileIter = positionMap.iterator();
+				Iterator<?> fileIter = positionMap.iterator();
 				while (fileIter.hasNext()) {
 					NodePosition fileItem = (NodePosition) fileIter.next();
 					mol = fileItem.getMolecule();
@@ -357,7 +357,7 @@ public class ForceDirectedLayoutMagic extends Layout {
 				boundsWidth = Double.parseDouble(st.nextToken());
 			} else {
 				// If there was no position file, set the bounds based on the old defaults
-				Iterator iter = getMagicIterator(m_nodeGroup);
+				Iterator<?> iter = getMagicIterator(m_nodeGroup);
 				int i = 0;
 				while (iter.hasNext()) {
 					VisualItem item = (NodeItem) iter.next();
@@ -402,9 +402,9 @@ public class ForceDirectedLayoutMagic extends Layout {
 					// Molecule tracker, to keep track of how many times we've seen each molecule/component pair
 					ArrayList<MoleculeCounter> tracker = new ArrayList<MoleculeCounter>();
 					boolean found = false;
-				
+				    
 					// Iterate over all nodes in the graph
-					Iterator iter = getMagicIterator(m_nodeGroup);
+					Iterator<?> iter = getMagicIterator(m_nodeGroup);
 					while (iter.hasNext()) {
 						VisualItem item = (NodeItem) iter.next();
 						
@@ -443,8 +443,9 @@ public class ForceDirectedLayoutMagic extends Layout {
 							id = Integer.toString(0);
 						} //if
 					
+						
 						// Iterate over all node positions in the file
-						Iterator fileIter = positionMap.iterator();
+						Iterator<?> fileIter = positionMap.iterator();
 						while (fileIter.hasNext()) {
 							NodePosition fileItem = (NodePosition) fileIter.next();
 				
@@ -514,7 +515,7 @@ public class ForceDirectedLayoutMagic extends Layout {
 	}
 
 	private void unfixNodePositions() {
-		Iterator iter = getMagicIterator(m_nodeGroup);
+		Iterator<?> iter = getMagicIterator(m_nodeGroup);
 		while (iter.hasNext()) {
 			VisualItem item = (NodeItem) iter.next();
 			item.setFixed(false);
@@ -532,36 +533,29 @@ public class ForceDirectedLayoutMagic extends Layout {
 		}
 
 		// update positions
-		Iterator iter = getMagicIterator(m_nodeGroup);
+		Iterator<?> iter = getMagicIterator(m_nodeGroup);
 
 		while (iter.hasNext()) {
 			VisualItem item = (VisualItem) iter.next();
 			
-			//try {
-				ForceItem fitem = (ForceItem) item.get(FORCEITEM);
+			ForceItem fitem = (ForceItem) item.get(FORCEITEM);
 
-				if (item.isFixed()) {
-					// clear any force computations
-					fitem.force[0] = 0.0f;
-					fitem.force[1] = 0.0f;
-					fitem.velocity[0] = 0.0f;
-					fitem.velocity[1] = 0.0f;
+			if (item.isFixed()) {
+				// clear any force computations
+				fitem.force[0] = 0.0f;
+				fitem.force[1] = 0.0f;
+				fitem.velocity[0] = 0.0f;
+				fitem.velocity[1] = 0.0f;
 				
-					if (Double.isNaN(item.getX())) {
-						super.setX(item, referrer, 0.0);
-						super.setY(item, referrer, 0.0);
-					} //if
-					continue;
+				if (Double.isNaN(item.getX())) {
+					super.setX(item, referrer, 0.0);
+					super.setY(item, referrer, 0.0);
 				} //if
+				continue;
+			} //if
 
-				double x = fitem.location[0];
-				double y = fitem.location[1];
-			//} catch (Exception e) {
-				//TODO: figure out why ForceItem line crashes on every iteration after the first...
-				//x = item.getX();
-				//y = item.getY();
-			//} //try-catch
-						
+			double x = fitem.location[0];
+			double y = fitem.location[1];
 			
 			if (m_enforceBounds && bounds != null) {
 				Rectangle2D b = item.getBounds();
@@ -595,7 +589,7 @@ public class ForceDirectedLayoutMagic extends Layout {
 		}
 
 		// update positions
-		Iterator iter = getMagicIterator(m_nodeGroup);
+		Iterator<?> iter = getMagicIterator(m_nodeGroup);
 
 		while (iter.hasNext()) {
 			VisualItem item = (VisualItem) iter.next();
@@ -661,7 +655,7 @@ public class ForceDirectedLayoutMagic extends Layout {
 	 * Reset the force simulation state for all nodes processed by this layout.
 	 */
 	public void reset() {
-		Iterator iter = getMagicIterator(m_nodeGroup);
+		Iterator<?> iter = getMagicIterator(m_nodeGroup);
 
 		while (iter.hasNext()) {
 			VisualItem item = (VisualItem) iter.next();
@@ -698,7 +692,7 @@ public class ForceDirectedLayoutMagic extends Layout {
 		startX = Float.isNaN(startX) ? 0f : startX;
 		startY = Float.isNaN(startY) ? 0f : startY;
 
-		Iterator iter = getMagicIterator(m_nodeGroup);
+		Iterator<?> iter = getMagicIterator(m_nodeGroup);
 		while (iter.hasNext()) {
 			VisualItem item = (VisualItem) iter.next();
 			ForceItem fitem = (ForceItem) item.get(FORCEITEM);
@@ -849,7 +843,7 @@ public class ForceDirectedLayoutMagic extends Layout {
 		FORCEITEM_SCHEMA.addColumn(FORCEITEM, ForceItem.class, new ForceItem());
 	}
 
-	public Iterator getMagicIterator(String group) {
+	public Iterator<?> getMagicIterator(String group) {
 
 		if (group.equals(m_nodeGroup)) 
 		{

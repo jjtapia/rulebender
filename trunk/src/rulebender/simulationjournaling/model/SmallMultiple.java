@@ -111,8 +111,7 @@ public class SmallMultiple {
     // The set contains all the involved nodes in a rule.
     private Hashtable<Set<Node>, Node> m_hubNodes;
 	
-	public SmallMultiple(ContactMapModel model_in, Dimension cMapSize, String layoutPath) 
-	{
+	public SmallMultiple(SmallMultiplesView view, ContactMapModel model_in, Dimension cMapSize, String layoutPath) {
 
 		m_model = model_in;
 		m_mainDisplaySize = cMapSize;
@@ -132,6 +131,7 @@ public class SmallMultiple {
 		// Ideally I wanted to remove all interaction with the Visualization object,
 		// but I didn't quite finish it yet.  
 		m_vis = m_networkViewer.getVisualization();
+		
 		
 		// Graphs (and all other data structures in prefuse) are table-based data structures.  Each node is a row in the
 		// table and the columns hold data about the node.  Here we add a 
@@ -257,8 +257,8 @@ public class SmallMultiple {
         // If you do not want interactions, simply do not add a
         // clickcontroldelegate.  See the editor.contactmap.CMapClickControlDelegate
         // for how to implement it.
-        //CMapClickControlDelegate cctrldelegate = new CMapClickControlDelegate(view, model_in.getSourcePath(), m_networkViewer.getVisualization());
-        //m_networkViewer.setClickControl(cctrldelegate);
+        SMClickControlDelegate smctrldelegate = new SMClickControlDelegate(view, model_in.getSourcePath(), m_networkViewer.getVisualization());
+        m_networkViewer.setClickControl(smctrldelegate);
 
         // This is an index to the Node objects so that I can retrieve them 
         // based on the string value "<parent molecule index>.<component index>".
@@ -295,15 +295,13 @@ public class SmallMultiple {
 		initCompartmentAggregates(at_compartment, cmptAggList);
 		
 		// For each molecule.
-		for(int i=0; i<m_model.getMolecules().size(); i++)
-		{			
+		for(int i = 0; i < m_model.getMolecules().size(); i++) {			
 			// Get the molecule
 			tmole = m_model.getMolecules().get(i);
 			
 			// If there are no components in the molecule, then the molecule
 			// is rendered as if it were a component.
-			if(tmole.getComponents().size()==0)
-			{
+			if (tmole.getComponents().size() == 0) {
 				// Create the node
 				Node n = m_componentGraph.addNode();
 				
@@ -326,10 +324,9 @@ public class SmallMultiple {
 			
 			    // Set its compartment
 				String compartment = tmole.getFirstCompartment();
-				if (compartment != null) 
-				{
+				if (compartment != null) {
 					addItemToCompartmentAgg(cmptAggList, n, compartment);
-				}
+				} //if
 			    
 				// Create the aggregate that forms the molecule.
 				AggregateItem agg = (AggregateItem) at.addItem();
@@ -350,13 +347,12 @@ public class SmallMultiple {
 						EdgeItem ei = (EdgeItem) m_vis.getVisualItem(
 								COMPONENT_GRAPH + ".edges", te);
 						ei.setVisible(false);
-					}
-					else {
+					} else {
 						// this is the first node
 						compartmentsFirstNode.put(compartment, n);
-					}
-				}
-			}
+					} //if-else
+				} //if
+			} 
 			
 			// It has components
 			else
@@ -402,7 +398,7 @@ public class SmallMultiple {
 			    // Add it to the compartment
 				if (compartment != null) {
 					addItemToCompartmentAgg(cmptAggList, specialCompNode, compartment);
-				}
+				} //if
 				
 				// Add it to the aggregate
 			    aggregateForMolecule.addItem(nItem);
@@ -411,8 +407,7 @@ public class SmallMultiple {
 			    otherCompsInMol.add(specialCompNode);
 			    
 				// For each component
-				for(int j=0;j<tmole.getComponents().size();j++)
-				{	
+				for(int j = 0;j < tmole.getComponents().size();j++) {	
 					// Get the component
 					tcomp = tmole.getComponents().get(j);
 				
@@ -422,7 +417,7 @@ public class SmallMultiple {
 				    // Add it to the compartment
 				    if (compartment != null) {
 						addItemToCompartmentAgg(cmptAggList, n, compartment);
-					}
+					} //if
 				    // Add it to the aggregate
 				    aggregateForMolecule.addItem(m_vis.getVisualItem(COMPONENT_GRAPH,n));
 				    aggregateForMoleculeCompartment.addItem(m_vis.getVisualItem(COMPONENT_GRAPH,n));
@@ -444,17 +439,16 @@ public class SmallMultiple {
 								EdgeItem ei = (EdgeItem) m_vis.getVisualItem(
 										COMPONENT_GRAPH + ".edges", te);
 								ei.setVisible(false);
-							}
-						}
-						else {
+							} //if
+							
+						} else {
 							// this is the first node
 							compartmentsFirstNode.put(compartment, n);
-						}
-					}
+						} //if-else
+					} //if
 					     
 					// If it has states
-					if(tcomp.getStates().size() != 0)	
-					{
+					if(tcomp.getStates().size() != 0) {
 						n.set("states", new ArrayList<String>());
 						n.set("state_nodes", new ArrayList<Node>());
 						
@@ -463,8 +457,7 @@ public class SmallMultiple {
 						aggregateForComponent.setString(AGG_COMP_LABEL, tmole.getName()+"."+tcomp.getName());
 						aggregateForComponent.addItem(m_vis.getVisualItem(COMPONENT_GRAPH,n));
 						
-						for(int k = 0; k < tcomp.getStates().size(); k++)
-						{
+						for(int k = 0; k < tcomp.getStates().size(); k++) {
 							
 							tstate = tcomp.getStates().get(k);
 							
@@ -476,7 +469,8 @@ public class SmallMultiple {
 							// Add it to the compartment
 							if (compartment != null) {
 								addItemToCompartmentAgg(cmptAggList, n_state, compartment);
-							}
+							} //if
+							
 							// add it to the molecule
 							aggregateForMolecule.addItem(m_vis.getVisualItem(COMPONENT_GRAPH,n_state));
 							aggregateForMoleculeCompartment.addItem(m_vis.getVisualItem(COMPONENT_GRAPH,n_state));
@@ -495,23 +489,22 @@ public class SmallMultiple {
 					    	EdgeItem ei = (EdgeItem) m_vis.getVisualItem(COMPONENT_GRAPH+".edges", te);
 								
 					    	ei.setVisible(false);
-						}  
-					}  
+						} //for
+					} //if  
 
 				    // Add invisible edges for the force directed layout.
-				    for(Node on : otherCompsInMol)
-				    {
+				    for(Node on : otherCompsInMol) {
 				    	Edge te = m_componentGraph.addEdge(n, on);
 				    	te.set("type", "componentInvisible_edge");
 				    	EdgeItem ei = (EdgeItem) m_vis.getVisualItem(COMPONENT_GRAPH+".edges", te);
 							
 				    	ei.setVisible(false);
-				    }
+				    } //for
 				     
 				    otherCompsInMol.add(n);
-				}
-			}
-		} // Close for each molecule
+				} //for
+			} //if-else
+		} //for
 		
 		
 		// create edge for each bond
@@ -520,8 +513,7 @@ public class SmallMultiple {
 		String previousRuleText="";
 		
 		// map rules
-		for(int l = 0; l < m_model.getRules().size(); l++)
-		{	
+		for (int l = 0; l < m_model.getRules().size(); l++) {	
 			// Get a reference to the rule
 			Rule thisRule = m_model.getRules().get(l);
 			
@@ -533,11 +525,10 @@ public class SmallMultiple {
 			// Perform a check to see if this is the reverse rule for a bidirection.
 			// This is a quick hack to fix this problem, but it works for now.  
 			// The old parser did not produce
-			if(!thisRule.getExpression().equals(previousRuleText))
-			{
+			if (!thisRule.getExpression().equals(previousRuleText)) {
 				// map rules to bonds
 				identifyBonds(thisRule, r_comp, r_state);
-			}
+			} //if
 			
 			// reactants, products, changed states
 			identifyStateChange(thisRule, r_state);
@@ -548,30 +539,33 @@ public class SmallMultiple {
 			// is there any changed state?
 			if (r_state.getChangedStateNodeCount() != 0) {
 				continue;
-			}
+			} //if
 			
 			
 			// is there any reaction bond?
 			if (r_comp.getReactionBondCount() != 0) {
 				continue;
-			}
+			} //if
 			
 			// is there any internal bond in reactants or products?
 			if (r_comp.getInternalBondCount() != 0) {
 				continue;
-			}
+			} //if
 			
 			// map the rest of rules which can not be mapped to bonds or changed state
 			identifyMoleLevelReaction(thisRule, r_comp);
 			
 			previousRuleText = thisRule.getExpression();
-		}
-		
+		} //for
+				
 		// Pass the BNGL source file into the CMAPNetworkViewer object
 		m_networkViewer.setFilepath(m_model.getSourcePath());
 		
 		// Pass the POS source file into the CMAPNetworkViewer object
 		m_networkViewer.setPosPath(layoutPath);
+		
+		// TODO: only make this true if a small multiple was selected
+		m_networkViewer.setGreyscale(true);
 					
 		m_networkViewer.build();
 		
@@ -580,7 +574,17 @@ public class SmallMultiple {
 		
 		//DisplayLib.fitViewToBounds(this, getDisplay().getBounds(Visualization.ALL_ITEMS), 0);
 		//DisplayLib.fitViewToBounds(this.getDisplay(), size, 0);
-	}
+	
+	} //SmallMultiple
+	
+	public void setLayoutPath(String layoutPath) {
+		m_networkViewer.setPosPath(layoutPath);
+		m_networkViewer.build();
+	} //setLayoutPath
+	
+	public CMAPNetworkViewer getNetworkViewer() {
+		return m_networkViewer;
+	} //getNetworkViewer
 	
 	private Node makeComponentNode(Molecule tmole, Component tcomp, int moleIndex, int compIndex) 
 	{
@@ -601,7 +605,7 @@ public class SmallMultiple {
 	   // System.out.println("Molecule: (" + tmole.getName() + "," + moleIndex + ")\t\tComponent: (" + tcomp.getName() + "," + compIndex +")");
 	    
 	    return n;
-	}
+	} //makeComponentNode
 	
 	private Node makeStateNode(Molecule tmole, Component tcomp, State tstate,
 			int moleIndex, int compIndex, int stateIndex, Node compNode) 
@@ -625,7 +629,7 @@ public class SmallMultiple {
 		m_nodes.put(moleIndex + "." + compIndex + "." + stateIndex, n_state);
 
 		return n_state;
-	}
+	} //makeStateNode
 	
 	private void createEdgesForBonds() 
 	{
@@ -678,12 +682,12 @@ public class SmallMultiple {
 				else
 				{
 					//System.out.println("\tleft node null: " + tbond.getMolecule1()+"."+tbond.getComponent1()+"."+tbond.getState1());
-				}
+				} //if-else
 			}
 			else
 			{
 				//System.out.println("\tDid not consider " + tbond.getMolecule1() + "." + tbond.getComponent1() + "(no state)");
-			}
+			} //if-else
 	
 			
 			//System.out.println("Check " + tbond.getMolecule2() + "." + tbond.getComponent2());
@@ -711,7 +715,7 @@ public class SmallMultiple {
 			else
 			{
 				//System.out.println("\tDid not consider " + tbond.getMolecule2() + "." + tbond.getComponent2() + "(no state)");
-			}
+			} //if-else
 			
 			// If either of the parent nodes are not null, then there is a bond that 
 			// requires a state.
@@ -740,9 +744,9 @@ public class SmallMultiple {
 				// set invisible
 				EdgeItem eitem = (EdgeItem) m_vis.getVisualItem(COMPONENT_GRAPH+".edges", e_state);
 				eitem.setVisible(false);
-			}				
-		}
-	}
+			} //if				
+		} //for
+	} //createEdgesForBonds
 	
 	private void identifyBonds(Rule thisRule, VisualRule r_comp, VisualRule r_state)
 	{
@@ -783,7 +787,7 @@ public class SmallMultiple {
 			{
 				//DEBUG
 				//System.out.println("\te_state was null");
-			}
+			} //if-else
 			
 			if (e_comp != null) 
 			{
@@ -807,9 +811,9 @@ public class SmallMultiple {
 			{
 				//DEBUG
 				//System.out.println("\te_state was null");
-			}
-		}
-	}
+			} //if-else
+		} //for
+	} //identifyBonds
 	
 	private void identifyReactants(Rule thisRule, VisualRule r_comp, VisualRule r_state) {
 		// For all of the reactant patterns
@@ -819,7 +823,7 @@ public class SmallMultiple {
 			{
 				r_comp.addReactantBond(m_edges.get(i+"."+"component"));
 				r_state.addReactantBond(m_edges.get(i+"."+"state"));
-			}
+			} //for
 			
 			for(MoleculePattern mp : rp.getMolepatterns()) {
 				
@@ -827,22 +831,22 @@ public class SmallMultiple {
 				if (mp.getComppatterns().size() == 0) {
 					r_comp.addReactantMoleNode(m_nodes.get(""+mp.getMoleIndex()));
 					r_state.addReactantMoleNode(m_nodes.get(""+mp.getMoleIndex()));
-				}
+				} //if
 				
 				// component level
 				for(ComponentPattern cp : mp.getComppatterns()) {
 					if (cp.getStateindex() != -1) {
 						// has certain state
 						r_state.addReactantCompNode(m_nodes.get(mp.getMoleIndex()+"."+cp.getCompIndex()+"."+cp.getStateindex()));
-					}							
+					} //if							
 
 					r_comp.addReactantCompNode(m_nodes.get(mp.getMoleIndex()+"."+cp.getCompIndex()));
 					r_state.addReactantCompNode(m_nodes.get(mp.getMoleIndex()+"."+cp.getCompIndex()));
-				}
+				} //for
 
-			}
-		}
-	}
+			} //for
+		} //for
+	} //identifyReactants
 	
 	private void identifyProducts(Rule thisRule, VisualRule r_comp, VisualRule r_state) {
 		// For all of the product patterns.
@@ -852,28 +856,28 @@ public class SmallMultiple {
 			{
 				r_comp.addProductBond(m_edges.get(i+"."+"component"));
 				r_state.addProductBond(m_edges.get(i+"."+"state"));
-			}
+			} //for
 			
 			for(MoleculePattern mp : pp.getMolepatterns()) {
 				// molecule level, no components
 				if (mp.getComppatterns().size() == 0) {
 					r_comp.addProductMoleNode(m_nodes.get(""+mp.getMoleIndex()));
 					r_state.addProductMoleNode(m_nodes.get(""+mp.getMoleIndex()));
-				}
+				} //if
 				
 				// component level
 				for(ComponentPattern cp : mp.getComppatterns()) {
 					if (cp.getStateindex() != -1) {
 						// has certain state
 						r_state.addProductCompNode(m_nodes.get(mp.getMoleIndex()+"."+cp.getCompIndex()+"."+cp.getStateindex()));
-					}						
+					} //if						
 					
 					r_comp.addProductCompNode(m_nodes.get(mp.getMoleIndex()+"."+cp.getCompIndex()));
 					r_state.addProductCompNode(m_nodes.get(mp.getMoleIndex()+"."+cp.getCompIndex()));
-				}
-			}
-		}
-	}
+				} //for
+			} //for
+		} //for
+	} //identifyProducts
 	
 	//TODO really bad efficiency
 	private void identifyStateChange(Rule thisRule, VisualRule r_state) {
@@ -925,7 +929,7 @@ public class SmallMultiple {
 												{
 													tmplist.add(r_state);
 												}
-											}
+											} //if
 											
 											// rule direction includes backward
 											if (r_state.getExpression().indexOf("<") != -1) 
@@ -940,7 +944,7 @@ public class SmallMultiple {
 												{
 													tmplist.add(r_state);
 												}
-											}
+											} //if
 											
 											// add state changed nodes
 											r_state.addChangedStateNode(pstateNode);
@@ -951,16 +955,16 @@ public class SmallMultiple {
 											// set component "statechange" = true
 											Node compNode = m_nodes.get(pmp.getMoleIndex()+"."+pcp.getCompIndex());
 											compNode.set("statechange", true);
-										}
-									}
-								}
-							}
-						}
-					}
-				}
-			}					
-		}
-	}
+										} //if
+									} //if
+								} //for
+							} //for
+						} //if
+					} //for
+				} //for
+			} //for		 		
+		} //for
+	} //identifyStateChange
 	
 	private void identifyMoleLevelReaction(Rule thisRule, VisualRule r_comp) 
 	{
@@ -991,7 +995,7 @@ public class SmallMultiple {
 						if (moleNode != null) 
 						{
 							moleSet.add(moleNode);
-						}
+						} //if
 					}
 					else 
 					{
@@ -1006,19 +1010,19 @@ public class SmallMultiple {
 							if (stateNode != null) 
 							{
 								moleSet.add(stateNode);
-							}
+							} //if
 						}
 						else 
 						{
 							if (compNode != null) 
 							{
 								moleSet.add(compNode);
-							}
-						}
-					}
-				}
-			}
-		}
+							} //if
+						} //if-else
+					} //if-else
+				} //for
+			} //for
+		} //for
 		
 		// get the hub node from hash table if exists
 		hubNode = m_hubNodes.get(moleSet);
@@ -1044,7 +1048,7 @@ public class SmallMultiple {
 		{
 			ArrayList<VisualRule> tmplist = (ArrayList<VisualRule>) hubNode.get("rules");
 			tmplist.add(r_comp);
-		}
+		} //if-else
 
 		// add edges
 		
@@ -1052,7 +1056,7 @@ public class SmallMultiple {
 		addHubEdges(thisRule.getProductpatterns(), hubNode, false);
 		
 		
-	}
+	} //identifyMoleLevelReaction
 	
 	private void addHubEdges(ArrayList<RulePattern> patterns, Node hubNode, boolean forward)
 	{
@@ -1087,9 +1091,9 @@ public class SmallMultiple {
 							e = m_componentGraph.addEdge(hubNode, moleNode);
 							
 							System.out.println("Reverse Edge");
-						}
+						} //if-else
 						e.set("type", "moleConnection");
-					}
+					} //if
 				}
 				// If there is only 1 component.
 				else 
@@ -1104,7 +1108,7 @@ public class SmallMultiple {
 						// has certain state
 						stateNode = m_nodes.get(mp.getMoleIndex()+"."+cp.getCompIndex()+"."+cp.getStateindex());
 						hasState = true;
-					}						
+					} //if					
 					
 					if (compNode != null) 
 					{
@@ -1129,12 +1133,12 @@ public class SmallMultiple {
 						else 
 						{
 							e_comp.set("displaymode", "both");
-						}
-					}
-				}
-			}
-		}
-	}
+						} //if-else
+					} //if
+				} //if-else
+			} //for
+		} //for
+	} //addHubEdges
 	
 	
 	private void initCompartmentAggregates(AggregateTable at_compartment,  ArrayList<AggregateItem> aggList) {
@@ -1145,7 +1149,7 @@ public class SmallMultiple {
         // no compartment info
         if (cmptList == null || cmptList.size() == 0) {
         	return ;
-        }
+        } //if
         
         // create aggregate items for compartments
         for (int i = 0; i < cmptList.size(); i++) {
@@ -1154,8 +1158,8 @@ public class SmallMultiple {
         	agg.set("compartment", cmptList.get(i).getName());
         	agg.setVisible(false);
         	aggList.add(agg);
-        }
-	}
+        } //for
+	} //initCompartmentAggregates
 	
 	/**
 	 * Adds a visual item to a compartment aggregate.
@@ -1190,22 +1194,22 @@ public class SmallMultiple {
 				//System.out.println("ADDING: " + node.getString("molecule"));
 				agg.addItem(m_vis.getVisualItem(COMPONENT_GRAPH, node));
 
-			}
-		}
-	}
+			} //if
+		} //for
+	} //addItemToCompartmentAgg
 
 	public Display getDisplay()
 	{
 		return m_networkViewer.getDisplay();
-	}
+	} //getDisplay
 	
 	public CMAPNetworkViewer getCMAPNetworkViewer() {
 		return this.m_networkViewer;
-	}
+	} //getCMAPNetworkViewer
 
 	public Hashtable<String, Node> getNodeIndex() {
 		return m_nodes;
 	} //getNodeIndex
 
-}
+} //SmallMultiple
 

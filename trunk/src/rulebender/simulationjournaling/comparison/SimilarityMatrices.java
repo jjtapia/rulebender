@@ -2,6 +2,7 @@ package rulebender.simulationjournaling.comparison;
 
 import prefuse.Display;
 import prefuse.Visualization;
+import rulebender.simulationjournaling.model.SmallMultiple;
 
 public class SimilarityMatrices {
 
@@ -16,12 +17,12 @@ public class SimilarityMatrices {
 
 	private String[] modelNames;
 	
-	public SimilarityMatrices(String newModelNames[], Display newModels[]) {
+	public SimilarityMatrices(String newModelNames[], SmallMultiple[] sm) {
 		modelNames = newModelNames;
-		models = new Visualization[newModels.length];
+		models = new Visualization[sm.length];
 		
-		for (int i = 0; i < newModels.length; i++) {
-			models[i] = newModels[i].getVisualization();
+		for (int i = 0; i < sm.length; i++) {
+			models[i] = sm[i].getDisplay().getVisualization();
 		} //for
 		
 	} //SimilarityMatrices (constructor)

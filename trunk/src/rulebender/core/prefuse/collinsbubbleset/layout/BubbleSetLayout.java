@@ -687,7 +687,7 @@ public class BubbleSetLayout extends Layout {
 			while (aNodeItems.hasNext()) {
 				VisualItem item = (VisualItem) aNodeItems.next();
 				
-				//TODO Here is where the energy is calculated
+				// Here is where the energy is calculated
 				
 				// add node energy
 				influenceFactor = nodeInfluenceFactor;
@@ -931,7 +931,7 @@ public class BubbleSetLayout extends Layout {
 		}
 		else if (item instanceof EdgeItem)
 		{
-			//TODO 
+
 		//	System.out.println("\n\tconnectItem called on Edge "+ item.get("id")+" ("+ item.getX() + ", " + item.getY()+")");
 		
 			itemX = item.getBounds().getCenterX();

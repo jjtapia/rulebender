@@ -11,10 +11,10 @@ import org.eclipse.swt.events.ControlEvent;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.part.ViewPart;
 
-import rulebender.core.prefuse.SmallMultiplesPanel;
+import rulebender.simulationjournaling.view.TreeView;
 
 /**
- * This class defines the ViewPart subclass that holds the small multiples.
+ * This class defines the ViewPart subclass that holds the treeview.
  * 
  * It uses SWT_AWT to put the prefuse (awt) Display objects into an SWT 
  * composite.
@@ -24,26 +24,26 @@ import rulebender.core.prefuse.SmallMultiplesPanel;
  * 
  * @author johnwenskovitch
  */
-public class SmallMultiplesView extends ViewPart {
-	
-	// The holding object for the contact map small multiples. 
-	private SmallMultiplesPanel smPanel;
+public class TimelineView extends ViewPart {
+
+	// The holding object for the timeline tree 
+	private TreeView tree;
 	
 	// This timer is used to make sure that the panel
 	// is not regenerated every time the window resize event occurs. 
 	private final static Timer timer = new Timer();
 	private static boolean timerRunning = false;
 	
-	// The awt frame that holds the small multiples.
+	// The awt frame that holds the timeline tree
 	private java.awt.Frame frame;
 	
 	// This is the parent that we will add our composite to.
 	private Composite parentComposite;
-
-	public SmallMultiplesView() {
+	
+	public TimelineView() {
 		// Do nothing for now
-	} //SmallMultiplesView (constructor)
-
+	} //TimelineView (constructor)
+	
 	/**
 	 * This is the method to override for creating a new ViewPart subclass.
 	 * Add all visual elements to the parent composite that is passed in. 
@@ -58,13 +58,12 @@ public class SmallMultiplesView extends ViewPart {
 		// Create the special swt/awt frame to hold the awt stuff.
 		frame = SWT_AWT.new_Frame(swtAwtComponent);
 		
-		// Create the SmallMultiplesPanel.  This is a data type that has an
-		// array of jpanels for the cmaps
-		smPanel = new SmallMultiplesPanel(new Dimension(parent.getSize().x, parent.getSize().y), this);
-		//smPanel = new SmallMultiplesPanel(new Dimension(580,625), this);
+		// Create the TreeView object
+		tree = new TreeView(new Dimension(1000,250), this);
+		//tree = new TreeView(new Dimension(parent.getSize().x, parent.getSize().y), this);
 		
 		// Add the layered pane to the frame.
-		frame.add(smPanel);
+		frame.add(tree);
 		
 		parent.addControlListener(new ControlAdapter() {	
 			/*
@@ -90,7 +89,7 @@ public class SmallMultiplesView extends ViewPart {
 						org.eclipse.swt.widgets.Display.getDefault().syncExec(new Runnable() {
 							
 							public void run() {
-								smPanel.myResize(new Dimension(parent.getSize().x, parent.getSize().y));
+								tree.myResize(new Dimension(parent.getSize().x, parent.getSize().y));
 								timerRunning = false;
 							} //run
 							
@@ -107,49 +106,19 @@ public class SmallMultiplesView extends ViewPart {
 			
 		}); // new ControlAdapter()
 		
-		// Set up the selection listener.  The selectionListener basically 
-		// handles everything.  If you're wanting to understand how the contact
-		// map code works, go there next.
-		
-		//listener = new ContactMapSelectionListener(this);
-
 	} //createPartControl
 	
-	/**
-	 * Sets a new small multiple of a contact map in the view
-	 * @param d a prefuse.Display object to use as the contact map.
-	 *//*
-	public void setSmallMultiple(prefuse.Display d) {
-		if (d == null) {
-			JLabel temp = new JLabel();
-			temp.setText("The Contact Map data for this model failed to load properly.  Please try again.");
-			smPanel.add(temp);
-		} //if
-		
-		// Set the display in the layered pane
-		smPanel.setDisplay(d);
-
-		// Redraw the parent.  This is my solution to the contact map
-		// not being updated when the contact map view is not in focus. 
-		// The overview was updated, but not the main panel.  So,
-		// there may be a better solution than this, but this works.
-		parentComposite.redraw();
-		
-		// Apparently the above fix does not work in windows.
-		frame.repaint();
-	} //setSmallMultiple
-	*/
-	public SmallMultiplesPanel getSmallMultiplesPanel() {
-		return smPanel;
-	} //getSmallMultiplesPanel
-
+	public TreeView getTreeView() {
+		return tree;
+	} //getTreeView
+	
 	@Override
 	public void setFocus() {
-		frame.repaint();
+		frame.repaint();		
 	} //setFocus
 
 	public Dimension getSize() {
 		return new Dimension(parentComposite.getSize().x, parentComposite.getSize().y); 
 	} //getSize
-
-} //SmallMultiplesView
+	
+} //TimelineView (class)

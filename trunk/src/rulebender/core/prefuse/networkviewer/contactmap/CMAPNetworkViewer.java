@@ -30,6 +30,7 @@ import prefuse.visual.VisualItem;
 import prefuse.visual.VisualTupleSet;
 import prefuse.visual.expression.InGroupPredicate;
 import rulebender.core.prefuse.networkviewer.CustomizedZoomToFitControl;
+import rulebender.simulationjournaling.model.SMClickControlDelegate;
 
 public class CMAPNetworkViewer 
 {
@@ -75,6 +76,8 @@ public class CMAPNetworkViewer
 	private boolean zoomControlEnabled = true;
 
 	private boolean draggableAggregates = true;
+	
+	private boolean isGrayscale = false;
 
 	/**
 	 * Constructor accepts a graph structure.
@@ -86,16 +89,26 @@ public class CMAPNetworkViewer
 		
 		// create the visual group for the object that is selected.
 		vis.addFocusGroup("selected");
+		vis.addFocusGroup("different");
 		
 		mainDisplay = new Display();
 		mainDisplay.setSize(mainDisplaySize);
 	}
 	
+	/**
+	 * Determine whether we should be in grayscale mode or not
+	 * 
+	 * @param isGrey - whether or not grayscale is enabled
+	 */
+	public void setGreyscale(boolean isGray) {
+		isGrayscale = isGray;
+	} //setGreyscale
+	
 	public void build()
 	{
 		setUpRenderers();
 
-		setUpActions();
+		setUpActions(isGrayscale);
 		
 		setUpDisplay();
 		
@@ -140,11 +153,15 @@ public class CMAPNetworkViewer
 	 */
 	public Visualization getVisualization() {
 		return vis;
-	}
+	} //getVisualization
 
 	public void setFilepath(String path) {
 		m_filePath = path;
 	} //setFilepath
+	
+	public String getFilepath() {
+		return m_filePath;
+	} //getFilepath
 	
 	public void setPosPath(String path) {
 		m_posPath = path;
@@ -158,6 +175,10 @@ public class CMAPNetworkViewer
 	public void setClickControl(ControlAdapter c) {
 		clickControlDelegate = c;
 	}
+	
+	public ControlAdapter getClickControl() {
+		return clickControlDelegate;
+	} //getClickControl;
 
 	/**
 	 * Set whether or not zoom controlling should be allowed
@@ -214,8 +235,7 @@ public class CMAPNetworkViewer
 		// drag individual items around
 		// Control the aggregates with a drag.
 		if (draggableAggregates == true) {
-			AggregateDragControl aggDrag = new AggregateDragControl(true,
-					"color", vis, COMPONENT_GRAPH);
+			AggregateDragControl aggDrag = new AggregateDragControl(true, "color", vis, COMPONENT_GRAPH);
 			aggDrag.addAction("bubbleColor");
 			aggDrag.addAction("complayout");
 			aggDrag.addAction("compartmentlayout");
@@ -299,22 +319,46 @@ public class CMAPNetworkViewer
 		mainDisplay.setItemSorter(new CMapItemSorter());
 	}
 
-	private void setUpActions() {
+	private void setUpActions(boolean grayscale) {
 		// The DataColorAction chooses a color given a palette based on the
 		// data column that is passed to the constructor.
 		
+		int[] palette;
+		
 		// normal component, state with bonds, component with states, state without bonds,
 		// component with state change, hub node
-		int[] palette = new int[] { ColorLib.rgba(254, 224, 139, 150),
-				ColorLib.rgba(166, 217, 106, 150),
-				ColorLib.rgba(253, 174, 97, 150),
+		
+		if (!grayscale) {
+			palette = new int[] { 
+				ColorLib.rgba(254, 224, 139, 150),   // 196, 196, 196
+				ColorLib.rgba(166, 217, 106, 150),   // 161, 161, 161
+				ColorLib.rgba(253, 174, 97, 150),    // 175, 175, 175
+				ColorLib.rgba(240, 240, 240, 150),   // 240, 240, 240
+				ColorLib.rgba(153, 112, 171, 150),   // 141, 141, 141
+				ColorLib.rgba(189, 189, 189, 150)    // 189, 189, 189
+			};
+		
+		} else {
+		
+			// Same color mapping as above, but with greyscale design
+			palette = new int[] {
+				ColorLib.rgba(196, 196, 196, 150),
+				ColorLib.rgba(161, 161, 161, 150),
+				ColorLib.rgba(175, 175, 175, 150),
 				ColorLib.rgba(240, 240, 240, 150),
-				ColorLib.rgba(153, 112, 171, 150),
-				ColorLib.rgba(189, 189, 189, 150)};
+				ColorLib.rgba(141, 141, 141, 150),
+				ColorLib.rgba(189, 189, 189, 150)
+			};
+		
+		} //if-else
 		
 		// Color the component nodes.
-		ComponentColorAction fill = new ComponentColorAction(COMPONENT_GRAPH
-				+ ".nodes", VisualItem.FILLCOLOR, palette);
+		ComponentColorAction fill = new ComponentColorAction(COMPONENT_GRAPH + ".nodes", VisualItem.FILLCOLOR, palette);
+		
+		// Color the nodes red if they're in the class of nodes not found in the selected small multiple
+		if (grayscale) {
+			fill.add("ingroup('different')", ColorLib.rgb(255, 0, 0));
+		} //if
 
 		// Color the text
 		ColorAction text = new ColorAction(COMPONENT_GRAPH + ".nodes",
@@ -327,6 +371,11 @@ public class CMAPNetworkViewer
 		ColorAction nodeStroke = new ColorAction(COMPONENT_GRAPH + ".nodes", VisualItem.STROKECOLOR, ColorLib.rgb(20, 20, 20));
 		nodeStroke.add("ingroup('selected')", ColorLib.rgb(225, 100, 100));
 		
+		// Color the nodestrokes red if they're in the class of nodes not found in the selected small multiple
+		if (grayscale) {
+			nodeStroke.add("ingroup('different')", ColorLib.rgb(255, 0, 0));
+		} //if
+		
 		//TODO If the node is selected, use a different color.
 
 		// Color the egdes
@@ -334,6 +383,11 @@ public class CMAPNetworkViewer
 
 		//TODO if the edge is selected, use a different color
 		edgeStroke.add("ingroup('selected')", ColorLib.rgb(225, 100, 100));
+		
+		// Color the edges red if they're in the class of nodes not found in the selected small multiple
+		if (grayscale) {
+			edgeStroke.add("ingroup('different')", ColorLib.rgb(255, 0, 0));
+		} //if
 		
 		// Use these to change the size of the strokes.
 		StrokeAction nodeStrokea = new StrokeAction(COMPONENT_GRAPH + ".nodes",
@@ -349,6 +403,11 @@ public class CMAPNetworkViewer
 		
 		// TODO If the aggregate is selected, use a different color.
 		aStroke.add("ingroup('selected')", ColorLib.rgb(225, 100, 100));
+		
+		// Color the aggregates red if they're in the class of nodes not found in the selected small multiple
+		if (grayscale) {
+			aStroke.add("ingroup('different')", ColorLib.rgb(255, 0, 0));
+		} //if
 
 		// Draw the decorators.
 		ColorAction decText = new ColorAction(AGG_DEC, VisualItem.TEXTCOLOR,
