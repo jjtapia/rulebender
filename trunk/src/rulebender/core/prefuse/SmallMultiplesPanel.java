@@ -7,14 +7,17 @@ import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 
+import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JLayeredPane;
 import javax.swing.JPanel;
+import javax.swing.JRadioButton;
 import javax.swing.SwingConstants;
 import javax.swing.border.Border;
 import javax.swing.border.LineBorder;
@@ -28,6 +31,7 @@ import prefuse.util.PrefuseLib;
 import prefuse.visual.VisualItem;
 import rulebender.simulationjournaling.comparison.SimilarityMatrices;
 import rulebender.simulationjournaling.model.BackgroundFileLoader;
+import rulebender.simulationjournaling.model.SMClickControlDelegate;
 import rulebender.simulationjournaling.model.SmallMultiple;
 import rulebender.simulationjournaling.view.SmallMultiplesView;
 
@@ -46,8 +50,8 @@ public class SmallMultiplesPanel extends JLayeredPane implements ActionListener 
 	// TODO: get this directory path automatically from a user's RuleBender interactions
 	//private String m_directory = "C:\\Users\\John\\runtime-rulebender.product\\TLR\\TLR\\";
 	//private String m_directory = "C:\\Users\\John\\runtime-rulebender.product\\egfr_net\\egfr_net\\";
-	//private String m_directory = "C:\\Users\\John\\runtime-rulebender.product\\fceri\\models\\";
-	private String m_directory = "C:\\Users\\John\\runtime-rulebender.product\\stat\\stat\\";
+	private String m_directory = "C:\\Users\\John\\runtime-rulebender.product\\fceri\\models\\";
+	//private String m_directory = "C:\\Users\\John\\runtime-rulebender.product\\stat\\stat\\";
 	
 	private int m_numFiles;
 	
@@ -66,6 +70,11 @@ public class SmallMultiplesPanel extends JLayeredPane implements ActionListener 
 	// The buttons to auto-populate the layout and to clear the layout
 	private JButton btnPopulate;
 	private JButton btnClear;
+	
+	// The radio buttons to control comparing similarities or differences
+	private JRadioButton rbtnCompareSimilarities;
+	private JRadioButton rbtnCompareDifferences;
+	ButtonGroup rbtnGroupCompare;
 	
 	// The border object that separates the inner JPanels
 	private Border border;
@@ -122,6 +131,10 @@ public class SmallMultiplesPanel extends JLayeredPane implements ActionListener 
 	// A HashMap that holds the name of a position file and its path
 	private HashMap<String, String> m_positionLookup;
 	
+	// List of currently selected model indices
+	private ArrayList<Integer> m_selectedModels;
+	
+	
 	/**
 	 * Two functions:
 	 *   1. Set the size of the overall panel
@@ -143,6 +156,8 @@ public class SmallMultiplesPanel extends JLayeredPane implements ActionListener 
 		
 		m_contactMapRegistry = new HashMap<String, SmallMultiple>();
 		m_positionLookup = new HashMap<String, String>();
+		
+		m_selectedModels = new ArrayList<Integer>();
 		
 		// Figure out the number of multiples are in the folder
 		m_numFiles = findNumberOfSmallMultiples(m_directory);
@@ -174,6 +189,21 @@ public class SmallMultiplesPanel extends JLayeredPane implements ActionListener 
 		btnPopulate.addActionListener(this);
 		btnClear.addActionListener(this);
 		
+		// Initialize the radio buttons, and to a group, add listener
+		rbtnGroupCompare = new ButtonGroup();
+		rbtnCompareSimilarities = new JRadioButton("Compare similarities");
+		rbtnCompareDifferences = new JRadioButton("Compare differences");
+		
+		rbtnCompareSimilarities.setHorizontalAlignment(SwingConstants.CENTER);
+		rbtnCompareDifferences.setHorizontalAlignment(SwingConstants.CENTER);
+		
+		rbtnGroupCompare.add(rbtnCompareSimilarities);
+		rbtnGroupCompare.add(rbtnCompareDifferences);
+		
+		rbtnCompareSimilarities.addActionListener(this);
+		rbtnCompareDifferences.addActionListener(this);
+
+		
 		// Initialize the major panels
 		fullPanel = new JPanel();
 		upperPanel = new JPanel();
@@ -204,9 +234,11 @@ public class SmallMultiplesPanel extends JLayeredPane implements ActionListener 
 		// Add the dropdown list and label to the upper panel
 		upperPanel.add(lblLayouts);
 		upperPanel.add(ddlLayouts);
-		upperPanel.add(btnPopulate);
-		upperPanel.add(btnClear);
-					
+		//upperPanel.add(btnPopulate);
+		//upperPanel.add(btnClear);
+		upperPanel.add(rbtnCompareSimilarities);
+		upperPanel.add(rbtnCompareDifferences);
+		
 		// Add the upper and lower panels to the main panel
 		fullPanel.add(upperPanel, BorderLayout.NORTH);
 		fullPanel.add(lowerPanel, BorderLayout.CENTER);
@@ -309,19 +341,6 @@ public class SmallMultiplesPanel extends JLayeredPane implements ActionListener 
 	
 	public void initializeSmallMultiplesDisplay(String layoutChoice) {
 		
-		// Remove old components (if necessary) from the grid
-		for (int i = 0; i < m_numFiles; i++) {
-			
-			//myPanel[i].removeAll();
-			/*
-			MouseListener[] listeners = getMouseListeners();
-			
-			for (int j = 0; j < listeners.length; j++) {
-				myPanel[i].removeMouseListener(listeners[j]);
-			} //for
-			*/
-		} //for
-		
 		// Load the small multiples if they don't exist in the array already
 		populateSmallMultiplesDisplay(m_directory, layoutChoice);
 		
@@ -384,12 +403,12 @@ public class SmallMultiplesPanel extends JLayeredPane implements ActionListener 
 	} //lookupDisplay
 	
 	public void highlightPanel(int panelIndex, boolean resetHighlighting) {
-		// First reset all panels to the gray border without highlighting
+		// First reset all panels without highlighting if requested
 		if (resetHighlighting) {
 			removeHighlighting();	
 		} //if
-				
-		// Now highlight the red border
+		
+		// Now highlight the selected index
 		//myPanel[panelIndex].setBorder(highlightBorder);
 		myPanel[panelIndex].setBackground(highlightBackgroundColor);
 		sm[panelIndex].getDisplay().setBackground(highlightBackgroundColor);
@@ -404,6 +423,118 @@ public class SmallMultiplesPanel extends JLayeredPane implements ActionListener 
 		highlightPanel(panelIndex2, false);
 	} //highlightPanels
 	
+	public void setHighlightedPanels(ArrayList<Integer> panels) {
+		// First clear the currently highlighted models
+		m_selectedModels.clear();
+		
+		// Then add in the list of models to highlight
+		addHighlightedPanels(panels);
+	} //setHighlightedPanels
+	
+	public void addHighlightedPanels(ArrayList<Integer> panels) {
+		// Add in the list of models to highlight
+		for (int i = 0; i < panels.size(); i++) {
+			addHighlightedPanel(panels.get(i));
+		} //for
+	} //addHighlightedPanels
+	
+	public void addHighlightedPanel(int panel) {
+		// Add panel to currently selected list
+		addPanelToList(panel);
+
+		// Highlight the panel selected
+		highlightPanel(panel, false);
+		
+		// Check if comparison should be performed
+		if (twoPanelsHighlighted()) {
+			compareModels();
+		} else {
+			clearBubblesetOverlays();
+		} //if-else
+		
+	} //addHighlightedPanel
+	
+	private void addPanelToList(int panel) {
+		// Check to be sure it isn't already in the list
+		for (int i = 0; i < m_selectedModels.size(); i++) {
+			if (m_selectedModels.get(i) == panel) {
+				return;
+			} //if
+		} //for
+		
+		// Add the panel to the list
+		m_selectedModels.add(panel);
+		
+		// If more than two panels get selected, remove the oldest
+		if (m_selectedModels.size() > 2) {
+			clearBubblesetOverlays();
+			((SMClickControlDelegate)sm[m_selectedModels.get(0)].getNetworkViewer().getClickControl()).setCurrentlySelected(false);
+			removeHighlightedPanel(m_selectedModels.get(0));
+		} //if
+		
+	} //addPanelToList
+	
+	public void removeHighlightedPanels(ArrayList<Integer> panels) {
+		while (panels.size() != 0) {
+			removeHighlightedPanel(panels.get(0));
+		} //while
+	} //removeHighlightedPanels
+	
+	public void removeHighlightedPanel(int panel) {
+		for (int i = 0; i < m_selectedModels.size(); i++) {
+			if (m_selectedModels.get(i) == panel) {
+				m_selectedModels.remove(i);
+				break;
+			} //if
+		} //for
+		
+		if (!(twoPanelsHighlighted())) {
+			clearBubblesetOverlays();
+		} //if
+		
+		removeHighlightingOnPanel(panel);
+	} //removeHighlightedPanels
+	
+	public ArrayList<Integer> getHighlightedPanels() {
+		return m_selectedModels;
+	} //getHightlightedPanels
+	
+	public void removeAllSelections() {
+		m_selectedModels.clear();
+		for (int i = 0; i < sm.length; i++) {
+			removeHighlightedPanel(i);
+		} //for
+	} //removeAllSelections
+	
+	public boolean twoPanelsHighlighted() {
+		return ((m_selectedModels.size() == 2) && (m_selectedModels.get(0) != -1) && (m_selectedModels.get(1) != -1));
+	} //twoPanelsHighlighted
+	
+	public void compareModels() {
+		//  Check radio buttons to see if we are comparing similarities or differences
+		boolean comparingSimilarities = rbtnCompareSimilarities.isSelected();
+		boolean comparingDifferences = rbtnCompareDifferences.isSelected();
+		
+		if (comparingSimilarities) {
+			// if comparing similarities, call similarity comparison function in panel1's SMClickControlDelegate
+			((SMClickControlDelegate)sm[m_selectedModels.get(0)].getNetworkViewer().getClickControl()).handleSimilaritiesOption(this, m_selectedModels.get(0), sm[m_selectedModels.get(1)].getDisplay().getVisualization(), m_selectedModels.get(1));
+			
+		} else if (comparingDifferences) {
+			// else if comparing differences, call differences comparison function in panel1's SMClickControlDelegate 
+			((SMClickControlDelegate)sm[m_selectedModels.get(0)].getNetworkViewer().getClickControl()).handleDifferencesOption(this, m_selectedModels.get(0), sm[m_selectedModels.get(1)].getDisplay().getVisualization(), m_selectedModels.get(1));
+			
+		} //if-else
+		
+	} //compareModels
+	
+	public void selectCompareSimilaritiesButton() {
+		rbtnCompareSimilarities.setSelected(true);
+	} //selectCompareSimilaritiesButton
+	
+	public void selectCompareDifferencesButton() {
+		rbtnCompareDifferences.setSelected(true);
+	} //selectCompareDifferencesButton
+	
 	public void removeHighlighting() {
 		for (int i = 0; i < m_numFiles; i++) {
 			myPanel[i].setBackground(Color.WHITE);
@@ -414,7 +545,25 @@ public class SmallMultiplesPanel extends JLayeredPane implements ActionListener 
 			sm[i].getDisplay().getVisualization().repaint();
 			myPanel[i].repaint();
 		} //for
+		
+		//m_selectedModels.clear();
 	} //removeHighlighting
+	
+	private void removeHighlightingOnPanel(int panelIndex) {
+		myPanel[panelIndex].setBackground(Color.WHITE);
+		sm[panelIndex].getDisplay().setBackground(Color.WHITE);
+		myPanel[panelIndex].setBorder(border);
+		sm[panelIndex].getDisplay().setSize(myPanel[panelIndex].getWidth() - 2, myPanel[panelIndex].getHeight() - 2);
+		sm[panelIndex].getDisplay().repaint();
+		sm[panelIndex].getDisplay().getVisualization().repaint();
+		myPanel[panelIndex].repaint();
+	} //removeHighlightingOnPanel
+	
+	private void clearBubblesetOverlays() {
+		for (int i = 0; i < sm.length; i++) {
+			((SMClickControlDelegate)sm[i].getNetworkViewer().getClickControl()).clearBubbleSets();
+		} //for
+	} //clearBubblesetOverlays
 	
 	public boolean isCurrentlyHighlighted() {
 		return m_currentlyHighlighted;
@@ -484,6 +633,20 @@ public class SmallMultiplesPanel extends JLayeredPane implements ActionListener 
 			
 		} else if (e.getSource() == btnClear) {
 			initializeBlankDisplay();
+			
+		} else if (e.getSource() == rbtnCompareSimilarities) {
+			if (twoPanelsHighlighted()) {
+				compareModels();
+			} else {
+				clearBubblesetOverlays();
+			} //if-else
+			
+		} else if (e.getSource() == rbtnCompareDifferences) {
+			if (twoPanelsHighlighted()) {
+				compareModels();
+			} else {
+				clearBubblesetOverlays();
+			} //if
 			
 		} //if-else
 		

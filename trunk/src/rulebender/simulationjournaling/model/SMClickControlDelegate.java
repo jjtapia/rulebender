@@ -1,5 +1,6 @@
 package rulebender.simulationjournaling.model;
 
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
@@ -11,6 +12,7 @@ import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
+import javax.swing.Timer;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IWorkspace;
@@ -97,20 +99,30 @@ public class SMClickControlDelegate extends ControlAdapter implements ISelection
 	
 	private static String COMPONENT_GRAPH = "component_graph";
 	
-	// Menu items
-	JMenuItem removeOverlayMenuItem;
-	JMenuItem openModelMenuItem;
-	JMenuItem[] differencesList;
-	JMenuItem[] similaritiesList;
+	// Popup Menu items
+	private JMenuItem removeOverlayMenuItem;
+	private JMenuItem openModelMenuItem;
+	private JMenuItem[] differencesList;
+	private JMenuItem[] similaritiesList;
 	
-	MouseEvent mostRecentClick;
+	private MouseEvent mostRecentClick;
 	
+	private boolean m_currentlySelected;
+	
+	// Delay for single vs double click
+	private int delay;
+	private Timer timer;
 	
 	public SMClickControlDelegate(SmallMultiplesView view, String sourcePath, Visualization v) {
 		m_view = view;
 				
 		m_sourcePath = sourcePath;
 		m_modelName = getModelNameFromFilepath(m_sourcePath);
+		m_currentlySelected = false;
+		
+		delay = (Integer)Toolkit.getDefaultToolkit().getDesktopProperty("awt.multiClickInterval");
+		//delay = 250;
+		timer = new Timer(delay, this);
 		
 		// Set the local reference to the visualization that this controller is
 		// attached to.
@@ -334,10 +346,55 @@ public class SMClickControlDelegate extends ControlAdapter implements ISelection
 			
 			popupMenu.show(e.getComponent(), e.getX(), e.getY());
 			
+		} else {
+			
+			// Determine if we just had a double-click (single-click call is in actionPerformed)
+			
+			if (e.getClickCount() > 2) {
+				return;
+			} //if
+			
+			mostRecentClick = e;
+			
+			if (timer.isRunning()) {
+				timer.stop();
+				doubleLeftClick(mostRecentClick);
+				
+			} else {
+				timer.restart();
+			} //if-else
+			
 		} //if
 				
 	} //mouseClicked
 
+	private void singleLeftClick(MouseEvent e) {
+		int panelIndexClicked = Integer.parseInt(mostRecentClick.getComponent().getParent().getName());
+		System.out.println("Single click on panel " + panelIndexClicked);
+		
+		// Highlight panel clicked if not highlighted, de-highlight if already highlighted
+		SmallMultiplesPanel smPanel = m_view.getSmallMultiplesPanel();
+		
+		if (m_currentlySelected) {
+			smPanel.removeHighlightedPanel(panelIndexClicked);
+			m_currentlySelected = false;
+		} else {
+			smPanel.addHighlightedPanel(panelIndexClicked);
+			m_currentlySelected = true;
+		} //if-else
+		
+		
+	} //singleLeftClick
+	
+	public void setCurrentlySelected(boolean set) {
+		m_currentlySelected = set;
+	} //setCurrentlySelected
+	
+	private void doubleLeftClick(MouseEvent e) {
+		int panelIndexClicked = Integer.parseInt(mostRecentClick.getComponent().getParent().getName());
+		System.out.println("Double click on panel " + panelIndexClicked);
+	} //doubleLeftClick
+	
 	private void getModelList(SmallMultiplesPanel smPanel, JPanel[] panels) {
 		for (int i = 0; i < panels.length; i++) {
 			String filepath = smPanel.getMultiple(i).getCMAPNetworkViewer().getFilepath();
@@ -426,10 +483,11 @@ public class SMClickControlDelegate extends ControlAdapter implements ISelection
 		} else if (e2.getSource() == removeOverlayMenuItem) {
 			// If we select this menu item, we are deselecting model comparison
 			clearPanels(smPanel, panels);
+			m_currentlySelected = false;
 			
-		} else {
+		} else if (e2.getSource().getClass().getName().equals("javax.swing.JMenuItem")) {
 			
-			// If we select any other item
+			// If we select any JMenuItem item from the dropdown list
 			
 			// Clear all highlighting and start fresh
 			clearPanels(smPanel, panels);
@@ -452,25 +510,43 @@ public class SMClickControlDelegate extends ControlAdapter implements ISelection
 				if (similarityIndex == -1) {
 					Thread.dumpStack();						
 				} else {
-					handleSimilaritiesOption(smPanel, similarityIndex, selectedModel, panelIndexClicked);						
+					handleSimilaritiesOption(smPanel, similarityIndex, selectedModel, panelIndexClicked);
+					smPanel.selectCompareSimilaritiesButton();
+					comparisonIndex = similarityIndex;
 				} //if-else
 									
 			} else {
 				// Compare the models, get the differences, and display
 				handleDifferencesOption(smPanel, comparisonIndex, selectedModel, panelIndexClicked);
+				smPanel.selectCompareDifferencesButton();
 					
 			} //if-else
 				
 			// If highlights are off, we can forget which panel was most recently clicked
 			if (!(smPanel.isCurrentlyHighlighted())) {
 				smPanel.setLastPanelSelected(-1);
+			} else {
+				// This SmallMultiple is currently selected
+				m_currentlySelected = true;
+				
+				// Tell the SmallMultiplesPanel which models are currently selected
+				ArrayList<Integer> selectedPanels = new ArrayList<Integer>();
+				selectedPanels.add(comparisonIndex);					
+				selectedPanels.add(panelIndexClicked);
+				smPanel.setHighlightedPanels(selectedPanels);
 			} //if
-
+	
+		} else {
+			// The click occurs in whitespace, not on any item
+			// doubleClick() call is in mouseClicked()
+			timer.stop();
+			singleLeftClick(mostRecentClick);
+			
 		} //if-else
 		
 	} //actionPerformed
 	
-	private void handleDifferencesOption(SmallMultiplesPanel smPanel, int comparisonIndex, Visualization selectedModel, int panelIndexClicked) {
+	public void handleDifferencesOption(SmallMultiplesPanel smPanel, int comparisonIndex, Visualization selectedModel, int panelIndexClicked) {
 		// First compare the most complete model to the selected Model 
 		Visualization modelToCompareAgainst = smPanel.getVisualization(comparisonIndex);
 		clearOverlay(comparisonIndex, smPanel);
@@ -495,7 +571,7 @@ public class SMClickControlDelegate extends ControlAdapter implements ISelection
 		smPanel.repaint();
 	} //handleDifferencesOption
 	
-	private void handleSimilaritiesOption(SmallMultiplesPanel smPanel, int comparisonIndex, Visualization selectedModel, int panelIndexClicked) {
+	public void handleSimilaritiesOption(SmallMultiplesPanel smPanel, int comparisonIndex, Visualization selectedModel, int panelIndexClicked) {
 		// First compare the most complete model to the selected Model 
 		Visualization modelToCompareAgainst = smPanel.getVisualization(comparisonIndex);
 		clearOverlay(comparisonIndex, smPanel);
@@ -853,7 +929,8 @@ public class SMClickControlDelegate extends ControlAdapter implements ISelection
 		
 		*/
 		
-	} //clearSelection
+	} //clearOverlay
+	
 	
 	private void highlightSimilarities(ArrayList<ArrayList<String>> similarities, Visualization vis, int modelIndex, SmallMultiplesPanel smPanel) {
 		// Get the bubbleTable for the model
@@ -1283,6 +1360,8 @@ public class SMClickControlDelegate extends ControlAdapter implements ISelection
 	} //itemClicked
 	
 	private void nodeLeftClicked(NodeItem item, MouseEvent e, SmallMultiplesPanel smPanel, JPanel[] panels) {
+		// Clear any current highlights/selections
+		smPanel.removeAllSelections();
 		
 		// Get the name of the node clicked (molecule, component, state)
 		String nodeName = buildStringRepresentation(item);
@@ -1333,6 +1412,9 @@ public class SMClickControlDelegate extends ControlAdapter implements ISelection
 	} //nodeLeftClicked
 	
 	private void edgeLeftClicked(EdgeItem edge, MouseEvent e, SmallMultiplesPanel smPanel, JPanel[] panels) {
+		// Clear any current highlights/selections
+		smPanel.removeAllSelections();
+		
 		// Get the endpoints of the edge clicked (2 sets of molecule, component, state)
 		VisualItem source = (VisualItem) edge.getSourceNode();
 		VisualItem target = (VisualItem) edge.getTargetNode();
