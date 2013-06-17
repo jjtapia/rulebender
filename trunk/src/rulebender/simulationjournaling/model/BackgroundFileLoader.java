@@ -50,9 +50,19 @@ public class BackgroundFileLoader extends Thread {
 		cModel.setSourcePath(sourcePath);
 			
 		// Get the CMapVisual object for the CMapModel
-		cVisual = new SmallMultiple(view, cModel, dim, layoutChoice);
-	
-		return cVisual;
+		boolean loaded = false;		
+		while (!loaded) {
+			try {
+				cVisual = new SmallMultiple(view, cModel, dim, layoutChoice);
+				loaded = true;
+				return cVisual;
+			} catch (Exception e) {
+				System.err.println("loading fail on a small multiple.  trying again...");
+				loaded = false;
+			} //try-catch
+		} //while
+			
+		return null;
 		
 	} //loadTempContactMap
 	
