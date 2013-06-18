@@ -593,6 +593,7 @@ public class SMClickControlDelegate extends ControlAdapter implements ISelection
 		
 	} //handleSimilaritiesOption
 	
+	
 	private void openBNGLFile(SmallMultiplesPanel smPanel, int panelIndexClicked) {
 		
 		// Switch to the default perspective
@@ -663,6 +664,7 @@ public class SMClickControlDelegate extends ControlAdapter implements ISelection
 		return -1;
 	} //getComparisonIndex
 	
+	
 	private int getSimilaritiesComparisonModelIndex(ActionEvent e2) {
 		
 		// Loop through all menu items, looking for the model name of the JMenuItem selected
@@ -681,6 +683,7 @@ public class SMClickControlDelegate extends ControlAdapter implements ISelection
 		
 		return -1;
 	} //getComparisonIndex
+	
 	
 	private ArrayList<ArrayList<String>> compareModels(Visualization selectedModel, Visualization compareModel, boolean findingDifferences) {
 		
@@ -702,22 +705,73 @@ public class SMClickControlDelegate extends ControlAdapter implements ISelection
 		return items;
 	} //compareModels
 	
+	
 	private ArrayList<String> compareComponents(Visualization selectedModel, Visualization compareModel, boolean findingDifferences) {
+		
+		ArrayList<MoleculeCounter> compareTracker = new ArrayList<MoleculeCounter>();
+		ArrayList<MoleculeCounter> selectedTracker = new ArrayList<MoleculeCounter>();
 		
 		ArrayList<String> components = new ArrayList<String>();
 		Boolean itemFound = false;
 		
 		// Loop through the compareModel, and make note of anything that's not in the selectedModel
 		
-		// Start by looping through the nodes
+		// Start by looping through the nodes of compareModel
 		Iterator compareIter = compareModel.items(PrefuseLib.getGroupName(COMPONENT_GRAPH, Graph.NODES));
 		
 		while (compareIter.hasNext()) {
 			VisualItem item = (VisualItem) compareIter.next();
 			
 			if (item.getString("molecule") != null) {
-				String compareString = buildStringRepresentation(item);
-							
+				StringBuilder compareStringBuilder = buildStringRepresentation(item);
+				
+				String compareMolecule = item.getString("molecule");
+				String compareComponent = item.getString("component");
+				String compareState = item.getString(VisualItem.LABEL);
+				String id = "0";
+				Boolean found = false;
+				
+				if (compareMolecule == null) {
+					compareMolecule = "null";
+				} //compareMolecule
+				
+				if (compareComponent == null) {
+					compareComponent = "null";
+				} //if
+				
+				if (compareState == null) {
+					compareState = "null";
+				} //if
+				
+				// Keep track of how many of each molecule/component pair have been found
+				for (int i = 0; i < compareTracker.size(); i++) {
+					if ((compareMolecule.equals(compareTracker.get(i).getMolecule())) && (compareComponent.equals(compareTracker.get(i).getComponent())) && (compareState.equals(compareTracker.get(i).getState()))) {
+						MoleculeCounter tempMol = new MoleculeCounter(compareMolecule, compareComponent, compareState, compareTracker.get(i).getCount() + 1);
+
+						//tracker.get(i).setCount(tracker.get(i).getCount() + 1);
+						id = Integer.toString(compareTracker.get(i).getCount() + 1);
+
+						compareTracker.remove(i);
+						compareTracker.add(tempMol);
+						
+						found = true;
+						break;
+					} //if
+				} //for
+				
+				// If we find a new molecule/component pair, add a new item to the array
+				if (!found) {
+					MoleculeCounter tempMol = new MoleculeCounter(compareMolecule, compareComponent, compareState, 0);
+					compareTracker.add(tempMol);
+					id = Integer.toString(0);
+				} //if
+				
+				compareStringBuilder.append("-");
+				compareStringBuilder.append(id);
+				String compareString = compareStringBuilder.toString();			
+				
+				
+				// Now loop through the selectedModel and look for similarities/differences
 				Iterator selectedIter = selectedModel.items(PrefuseLib.getGroupName(COMPONENT_GRAPH, Graph.NODES));
 				
 				while (selectedIter.hasNext()) {
@@ -728,12 +782,59 @@ public class SMClickControlDelegate extends ControlAdapter implements ISelection
 				
 					if (selectedItem.getString("molecule") != null) {
 						
-						String selectedString = buildStringRepresentation(selectedItem);
+						StringBuilder selectedStringBuilder = buildStringRepresentation(selectedItem);
 					
+						String selectedMolecule = selectedItem.getString("molecule");
+						String selectedComponent = selectedItem.getString("component");
+						String selectedState = selectedItem.getString(VisualItem.LABEL);
+						String selectedID = "0";
+						Boolean selectedFound = false;
+						
+						if (selectedMolecule == null) {
+							selectedMolecule = "null";
+						} //if
+						
+						if (selectedComponent == null) {
+							selectedComponent = "null";
+						} //if
+						
+						if (selectedState == null) {
+							selectedState = "null";
+						} //if
+						
+						// Keep track of how many of each molecule/component pair have been found
+						for (int i = 0; i < selectedTracker.size(); i++) {
+							if ((selectedMolecule.equals(selectedTracker.get(i).getMolecule())) && (selectedComponent.equals(selectedTracker.get(i).getComponent())) && (selectedState.equals(selectedTracker.get(i).getState()))) {
+								MoleculeCounter tempMol = new MoleculeCounter(selectedMolecule, selectedComponent, selectedState, selectedTracker.get(i).getCount() + 1);
+
+								//tracker.get(i).setCount(tracker.get(i).getCount() + 1);
+								selectedID = Integer.toString(selectedTracker.get(i).getCount() + 1);
+
+								selectedTracker.remove(i);
+								selectedTracker.add(tempMol);
+								
+								selectedFound = true;
+								break;
+							} //if
+						} //for
+						
+						// If we find a new molecule/component pair, add a new item to the array
+						if (!selectedFound) {
+							MoleculeCounter tempMol = new MoleculeCounter(selectedMolecule, selectedComponent, selectedState, 0);
+							selectedTracker.add(tempMol);
+							selectedID = Integer.toString(0);
+						} //if
+						
+						selectedStringBuilder.append("-");
+						selectedStringBuilder.append(selectedID);
+						String selectedString = selectedStringBuilder.toString();			
+						
+						
 						// If an item is found in both the compare model and the selected model, then add it to the list if we're looking for similarities, otherwise skip it.
 						if (compareString.equals(selectedString)) {
 							if (!findingDifferences) {
-								components.add(buildStringRepresentation(item));
+								//components.add(buildStringRepresentation(item).toString());
+								components.add(compareString);
 							} else {
 								itemFound = true;
 								break;	
@@ -745,9 +846,11 @@ public class SMClickControlDelegate extends ControlAdapter implements ISelection
 						
 				} //while (selectedIter)
 					
+				selectedTracker.clear();
+				
 				// If an item hasn't been found and we're looking for differences, add it to the list of components
 				if (!itemFound && findingDifferences) {
-					components.add(buildStringRepresentation(item));
+					components.add(compareString);
 				} //if
 							
 			} //if
@@ -757,6 +860,7 @@ public class SMClickControlDelegate extends ControlAdapter implements ISelection
 		return components;
 		
 	} //compareComponents
+	
 	
 	private ArrayList<String> compareMolecules(Visualization selectedModel, Visualization compareModel, boolean findingDifferences) {
 		
@@ -785,6 +889,7 @@ public class SMClickControlDelegate extends ControlAdapter implements ISelection
 		return molecules;
 		
 	} //compareMolecules
+	
 	
 	private ArrayList<String> compareEdges(Visualization selectedModel, Visualization compareModel, boolean findingDifferences) {
 		
@@ -816,8 +921,8 @@ public class SMClickControlDelegate extends ControlAdapter implements ISelection
 			} //if
 			
 			// Build string representations of each molecule/component/state for comparison
-			sourceString = buildStringRepresentation(source);
-			targetString = buildStringRepresentation(target);
+			sourceString = buildStringRepresentation(source).toString();
+			targetString = buildStringRepresentation(target).toString();
 			
 			// Iterate over all of the edges in the selected model
 			Iterator selectedEdgeIter = selectedModel.items(PrefuseLib.getGroupName(COMPONENT_GRAPH, Graph.EDGES));
@@ -847,8 +952,8 @@ public class SMClickControlDelegate extends ControlAdapter implements ISelection
 				} //if
 				
 				// Build string representations of each molecule/component/state for comparison
-				selectedSourceString = buildStringRepresentation(selectedSource);
-				selectedTargetString = buildStringRepresentation(selectedTarget);
+				selectedSourceString = buildStringRepresentation(selectedSource).toString();
+				selectedTargetString = buildStringRepresentation(selectedTarget).toString();
 				
 				// Now let's check to see if the edges are the same... if they are, then if we're looking for similarities, then add the edge, otherwise skip it
 				if ((sourceString.equals(selectedSourceString)) && (targetString.equals(selectedTargetString))) {
@@ -874,24 +979,42 @@ public class SMClickControlDelegate extends ControlAdapter implements ISelection
 		
 	} //compareEdges
 	
-	private String buildStringRepresentation(VisualItem item) {
+	
+	private StringBuilder buildStringRepresentation(VisualItem item) {
 		StringBuilder temp = new StringBuilder();
 		
+		String molecule = item.getString("molecule");
+		String component = item.getString("component");
+		String state = item.getString(VisualItem.LABEL);
+		
+		if (molecule == null) {
+			molecule = "null";
+		} //if
+		
+		if (component == null) {
+			component = "null";
+		} //if
+		
+		if (state == null) {
+			state = "null";
+		} //if
+		
 		if (item.getString("component") == null) {
-			temp.append(item.getString("molecule"));
+			temp.append(molecule);
 			temp.append("(");
-			temp.append(item.getString(VisualItem.LABEL));
+			temp.append(state);
 			temp.append(")");
 		} else {
-			temp.append(item.getString("molecule"));
+			temp.append(molecule);
 			temp.append("(");
-			temp.append(item.getString("component"));
+			temp.append(component);
 			temp.append(").");
-			temp.append(item.getString(VisualItem.LABEL));
+			temp.append(state);
 		} //if-else
 		
-		return temp.toString();
+		return temp/*.toString()*/;
 	} //buildStringRepresentation
+	
 	
 	@SuppressWarnings("unused")
 	private void printDifferences(ArrayList<String> differences) {
@@ -956,6 +1079,7 @@ public class SMClickControlDelegate extends ControlAdapter implements ISelection
 		
 	} //highlightSimilarities
 	
+	
 	private void highlightDifferences(ArrayList<ArrayList<String>> differences, Visualization vis, int modelIndex, SmallMultiplesPanel smPanel, String bubbleChoice) {
 		
 		// Get the bubbleTable for the model
@@ -1016,7 +1140,10 @@ public class SMClickControlDelegate extends ControlAdapter implements ISelection
 		
 	} //highlightDifferences
 	
+	
 	private void highlightComponentsBubbleSet(ArrayList<String> differentComponents, Visualization vis, AggregateTable modelBubbleTable, AggregateItem modelGroup) {
+		
+		ArrayList<MoleculeCounter> compareTracker = new ArrayList<MoleculeCounter>();
 		
 		// First loop through and highlight components
 		for (int i = 0; i < differentComponents.size(); i++) {
@@ -1026,10 +1153,56 @@ public class SMClickControlDelegate extends ControlAdapter implements ISelection
 							
 			while (iter.hasNext()) {
 				VisualItem item = (VisualItem) iter.next();
-					
+				
 				if (item.getString("molecule") != null) {
-					String compareString = buildStringRepresentation(item);
+					StringBuilder compareStringBuilder = buildStringRepresentation(item);
 					
+					String compareMolecule = item.getString("molecule");
+					String compareComponent = item.getString("component");
+					String compareState = item.getString(VisualItem.LABEL);
+					String id = "0";
+					Boolean found = false;
+					
+					if (compareMolecule == null) {
+						compareMolecule = "null";
+					} //compareMolecule
+					
+					if (compareComponent == null) {
+						compareComponent = "null";
+					} //if
+					
+					if (compareState == null) {
+						compareComponent = "null";
+					} //if
+					
+					// Keep track of how many of each molecule/component pair have been found
+					for (int j = 0; j < compareTracker.size(); j++) {
+						if ((compareMolecule.equals(compareTracker.get(j).getMolecule())) && (compareComponent.equals(compareTracker.get(j).getComponent())) && (compareState.equals(compareTracker.get(j).getState()))) {
+							MoleculeCounter tempMol = new MoleculeCounter(compareMolecule, compareComponent, compareState, compareTracker.get(j).getCount() + 1);
+
+							//tracker.get(i).setCount(tracker.get(i).getCount() + 1);
+							id = Integer.toString(compareTracker.get(j).getCount() + 1);
+
+							compareTracker.remove(j);
+							compareTracker.add(tempMol);
+							
+							found = true;
+							break;
+						} //if
+					} //for
+					
+					// If we find a new molecule/component pair, add a new item to the array
+					if (!found) {
+						MoleculeCounter tempMol = new MoleculeCounter(compareMolecule, compareComponent, compareState, 0);
+						compareTracker.add(tempMol);
+						id = Integer.toString(0);
+					} //if
+					
+					compareStringBuilder.append("-");
+					compareStringBuilder.append(id);
+					String compareString = compareStringBuilder.toString();			
+
+										
 					// Compare the string we just built against the current component from the ArrayList
 					// If there's a match, add to the highlighted class of objects
 					if (compareString.equals(differentComponents.get(i))) {
@@ -1040,9 +1213,13 @@ public class SMClickControlDelegate extends ControlAdapter implements ISelection
 														
 				} //if
 			} //while
+			
+			compareTracker.clear();
+			
 		} //for
 		
 	} //highlightComponentsBubbleSet
+	
 	
 	private void highlightMoleculesBubbleSet(ArrayList<String> differentMolecules, Visualization vis, AggregateTable modelBubbleTable, AggregateItem modelGroup) {
 		
@@ -1050,6 +1227,7 @@ public class SMClickControlDelegate extends ControlAdapter implements ISelection
 		
 		
 	} //highlightMoleculesBubbleSet
+	
 	
 	private void highlightEdgesBubbleSet(ArrayList<String> differentEdges, Visualization vis, AggregateTable modelBubbleTable, AggregateItem modelGroup) {
 		
@@ -1085,8 +1263,8 @@ public class SMClickControlDelegate extends ControlAdapter implements ISelection
 				} //if
 							
 				// Build string representations of VisualItems for comparison
-				sourceString = buildStringRepresentation(source);
-				targetString = buildStringRepresentation(target);
+				sourceString = buildStringRepresentation(source).toString();
+				targetString = buildStringRepresentation(target).toString();
 								
 				if ((sourceString.equals(arraySource)) && (targetString.equals(arrayTarget))) {
 					//modelCenter.addItem(vis.getVisualItem(COMPONENT_GRAPH, edge.getSourceNode()));
@@ -1103,6 +1281,7 @@ public class SMClickControlDelegate extends ControlAdapter implements ISelection
 		} //for
 		
 	} //highlightEdgesBubbleSet
+	
 	
 	// Old highlight methods
 	/*
@@ -1206,6 +1385,7 @@ public class SMClickControlDelegate extends ControlAdapter implements ISelection
 	} //highlightEdges
 	*/
 	
+	
 	private void addBondToCenterOrContext(AggregateItem aggregate, Edge e, Visualization vis) {
 		
 		Node leftnode = e.getSourceNode();
@@ -1273,6 +1453,7 @@ public class SMClickControlDelegate extends ControlAdapter implements ISelection
 		
 	} //addNodeToCenterOrContext
 	
+	
 	private void addAggregateToCenterOrContext(AggregateItem aggregate, AggregateItem molecule, Visualization vis) {
 		// Add all components and states of components in the aggregate to the bubbleset aggregate
 		Iterator iter = molecule.items();
@@ -1302,6 +1483,7 @@ public class SMClickControlDelegate extends ControlAdapter implements ISelection
 		} //while		
 		
 	} //addAggregateToCenterOrContext
+	
 	
 	public void itemClicked(VisualItem item, MouseEvent e) {
 		
@@ -1359,12 +1541,13 @@ public class SMClickControlDelegate extends ControlAdapter implements ISelection
 		*/
 	} //itemClicked
 	
+	
 	private void nodeLeftClicked(NodeItem item, MouseEvent e, SmallMultiplesPanel smPanel, JPanel[] panels) {
 		// Clear any current highlights/selections
 		smPanel.removeAllSelections();
 		
 		// Get the name of the node clicked (molecule, component, state)
-		String nodeName = buildStringRepresentation(item);
+		String nodeName = buildStringRepresentation(item).toString();
 		
 		// Highlight that (molecule, component, state) in all models (if it exists)
 		for (int i = 0; i < panels.length; i++) {
@@ -1382,7 +1565,7 @@ public class SMClickControlDelegate extends ControlAdapter implements ISelection
 				VisualItem myItem = (VisualItem) iter.next();
 					
 				if (myItem.getString("molecule") != null) {
-					String compareString = buildStringRepresentation(myItem);
+					String compareString = buildStringRepresentation(myItem).toString();
 					
 					// Compare the string we just built against the current component from the ArrayList
 					// If there's a match, add to the highlighted class of objects
@@ -1411,6 +1594,7 @@ public class SMClickControlDelegate extends ControlAdapter implements ISelection
 		
 	} //nodeLeftClicked
 	
+	
 	private void edgeLeftClicked(EdgeItem edge, MouseEvent e, SmallMultiplesPanel smPanel, JPanel[] panels) {
 		// Clear any current highlights/selections
 		smPanel.removeAllSelections();
@@ -1419,8 +1603,8 @@ public class SMClickControlDelegate extends ControlAdapter implements ISelection
 		VisualItem source = (VisualItem) edge.getSourceNode();
 		VisualItem target = (VisualItem) edge.getTargetNode();
 		
-		String sourceString = buildStringRepresentation(source);
-		String targetString = buildStringRepresentation(target);
+		String sourceString = buildStringRepresentation(source).toString();
+		String targetString = buildStringRepresentation(target).toString();
 		
 		// Highlight that edge in all models (if it exists)
 		for (int i = 0; i < panels.length; i++) {
@@ -1456,8 +1640,8 @@ public class SMClickControlDelegate extends ControlAdapter implements ISelection
 				} //if
 							
 				// Build string representations of VisualItems for comparison
-				myEdgeSourceString = buildStringRepresentation(myEdgeSource);
-				myEdgeTargetString = buildStringRepresentation(myEdgeTarget);
+				myEdgeSourceString = buildStringRepresentation(myEdgeSource).toString();
+				myEdgeTargetString = buildStringRepresentation(myEdgeTarget).toString();
 								
 				if ((myEdgeSourceString.equals(sourceString)) && (myEdgeTargetString.equals(targetString))) {
 					modelGroup.addItem(vis.getVisualItem(COMPONENT_GRAPH, myEdge));
@@ -1479,6 +1663,7 @@ public class SMClickControlDelegate extends ControlAdapter implements ISelection
 		} //for
 		
 	} //edgeLeftClicked
+	
 
 	private void aggregateLeftClicked(AggregateItem item, MouseEvent e, SmallMultiplesPanel smPanel, JPanel[] panels) {
 		// Get the name of the aggregate clicked (molecule)
@@ -1564,11 +1749,13 @@ public class SMClickControlDelegate extends ControlAdapter implements ISelection
 	public void addSelectionChangedListener(ISelectionChangedListener listener) {
 		m_listeners.add(listener);		
 	} //addSelectionChangedListener
+	
 
 	@Override
 	public ISelection getSelection() {
 		return m_selection;
 	} //getSelection
+	
 
 	@Override
 	public void removeSelectionChangedListener(ISelectionChangedListener listener) {
@@ -1579,6 +1766,7 @@ public class SMClickControlDelegate extends ControlAdapter implements ISelection
 		
 		//m_listeners.remove(listener);		
 	} //removeSelectionChangedListener
+	
 
 	@Override
 	public void setSelection(ISelection selection) {

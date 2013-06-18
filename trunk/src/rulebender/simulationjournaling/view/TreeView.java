@@ -77,8 +77,8 @@ public class TreeView extends JPanel {
 	private static final long serialVersionUID = 3175624563371866408L;
 
 	// Temp hardcoded stuff
-    //private String m_dir = "C:\\Users\\John\\runtime-rulebender.product\\fceri\\fceri.info";
-	private String m_dir = "C:\\Users\\John\\runtime-rulebender.product\\stat\\stat.info";
+    private String m_dir = "C:\\Users\\John\\runtime-rulebender.product\\fceri\\fceri.info";
+	//private String m_dir = "C:\\Users\\John\\runtime-rulebender.product\\stat\\stat.info";
     
 	// Color choices
     private Color BACKGROUND = Color.WHITE;
