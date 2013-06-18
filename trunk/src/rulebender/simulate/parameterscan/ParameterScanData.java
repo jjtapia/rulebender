@@ -2,10 +2,10 @@ package rulebender.simulate.parameterscan;
 
 public class ParameterScanData 
 {
-	private String name;
+	private String name, method;
 	private float minValue, maxValue, simulationTime;
 	private int pointsToScan, numTimePoints;
-	private boolean logScale, steadyState;
+	private boolean logScale, steadyState, verbose;
 	
 	/*
 	 * Empty constructor.  All data fields are set manually.
@@ -54,10 +54,22 @@ public class ParameterScanData
 	public boolean isLogScale() {
 		return logScale;
 	}
-	public void setSteadyState(boolean steadState) {
-		this.steadyState = steadState;
+	public void setSteadyState(boolean steadyState) {
+		this.steadyState = steadyState;
 	}
 	public boolean isSteadyState() {
 		return steadyState;
+	}
+	public void setMethod(String method) {
+		this.method = method;
+	}
+	public String getMethod() {
+		return this.method;
+	}
+	public void setVerbose(boolean verbose) {
+		this.verbose = verbose;
+	}
+	public boolean isVerbose() {
+		return verbose;
 	}
 }

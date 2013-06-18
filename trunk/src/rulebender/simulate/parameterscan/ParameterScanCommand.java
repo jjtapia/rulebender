@@ -52,10 +52,20 @@ public class ParameterScanCommand implements CommandInterface
 		scanInstructionAL.add(m_parScanScriptLocation);
 		
 		// Add all of the parameter simulation options.
+		scanInstructionAL.add("-method");
+		String[] methodArgs = m_data.getMethod().split("\\s"); // PLA method has two entries
+//		scanInstructionAL.add(m_data.getMethod());
+		for (int i=0;i<methodArgs.length;i++){
+			scanInstructionAL.add(methodArgs[i]);
+//			System.out.println(methodArgs[i]);
+		}
+		
 		if(m_data.isSteadyState())
 			scanInstructionAL.add("-steady_state");
 		if(m_data.isLogScale())
 			scanInstructionAL.add("-log");
+		if(m_data.isVerbose())
+			scanInstructionAL.add("-verbose");
 		
 		scanInstructionAL.add("-n_steps");
 		scanInstructionAL.add(""+m_data.getNumTimePoints());

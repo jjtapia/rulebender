@@ -32,6 +32,8 @@ public class ParameterScanComposite extends Composite
   final Button steadyStateInput;
   final Text simTimeInput;
   final Text timePointsInput;
+  final Text methodInput;
+  final Button verboseInput;
 
   private SimulateView m_parentView;
 
@@ -116,11 +118,26 @@ public class ParameterScanComposite extends Composite
     Label timePointsLabel = new Label(parScanForm, SWT.NONE);
     timePointsLabel.setText("  Number of Time Points (Positive Integer)");
     timePointsLabel.setLayoutData(labelGridData);
+    
     timePointsInput = new Text(parScanForm, SWT.BORDER);
-
     timePointsInput.setLayoutData(textGridData);
+    
+    // simulation method
+    Label methodLabel = new Label(parScanForm, SWT.NONE);
+    methodLabel.setText("  Simulation Method (ode, ssa, pla)");
+    methodLabel.setLayoutData(labelGridData);
+    
+    methodInput = new Text(parScanForm, SWT.BORDER);
+    methodInput.setLayoutData(textGridData);
+    
+    // steady state
+    Label verboseLabel = new Label(parScanForm, SWT.NONE);
+    verboseLabel.setText("  Verbose Output ?");
+    verboseLabel.setLayoutData(labelGridData);
 
-    // empty label to contro layout
+    verboseInput = new Button(parScanForm, SWT.CHECK);
+
+    // empty label to control layout
     new Label(parScanForm, SWT.NONE).setText("");
     new Label(parScanForm, SWT.NONE).setText("");
     new Label(parScanForm, SWT.NONE).setText("");
@@ -152,7 +169,7 @@ public class ParameterScanComposite extends Composite
         final ParameterScanData scanData = new ParameterScanData();
 
         boolean verified = true;
-        String errorMessage = "Errors in Input: \n\t\t";
+        String errorMessage = "Errors in Input: \n\t";
         // String currentPath = m_parentView.getSelectedFile();
         try
         {
@@ -160,47 +177,84 @@ public class ParameterScanComposite extends Composite
            * if(currentPath.equals("") || !(new File(currentPath)).exists()) {
            * verified = false; errorMessage += "Invalid file path.\n\t\t"; }
            */
+          // parameter name
           if (paramNameInput.getText().trim().length() == 0)
           {
             verified = false;
-            errorMessage += "Must have parameter name.\n\t\t";
+            errorMessage += "Please specify a parameter name.\n\t";
           }
-          if (Float.parseFloat(paramMaxValueInput.getText().trim()) <= Float
-              .parseFloat(paramMinValueInput.getText().trim()))
+          
+          // par_min
+          if (paramMinValueInput.getText().trim().length() == 0){
+        	  verified = false;
+        	  errorMessage += "Please specify a min parameter value.\n\t";
+          }
+          // make sure par_min > 0
+          else if (Float.parseFloat(paramMinValueInput.getText().trim()) < 0)
           {
             verified = false;
-            errorMessage += "Max value must be greater than or equal to the min value.\n\t\t";
+            errorMessage += "Min value cannot be less than zero.\n\t";
           }
-
-          if (Integer.parseInt(pointsToScanInput.getText().trim()) <= 0)
-          {
-            verified = false;
-            errorMessage += "Points to scan must be non-negative.\n\t\t";
-          }
-
-          if (Float.parseFloat(paramMinValueInput.getText().trim()) < 0)
-          {
-            verified = false;
-            errorMessage += "Min value cannot be less than 0.\n\t\t";
-          }
-
-          if (Float.parseFloat(paramMinValueInput.getText().trim()) == 0
+          // make sure par_min > 0 if log scale selected
+          else if (Float.parseFloat(paramMinValueInput.getText().trim()) == 0
               && logScaleInput.getSelection())
           {
             verified = false;
-            errorMessage += "Min value cannot be 0 when log scale is selected. \n\t\t";
+            errorMessage += "Min value cannot be zero when log scale is selected.\n\t";
           }
-
-          if (Float.parseFloat(simTimeInput.getText().trim()) <= 0)
+          
+          // par_max
+          if (paramMaxValueInput.getText().trim().length() == 0){
+        	  verified = false;
+        	  errorMessage += "Please specify a max parameter value.\n\t";
+          }
+          
+          // make sure par_max >= par_min
+          if (Float.parseFloat(paramMaxValueInput.getText().trim()) < Float
+              .parseFloat(paramMinValueInput.getText().trim()))
           {
             verified = false;
-            errorMessage += "Simulation time must be positive. \n\t\t";
+            errorMessage += "Max value must be >= min value.\n\t";
           }
 
-          if (Integer.parseInt(timePointsInput.getText().trim()) <= 0)
+          // number of scan points
+          if (pointsToScanInput.getText().trim().length() == 0){
+        	  verified = false;
+        	  errorMessage += "Please specify number of scan points.\n\t";
+          }
+          else if (Integer.parseInt(pointsToScanInput.getText().trim()) <= 0)
           {
             verified = false;
-            errorMessage += "Time points must be positive. \n\t\t";
+            errorMessage += "Number of scan points must be greater than zero.\n\t";
+          }
+          
+          // t_end
+          if (simTimeInput.getText().trim().length() == 0){
+        	  verified = false;
+        	  errorMessage += "Please specify a simulation time.\n\t";
+          }
+          else if (Float.parseFloat(simTimeInput.getText().trim()) <= 0)
+          {
+            verified = false;
+            errorMessage += "Simulation time must be positive.\n\t";
+          }
+
+          // n_steps
+          if (timePointsInput.getText().trim().length() == 0){
+        	  verified = false;
+        	  errorMessage += "Please specify number of output time points.\n\t";
+          }
+          else if (Integer.parseInt(timePointsInput.getText().trim()) <= 0)
+          {
+            verified = false;
+            errorMessage += "Output time points must be positive.\n\t";
+          }
+          
+          // method
+          if (methodInput.getText().trim().length() == 0)
+          {
+            verified = false;
+            errorMessage += "Please specify a simulation method.\n\t";
           }
         }
         catch (NumberFormatException e)
@@ -227,15 +281,22 @@ public class ParameterScanComposite extends Composite
           scanData.setNumTimePoints(Integer.parseInt(timePointsInput.getText()));
           scanData.setLogScale(logScaleInput.getSelection());
           scanData.setSteadyState(steadyStateInput.getSelection());
+          scanData.setMethod(methodInput.getText());
+          scanData.setVerbose(verboseInput.getSelection());
         }
 
         // TODO Possibly show console,
 
         // Display console output.
-        Console.displayOutput(
-            m_parentView.getSelectedFile().getFullPath().toOSString(), 
-            Console.getConsoleLineDelimeter() + "Running Parameter Scan...");
+//        Console.displayOutput(
+//            m_parentView.getSelectedFile().getFullPath().toOSString(), 
+//            Console.getConsoleLineDelimeter() + "Running Parameter Scan...");
 
+		Console.displayOutput(m_parentView.getSelectedFile().getFullPath().makeRelative().toOSString(), 
+			    Console.getConsoleLineDelimeter() + "Running Parameter Scan...");
+			
+		Console.showConsole(m_parentView.getSelectedFile().getFullPath().makeRelative().toOSString());
+        
         // Run the parameter scan. This returns a boolean, but for now I am
         // ignoring it.
         BioNetGenUtility.parameterScan(m_parentView.getSelectedFile(),
@@ -262,6 +323,9 @@ public class ParameterScanComposite extends Composite
         logScaleInput.setSelection(true);
       if (data.isSteadyState())
         steadyStateInput.setSelection(true);
+      methodInput.setText(data.getMethod() + "");
+      if (data.isVerbose())
+    	  verboseInput.setSelection(true);
     }
 
     else
@@ -274,6 +338,8 @@ public class ParameterScanComposite extends Composite
       timePointsInput.setText("");
       logScaleInput.setSelection(false);
       steadyStateInput.setSelection(false);
+      methodInput.setText("");
+      verboseInput.setSelection(false);
     }
   }
 }
