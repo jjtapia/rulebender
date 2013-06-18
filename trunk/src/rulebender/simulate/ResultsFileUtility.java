@@ -53,8 +53,10 @@ public class ResultsFileUtility
 	 */
 	public static String getParameterScanResultsDirectoryForIFile(IFile selectedFile) 
 	{
+//		return (getResultsDirectoryForIFile(selectedFile) + 
+//				"parascan-" + getCurrentDateAndTime() + SLASH);
 		return (getResultsDirectoryForIFile(selectedFile) + 
-				"parascan-" + getCurrentDateAndTime() + SLASH);
+				getCurrentDateAndTime() + SLASH);
 	}
 	
 	
