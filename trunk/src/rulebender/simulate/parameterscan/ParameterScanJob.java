@@ -1,7 +1,11 @@
 package rulebender.simulate.parameterscan;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.nio.channels.FileChannel;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
@@ -117,6 +121,7 @@ public class ParameterScanJob extends Job
     }
     catch (SimulationErrorException e)
     {
+      updateTrees();
       return Status.CANCEL_STATUS;
     }
 
@@ -129,12 +134,25 @@ public class ParameterScanJob extends Job
     else
     {
       // MONITOR
-      monitor.setTaskName("Done.");
+      monitor.setTaskName("Opening Results File(s)...");
       monitor.worked(1);
     }
 
+    try
+    {
+      copyBNGLFileToResults();
+    }
+    catch (IOException e)
+    {
+      // TODO do something about it.  
+      e.printStackTrace();
+    }
+    
     updateTrees();
     showResults();
+    monitor.setTaskName("Done.");
+    monitor.worked(1);
+    
     return Status.OK_STATUS;
   }
 
@@ -223,6 +241,75 @@ public class ParameterScanJob extends Job
 
   }
 
+  private void copyBNGLFileToResults() throws IOException
+  {
+
+    File sourceFile = new File(m_absoluteFilePath);
+    File destFile = new File(m_resultsPath
+        + (new File(m_absoluteFilePath).getName()));
+
+    // Don't copy BNGL if it already exists in the results directory, e.g., due
+    // to call to writeModel()
+    if (!destFile.exists())
+    {
+      try
+      {
+        destFile.createNewFile();
+      }
+      catch (IOException e)
+      {
+        // TODO Auto-generated catch block
+        e.printStackTrace();
+      }
+
+      FileChannel source = null;
+      FileChannel destination = null;
+
+      try
+      {
+        source = new FileInputStream(sourceFile).getChannel();
+        destination = new FileOutputStream(destFile).getChannel();
+        destination.transferFrom(source, 0, source.size());
+      }
+      catch (FileNotFoundException e)
+      {
+        // TODO Auto-generated catch block
+        e.printStackTrace();
+      }
+      catch (IOException e)
+      {
+        // TODO Auto-generated catch block
+        e.printStackTrace();
+      }
+      finally
+      {
+        if (source != null)
+        {
+          try
+          {
+            source.close();
+          }
+          catch (IOException e)
+          {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+          }
+        }
+        if (destination != null)
+        {
+          try
+          {
+            destination.close();
+          }
+          catch (IOException e)
+          {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+          }
+        }
+      }
+    }
+  }
 
   private boolean deleteRecursive(File path) throws FileNotFoundException
   {

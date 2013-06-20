@@ -119,11 +119,11 @@ public class ParameterScanCommand implements CommandInterface
 	protected String constructPrefix()
 	{
 		// Init the prefix string
-		String prefix = "";
-		
+/*		String prefix = "";
+
 		// Init the base of the prefix.
 		String prefixBase = m_data.getName() + "_";
-		
+
 		// Utility var for the upcoming loop.
 		boolean found = false;
 		
@@ -160,8 +160,11 @@ public class ParameterScanCommand implements CommandInterface
 		}
 		
 		m_prefix = prefix;
+*/
+		File modelFile = new File(m_bnglFile);
+		m_prefix = modelFile.getName().replace(".bngl", "");
 		
-		System.out.println("prefix is " + prefix);
+		System.out.println("prefix is " + m_prefix);
 		
 		return m_prefix;
 	}

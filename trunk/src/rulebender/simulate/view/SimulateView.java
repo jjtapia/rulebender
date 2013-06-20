@@ -221,7 +221,7 @@ public class SimulateView extends ViewPart
 				
 				Console.showConsole(getSelectedFile().getFullPath().makeRelative().toOSString());
 				
-				// Run the parameter scan.  This returns a boolean, 
+				// Run the simulation. This returns a boolean, 
 				// but for now I am ignoring it.  
 				BioNetGenUtility.runBNGLFile(getSelectedFile(),
 						PreferencesClerk.getFullBNGPath(), 
@@ -231,7 +231,8 @@ public class SimulateView extends ViewPart
 
 			public void widgetDefaultSelected(SelectionEvent e) 
 			{				
-			}});
+			}
+		});
 		
 		
 		stackLayout.topControl = runFileComposite;
