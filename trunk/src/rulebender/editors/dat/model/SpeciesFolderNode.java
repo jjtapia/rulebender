@@ -1,6 +1,5 @@
 package rulebender.editors.dat.model;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.swt.graphics.Image;
@@ -12,32 +11,34 @@ import org.eclipse.swt.graphics.Image;
  */
 public class SpeciesFolderNode extends TreeNode {
 	// name of species folder
-	private String cFolder;
+	private final String cFolder;
 	// string of components
-	private ArrayList<String> components;
+	private final List<String> components;
+	// string of components
+	private List<String> componentsID = null;
 
 	/**
 	 * 
 	 * @param folder
-	 *            name of species folder
+	 *          name of species folder
 	 * @param components
-	 *            list of string to create children
+	 *          list of string to create children
 	 */
-	public SpeciesFolderNode(String folder, ArrayList<String> components) {
+	public SpeciesFolderNode(String folder, List<String> components) {
 		this(null, folder, components);
 	}
 
 	/**
 	 * 
 	 * @param parent
-	 *            parent node
+	 *          parent node
 	 * @param folder
-	 *            name of species folder
+	 *          name of species folder
 	 * @param components
-	 *            list of string to create children
+	 *          list of string to create children
 	 */
 	public SpeciesFolderNode(ITreeNode parent, String folder,
-			ArrayList<String> components) {
+	    List<String> components) {
 		super("SpeciesFolderNode", parent);
 		this.cFolder = folder;
 		this.components = components;
@@ -46,6 +47,7 @@ public class SpeciesFolderNode extends TreeNode {
 	/**
 	 * @return name of species folder
 	 */
+	@Override
 	public String getName() {
 		return cFolder;
 	}
@@ -54,23 +56,50 @@ public class SpeciesFolderNode extends TreeNode {
 	 * 
 	 * @return list of string to create children
 	 */
-	public ArrayList<String> getComponents() {
+	public List<String> getComponents() {
 		return this.components;
 	}
 
 	/**
 	 * @return image
 	 */
+	@Override
 	public Image getImage() {
 		return null;
 	}
 
 	/**
+	 * Gets the components id.
+	 * 
+	 * @return the components id
+	 */
+	public List<String> getComponentsID() {
+		return componentsID;
+	}
+
+	/**
+	 * Sets the components id.
+	 * 
+	 * @param componentsID
+	 *          the new components id
+	 */
+	public void setComponentsID(List<String> componentsID) {
+		this.componentsID = componentsID;
+	}
+
+	/**
 	 * create children (Species Node)
 	 */
+	@Override
 	protected void createChildren(List children) {
 		for (int i = 0; i < components.size(); i++) {
-			children.add(new SpeciesNode(this, components.get(i)));
+			if (componentsID != null && componentsID.size() > i) {
+				children.add(new SpeciesNode(this, components.get(i), componentsID
+				    .get(i)));
+			} else {
+				children
+				    .add(new SpeciesNode(this, components.get(i), components.get(i)));
+			}
 		}
 	}
 }

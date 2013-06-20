@@ -1,9 +1,8 @@
 package rulebender.editors.dat.model;
 
 import java.util.List;
-import org.eclipse.swt.graphics.Image;
 
-import prefuse.Display;
+import org.eclipse.swt.graphics.Image;
 
 /**
  * 
@@ -11,43 +10,41 @@ import prefuse.Display;
  * 
  */
 public class SpeciesNode extends TreeNode {
-	// species id
-	private int id;
+	private final String id;
 	// species name (id expression)
-	private String name;
+	private final String name;
 	// species expression
 	private String expression = "";
 
 	/**
 	 * 
 	 * @param parent
-	 *            parent node
+	 *          parent node
 	 * @param name
-	 *            species name (id expression)
+	 *          species name (id expression)
 	 */
-	public SpeciesNode(ITreeNode parent, String name) {
+	public SpeciesNode(ITreeNode parent, String name, String id) {
 		super("SpeciesNode", parent);
+		this.id = id;
 		this.name = name;
-		String[] tmp = name.split(" ");
-		this.id = Integer.parseInt(tmp[0]);
-		if (tmp.length > 1) {
-			this.expression = tmp[1];
-		}
-	}
-
-	/**
-	 * 
-	 * @return species id
-	 */
-	public int getId() {
-		return this.id;
+		this.expression = name;
 	}
 
 	/**
 	 * @return species name (id expression)
 	 */
+	@Override
 	public String getName() {
 		return name;
+	}
+
+	/**
+	 * Gets the id.
+	 * 
+	 * @return the id
+	 */
+	public String getId() {
+		return id;
 	}
 
 	/**
@@ -61,6 +58,7 @@ public class SpeciesNode extends TreeNode {
 	/**
 	 * @return image
 	 */
+	@Override
 	public Image getImage() {
 		return null;
 	}
@@ -68,6 +66,7 @@ public class SpeciesNode extends TreeNode {
 	/**
 	 * Empty.
 	 */
+	@Override
 	protected void createChildren(List children) {
 	}
 
@@ -76,10 +75,12 @@ public class SpeciesNode extends TreeNode {
 	 * 
 	 * @return false
 	 */
+	@Override
 	public boolean hasChildren() {
 		return false;
 	}
 
+	@Override
 	public String toString() {
 		return this.getName();
 	}

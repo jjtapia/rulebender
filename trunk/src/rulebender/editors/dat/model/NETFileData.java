@@ -3,7 +3,6 @@ package rulebender.editors.dat.model;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.Scanner;
 
 import org.eclipse.jface.text.source.SourceViewer;
@@ -11,14 +10,15 @@ import org.eclipse.jface.text.source.SourceViewer;
 /**
  * 
  * Store all the information for NET files
- *
+ * 
  */
 public class NETFileData extends FileData {
-	private StringBuffer content; // content of the NET file
-	private ArrayList<String> itemList; // list of items which store the name,
-										// offset, and length for each
-										// begin...end block
-	
+	private final StringBuffer content; // content of the NET file
+	private final ArrayList<String> itemList; // list of items which store the
+	                                          // name,
+	// offset, and length for each
+	// begin...end block
+
 	private String selectedItem;
 
 	private NETFolderNode netFolderNode;
@@ -30,7 +30,7 @@ public class NETFileData extends FileData {
 	/**
 	 * 
 	 * @param file
-	 *            NET file
+	 *          NET file
 	 */
 	public NETFileData(File file) {
 		this.file = file;
@@ -78,6 +78,7 @@ public class NETFileData extends FileData {
 	/**
 	 * @Override
 	 */
+	@Override
 	protected void readData() {
 		try {
 			Scanner in = new Scanner(file);
@@ -87,12 +88,12 @@ public class NETFileData extends FileData {
 					// add a newline before each begin statement
 					content.append("\n");
 					// get the name of the begin...end block
-					
+
 					String itemName = "";
 					if (line.indexOf("#") != -1) {
 						// delete comment
 						itemName = line.trim().substring(line.indexOf(" ") + 1,
-								line.indexOf("#"));
+						    line.indexOf("#"));
 					} else {
 						// no comment
 						itemName = line.trim().substring(line.indexOf(" ") + 1);
@@ -128,51 +129,52 @@ public class NETFileData extends FileData {
 	/**
 	 * 
 	 * @param sv
-	 *            the SourceViewer object attached to this NET file
+	 *          the SourceViewer object attached to this NET file
 	 */
 	public void setSourceViewer(SourceViewer sv) {
 		this.sv = sv;
 	}
 
-	/**
-	 * Return the expression of species based on its id
-	 * 
-	 * @param id
-	 *            species id
-	 * @return species expression
-	 */
-	public String getSpeciesExpByID(int id) {
-		Iterator<SpeciesNode> it = speciesFolder.getChildren().iterator();
-		while (it.hasNext()) {
-			SpeciesNode cur = it.next();
-			// compare the id
-			if (cur.getId() == id) {
-				return cur.getExpression();
-			}
-		}
-		return null;
-	}
-
-	/**
-	 * Return the id of species based on its expression
-	 * 
-	 * @param exp
-	 *            species expression
-	 * @return species id
-	 */
-	public Integer getSpeciesIDByExp(String exp) {
-
-		Iterator<SpeciesNode> it = speciesFolder.getChildren().iterator();
-		while (it.hasNext()) {
-			SpeciesNode cur = it.next();
-
-			// compare expression
-			if (cur.getExpression().equalsIgnoreCase(exp)) {
-				return cur.getId();
-			}
-		}
-		return null;
-	}
+	//
+	// /**
+	// * Return the expression of species based on its id
+	// *
+	// * @param id
+	// * species id
+	// * @return species expression
+	// */
+	// public String getSpeciesExpByID(int id) {
+	// Iterator<SpeciesNode> it = speciesFolder.getChildren().iterator();
+	// while (it.hasNext()) {
+	// SpeciesNode cur = it.next();
+	// // compare the id
+	// if (cur.getId() == id) {
+	// return cur.getExpression();
+	// }
+	// }
+	// return null;
+	// }
+	//
+	// /**
+	// * Return the id of species based on its expression
+	// *
+	// * @param exp
+	// * species expression
+	// * @return species id
+	// */
+	// public Integer getSpeciesIDByExp(String exp) {
+	//
+	// Iterator<SpeciesNode> it = speciesFolder.getChildren().iterator();
+	// while (it.hasNext()) {
+	// SpeciesNode cur = it.next();
+	//
+	// // compare expression
+	// if (cur.getExpression().equalsIgnoreCase(exp)) {
+	// return cur.getId();
+	// }
+	// }
+	// return null;
+	// }
 
 	/**
 	 * Parse species information to create a SpeciesFolderNode object
