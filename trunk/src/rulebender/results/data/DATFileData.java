@@ -8,6 +8,7 @@ import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.Scanner;
 
 import org.jfree.data.xy.XYDataItem;
@@ -355,11 +356,61 @@ public class DATFileData extends FileData {
 		ArrayList<List<String>> patterns = new ArrayList<List<String>>();
 		if (bnglFile == null || !bnglFile.exists()) {
 			// bnglFile doesnt exists
-			return generateEmptyPatterns();
+			// try net file
+			return readPatternsFromNetFile(observables, getNetFile());
 		}
 		Scanner in = null;
 		try {
 			in = new Scanner(bnglFile);
+		} catch (FileNotFoundException e) {
+			return readPatternsFromNetFile(observables, getNetFile());
+		}
+
+		String line;
+		boolean observe = false;
+		Iterator<String> it = varName.iterator();
+		String observableName = it.next();
+		try {
+			while ((line = in.nextLine()) != null) {
+				if (line.contains("#")) {
+					line = line.substring(0, line.indexOf("#"));
+				}
+				if (line.trim().equalsIgnoreCase("begin observables")) {
+					observe = true;
+				} else if (observe) {
+					if (line.trim().equals("end observables")) {
+						break;
+					}
+					if (line.trim().isEmpty()) {
+						continue;
+					}
+					if (!line.contains(observableName)) {
+						observableName = extractObservableName(line);
+					}
+					patterns.add(parsePatterns(observableName, line));
+					if (it.hasNext()) {
+						observableName = it.next();
+					}
+				}
+			}
+		} catch (NoSuchElementException e) {
+			in.close();
+			return readPatternsFromNetFile(observables, getNetFile());
+		}
+		in.close();
+		return patterns;
+	}
+
+	private List<List<String>> readPatternsFromNetFile(List<String> observables,
+	    File netFile) {
+		ArrayList<List<String>> patterns = new ArrayList<List<String>>();
+		if (netFile == null || !netFile.exists()) {
+			// bnglFile doesnt exists
+			return generateEmptyPatterns();
+		}
+		Scanner in = null;
+		try {
+			in = new Scanner(netFile);
 		} catch (FileNotFoundException e) {
 			return generateEmptyPatterns();
 		}
@@ -367,21 +418,33 @@ public class DATFileData extends FileData {
 		String line;
 		boolean observe = false;
 		Iterator<String> it = varName.iterator();
-		while ((line = in.nextLine()) != null) {
-			if (line.contains("#")) {
-				line = line.substring(0, line.indexOf("#"));
-			}
-			if (line.trim().equalsIgnoreCase("begin observables")) {
-				observe = true;
-			} else if (observe) {
-				if (line.trim().equals("end observables")) {
-					break;
+		String observableName = it.next();
+		try {
+			while ((line = in.nextLine()) != null) {
+				if (line.contains("#")) {
+					line = line.substring(0, line.indexOf("#"));
 				}
-				if (line.trim().isEmpty()) {
-					continue;
+				if (line.trim().equalsIgnoreCase("begin observables")) {
+					observe = true;
+				} else if (observe) {
+					if (line.trim().equals("end observables")) {
+						break;
+					}
+					if (line.trim().isEmpty()) {
+						continue;
+					}
+					if (!line.contains(observableName)) {
+						observableName = extractObservableName(line);
+					}
+					patterns.add(parsePatterns(observableName, line));
+					if (it.hasNext()) {
+						observableName = it.next();
+					}
 				}
-				patterns.add(parsePatterns(it.next(), line));
 			}
+		} catch (NoSuchElementException e) {
+			in.close();
+			return generateEmptyPatterns();
 		}
 		in.close();
 		return patterns;
@@ -425,17 +488,26 @@ public class DATFileData extends FileData {
 		if (start < line.length()) {
 			patterns.add(line.substring(start));
 		}
+		if (patterns.isEmpty()) {
+			patterns.add(observableName);
+		}
 		return patterns;
 	}
 
-	/**
-	 * Get the expression of species from netFile.
-	 * 
-	 * @param file
-	 *          NET file
-	 * @return whether successful
-	 */
-	private List<String> readSpeciesFromNETFile(File file) {
+	private String extractObservableName(String obsBlockLine) {
+		String line = obsBlockLine.trim();
+		String[] split = line.split("\\s+");
+		// line is indexed
+		int name = 2;
+		try {
+			Integer.parseInt(split[0].substring(0, 1));
+		} catch (NumberFormatException e) {
+			name = 1;
+		}
+		return split[name];
+	}
+
+	private File getNetFile() {
 		String filePath = file.getAbsolutePath();
 		String fileName = file.getName();
 		String fileType = fileName.substring(fileName.lastIndexOf("."),
@@ -452,7 +524,18 @@ public class DATFileData extends FileData {
 			    + ".net";
 		}
 
-		File netFile = new File(netFilePath);
+		return new File(netFilePath);
+	}
+
+	/**
+	 * Get the expression of species from netFile.
+	 * 
+	 * @param file
+	 *          NET file
+	 * @return whether successful
+	 */
+	private List<String> readSpeciesFromNETFile(File file) {
+		File netFile = getNetFile();
 
 		try {
 			Scanner in = new Scanner(netFile);
@@ -493,23 +576,8 @@ public class DATFileData extends FileData {
 	 * @return whether successful
 	 */
 	private List<List<String>> readComponentsFromNetFile(List<String> observables) {
-		String filePath = file.getAbsolutePath();
-		String fileName = file.getName();
-		String fileType = fileName.substring(fileName.lastIndexOf("."),
-		    fileName.length());
-		String netFilePath = filePath.substring(0, filePath.indexOf(fileType))
-		    + ".net";
 
-		// the NET file path for SCAN file is different from CDAT & GDAT files
-		String slash = "/";
-
-		if (fileType.equals(".scan")) {
-			String prefixName = fileName.substring(0, fileName.lastIndexOf('.'));
-			netFilePath = file.getParent() + slash + prefixName + slash + prefixName
-			    + ".net";
-		}
-
-		File netFile = new File(netFilePath);
+		File netFile = getNetFile();
 
 		// list of observale nodes
 		List<List<String>> componentsList = new ArrayList<>(observables.size());
