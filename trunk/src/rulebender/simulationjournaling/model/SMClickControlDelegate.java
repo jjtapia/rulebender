@@ -105,9 +105,24 @@ public class SMClickControlDelegate extends ControlAdapter implements ISelection
 	private JMenuItem[] differencesList;
 	private JMenuItem[] similaritiesList;
 	
+	// Popup Menu items (states)
+	private JMenuItem showStatesMenuItem;
+	private JMenuItem showAllStatesMenuItem;
+	private JMenuItem hideStatesMenuItem;
+	private JMenuItem hideAllStatesMenuItem;
+	
+	// Popup Menu items (compartments)
+	private JMenuItem showCompartmentsMenuItem;
+	private JMenuItem showAllCompartmentsMenuItem;
+	private JMenuItem hideCompartmentsMenuItem;
+	private JMenuItem hideAllCompartmentsMenuItem;
+	
 	private MouseEvent mostRecentClick;
 	
 	private boolean m_currentlySelected;
+	
+	private boolean m_statesShown;
+	private boolean m_compartmentsShown;
 	
 	// Delay for single vs double click
 	private int delay;
@@ -118,7 +133,9 @@ public class SMClickControlDelegate extends ControlAdapter implements ISelection
 				
 		m_sourcePath = sourcePath;
 		m_modelName = getModelNameFromFilepath(m_sourcePath);
+		
 		m_currentlySelected = false;
+		m_statesShown = false;
 		
 		delay = (Integer)Toolkit.getDefaultToolkit().getDesktopProperty("awt.multiClickInterval");
 		//delay = 250;
@@ -339,6 +356,68 @@ public class SMClickControlDelegate extends ControlAdapter implements ISelection
 				removeOverlayMenuItem.addActionListener(this);
 			} //if
 			
+			// Show/hide states menu item
+			if (m_statesShown) {
+				JMenu m = new JMenu("Hide states...");
+				
+				hideStatesMenuItem = new JMenuItem("...on this model");
+				hideStatesMenuItem.addActionListener(this);
+				
+				hideAllStatesMenuItem = new JMenuItem("...on all models");
+				hideAllStatesMenuItem.addActionListener(this);
+				
+				m.add(hideStatesMenuItem);
+				m.add(hideAllStatesMenuItem);
+				
+				popupMenu.add(m);
+				
+			} else {
+				JMenu m = new JMenu("Show states...");
+				
+				showStatesMenuItem = new JMenuItem("...on this model");
+				showStatesMenuItem.addActionListener(this);
+				
+				showAllStatesMenuItem = new JMenuItem("...on all models");
+				showAllStatesMenuItem.addActionListener(this);
+				
+				m.add(showStatesMenuItem);
+				m.add(showAllStatesMenuItem);
+				
+				popupMenu.add(m);
+				
+			} //if-else
+			
+			// Show/hide compartments menu item
+			if (m_compartmentsShown) {
+				JMenu m = new JMenu("Hide compartments...");
+				
+				hideCompartmentsMenuItem = new JMenuItem("...on this model");
+				hideCompartmentsMenuItem.addActionListener(this);
+				
+				hideAllCompartmentsMenuItem = new JMenuItem("...on all models");
+				hideAllCompartmentsMenuItem.addActionListener(this);
+				
+				m.add(hideCompartmentsMenuItem);
+				m.add(hideAllCompartmentsMenuItem);
+				
+				popupMenu.add(m);
+			
+			} else {
+				JMenu m = new JMenu("Show compartments...");
+				
+				showCompartmentsMenuItem = new JMenuItem("...on this model");
+				showCompartmentsMenuItem.addActionListener(this);
+				
+				showAllCompartmentsMenuItem = new JMenuItem("...on all models");
+				showAllCompartmentsMenuItem.addActionListener(this);
+				
+				m.add(showCompartmentsMenuItem);
+				m.add(showAllCompartmentsMenuItem);
+				
+				popupMenu.add(m);
+				
+			} //if-else
+			
 			// Open model menu option
 			openModelMenuItem = new JMenuItem("Open model");
 			popupMenu.add(openModelMenuItem);
@@ -485,8 +564,39 @@ public class SMClickControlDelegate extends ControlAdapter implements ISelection
 			clearPanels(smPanel, panels);
 			m_currentlySelected = false;
 			
-		} else if (e2.getSource().getClass().getName().equals("javax.swing.JMenuItem")) {
+		} else if (e2.getSource() == hideAllStatesMenuItem) {
+			// If we select this menu item, we hide all states in all small multiples
+			hideAllStates(smPanel, panels);
 			
+		} else if (e2.getSource() == hideStatesMenuItem) {
+			// If we select this menu item, we hide the states in this small multiple only
+			hideStates();
+			
+		} else if (e2.getSource() == showStatesMenuItem) {
+			// If we select this menu item, we show the states in this small multiple only
+			showStates();
+			
+		} else if (e2.getSource() == showAllStatesMenuItem) {
+			// If we select this menu item, we show the states in all small multiples
+			showAllStates(smPanel, panels);
+			
+		} else if (e2.getSource() == hideAllCompartmentsMenuItem) {
+			// If we select this menu item, we are deselecting the visibility of all compartments
+			hideAllCompartments(smPanel, panels);
+			
+		} else if (e2.getSource() == hideCompartmentsMenuItem) {
+			// If we select this menu item, we are deselecting the visibility of compartments in this small multiple only
+			hideCompartments();
+			
+		} else if (e2.getSource() == showAllCompartmentsMenuItem) {
+			// If we select this menu item, we are deslecting the visibility of all compartments
+			showAllCompartments(smPanel, panels);
+			
+		} else if (e2.getSource() == showCompartmentsMenuItem) {
+			// If we select this menu item, we are deselecting the visibility of compartments in this small multiple only
+			showCompartments();
+			
+		} else if (e2.getSource().getClass().getName().equals("javax.swing.JMenuItem")) {
 			// If we select any JMenuItem item from the dropdown list
 			
 			// Clear all highlighting and start fresh
@@ -545,6 +655,149 @@ public class SMClickControlDelegate extends ControlAdapter implements ISelection
 		} //if-else
 		
 	} //actionPerformed
+	
+	public void hideStates() {
+		Iterator iter = m_vis.items("component_graph");
+		
+		while (iter.hasNext()) {
+			VisualItem item = (VisualItem) iter.next();
+
+			if (item instanceof NodeItem) {
+				// hide the state nodes
+				String type = item.getString("type");
+				if (type != null && type.equals("state")) {
+					item.setVisible(false);
+				} //if
+			
+			} else if (item instanceof EdgeItem) {
+				// hide edges linked to component nodes
+				String displaymode = item.getString("displaymode");
+
+				if (displaymode != null) {
+
+					if (displaymode.equals("both") || displaymode.equals("component")) {
+						// edge linked to component nodes
+						item.setVisible(true);
+					} else if (displaymode.equals("state")) {
+						// edge linked to state nodes
+						item.setVisible(false);
+					} //if-else
+				} //if
+			} //if-else
+		} //while
+		
+		// apply layout actions
+		applyActions();
+		
+		// states are now hidden
+		m_statesShown = false;
+		
+	} //hideStates
+	
+	public void showStates() {
+		Iterator iter = m_vis.items("component_graph");
+		
+		while (iter.hasNext()) {
+			VisualItem item = (VisualItem) iter.next();
+			
+			if (item instanceof NodeItem) {
+				// show state nodes
+				String type = item.getString("type");
+				if (type != null && type.equals("state")) {
+					item.setVisible(true);
+				} //if
+			
+			} else if (item instanceof EdgeItem) {
+				// show edges linked to state nodes
+				String displaymode = item.getString("displaymode");
+
+				if (displaymode != null) {
+					if (displaymode.equals("both") || displaymode.equals("state")) {
+						// edge linked to state nodes
+						item.setVisible(true);
+					} else if (displaymode.equals("component")) {
+						// edge linked to component nodes
+						item.setVisible(false);
+					} //if-else
+				} //if
+			} //if-else
+		} //while
+		
+		// apply color/layout actions
+		applyActions();
+		
+		// states are now shown
+		m_statesShown = true;
+		
+	} //showStates
+	
+	private void hideAllStates(SmallMultiplesPanel smPanel, JPanel[] panels) {
+		for (int i = 0; i < panels.length; i++) {
+			((SMClickControlDelegate)smPanel.getMultiple(i).getCMAPNetworkViewer().getClickControl()).hideStates();
+		} //for
+	} //hideAllStates
+	
+	private void showAllStates(SmallMultiplesPanel smPanel, JPanel[] panels) {
+		for (int i = 0; i < panels.length; i++) {
+			((SMClickControlDelegate)smPanel.getMultiple(i).getCMAPNetworkViewer().getClickControl()).showStates();
+		} //for		
+	} //showAllStates
+	
+	private void hideAllCompartments(SmallMultiplesPanel smPanel, JPanel[] panels) {
+		for (int i = 0; i < panels.length; i++) {
+			((SMClickControlDelegate)smPanel.getMultiple(i).getCMAPNetworkViewer().getClickControl()).hideCompartments();
+		} //for
+	} //hideAllCompartments
+	
+	private void showAllCompartments(SmallMultiplesPanel smPanel, JPanel[] panels) {
+		for (int i = 0; i < panels.length; i++) {
+			((SMClickControlDelegate)smPanel.getMultiple(i).getCMAPNetworkViewer().getClickControl()).showCompartments();
+		} //for	
+	} //showAllCompartments
+	
+	private void hideCompartments() {
+		
+		Iterator iter = m_vis.items("compartments");
+		
+		// Iterate across all compartments, making them hidden
+		while (iter.hasNext()) {
+			VisualItem item = (VisualItem) iter.next();
+			item.setVisible(false);
+		} //while
+		
+		// apply color/layout actions
+		applyActions();
+		
+		// compartments are now shown
+		m_compartmentsShown = false;
+		
+	} //hideCompartments
+	
+	private void showCompartments() {
+		
+		Iterator iter = m_vis.items("compartments");
+		
+		// Iterate across all compartments, making them visible
+		while (iter.hasNext()) {
+			VisualItem item = (VisualItem) iter.next();
+			item.setVisible(true);
+		} //while
+		
+		// apply color/layout actions
+		applyActions();
+		
+		// compartments are now hidden
+		m_compartmentsShown = true;
+		
+	} //showCompartments
+	
+	public void applyActions() {
+		m_vis.run("color");
+		m_vis.run("complayout");
+		m_vis.run("compartmentlayout");
+		m_vis.run("bubbleColor");
+		m_vis.run("bubbleLayout");
+	} //applyActions
 	
 	public void handleDifferencesOption(SmallMultiplesPanel smPanel, int comparisonIndex, Visualization selectedModel, int panelIndexClicked) {
 		// First compare the most complete model to the selected Model 
@@ -644,6 +897,7 @@ public class SMClickControlDelegate extends ControlAdapter implements ISelection
 
 		
 	} //openBNGLFile
+	
 	
 	private int getDifferencesComparisonModelIndex(ActionEvent e2) {
 		
