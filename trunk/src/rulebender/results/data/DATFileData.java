@@ -551,8 +551,9 @@ public class DATFileData extends FileData {
 						line = in.nextLine().trim();
 						if (line.lastIndexOf(")") != -1) {
 							// name of species
-							String s = line.substring(line.indexOf(" ") + 1,
-							    line.lastIndexOf(")") + 1);
+//							String s = line.substring(line.indexOf(" ") + 1,
+//							    line.lastIndexOf(")") + 1);
+							String s = line.substring(0,line.lastIndexOf(")") + 1);
 							speciesList.add(s);
 						}
 					} while (!line.equalsIgnoreCase("end species"));
@@ -579,7 +580,7 @@ public class DATFileData extends FileData {
 
 		File netFile = getNetFile();
 
-		// list of observale nodes
+		// list of observable nodes
 		List<List<String>> componentsList = new ArrayList<List<String>>(
 		    observables.size());
 		List<String> speciesList = speciesFolder.getComponents();
