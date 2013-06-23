@@ -994,7 +994,8 @@ public class SmallMultiplesPanel extends JLayeredPane implements ActionListener 
 		int m_margin = 5;
 		
         Visualization vis = sm[panelIndex].getDisplay().getVisualization();
-        Rectangle2D bounds = vis.getBounds(COMPONENT_GRAPH);
+        //Rectangle2D bounds = vis.getBounds(COMPONENT_GRAPH);
+        Rectangle2D bounds = vis.getBounds(Visualization.ALL_ITEMS);
         GraphicsLib.expand(bounds, m_margin + (int)(1/sm[panelIndex].getDisplay().getScale()));
         DisplayLib.fitViewToBounds(sm[panelIndex].getDisplay(), bounds, 0);
 		
