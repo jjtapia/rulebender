@@ -62,7 +62,7 @@ public class DATFileData extends FileData {
 		varName = new ArrayList<String>(); // species or observable
 		seriesList = new ArrayList<XYSeries>();
 		seriesCollection = new XYSeriesCollection();
-		speciesNameTrans = new HashMap<>();
+		speciesNameTrans = new HashMap<String, String>();
 		checkedSpecies = new Hashtable<String, SpeciesNode>();
 		checkedObservable = new Hashtable<String, ObservableNode>();
 
@@ -317,7 +317,7 @@ public class DATFileData extends FileData {
 	 * @return the list
 	 */
 	private List<String> readObservableNamesFromFile(File file) {
-		List<String> observables = new ArrayList<>();
+		List<String> observables = new ArrayList<String>();
 		if (!file.getName().endsWith(".gdat") && !file.getName().endsWith(".scan")) {
 			System.err.println("Couldn't read file names from file.");
 			return varName;
@@ -451,7 +451,7 @@ public class DATFileData extends FileData {
 	}
 
 	private List<List<String>> generateEmptyPatterns() {
-		List<List<String>> patterns = new ArrayList<>();
+		List<List<String>> patterns = new ArrayList<List<String>>();
 		for (int i = 0; i < varName.size(); i++) {
 			List<String> name = new ArrayList<String>();
 			name.add(varName.get(i));
@@ -462,7 +462,7 @@ public class DATFileData extends FileData {
 
 	private List<String> parsePatterns(String observableName,
 	    String observableLine) {
-		List<String> patterns = new ArrayList<>();
+		List<String> patterns = new ArrayList<String>();
 		String line = observableLine.trim().replaceAll("\\s+", " ");
 		int start, bracCount;
 		start = bracCount = 0;
@@ -580,7 +580,8 @@ public class DATFileData extends FileData {
 		File netFile = getNetFile();
 
 		// list of observale nodes
-		List<List<String>> componentsList = new ArrayList<>(observables.size());
+		List<List<String>> componentsList = new ArrayList<List<String>>(
+		    observables.size());
 		List<String> speciesList = speciesFolder.getComponents();
 		for (int i = 0; i < observables.size(); i++) {
 			componentsList.add(new ArrayList<String>());
