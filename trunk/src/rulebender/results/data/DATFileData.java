@@ -679,12 +679,12 @@ public class DATFileData extends FileData {
 	 * @param selectedSpeciesName
 	 */
 	public void setSelectedSpeciesName(String selectedSpeciesName) {
-		if (!speciesNameTrans.isEmpty()
-		    && speciesNameTrans.containsKey(selectedSpeciesName)) {
-			this.selectedSpeciesName = speciesNameTrans.get(selectedSpeciesName);
-		} else {
+//		if (!speciesNameTrans.isEmpty()
+//		    && speciesNameTrans.containsKey(selectedSpeciesName)) {
+//			this.selectedSpeciesName = speciesNameTrans.get(selectedSpeciesName);
+//		} else {
 			this.selectedSpeciesName = selectedSpeciesName;
-		}
+//		}
 	}
 
 	/**
