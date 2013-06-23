@@ -100,6 +100,9 @@ public class SpeciesGraphVisual {
 
 		for (int i = 0; i < molecules.length; i++) {
 			String curMolecule = molecules[i];
+			if (!curMolecule.endsWith(")")){
+				curMolecule += "()"; // Just add empty parentheses to make everything work --LAH
+			}
 
 			// get the name of the molecule
 			String moleculeName = curMolecule.substring(0,
