@@ -6,6 +6,8 @@ import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.geom.Point2D;
+import java.awt.geom.Rectangle2D;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -27,7 +29,9 @@ import prefuse.Visualization;
 import prefuse.data.Edge;
 import prefuse.data.Graph;
 import prefuse.util.ColorLib;
+import prefuse.util.GraphicsLib;
 import prefuse.util.PrefuseLib;
+import prefuse.util.display.DisplayLib;
 import prefuse.visual.VisualItem;
 import rulebender.simulationjournaling.comparison.SimilarityMatrices;
 import rulebender.simulationjournaling.model.BackgroundFileLoader;
@@ -248,6 +252,12 @@ public class SmallMultiplesPanel extends JLayeredPane implements ActionListener 
 		
 		// Update the sizes of the JPanels and Displays
 		myResize(m_overallSize);
+		
+		// Zoom out the models to the size of the panels
+		for (int i = 0; i < m_numFiles; i++) {
+			//fitToPanel(i);
+			//fitToPanel2(i);
+		} //for
 		
 	} //SmallMultiplesPanel (constructor)
 	
@@ -952,10 +962,44 @@ public class SmallMultiplesPanel extends JLayeredPane implements ActionListener 
 			
 			sm[i].getDisplay().getVisualization().run("layout");
 			
+			fitToPanel2(i);
+			
 		} //for
 		
 	} //myResize (with dimension parameter provided)
-
+	
+	@Deprecated
+	public void fitToPanel(int panelIndex) {
+		//m_individualSize = findIndividualPanelSize(m_overallSize);
+		
+		double panelWidth = m_individualSize.width;
+		double panelHeight = m_individualSize.height;
+		
+		double visualizationWidth = sm[panelIndex].getDisplay().getWidth();
+		double visualizationHeight = sm[panelIndex].getDisplay().getWidth();
+		
+		double widthScale = panelWidth / visualizationWidth;
+		double heightScale = panelHeight / visualizationHeight;
+		
+		double zoomScale = (widthScale < heightScale ? widthScale : heightScale); 
+		
+		Point2D.Double center = new Point2D.Double(panelWidth/2, panelHeight/2);
+		
+		sm[panelIndex].getDisplay().zoomAbs(center, zoomScale);
+		
+	} //fitToPanel
+	
+	public void fitToPanel2(int panelIndex) {
+		
+		int m_margin = 5;
+		
+        Visualization vis = sm[panelIndex].getDisplay().getVisualization();
+        Rectangle2D bounds = vis.getBounds(COMPONENT_GRAPH);
+        GraphicsLib.expand(bounds, m_margin + (int)(1/sm[panelIndex].getDisplay().getScale()));
+        DisplayLib.fitViewToBounds(sm[panelIndex].getDisplay(), bounds, 0);
+		
+	} //fitToPanel2
+	
 	public void setDisplay(Display d) {
 		// TODO Auto-generated method stub
 		
