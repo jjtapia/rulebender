@@ -17,6 +17,12 @@ public class SimilarityMatrices {
 
 	private String[] modelNames;
 	
+	/**
+	 * Constructor - initializes the instance variables (model names and models)
+	 * 
+	 * @param newModelNames - The names of the set of models being compared
+	 * @param sm - The set of SmallMultiples storing the Visualization objects being compared
+	 */
 	public SimilarityMatrices(String newModelNames[], SmallMultiple[] sm) {
 		modelNames = newModelNames;
 		models = new Visualization[sm.length];
@@ -27,6 +33,9 @@ public class SimilarityMatrices {
 		
 	} //SimilarityMatrices (constructor)
 	
+	/**
+	 * Populates the four similarity matrices from the collection of adjacency matrices
+	 */
 	public void fillSimilarityMatrices() {
 		
 		similarVertices = new SimilarityMatrix();
@@ -65,6 +74,9 @@ public class SimilarityMatrices {
 		
 	} //fillSimilarityMatrices
 	
+	/**
+	 * Outputs the similarity matrices to the console (for debugging)
+	 */
 	public void printSimilarityMatrices() {
 		System.out.println("\n\nSIMILAR VERTICES MATRIX:");
 		System.out.println("------------------------\n");
@@ -88,18 +100,38 @@ public class SimilarityMatrices {
 		
 	} //printSimilarityMatrices
 	
+	/**
+	 * Returns the similar vertices matrix
+	 * 
+	 * @return - The similar vertices matrix
+	 */
 	public SimilarityMatrix getSimilarVerticesMatrix() {
 		return similarVertices;
 	} //getSimilarVerticesMatrix
 	
+	/**
+	 * Returns the similar edges matrix
+	 * 
+	 * @return - The similar edges matrix
+	 */
 	public SimilarityMatrix getSimilarEdgesMatrix() {
 		return similarEdges;
 	} //getSimilarEdgesMatrix
 	
+	/**
+	 * Returns the percent similar vertices matrix
+	 * 
+	 * @return - The percent similar vertices matrix
+	 */
 	public SimilarityMatrix getPercentSimilarVerticesMatrix() {
 		return percentSimilarVertices;
 	} //getPercentSimilarVerticesMatrix
 	
+	/**
+	 * Returns the percent similar edges matrix
+	 * 
+	 * @return - The percent similar edges matrix
+	 */
 	public SimilarityMatrix getPercentSimilarEdgesMatrix() {
 		return percentSimilarEdges;
 	} //getPercentSimilarEdgesMatrix

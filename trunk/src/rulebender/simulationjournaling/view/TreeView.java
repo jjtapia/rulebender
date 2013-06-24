@@ -105,6 +105,15 @@ public class TreeView extends JPanel {
     private String m_label = "label";
     private int m_orientation = Constants.ORIENT_LEFT_RIGHT;
 	
+    /**
+     * Constructor:
+     *  - Loads timeline info from the .INFO file
+     *  - Calls TimelineLoader to convert the info to XML
+     *  - Loads tree into panel
+     * 
+     * @param size - Size of the panel
+     * @param tv - TimelineView
+     */
     public TreeView(Dimension size, TimelineView tv) {
 
     	m_overallSize = size;
@@ -210,10 +219,15 @@ public class TreeView extends JPanel {
         
     } //TreeView (constructor)
 	
-   
-    
- 
-   
+   /**
+    * Writes XML to file
+    * 
+    * @param xml - XML representation of the tree
+    * @param infoPath - path to the .INFO file
+    * 
+    * @return - path to the .XML file
+    * @throws IOException
+    */
     public String writeXMLToFile(String xml, String infoPath) throws IOException {
     	String xmlPath = getXMLPathFromInfoPath(infoPath);
     	
@@ -237,6 +251,13 @@ public class TreeView extends JPanel {
     	return xmlPath;
     } //writeXMLToFile
     
+    /**
+     * Creates the path to the XML file from the INFO file
+     * 
+     * @param infoPath - path to the .INFO file
+     * 
+     * @return - path to the .XML file
+     */
     public String getXMLPathFromInfoPath(String infoPath) {
     	String xmlPath = infoPath;
     	int lastSlashPosition = infoPath.length();
@@ -251,10 +272,22 @@ public class TreeView extends JPanel {
     	return xmlPath.substring(0, lastSlashPosition) + "info.xml";
     } //getXMLPathFromInfoPath
     
+    /**
+     * Class to hold the timeline tree
+     * 
+     * @author John
+     */
     public class MyTreeView extends Display {
 
 		private static final long serialVersionUID = -9158026561142479125L;
 
+		/**
+		 * Constructor:  renders the timeline tree viewpart
+		 * 
+		 * @param t - the tree
+		 * @param label - label field
+		 * @param dim - max dimension
+		 */
 		public MyTreeView(Tree t, String label, Dimension dim) {
         	super(new Visualization());
     		
@@ -389,10 +422,20 @@ public class TreeView extends JPanel {
             }); //addTupleSetListener
     	} //MyTreeView (constructor)
     	
+		/**
+		 * Resets the size of the TreeView
+		 * 
+		 * @param newSize - New size for the TreeView
+		 */
     	public void resetSize(Dimension newSize) {
     		setSize(newSize);
     	} //setSize
    	
+    	/**
+    	 * Sets the orientation of the TreeView (top-down, bottom-up, left-right, right-left)
+    	 * 
+    	 * @param orientation - Orientation choice
+    	 */
    	 	public void setOrientation(int orientation) {
    	        NodeLinkTreeLayout rtl = (NodeLinkTreeLayout)m_vis.getAction("treeLayout");
    	        CollapsedSubtreeLayout stl = (CollapsedSubtreeLayout)m_vis.getAction("subLayout");
@@ -441,18 +484,38 @@ public class TreeView extends JPanel {
    	        
    	    } //setOrientation
    	    
+   	 	/**
+   	 	 * Returns the current orientation of the TreeView
+   	 	 * 
+   	 	 * @return - The current orientation of the TreeView
+   	 	 */
    	    public int getOrientation() {
    	        return m_orientation;
    	    } //getOrientation
    	    
+   	    /**
+   	     * Inner class to set the orientation of the TreeView
+   	     * 
+   	     * @author John
+   	     */
    	    public class OrientAction extends AbstractAction {
 			private static final long serialVersionUID = -7076004984133408854L;
 			private int orientation;
    	        
+			/**
+			 * Sets the orientation instance variable
+			 * 
+			 * @param orientation - Orientation choice
+			 */
    	        public OrientAction(int orientation) {
    	            this.orientation = orientation;
    	        } //OrientAction (constructor)
    	        
+   	        /**
+   	         * Run the orientation updating actions
+   	         *
+   	         * @param evt - The ActionEvent trigger to change the orientation
+   	         */
    	        public void actionPerformed(ActionEvent evt) {
    	            setOrientation(orientation);
    	            getVisualization().cancel("orient");
@@ -461,13 +524,23 @@ public class TreeView extends JPanel {
    	        } //actionPerformed
    	        
    	    } //OrientAction (inner class)
-    	    
+
+   	    /**
+   	     * Inner class to auto-pan the TreeView to the selected node
+   	     * 
+   	     * @author John
+   	     */
    	    public class AutoPanAction extends Action {
    	        private Point2D m_start = new Point2D.Double();
    	        private Point2D m_end   = new Point2D.Double();
    	        private Point2D m_cur   = new Point2D.Double();
    	        private int     m_bias  = 150;
    	        
+   	        /**
+   	         * Runs the auto-pan action
+   	         * 
+   	         * @param frac
+   	         */
    	        public void run(double frac) {
    	            TupleSet ts = m_vis.getFocusGroup(Visualization.FOCUS_ITEMS);
    	            if ( ts.getTupleCount() == 0 ) {
@@ -504,13 +577,28 @@ public class TreeView extends JPanel {
     	        } //if-else
     	    } //run
     	} //AutoPanAction (inner class)
-    	    
+
+   	    /**
+   	     * Inner class to color the nodes
+   	     * 
+   	     * @author John
+   	     */
     	public class NodeColorAction extends ColorAction {
     	        
+    		/**
+    		 * Constructor, calls the ColorAction constructor on the provided group
+    		 * 
+    		 * @param group - Nodes
+    		 */
     	    public NodeColorAction(String group) {
     	        super(group, VisualItem.FILLCOLOR);
     	    } //NodeColorAction (constructor)
     	        
+    	    /**
+    	     * Returns the color of the given VisualItem
+    	     * 
+    		 * @param item - Get the color of this VisualItem 
+    	     */
     	    public int getColor(VisualItem item) {
     	        if ( m_vis.isInGroup(item, Visualization.SEARCH_ITEMS) ) {
     	            return ColorLib.rgb(255,190,190);
@@ -527,10 +615,18 @@ public class TreeView extends JPanel {
     	
     } //MyTreeView (inner class)
 
+    /**
+     * Resize the ViewPart
+     */
     public void myResize() {
     	myResize(m_overallSize);
     } //myResize
     
+    /**
+     * Resizes the ViewPart to the given dimensions
+     * 
+     * @param dimension - New size of the ViewPart
+     */
 	public void myResize(Dimension dimension) {
 		m_overallSize = dimension;
 		if (!(tview == null)) {
@@ -538,6 +634,11 @@ public class TreeView extends JPanel {
 		} //if
 	} //myResize
 
+	/**
+	 * Output the sequences of TimelineItems (for debugging purposes)
+	 * 
+	 * @param files - The set of all TimelineItems
+	 */
 	public void printTimelineItems(ArrayList<TimelineItem> files) {
 		Iterator<?> iter = files.iterator();
 		

@@ -1,39 +1,54 @@
 package rulebender.simulationjournaling.model;
 
 import java.io.File;
-import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Scanner;
 import java.util.StringTokenizer;
 
-import javax.swing.text.Document;
-import javax.xml.crypto.dsig.XMLObject;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-
-import org.xml.sax.InputSource;
-
 public class TimelineLoader {
 
 	private String m_filePath;	
-	
+
+	/**
+	 * Constructor:  sets no filepath
+	 */
 	public TimelineLoader() {
 		setFilePath(null);
 	} //TimelineLoader (constructor)
 	
+	/**
+	 * Constructor:  sets a filepath for a timeline
+	 * 
+	 * @param filepath
+	 */
 	public TimelineLoader(String filepath) {
 		setFilePath(filepath);
 	} //TimelineLoader (constructor)
 	
+	/**
+	 * Returns the filepath for the timeline
+	 * 
+	 * @return - the filepath for the timeline
+	 */
 	public String getFilePath() {
 		return m_filePath;
 	} //getFilePath
 	
+	/**
+	 * Sets the filepath for the timeline
+	 * 
+	 * @param filepath - the filepath for the timeline
+	 */
 	public void setFilePath(String filepath) {
 		m_filePath = filepath;
 	} //setFilePath
 	
+	/**
+	 * Loads a file given the stored filepath
+	 * 
+	 * @return - the lines of the file (that aren't blank)
+	 */
 	private ArrayList<String> loadFile() {
 		ArrayList<String> lines = new ArrayList<String>();
 		File timelineFile = null;
@@ -69,6 +84,11 @@ public class TimelineLoader {
 		return lines;
 	} //loadFile
 	
+	/**
+	 * Parses the lines loaded from the file into ROOT, PARENTOF, or SIMULATIONS commands
+	 * 
+	 * @return - A set of TimelineItems for each of the commands
+	 */
 	public ArrayList<TimelineItem> parseFile() {
 		StringTokenizer st = null;
 		ArrayList<String> lines = null;
@@ -139,6 +159,13 @@ public class TimelineLoader {
 		
 	} //parseFile
 	
+	/**
+	 * Recursively creates an XML string to load into the TreeView
+	 * 
+	 * @param files - The set of TimelineItems parsed from the file
+	 * 
+	 * @return - the XML string
+	 */
 	public String createXML(ArrayList<TimelineItem> files) {
 		
 		StringBuilder xml = new StringBuilder();
@@ -172,6 +199,14 @@ public class TimelineLoader {
 
 	} //createXML
 	
+	/**
+	 * Writes an XML line for a given TimelineItem, either as a branch or as a leaf
+	 * 
+	 * @param currentFile - the current TimelineItem
+	 * @param files - the set of TimelineItems
+	 * @param level - current level of recursion (for spacing to make it look nice)
+	 * @return
+	 */
 	public String createNodeAndChildren(TimelineItem currentFile, ArrayList<TimelineItem> files, int level) {
 		StringBuilder line = new StringBuilder();
 		
@@ -187,6 +222,15 @@ public class TimelineLoader {
 		return line.toString();
 	} //createNodeAndChildren
 	
+	/**
+	 * Writes an XML line for a leaf TimelineItem
+	 * 
+	 * @param currentFile - The current TimelineItem
+	 * @param files - The list of all TimelineItems
+	 * @param level - the current depth of recursion
+	 * 
+	 * @return - the String built for this leaf
+	 */
 	public String createLeaf(TimelineItem currentFile, ArrayList<TimelineItem> files, int level) {
 		StringBuilder line = new StringBuilder();
 		
@@ -208,6 +252,15 @@ public class TimelineLoader {
 		return line.toString();
 	} //createLeaf
 	
+	/**
+	 * Writes an XML line for a branch TimelineItem
+	 * 
+	 * @param currentFile - The current TimelineItem
+	 * @param files - The set of all TimelineItems
+	 * @param level - The current depth of recursion
+	 * 
+	 * @return - the XML lines written for this branch (and its children)
+	 */
 	public String createBranch(TimelineItem currentFile, ArrayList<TimelineItem> files, int level) {
 		StringBuilder line = new StringBuilder();
 	
@@ -243,6 +296,14 @@ public class TimelineLoader {
 		return line.toString();
 	} //createBranch
 	
+	/**
+	 * Add attributes to the current TimelineItem
+	 * 
+	 * @param currentFile - The current TimelineItem
+	 * @param level - The depth of recursion
+	 * 
+	 * @return - The String written for these attribute(s)
+	 */
 	public String addAttributes(TimelineItem currentFile, int level) {
 		StringBuilder attr = new StringBuilder();
 		
@@ -259,6 +320,14 @@ public class TimelineLoader {
 		return attr.toString();
 	} //addAttributes
 	
+	/**
+	 * Adds a single attribute to the current TimelineItem
+	 * 
+	 * @param field - the field of the attribute
+	 * @param value - the value of the attribute
+	 * 
+	 * @return - The String written for this attribute
+	 */
 	public String addAttribute(String field, String value) {
 		StringBuilder attr = new StringBuilder();
 		
@@ -271,6 +340,13 @@ public class TimelineLoader {
 		return attr.toString();
 	} //addAttribute
 	
+	/**
+	 * Adds tabs for the current level of recursion (for prettiness)
+	 * 
+	 * @param level - current depth of recursion
+	 * 
+	 * @return - tabs written to a string
+	 */
 	public String addTab(int level) {
 		StringBuilder tab = new StringBuilder();
 		
@@ -281,6 +357,14 @@ public class TimelineLoader {
 		return tab.toString();
 	} //addTab
 	
+	/**
+	 * Counts the number of children that a file has, to determine if it's a branch or a leaf
+	 * 
+	 * @param currentFile - The current TimelineItem
+	 * @param files - The list of all TimelineItems
+	 * 
+	 * @return - the number of children
+	 */
 	public int countChildren(TimelineItem currentFile, ArrayList<TimelineItem> files) {
 		int count = 0;
 		

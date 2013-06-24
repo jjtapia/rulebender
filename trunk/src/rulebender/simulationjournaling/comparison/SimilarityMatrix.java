@@ -60,10 +60,21 @@ public class SimilarityMatrix {
 		matrix[j][i] = val;
 	} //setSimilarityValue
 	
+	/**
+	 * Returns the similarity value of the row/column pair
+	 * 
+	 * @param i - the row
+	 * @param j - the column
+	 * 
+	 * @return - the similarity value
+	 */
 	public double getSimilarityValue(int i, int j) {
 		return matrix[i][j];
 	} //getSimilarityValue
 	
+	/**
+	 * Outputs the SimilarityMatrix to the console (for debugging)
+	 */
 	public void printMatrix() {
 		System.out.println("Labels:\n");
 		

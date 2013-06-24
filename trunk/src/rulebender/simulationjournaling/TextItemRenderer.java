@@ -47,6 +47,9 @@ public class TextItemRenderer extends ShapeRenderer {
     
     protected Point2D     m_tmpPoint = new Point2D.Float();
 
+    /**
+     * Constructor with default label name
+     */
 	public TextItemRenderer() {
 		m_labelName = "label";
 	} //TextItemRenderer (constructor)
@@ -154,6 +157,11 @@ public class TextItemRenderer extends ShapeRenderer {
         return s;
     } // getText
     
+	/**
+	 * Determine if the TextItem is a hyperlink (unused)
+	 * @param item
+	 * @return
+	 */
 	protected boolean isHyperlink(VisualItem item) {
         //TODO: uncomment and fix
 		//Boolean b = (Boolean)item.getVizAttribute(m_labelName + "_LINK");

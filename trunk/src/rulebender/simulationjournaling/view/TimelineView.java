@@ -40,6 +40,9 @@ public class TimelineView extends ViewPart {
 	// This is the parent that we will add our composite to.
 	private Composite parentComposite;
 	
+	/**
+	 * Empty constructor
+	 */
 	public TimelineView() {
 		// Do nothing for now
 	} //TimelineView (constructor)
@@ -108,15 +111,28 @@ public class TimelineView extends ViewPart {
 		
 	} //createPartControl
 	
+	/**
+	 * Return the TreeView
+	 * 
+	 * @return - the TreeView
+	 */
 	public TreeView getTreeView() {
 		return tree;
 	} //getTreeView
 	
+	/**
+	 * Sets the current ViewPart in focus
+	 */
 	@Override
 	public void setFocus() {
 		frame.repaint();		
 	} //setFocus
 
+	/**
+	 * Returns the size of the parent Composite
+	 * 
+	 * @return - the size of the parent Composite
+	 */
 	public Dimension getSize() {
 		return new Dimension(parentComposite.getSize().x, parentComposite.getSize().y); 
 	} //getSize

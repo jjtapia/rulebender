@@ -55,6 +55,9 @@ import rulebender.core.prefuse.collinsbubbleset.layout.BubbleSetLayout;
 import rulebender.simulationjournaling.view.SmallMultiplesView;
 
 public class SMClickControlDelegate extends ControlAdapter implements ISelectionProvider, ActionListener {
+
+	// Component graph string variable
+	private static String COMPONENT_GRAPH = "component_graph";
 	
 	// The current selection
 	private ISelection m_selection;
@@ -66,10 +69,7 @@ public class SMClickControlDelegate extends ControlAdapter implements ISelection
 	// The SmallMultiplesView (Eclipse RCP container; extends ViewPart) that this
 	// click control delegate is associated with.
 	private SmallMultiplesView m_view;
-	
-	// The SmallMultiplesPanel that is clicked on?
-	//private SmallMultiplesPanel m_panel;
-	
+		
 	// The path of the source bngl file.
 	private String m_sourcePath;
 	
@@ -83,21 +83,17 @@ public class SMClickControlDelegate extends ControlAdapter implements ISelection
 	private AggregateTable bubbleTable;
 	
 	// An aggregate item entered in the AggregateTable
-	private AggregateItem center;
-	private AggregateItem context;
+	private AggregateItem different;
 	private AggregateItem similar;
 	private AggregateItem itemHighlight;
 	
-	// Flags for whether the center or context set is activated
-	private boolean centerActivated;
-	private boolean contextActivated;
+	// Flags for whether the AggregateTable set is activated
+	private boolean differentActivated;
 	private boolean similarActivated;
 	private boolean itemHighlightActivated;
 	
 	// List of model names
 	private ArrayList<String> m_modelList;
-	
-	private static String COMPONENT_GRAPH = "component_graph";
 	
 	// Popup Menu items
 	private JMenuItem removeOverlayMenuItem;
@@ -117,17 +113,31 @@ public class SMClickControlDelegate extends ControlAdapter implements ISelection
 	private JMenuItem hideCompartmentsMenuItem;
 	private JMenuItem hideAllCompartmentsMenuItem;
 	
+	// Variable to hold the most recent mouseclick info to pass along
 	private MouseEvent mostRecentClick;
 	
+	// Whether or not this SmallMultiple is currently selected/highlighted
 	private boolean m_currentlySelected;
 	
+	// Whether or not the states and/or compartments are shown in this SmallMultiple
 	private boolean m_statesShown;
 	private boolean m_compartmentsShown;
 	
-	// Delay for single vs double click
+	// Variables to measure delay for single vs double click
 	private int delay;
 	private Timer timer;
 	
+	/**
+	 * Constructor:
+	 *  - Sets instance variables for view, source path, and visualization
+	 *  - Initializes instance variables for highlighting and selection
+	 *  - Creates the bubble table for comparison highlights
+	 *  - Initializes selection listeners
+	 * 
+	 * @param view - ViewPart that holds all small multiples
+	 * @param sourcePath - Path to the BNGL file
+	 * @param v - SmallMultiple Visualization object
+	 */
 	public SMClickControlDelegate(SmallMultiplesView view, String sourcePath, Visualization v) {
 		m_view = view;
 				
@@ -162,16 +172,9 @@ public class SMClickControlDelegate extends ControlAdapter implements ISelection
 		bubbleTable.addColumn("aggreagate_negativeNodeInfluenceFactor",	double.class);
 		bubbleTable.addColumn("aggregate_edgeInfluenceFactor", double.class);
 		
-		
 		initializeBubbleTableProperties();
 		
-				
-		// Tell the linkHub to let us know when a rule is selected.
-		//LinkHub.getLinkHub().registerLinkedViewsListener(this);
-		 
-		
-		centerActivated = false;
-		contextActivated = false;
+		differentActivated = false;
 		similarActivated = false;
 		itemHighlightActivated = false;
 		
@@ -182,6 +185,9 @@ public class SMClickControlDelegate extends ControlAdapter implements ISelection
 	
 	} //SMClickControlDelegate
 	
+	/**
+	 * Creates ColorAction for the comparison BubbleTable highlights, and runs the layout/color actions for the BubbleTable
+	 */
 	public void initializeBubbleTableProperties() {
 	
 		// Set the bubble stroke size
@@ -205,10 +211,9 @@ public class SMClickControlDelegate extends ControlAdapter implements ISelection
 		// DataColorAction(java.lang.String group, java.lang.String dataField, int dataType, java.lang.String colorField, int[] palette) 
 		ColorAction aFill;
 		
-		if (centerActivated) {
+		if (differentActivated) {
 			aFill = new ColorAction("bubbles", VisualItem.FILLCOLOR, ColorLib.rgba(240, 50, 40, 150)); //red
-		} else if (contextActivated) {
-			aFill = new ColorAction("bubbles", VisualItem.FILLCOLOR, ColorLib.rgba(50, 50, 240, 150)); //blue
+			//aFill = new ColorAction("bubbles", VisualItem.FILLCOLOR, ColorLib.rgba(50, 50, 240, 150)); //blue
 		} else if (similarActivated) {
 			aFill = new ColorAction("bubbles", VisualItem.FILLCOLOR, ColorLib.rgba(50, 240, 240, 150)); //green
 		} else if (itemHighlightActivated) {
@@ -240,56 +245,89 @@ public class SMClickControlDelegate extends ControlAdapter implements ISelection
 		
 	} //initializeBubbleTableProperties
 	
+	/**
+	 * Returns the BubbleTable for this SmallMultiple object
+	 * 
+	 * @return - BubbleTable
+	 */
 	public AggregateTable getBubbleTable() {
 		return bubbleTable;
 	} //getBubbleTable
 
+	/**
+	 * Sets the BubbleTable for this SmallMultiple object
+	 * 
+	 * @param _bubble - BubbleTable with VisualItems to highlight
+	 */
 	public void setBubbleTable(AggregateTable _bubble) {
 		bubbleTable = _bubble;
 		m_vis.run("bubbleLayout");
 		m_vis.run("bubbleColor");
 	} //setBubbleTable
 	
-	public AggregateItem getCenter() {
-		return center;
-	} //getCenter
-	
-	public void setCenter(AggregateItem _cen) {
-		center = _cen;
-		deactivateAggregates();
-		centerActivated = true;
-	} //setCenter
-	
-	public AggregateItem getContext() {
-		return context;
+	/**
+	 * Returns the differences AggregateItem
+	 * 
+	 * @return
+	 */
+	public AggregateItem getDifferent() {
+		return different;
 	} //getContext
 
-	public void setContext(AggregateItem _con) {
-		context = _con;
+	/**
+	 * Sets the differences AggregateItem
+	 * 
+	 * @param _con - differences to highlight
+	 */
+	public void setDifferent(AggregateItem _con) {
+		different = _con;
 		deactivateAggregates();
-		contextActivated = true;
+		differentActivated = true;
 	} //setContext
 	
+	/**
+	 * Returns the similarities AggregateItem
+	 * 
+	 * @return
+	 */
 	public AggregateItem getSimilar() {
 		return similar;
 	} //getSimilar
 	
+	/**
+	 * Sets the similarities AggregateItem
+	 * 
+	 * @param _sim - similarities to highlight
+	 */
 	public void setSimilar(AggregateItem _sim) {
 		similar = _sim;
 		deactivateAggregates();
 		similarActivated = true;
 	} //setSimilar
 	
+	/**
+	 * Returns the single item to highlight
+	 * 
+	 * @return
+	 */
 	public AggregateItem getItemHighlight() {
 		return itemHighlight;
 	} //getItemHighlight
 	
+	/**
+	 * Sets the single item to highlight
+	 * 
+	 * @param _high - single item to highlight
+	 */
 	public void setItemHighlight(AggregateItem _high) {
 		itemHighlight = _high;
 		deactivateAggregates();
 		itemHighlightActivated = true;
 	} //setItemHighlight
 	
+	/**
+	 * Empty the BubbleTable and run the layout/color actions to clear the overlay
+	 */
 	public void clearBubbleSets() {
 		//center.setVisible(false);
 		bubbleTable.clear();
@@ -298,16 +336,22 @@ public class SMClickControlDelegate extends ControlAdapter implements ISelection
 		m_vis.run("bubbleColor");
 		//center = null;
 	} //clearBubbleSets
-	
+
+	/**
+	 * Set all aggregate highlight flags to false, effectively telling them not to highlight
+	 */
 	public void deactivateAggregates() {
-		centerActivated = false;
-		contextActivated = false;
+		differentActivated = false;
 		similarActivated = false;
 		itemHighlightActivated = false;
 	} //deactivateAggregates
 	
 	/**
-	 * Called when no VisualItem is hit.
+	 * Called when no VisualItem is hit on mouse click:
+	 *  - Right click - creates the context menu depending on what is currently highlighted and what is currently selected
+	 *  - Left click - checks Timer to see if it's a single or double click; if double, then the parent CMAPNetworkViewer handles the zoom action
+	 * 
+	 * @param e - The mouse click
 	 */
 	public void mouseClicked(MouseEvent e) {
 		
@@ -315,6 +359,9 @@ public class SMClickControlDelegate extends ControlAdapter implements ISelection
 		
 		Display.getDefault().syncExec(new Runnable(){
 
+			/**
+			 * Pulls the SmallMultiplesView into context
+			 */
 			@Override
 			public void run() 
 			{
@@ -328,9 +375,10 @@ public class SMClickControlDelegate extends ControlAdapter implements ISelection
 				
 			}
 		});
-
 		
-		// Right click
+		/**
+		 * Handles right-click action to generate context menu on this SmallMultiple 
+		 */
 		if ((e.getButton() == MouseEvent.BUTTON3) || (e.getButton() == MouseEvent.BUTTON1 && e.isControlDown())) {
 			
 			JPopupMenu popupMenu = new JPopupMenu();
@@ -425,6 +473,10 @@ public class SMClickControlDelegate extends ControlAdapter implements ISelection
 			
 			popupMenu.show(e.getComponent(), e.getX(), e.getY());
 			
+			
+		/**
+		 * Handles the left-click action to check for single- or double-click
+		 */
 		} else {
 			
 			// Determine if we just had a double-click (single-click call is in actionPerformed)
@@ -447,6 +499,11 @@ public class SMClickControlDelegate extends ControlAdapter implements ISelection
 				
 	} //mouseClicked
 
+	/**
+	 * Single left click action is to highlight the current panel (or remove highlighting if it is currently highlighted)
+	 * 
+	 * @param e - The mouse click
+	 */
 	private void singleLeftClick(MouseEvent e) {
 		int panelIndexClicked = Integer.parseInt(mostRecentClick.getComponent().getParent().getName());
 		System.out.println("Single click on panel " + panelIndexClicked);
@@ -462,18 +519,33 @@ public class SMClickControlDelegate extends ControlAdapter implements ISelection
 			m_currentlySelected = true;
 		} //if-else
 		
-		
 	} //singleLeftClick
 	
+	/**
+	 * Sets this SmallMultiple as either currently selected or not
+	 * 
+	 * @param set - boolean choice between selected/not selected
+	 */
 	public void setCurrentlySelected(boolean set) {
 		m_currentlySelected = set;
 	} //setCurrentlySelected
-	
+
+	/**
+	 * Just debug code to print that a double-click action was performed (rather than a single-click)
+	 * 
+	 * @param e - The mouse click
+	 */
 	private void doubleLeftClick(MouseEvent e) {
 		int panelIndexClicked = Integer.parseInt(mostRecentClick.getComponent().getParent().getName());
 		System.out.println("Double click on panel " + panelIndexClicked);
 	} //doubleLeftClick
-	
+
+	/**
+	 * Builds the list of all models in the directory
+	 * 
+	 * @param smPanel - the SmallMultiplesPanel holding the model
+	 * @param panels - the set of JPanels inside the SmallMultiplesPanel
+	 */
 	private void getModelList(SmallMultiplesPanel smPanel, JPanel[] panels) {
 		for (int i = 0; i < panels.length; i++) {
 			String filepath = smPanel.getMultiple(i).getCMAPNetworkViewer().getFilepath();
@@ -483,6 +555,13 @@ public class SMClickControlDelegate extends ControlAdapter implements ISelection
 		} //for
 	} //getModelList
 	
+	/**
+	 * Takes the filepath to the BNGL file and retrieves the model's name from that filepath
+	 * 
+	 * @param filepath - the path to the BNGL file
+	 * 
+	 * @return - the name of the model
+	 */
 	private String getModelNameFromFilepath(String filepath) {
 		
 		// Remove the .bngl extension
@@ -498,6 +577,13 @@ public class SMClickControlDelegate extends ControlAdapter implements ISelection
 		return modelName;
 	} //getModelNameFromFilepath
 	
+	/**
+	 * Iterates over the list of all models in the directory, adding all but the currently selected model to a context sub-menu for different comparison
+	 * 
+	 * @param modelIndexClicked - the index of the currently selected model
+	 * 
+	 * @return - the differences sub-menu generated
+	 */
 	private JMenu createDifferencesModelListSubmenu(int modelIndexClicked) {
 		JMenu m = new JMenu("Compare differences to...");
 		int count = 0;
@@ -517,6 +603,13 @@ public class SMClickControlDelegate extends ControlAdapter implements ISelection
 		return m;
 	} //createDifferencesModelListSubmenu
 	
+	/**
+	 * Iterates over the list of all models in the directoty, adding all but the currently selected model to a context sub-menu for similarity comparison
+	 * 
+	 * @param modelIndexClicked - the index of the currently selected model
+	 * 
+	 * @return - the similarities sub-menu generated
+	 */
 	private JMenu createSimilarModelListSubmenu(int modelIndexClicked) {
 		JMenu m = new JMenu("Compare similarity to...");
 		int count = 0;
@@ -536,6 +629,12 @@ public class SMClickControlDelegate extends ControlAdapter implements ISelection
 		return m;
 	} //createDifferencesModelListSubmenu
 	
+	/**
+	 * Deactivates highlighting on all SmallMultiplePanels
+	 * 
+	 * @param smPanel - the SmallMultiplesPanel that holds all SmallMultiples
+	 * @param panels - the set of JPanels stored in the SmallMultiplesPanel
+	 */
 	private void clearPanels(SmallMultiplesPanel smPanel, JPanel[] panels) {
 		for (int i = 0; i < panels.length; i++) {
 			clearOverlay(i, smPanel);
@@ -546,6 +645,11 @@ public class SMClickControlDelegate extends ControlAdapter implements ISelection
 		smPanel.setCurrentlyHighlighted(false);
 	} //clearPanels
 	
+	/**
+	 * Calls a variety of functions depending on which item in the context menu was selected
+	 * 
+	 * @param e2 - ActionEvent that was triggered by a selection from the context menu
+	 */
 	public void actionPerformed(ActionEvent e2) {
 		
 		// Get the panels, and determine which panel was clicked on / selected
@@ -656,6 +760,9 @@ public class SMClickControlDelegate extends ControlAdapter implements ISelection
 		
 	} //actionPerformed
 	
+	/**
+	 * Hides all state nodes in this SmallMultiple 
+	 */
 	public void hideStates() {
 		Iterator iter = m_vis.items("component_graph");
 		
@@ -694,6 +801,9 @@ public class SMClickControlDelegate extends ControlAdapter implements ISelection
 		
 	} //hideStates
 	
+	/**
+	 * Shows all state nodes in this SmallMultiple
+	 */
 	public void showStates() {
 		Iterator iter = m_vis.items("component_graph");
 		
@@ -731,30 +841,57 @@ public class SMClickControlDelegate extends ControlAdapter implements ISelection
 		
 	} //showStates
 	
+	/**
+	 * Hides all state nodes in all SmallMultiples
+	 * 
+	 * @param smPanel - the SmallMultiplesPanel that holds all SmallMultiples
+	 * @param panels - the set of JPanels stored in the SmallMultiplesPanel
+	 */
 	private void hideAllStates(SmallMultiplesPanel smPanel, JPanel[] panels) {
 		for (int i = 0; i < panels.length; i++) {
 			((SMClickControlDelegate)smPanel.getMultiple(i).getCMAPNetworkViewer().getClickControl()).hideStates();
 		} //for
 	} //hideAllStates
 	
+	/**
+	 * Shows all state nodes in all SmallMultiples
+	 * 
+	 * @param smPanel - the SmallMultiplesPanel that holds all SmallMultiples
+	 * @param panels - the set of JPanels stored in the SmallMultiplesPanel
+	 */
 	private void showAllStates(SmallMultiplesPanel smPanel, JPanel[] panels) {
 		for (int i = 0; i < panels.length; i++) {
 			((SMClickControlDelegate)smPanel.getMultiple(i).getCMAPNetworkViewer().getClickControl()).showStates();
 		} //for		
 	} //showAllStates
 	
+	/**
+	 * Hides all compartments in all SmallMultiples
+	 * 
+	 * @param smPanel - the SmallMultiplesPanel that holds all SmallMultiples
+	 * @param panels - the set of JPanels stored in the SmallMultiplesPanel
+	 */
 	private void hideAllCompartments(SmallMultiplesPanel smPanel, JPanel[] panels) {
 		for (int i = 0; i < panels.length; i++) {
 			((SMClickControlDelegate)smPanel.getMultiple(i).getCMAPNetworkViewer().getClickControl()).hideCompartments();
 		} //for
 	} //hideAllCompartments
 	
+	/**
+	 * Shows all compartments in all SmallMultiples
+	 * 
+	 * @param smPanel - the SmallMultiplesPanel that holds all SmallMultiples
+	 * @param panels - the set of JPanels stored in the SmallMultiplesPanel
+	 */
 	private void showAllCompartments(SmallMultiplesPanel smPanel, JPanel[] panels) {
 		for (int i = 0; i < panels.length; i++) {
 			((SMClickControlDelegate)smPanel.getMultiple(i).getCMAPNetworkViewer().getClickControl()).showCompartments();
 		} //for	
 	} //showAllCompartments
 	
+	/**
+	 * Hides all compartment aggregates in this SmallMultiple
+	 */
 	private void hideCompartments() {
 		
 		Iterator iter = m_vis.items("compartments");
@@ -773,6 +910,9 @@ public class SMClickControlDelegate extends ControlAdapter implements ISelection
 		
 	} //hideCompartments
 	
+	/**
+	 * Shows all compartment aggregates in this SmallMultiple
+	 */
 	private void showCompartments() {
 		
 		Iterator iter = m_vis.items("compartments");
@@ -791,6 +931,9 @@ public class SMClickControlDelegate extends ControlAdapter implements ISelection
 		
 	} //showCompartments
 	
+	/**
+	 * Applies all color/layout actions on this SmallMultiple
+	 */
 	public void applyActions() {
 		m_vis.run("color");
 		m_vis.run("complayout");
@@ -799,6 +942,14 @@ public class SMClickControlDelegate extends ControlAdapter implements ISelection
 		m_vis.run("bubbleLayout");
 	} //applyActions
 	
+	/**
+	 * Some differences comparison was selected from the context menu, so we need to compute the differences between the models and then highlight those differences
+	 * 
+	 * @param smPanel - the SmallMultiplesPanel that holds all SmallMultiples
+	 * @param comparisonIndex - the panel index of the model we're comparing against
+	 * @param selectedModel - the model selected
+	 * @param panelIndexClicked - the panel index of the model selected
+	 */
 	public void handleDifferencesOption(SmallMultiplesPanel smPanel, int comparisonIndex, Visualization selectedModel, int panelIndexClicked) {
 		// First compare the most complete model to the selected Model 
 		Visualization modelToCompareAgainst = smPanel.getVisualization(comparisonIndex);
@@ -809,14 +960,13 @@ public class SMClickControlDelegate extends ControlAdapter implements ISelection
 
 		// Add the differences to the 'different' group, then re-color
 		//highlightDifferences(differences, modelToCompareAgainst, i, smPanel);
-		highlightDifferences(differences, modelToCompareAgainst, comparisonIndex, smPanel, "center");
+		highlightDifferences(differences, modelToCompareAgainst, comparisonIndex, smPanel/*, "center"*/);
 
-	
 		// Now do everything in the opposite direction using the context bubbleset
 		clearOverlay(panelIndexClicked, smPanel);
 		differences.clear();
 		differences = compareModels(modelToCompareAgainst, selectedModel, true);
-		highlightDifferences(differences, selectedModel, panelIndexClicked, smPanel, "context");
+		highlightDifferences(differences, selectedModel, panelIndexClicked, smPanel/*, "context"*/);
 	
 		// Highlights are currently on
 		smPanel.setCurrentlyHighlighted(true);
@@ -824,6 +974,14 @@ public class SMClickControlDelegate extends ControlAdapter implements ISelection
 		smPanel.repaint();
 	} //handleDifferencesOption
 	
+	/**
+	 * Some similarities comparison was selected from the context menu, so we need to compute the similarities between the models and then highlight those similarities
+	 * 
+	 * @param smPanel - the SmallMultiplesPanel that holds all SmallMultiples
+	 * @param comparisonIndex - the panel index of the model we're comparing against
+	 * @param selectedModel - the model selected
+	 * @param panelIndexClicked - the panel index of the model selected
+	 */
 	public void handleSimilaritiesOption(SmallMultiplesPanel smPanel, int comparisonIndex, Visualization selectedModel, int panelIndexClicked) {
 		// First compare the most complete model to the selected Model 
 		Visualization modelToCompareAgainst = smPanel.getVisualization(comparisonIndex);
@@ -846,7 +1004,12 @@ public class SMClickControlDelegate extends ControlAdapter implements ISelection
 		
 	} //handleSimilaritiesOption
 	
-	
+	/**
+	 * The openModel option was selected from the context menu, so we need to switch perspectives and open the model
+	 * 
+	 * @param smPanel - the SmallMultiplesPanel that holds all SmallMultiples
+	 * @param panelIndexClicked - the panel index of the model selected
+	 */
 	private void openBNGLFile(SmallMultiplesPanel smPanel, int panelIndexClicked) {
 		
 		// Switch to the default perspective
@@ -899,6 +1062,13 @@ public class SMClickControlDelegate extends ControlAdapter implements ISelection
 	} //openBNGLFile
 	
 	
+	/**
+	 * Checks to see if an item in the differences context sub-menu was selected
+	 * 
+	 * @param e2 - The ActionEvent that might be on the differences list
+	 * 
+	 * @return - The model index of the selected item in the context menu
+	 */
 	private int getDifferencesComparisonModelIndex(ActionEvent e2) {
 		
 		// Loop through all menu items, looking for the model name of the JMenuItem selected
@@ -918,7 +1088,13 @@ public class SMClickControlDelegate extends ControlAdapter implements ISelection
 		return -1;
 	} //getComparisonIndex
 	
-	
+	/**
+	 * Checks to see if an item in the similarities context sub-menu was selected
+	 * 
+	 * @param e2 - The ActionEvent that might be on the similarities list
+	 * 
+	 * @return - The model index of the selected item in the context menu
+	 */
 	private int getSimilaritiesComparisonModelIndex(ActionEvent e2) {
 		
 		// Loop through all menu items, looking for the model name of the JMenuItem selected
@@ -938,7 +1114,15 @@ public class SMClickControlDelegate extends ControlAdapter implements ISelection
 		return -1;
 	} //getComparisonIndex
 	
-	
+	/**
+	 * Looks for similarities/differences between two Visualization objects
+	 * 
+	 * @param selectedModel - The Visualization object of the model selected
+	 * @param compareModel - The Visualization object of the model to compare against
+	 * @param findingDifferences - Flag as to whether we're looking for similarities or differences
+	 * 
+	 * @return - The list of similarities/differences between the two models
+	 */
 	private ArrayList<ArrayList<String>> compareModels(Visualization selectedModel, Visualization compareModel, boolean findingDifferences) {
 		
 		// Compare the components, molecules, and edges between the two models, storing the differences
@@ -959,7 +1143,15 @@ public class SMClickControlDelegate extends ControlAdapter implements ISelection
 		return items;
 	} //compareModels
 	
-	
+	/**
+	 * Looks for similarities/differences between two Visualization objects, considering components only
+	 * 
+	 * @param selectedModel - The Visualization object of the model selected
+	 * @param compareModel - The Visualization object of the model to compare against
+	 * @param findingDifferences - Flag as to whether we're looking for similarities or differences
+	 * 
+	 * @return - The list of similarities/differences between the two models
+	 */
 	private ArrayList<String> compareComponents(Visualization selectedModel, Visualization compareModel, boolean findingDifferences) {
 		
 		ArrayList<MoleculeCounter> compareTracker = new ArrayList<MoleculeCounter>();
@@ -1115,7 +1307,15 @@ public class SMClickControlDelegate extends ControlAdapter implements ISelection
 		
 	} //compareComponents
 	
-	
+	/**
+	 * Looks for similarities/differences between two Visualization objects, considering molecules only
+	 * 
+	 * @param selectedModel - The Visualization object of the model selected
+	 * @param compareModel - The Visualization object of the model to compare against
+	 * @param findingDifferences - Flag as to whether we're looking for similarities or differences
+	 * 
+	 * @return - The list of similarities/differences between the two models
+	 */
 	private ArrayList<String> compareMolecules(Visualization selectedModel, Visualization compareModel, boolean findingDifferences) {
 		
 		ArrayList<String> molecules = new ArrayList<String>();
@@ -1144,7 +1344,15 @@ public class SMClickControlDelegate extends ControlAdapter implements ISelection
 		
 	} //compareMolecules
 	
-	
+	/**
+	 * Looks for similarities/differences between two Visualization objects, considering edges only
+	 * 
+	 * @param selectedModel - The Visualization object of the model selected
+	 * @param compareModel - The Visualization object of the model to compare against
+	 * @param findingDifferences - Flag as to whether we're looking for similarities or differences
+	 * 
+	 * @return - The list of similarities/differences between the two models
+	 */
 	private ArrayList<String> compareEdges(Visualization selectedModel, Visualization compareModel, boolean findingDifferences) {
 		
 		ArrayList<String> edges = new ArrayList<String>();
@@ -1233,7 +1441,13 @@ public class SMClickControlDelegate extends ControlAdapter implements ISelection
 		
 	} //compareEdges
 	
-	
+	/**
+	 * Takes a VisualItem and returns a StringBuilder representation listing the molecule, component, and state of that VisualItem
+	 * 
+	 * @param item - The VisualItem we want to build a StringBuilder representation for
+	 * 
+	 * @return - The StringBuilder representing the VisualItem parameter
+	 */
 	private StringBuilder buildStringRepresentation(VisualItem item) {
 		StringBuilder temp = new StringBuilder();
 		
@@ -1269,7 +1483,11 @@ public class SMClickControlDelegate extends ControlAdapter implements ISelection
 		return temp/*.toString()*/;
 	} //buildStringRepresentation
 	
-	
+	/**
+	 * Prints the list of similarities/differences to the console (for debug, currently unused)
+	 * 
+	 * @param differences - The list of similarities/differences that gets printed
+	 */
 	@SuppressWarnings("unused")
 	private void printDifferences(ArrayList<String> differences) {
 		System.out.println("-----------------------------------------------");
@@ -1308,7 +1526,14 @@ public class SMClickControlDelegate extends ControlAdapter implements ISelection
 		
 	} //clearOverlay
 	
-	
+	/**
+	 * Highlights similarities on the provided model
+	 * 
+	 * @param similarities - The list of similarities to highlight
+	 * @param vis - The Visualization object we're highlighting
+	 * @param modelIndex - The panel index of the model being highlighted
+	 * @param smPanel - The SmallMultiplesPanel that contains the collection of SmallMultiples
+	 */
 	private void highlightSimilarities(ArrayList<ArrayList<String>> similarities, Visualization vis, int modelIndex, SmallMultiplesPanel smPanel) {
 		// Get the bubbleTable for the model
 		AggregateTable modelBubbleTable = ((SMClickControlDelegate)smPanel.getMultiple(modelIndex).getNetworkViewer().getClickControl()).getBubbleTable();
@@ -1333,47 +1558,36 @@ public class SMClickControlDelegate extends ControlAdapter implements ISelection
 		
 	} //highlightSimilarities
 	
-	
-	private void highlightDifferences(ArrayList<ArrayList<String>> differences, Visualization vis, int modelIndex, SmallMultiplesPanel smPanel, String bubbleChoice) {
+	/**
+	 * Highlights differences on the provided model
+	 * 
+	 * @param differences - The list of differences to highlight
+	 * @param vis - The Visualization object we're highlighting
+	 * @param modelIndex - The panel index of the model being highlighted
+	 * @param smPanel - The SmallMultiplesPanel that contains the collection of SmallMultiples
+	 */
+	private void highlightDifferences(ArrayList<ArrayList<String>> differences, Visualization vis, int modelIndex, SmallMultiplesPanel smPanel) {
 		
 		// Get the bubbleTable for the model
 		AggregateTable modelBubbleTable = ((SMClickControlDelegate)smPanel.getMultiple(modelIndex).getNetworkViewer().getClickControl()).getBubbleTable();
-		AggregateItem modelCenter, modelContext;
+		AggregateItem modelDifferences;
 		
-		if (bubbleChoice.equals("center")) {
-			modelCenter = ((SMClickControlDelegate)smPanel.getMultiple(modelIndex).getNetworkViewer().getClickControl()).getCenter();
-			modelCenter = (AggregateItem) modelBubbleTable.addItem();
+		modelDifferences = ((SMClickControlDelegate)smPanel.getMultiple(modelIndex).getNetworkViewer().getClickControl()).getDifferent();
+		modelDifferences = (AggregateItem) modelBubbleTable.addItem();
 			
-			highlightComponentsBubbleSet(differences.get(0), vis, modelBubbleTable, modelCenter);
-			highlightMoleculesBubbleSet(differences.get(1), vis, modelBubbleTable, modelCenter);
-			highlightEdgesBubbleSet(differences.get(2), vis, modelBubbleTable, modelCenter);
+		highlightComponentsBubbleSet(differences.get(0), vis, modelBubbleTable, modelDifferences);
+		highlightMoleculesBubbleSet(differences.get(1), vis, modelBubbleTable, modelDifferences);
+		highlightEdgesBubbleSet(differences.get(2), vis, modelBubbleTable, modelDifferences);
 			
-			modelCenter.set("type", "center");
-			modelCenter.setVisible(true);
+		modelDifferences.set("type", "different");
+		modelDifferences.setVisible(true);
 			
-			((SMClickControlDelegate)smPanel.getMultiple(modelIndex).getNetworkViewer().getClickControl()).setCenter(modelCenter);
-			
-		} else {
-			
-			modelContext = ((SMClickControlDelegate)smPanel.getMultiple(modelIndex).getNetworkViewer().getClickControl()).getContext();
-			modelContext = (AggregateItem) modelBubbleTable.addItem();
-			
-			highlightComponentsBubbleSet(differences.get(0), vis, modelBubbleTable, modelContext);
-			highlightMoleculesBubbleSet(differences.get(1), vis, modelBubbleTable, modelContext);
-			highlightEdgesBubbleSet(differences.get(2), vis, modelBubbleTable, modelContext);
-			
-			modelContext.set("type", "context");
-			modelContext.setVisible(true);
-			
-			((SMClickControlDelegate)smPanel.getMultiple(modelIndex).getNetworkViewer().getClickControl()).setContext(modelContext);
-		} //if-else
-
+		((SMClickControlDelegate)smPanel.getMultiple(modelIndex).getNetworkViewer().getClickControl()).setDifferent(modelDifferences);
 		((SMClickControlDelegate)smPanel.getMultiple(modelIndex).getNetworkViewer().getClickControl()).initializeBubbleTableProperties();
 		((SMClickControlDelegate)smPanel.getMultiple(modelIndex).getNetworkViewer().getClickControl()).setBubbleTable(modelBubbleTable);
 		
 		vis.run("bubbleLayout");
 		vis.run("bubbleColor");
-
 		
 		/*
 		
@@ -1394,13 +1608,20 @@ public class SMClickControlDelegate extends ControlAdapter implements ISelection
 		
 	} //highlightDifferences
 	
-	
-	private void highlightComponentsBubbleSet(ArrayList<String> differentComponents, Visualization vis, AggregateTable modelBubbleTable, AggregateItem modelGroup) {
+	/**
+	 * Highlights the provided list of components on the provided model
+	 * 
+	 * @param components - The list of components to highlight
+	 * @param vis - The Visualization object we're highlighting
+	 * @param modelBubbleTable - The AggregateTable we're filling
+	 * @param modelGroup - The AggregateItem we're filling
+	 */
+	private void highlightComponentsBubbleSet(ArrayList<String> components, Visualization vis, AggregateTable modelBubbleTable, AggregateItem modelGroup) {
 		
 		ArrayList<MoleculeCounter> compareTracker = new ArrayList<MoleculeCounter>();
 		
 		// First loop through and highlight components
-		for (int i = 0; i < differentComponents.size(); i++) {
+		for (int i = 0; i < components.size(); i++) {
 				
 			// Loop through the nodes of the model, building a string representation identical to the one before, then compare
 			Iterator iter = vis.items(PrefuseLib.getGroupName(COMPONENT_GRAPH, Graph.NODES));
@@ -1459,7 +1680,7 @@ public class SMClickControlDelegate extends ControlAdapter implements ISelection
 										
 					// Compare the string we just built against the current component from the ArrayList
 					// If there's a match, add to the highlighted class of objects
-					if (compareString.equals(differentComponents.get(i))) {
+					if (compareString.equals(components.get(i))) {
 						modelGroup.addItem(vis.getVisualItem(COMPONENT_GRAPH, item));
 						addNodeToCenterOrContext(modelGroup, (Node)item, vis);	
 						break;
@@ -1474,21 +1695,35 @@ public class SMClickControlDelegate extends ControlAdapter implements ISelection
 		
 	} //highlightComponentsBubbleSet
 	
-	
-	private void highlightMoleculesBubbleSet(ArrayList<String> differentMolecules, Visualization vis, AggregateTable modelBubbleTable, AggregateItem modelGroup) {
+	/**
+	 * Highlights the provided list of molecules on the provided model (not yet implemented)
+	 * 
+	 * @param molecules - The list of molecules to highlight
+	 * @param vis - The Visualization object we're highlighting
+	 * @param modelBubbleTable - The AggregateTable we're filling
+	 * @param modelGroup - The AggregateItem we're filling
+	 */
+	private void highlightMoleculesBubbleSet(ArrayList<String> molecules, Visualization vis, AggregateTable modelBubbleTable, AggregateItem modelGroup) {
 		
 		
 		
 		
 	} //highlightMoleculesBubbleSet
 	
-	
-	private void highlightEdgesBubbleSet(ArrayList<String> differentEdges, Visualization vis, AggregateTable modelBubbleTable, AggregateItem modelGroup) {
+	/**
+	 * Highlights the provided list of edges on the provided model
+	 * 
+	 * @param edges - The list of edges to highlight
+	 * @param vis - The Visualization object we're highlighting
+	 * @param modelBubbleTable - The AggregateTable we're filling
+	 * @param modelGroup - The AggregateItem we're filling
+	 */
+	private void highlightEdgesBubbleSet(ArrayList<String> edges, Visualization vis, AggregateTable modelBubbleTable, AggregateItem modelGroup) {
 		
-		for (int i = 0; i < differentEdges.size(); i++) {
+		for (int i = 0; i < edges.size(); i++) {
 			
 			// Break apart the information from the differentEdges array into source and target of the edge
-			StringTokenizer st = new StringTokenizer(differentEdges.get(i), "|");
+			StringTokenizer st = new StringTokenizer(edges.get(i), "|");
 			String arraySource = st.nextToken();
 			String arrayTarget = st.nextToken();
 			
@@ -1639,7 +1874,14 @@ public class SMClickControlDelegate extends ControlAdapter implements ISelection
 	} //highlightEdges
 	*/
 	
-	
+	/**
+	 * When an edge is highlighted, also highlight the components at the ends (currently unused)
+	 * 
+	 * @param aggregate - The AggregateItem we're filling
+	 * @param e - The edge being highlighted
+	 * @param vis - The Visualization object being highlighted
+	 */
+	@SuppressWarnings("unused")
 	private void addBondToCenterOrContext(AggregateItem aggregate, Edge e, Visualization vis) {
 		
 		Node leftnode = e.getSourceNode();
@@ -1683,6 +1925,13 @@ public class SMClickControlDelegate extends ControlAdapter implements ISelection
 		
 	} //addBondToCenterOrContext
 
+	/**
+	 * When a node is highlighted, also highlight the states
+	 * 
+	 * @param aggregate - The AggregateItem we're filling
+	 * @param node - The node being highlighted
+	 * @param vis - The Visualization object being highlighted
+	 */
 	private void addNodeToCenterOrContext(AggregateItem aggregate, Node node, Visualization vis) {
 		
 		Node comp_node = node;
@@ -1707,7 +1956,13 @@ public class SMClickControlDelegate extends ControlAdapter implements ISelection
 		
 	} //addNodeToCenterOrContext
 	
-	
+	/**
+	 * Add all components and states of components in the Mole to the BubbleSet aggregate 
+	 * 
+	 * @param aggregate - The AggregateItem being filled
+	 * @param molecule - The molecule being highlighted
+	 * @param vis - The Visualization object being highlighted
+	 */
 	private void addAggregateToCenterOrContext(AggregateItem aggregate, AggregateItem molecule, Visualization vis) {
 		// Add all components and states of components in the aggregate to the bubbleset aggregate
 		Iterator iter = molecule.items();
@@ -1738,7 +1993,12 @@ public class SMClickControlDelegate extends ControlAdapter implements ISelection
 		
 	} //addAggregateToCenterOrContext
 	
-	
+	/**
+	 * If a component/edge is clicked, highlight that VisualItem in all SmallMultiples
+	 * 
+	 * @param item - The VisualItem selected
+	 * @param e - The MouseEvent triggered by the click
+	 */
 	public void itemClicked(VisualItem item, MouseEvent e) {
 		
 		// Saved the code for right-click/left-click check, but right now we'll only worry about left-clicks
@@ -1795,7 +2055,14 @@ public class SMClickControlDelegate extends ControlAdapter implements ISelection
 		*/
 	} //itemClicked
 	
-	
+	/**
+	 * If a node is clicked, highlight that node in all SmallMultiples
+	 * 
+	 * @param item - The NodeItem selected
+	 * @param e - The MouseEvent triggered by the selection
+	 * @param smPanel - The SmallMultiplesPanel containing the set of SmallMultiples
+	 * @param panels - The collection of JPanels stored in the SmallMultiplesPanel
+	 */
 	private void nodeLeftClicked(NodeItem item, MouseEvent e, SmallMultiplesPanel smPanel, JPanel[] panels) {
 		// Clear any current highlights/selections
 		smPanel.removeAllSelections();
@@ -1848,7 +2115,14 @@ public class SMClickControlDelegate extends ControlAdapter implements ISelection
 		
 	} //nodeLeftClicked
 	
-	
+	/**
+	 * If an edge is clicked, highlight that edge in all SmallMultiples
+	 * 
+	 * @param edge - The EdgeItem selected
+	 * @param e - The MouseEvent triggered by the selection
+	 * @param smPanel - The SmallMultiplesPanel containing the set of SmallMultiples
+	 * @param panels - The collection of JPanels stored in the SmallMultiplesPanel
+	 */
 	private void edgeLeftClicked(EdgeItem edge, MouseEvent e, SmallMultiplesPanel smPanel, JPanel[] panels) {
 		// Clear any current highlights/selections
 		smPanel.removeAllSelections();
@@ -1918,7 +2192,14 @@ public class SMClickControlDelegate extends ControlAdapter implements ISelection
 		
 	} //edgeLeftClicked
 	
-
+	/**
+	 * If a molecule is clicked, highlight that edge in all SmallMultiples
+	 * 
+	 * @param item - The AggregateItem selected
+	 * @param e - The MouseEvent triggered by the selection
+	 * @param smPanel - The SmallMultiplesPanel containing the set of SmallMultiples
+	 * @param panels - The collection of JPanels stored in the SmallMultiplesPanel
+	 */
 	private void aggregateLeftClicked(AggregateItem item, MouseEvent e, SmallMultiplesPanel smPanel, JPanel[] panels) {
 		// Get the name of the aggregate clicked (molecule)
 		String nodeName = item.getString("molecule");

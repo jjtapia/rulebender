@@ -20,6 +20,16 @@ public class BackgroundFileLoader extends Thread {
 
 	private static String COMPONENT_GRAPH = "component_graph";
 	
+	/**
+	 * Loads a contact map from disk
+	 * 
+	 * @param sourcePath - Path to the BNGL file
+	 * @param layoutChoice - Layout pattern for the CMap
+	 * @param dim - Dimensions of the CMap
+	 * @param view - SmallMultiplesView that will hold the CMap
+	 * 
+	 * @return - the SmallMultiple object that holds the loaded CMap
+	 */
 	public static SmallMultiple loadContactMap(String sourcePath, String layoutChoice, Dimension dim, SmallMultiplesView view) {
 		
 		SmallMultiple cVisual;
@@ -66,7 +76,13 @@ public class BackgroundFileLoader extends Thread {
 		
 	} //loadTempContactMap
 	
-	
+	/**
+	 * Generates a BNGLModel given a path to a BNGL file
+	 * 
+	 * @param sourcePath - The path to the BNGL file
+	 * 
+	 * @return - A BNGLModel object
+	 */
 	public static BNGLModel getModel(String sourcePath) {
 		BNGLModel m_model = null;
 		
@@ -79,6 +95,13 @@ public class BackgroundFileLoader extends Thread {
 	    return m_model;
 	} //getModel
 	
+	/**
+	 * Returns an abstract syntax tree for a model given a path to a BNGL file
+	 * 
+	 * @param sourcePath - The path to the BNGL file
+	 * 
+	 * @return - The AST representing the model
+	 */
 	private static prog_return getAST(String sourcePath) {
 	    // The abstract syntax tree that will be returned.
 	    // On a failure, it will be null.
@@ -109,6 +132,13 @@ public class BackgroundFileLoader extends Thread {
 	    return toReturn;
 	} //getAST
 	
+	/**
+	 * Creates a BNGParseData object given the source text of a file
+	 * 
+	 * @param src - Source text of a file
+	 * 
+	 * @return - BNGParseData object
+	 */
 	private static BNGParseData produceParseData(String src) {
 	    // Get the text in the document.
 	    //String text = this.getSourceViewer().getDocument().get();
@@ -117,6 +147,13 @@ public class BackgroundFileLoader extends Thread {
 	    return BNGParserUtility.produceParserInfoForBNGLText(text);
 	} //produceParseData
 	
+	/**
+	 * Reads a BNGL file to a String given the path to the file
+	 * 
+	 * @param filePath - The path to the BNGL file
+	 * 
+	 * @return - The contents of the BNGL file
+	 */
 	private static String readFileAsString(String filePath) {
 		StringBuffer fileData = new StringBuffer(1000);
 		

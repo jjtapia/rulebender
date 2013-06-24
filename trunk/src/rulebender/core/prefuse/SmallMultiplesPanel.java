@@ -138,9 +138,12 @@ public class SmallMultiplesPanel extends JLayeredPane implements ActionListener 
 	// List of currently selected model indices
 	private ArrayList<Integer> m_selectedModels;
 	
+	// Size of models initialized to the sizes of their panels
+	private boolean m_modelSizeInitialized;
+	
 	
 	/**
-	 * Two functions:
+	 * Constructor:
 	 *   1. Set the size of the overall panel
 	 *   2. Calculate the size of the individual panels
 	 * 
@@ -154,6 +157,7 @@ public class SmallMultiplesPanel extends JLayeredPane implements ActionListener 
 		
 		m_lastPanelSelected = -1;
 		m_currentlyHighlighted = false;
+		m_modelSizeInitialized = false;
 		
 		highlightBorder = new LineBorder(Color.RED, WIDE_BORDER);
 		highlightBackgroundColor = Color.getHSBColor(0.1472f, 0.1472f, 1f);
@@ -253,14 +257,13 @@ public class SmallMultiplesPanel extends JLayeredPane implements ActionListener 
 		// Update the sizes of the JPanels and Displays
 		myResize(m_overallSize);
 		
-		// Zoom out the models to the size of the panels
-		for (int i = 0; i < m_numFiles; i++) {
-			//fitToPanel(i);
-			//fitToPanel2(i);
-		} //for
-		
 	} //SmallMultiplesPanel (constructor)
 	
+	/**
+	 * Populates the dropdown list of position files
+	 * 
+	 * @param directory - The directory to search through for position files
+	 */
 	private void populatePositionDropdown(String directory) {
 		File dir = new File(directory);
 		
@@ -283,20 +286,47 @@ public class SmallMultiplesPanel extends JLayeredPane implements ActionListener 
 		
 	} //populatePositionDropdown
 	
+	/**
+	 * Lookup the name of a position file given a filepath
+	 * 
+	 * @param selection - selected filepath
+	 * 
+	 * @return - position file name
+	 */
 	private String lookupPosition(String selection) {
 		return m_positionLookup.get(selection);
 	} //lookupPosition
 	
+	/**
+	 * Determines if a file is a .POS file
+	 * 
+	 * @param child - File to check
+	 * 
+	 * @return - Whether or not the file parameter is a position file
+	 */
 	private boolean isPositionFile(File child) {
 		String filepath = child.getPath();
 		return ((filepath.substring(filepath.length()-4, filepath.length()).equals(".pos")) || (filepath.substring(filepath.length()-4, filepath.length()).equals(".POS")));
 	} //isPositionFile
 	
+	/**
+	 * Determines if a file is a .BNGL file
+	 * 
+	 * @param child - File to check
+	 * 
+	 * @return - Whether or not the file parameter is a BNGL file
+	 */
 	private boolean isBNGLFile(File child) {
 		String filepath = child.getPath();
 		return ((filepath.substring(filepath.length()-5, filepath.length()).equals(".bngl")) || (filepath.substring(filepath.length()-5, filepath.length()).equals(".BNGL")));
 	} //isBNGLFile
 	
+	/**
+	 * Load SmallMultiples from disk or from memory and place them into the SmallMultiplesPanel
+	 * 
+	 * @param directory - Directory to search for SmallMultiples
+	 * @param layoutChoice - Layout to use on the SmallMultiples
+	 */
 	private void populateSmallMultiplesDisplay(String directory, String layoutChoice) {
 		File dir = new File(directory);
 		int currentMultiple = 0;
@@ -331,6 +361,13 @@ public class SmallMultiplesPanel extends JLayeredPane implements ActionListener 
 		
 	} //populateSmallMultiplesDisplay
 	
+	/**
+	 * Populate a list of all model names in a directory
+	 * 
+	 * @param directory - The directory to search for models
+	 * 
+	 * @return - The list of all models
+	 */
 	private String[] populateModelNames(String directory) {
 		File dir = new File(directory);
 		String modelNames[] = new String[m_numFiles];
@@ -349,6 +386,13 @@ public class SmallMultiplesPanel extends JLayeredPane implements ActionListener 
 		return modelNames;
 	} //populateModelNames
 	
+	/**
+	 * Initializes the SmallMultiplesDisplay
+	 *  - Generates adjacency and similarity matrices
+	 *  - Sorts the models from most to least complete
+	 * 
+	 * @param layoutChoice - Layout to use on the SmallMultiples
+	 */
 	public void initializeSmallMultiplesDisplay(String layoutChoice) {
 		
 		// Load the small multiples if they don't exist in the array already
@@ -390,10 +434,20 @@ public class SmallMultiplesPanel extends JLayeredPane implements ActionListener 
 		
 	} //initializeSmallMultiplesDisplay
 	
+	/**
+	 * Returns the last panel selected
+	 * 
+	 * @return - the last panel selected
+	 */
 	public int getLastPanelSelected() {
 		return m_lastPanelSelected;
 	} //getLastPanelSelected
 	
+	/** 
+	 * Sets the last panel selected
+	 * 
+	 * @param sel - the last panel selected
+	 */
 	public void setLastPanelSelected(int sel) {
 		// If an old panel is being de-selected, remove all highlighting
 		// If a new panel is being selected, highlight that panel.
@@ -408,10 +462,23 @@ public class SmallMultiplesPanel extends JLayeredPane implements ActionListener 
 		m_lastPanelSelected = sel;
 	} //setLastPanelSelected
 	
+	/**
+	 * Determine if a contact map is stored in memory
+	 * 
+	 * @param filepath - filepath of the contact map we're looking for
+	 * 
+	 * @return - either the contact map if found, or null otherwise
+	 */
 	private SmallMultiple lookupDisplay(String filepath) {
 	    return m_contactMapRegistry.get(filepath);
 	} //lookupDisplay
 	
+	/**
+	 * Highlight a panel (clearing all other highlights as an option)
+	 * 
+	 * @param panelIndex - The panel index to highlight
+	 * @param resetHighlighting - Whether or not to reset all other highlights
+	 */
 	public void highlightPanel(int panelIndex, boolean resetHighlighting) {
 		// First reset all panels without highlighting if requested
 		if (resetHighlighting) {
@@ -428,11 +495,22 @@ public class SmallMultiplesPanel extends JLayeredPane implements ActionListener 
 		myPanel[panelIndex].repaint();
 	} //highlightPanel
 	
+	/**
+	 * Highlight multiple panels (for when comparison is done via context menu)
+	 * 
+	 * @param panelIndex1 - Index of the first panel to highlight
+	 * @param panelIndex2 - Index of the second panel to highlight
+	 */
 	public void highlightPanels(int panelIndex1, int panelIndex2) {
 		highlightPanel(panelIndex1, true);
 		highlightPanel(panelIndex2, false);
 	} //highlightPanels
 	
+	/**
+	 * Set panels to the highlighted collection
+	 * 
+	 * @param panels - set of panels to set to the collection
+	 */
 	public void setHighlightedPanels(ArrayList<Integer> panels) {
 		// First clear the currently highlighted models
 		m_selectedModels.clear();
@@ -441,6 +519,11 @@ public class SmallMultiplesPanel extends JLayeredPane implements ActionListener 
 		addHighlightedPanels(panels);
 	} //setHighlightedPanels
 	
+	/**
+	 * Add panels to the highlighted collection
+	 * 
+	 * @param panels - set of panels to add to the collection
+	 */
 	public void addHighlightedPanels(ArrayList<Integer> panels) {
 		// Add in the list of models to highlight
 		for (int i = 0; i < panels.size(); i++) {
@@ -448,6 +531,11 @@ public class SmallMultiplesPanel extends JLayeredPane implements ActionListener 
 		} //for
 	} //addHighlightedPanels
 	
+	/**
+	 * Add a single panel to the highlighted collection
+	 * 
+	 * @param panel - panel index to add to the collection
+	 */
 	public void addHighlightedPanel(int panel) {
 		// Add panel to currently selected list
 		addPanelToList(panel);
@@ -464,6 +552,11 @@ public class SmallMultiplesPanel extends JLayeredPane implements ActionListener 
 		
 	} //addHighlightedPanel
 	
+	/**
+	 * Add a single panel to the highlighted list
+	 * 
+	 * @param panel - Index of the panel to add to the list
+	 */
 	private void addPanelToList(int panel) {
 		// Check to be sure it isn't already in the list
 		for (int i = 0; i < m_selectedModels.size(); i++) {
@@ -484,12 +577,22 @@ public class SmallMultiplesPanel extends JLayeredPane implements ActionListener 
 		
 	} //addPanelToList
 	
+	/**
+	 * Remove panels from the highlighted collection
+	 * 
+	 * @param panels - Set of panels to remove from the highlighted collection
+	 */
 	public void removeHighlightedPanels(ArrayList<Integer> panels) {
 		while (panels.size() != 0) {
 			removeHighlightedPanel(panels.get(0));
 		} //while
 	} //removeHighlightedPanels
 	
+	/**
+	 * Remove a single panel from the highlighted collection
+	 * 
+	 * @param panel - Index of the panel to remove
+	 */
 	public void removeHighlightedPanel(int panel) {
 		for (int i = 0; i < m_selectedModels.size(); i++) {
 			if (m_selectedModels.get(i) == panel) {
@@ -505,10 +608,18 @@ public class SmallMultiplesPanel extends JLayeredPane implements ActionListener 
 		removeHighlightingOnPanel(panel);
 	} //removeHighlightedPanels
 	
+	/**
+	 * Get the collection of highlighted panels
+	 * 
+	 * @return - The collection of highlighted panels
+	 */
 	public ArrayList<Integer> getHighlightedPanels() {
 		return m_selectedModels;
 	} //getHightlightedPanels
 	
+	/**
+	 * Empties the list of highlighted panels and clears all highlights
+	 */
 	public void removeAllSelections() {
 		m_selectedModels.clear();
 		for (int i = 0; i < sm.length; i++) {
@@ -516,10 +627,18 @@ public class SmallMultiplesPanel extends JLayeredPane implements ActionListener 
 		} //for
 	} //removeAllSelections
 	
+	/**
+	 * Returns whether or not exactly two panels are highlighted (for comparison)
+	 * 
+	 * @return - whether or not exactly two panels are highlighted
+	 */
 	public boolean twoPanelsHighlighted() {
 		return ((m_selectedModels.size() == 2) && (m_selectedModels.get(0) != -1) && (m_selectedModels.get(1) != -1));
 	} //twoPanelsHighlighted
 	
+	/**
+	 * Compare the models currently highlighted
+	 */
 	public void compareModels() {
 		//  Check radio buttons to see if we are comparing similarities or differences
 		boolean comparingSimilarities = rbtnCompareSimilarities.isSelected();
@@ -537,28 +656,36 @@ public class SmallMultiplesPanel extends JLayeredPane implements ActionListener 
 		
 	} //compareModels
 	
+	/**
+	 * Set the compare similarities button to selected (if similarities comparison is done another way)
+	 */
 	public void selectCompareSimilaritiesButton() {
 		rbtnCompareSimilarities.setSelected(true);
 	} //selectCompareSimilaritiesButton
 	
+	/**
+	 * Set the compare differences button to selected (if differences comparison is done another way)
+	 */
 	public void selectCompareDifferencesButton() {
 		rbtnCompareDifferences.setSelected(true);
 	} //selectCompareDifferencesButton
 	
+	/**
+	 * Remove the highlighting from all panels
+	 */
 	public void removeHighlighting() {
 		for (int i = 0; i < m_numFiles; i++) {
-			myPanel[i].setBackground(Color.WHITE);
-			sm[i].getDisplay().setBackground(Color.WHITE);
-			myPanel[i].setBorder(border);
-			sm[i].getDisplay().setSize(myPanel[i].getWidth() - 2, myPanel[i].getHeight() - 2);
-			sm[i].getDisplay().repaint();
-			sm[i].getDisplay().getVisualization().repaint();
-			myPanel[i].repaint();
+			removeHighlightingOnPanel(i);
 		} //for
 		
 		//m_selectedModels.clear();
 	} //removeHighlighting
 	
+	/**
+	 * Remove the highlighting from a single panel
+	 * 
+	 * @param panelIndex - the index of the panel to highlight
+	 */
 	private void removeHighlightingOnPanel(int panelIndex) {
 		myPanel[panelIndex].setBackground(Color.WHITE);
 		sm[panelIndex].getDisplay().setBackground(Color.WHITE);
@@ -569,20 +696,36 @@ public class SmallMultiplesPanel extends JLayeredPane implements ActionListener 
 		myPanel[panelIndex].repaint();
 	} //removeHighlightingOnPanel
 	
+	/**
+	 * Clear all BubbleSet comparison overlays
+	 */
 	private void clearBubblesetOverlays() {
 		for (int i = 0; i < sm.length; i++) {
 			((SMClickControlDelegate)sm[i].getNetworkViewer().getClickControl()).clearBubbleSets();
 		} //for
 	} //clearBubblesetOverlays
 	
+	/**
+	 * Returns whether or not any panel is currently highlighted
+	 * 
+	 * @return - whether or not any panel is currently highlighted
+	 */
 	public boolean isCurrentlyHighlighted() {
 		return m_currentlyHighlighted;
 	} //isCurrentlyHighlighted
 	
+	/**
+	 * Sets whether or not any panel is currently highlighted
+	 * 
+	 * @param high - whether or not any panel is currently highlighted
+	 */
 	public void setCurrentlyHighlighted(boolean high) {
 		m_currentlyHighlighted = high;
 	} //setCurrentlyHighlighted
 	
+	/**
+	 * Initializes a blank display
+	 */
 	public void initializeBlankDisplay() {
 		
 		// Remove old components (if necessary) from the grid
@@ -604,10 +747,21 @@ public class SmallMultiplesPanel extends JLayeredPane implements ActionListener 
 				
 	} //initializeBlankDisplay
 	
+	/**
+	 * Returns the collection of JPanels storing the SmallMultiples
+	 * 
+	 * @return - the collection of JPanels
+	 */
 	public JPanel[] getSmallMultiplesPanels() {
 		return myPanel;
 	} //getSmallMultiplesPanels
 	
+	/**
+	 * Loads a visualization into a panel
+	 * 
+	 * @param vis - The Visualization object to place in a panel
+	 * @param index - The index of the panel to place the Visualization object
+	 */
 	public void setVisualization(Visualization vis, int index) {
 		sm[index].getDisplay().setVisualization(vis);
 		sm[index].getDisplay().repaint();
@@ -690,16 +844,35 @@ public class SmallMultiplesPanel extends JLayeredPane implements ActionListener 
 		return largestModelIndex;
 	} //findMostCompleteModel
 	
+	/**
+	 * Returns the Visualization object in a given panel
+	 * 
+	 * @param i - The panel index of the Visualization object to retrieve
+	 * 
+	 * @return - The Visualization object in that panel
+	 */
 	public Visualization getVisualization(int i) {
 		return sm[i].getDisplay().getVisualization();
 	} //getVisualization
 	
-	
+	/** 
+	 * Returns the SmallMultiple object in a given panel
+	 * 
+	 * @param i - The panel index of the SmallMultiple object to retrieve
+	 * 
+	 * @return - The SmallMultiple object in that panel
+	 */
 	public SmallMultiple getMultiple(int i) {
 		return sm[i];
 	} //getMultiple
 
-	
+	/**
+	 * Determine the number of objects (components and edges) in a model to check the size and determine the most complete model
+	 * 
+	 * @param vis - The Visualization object to check
+	 * 
+	 * @return - the number of components and edges in the model
+	 */
 	private int countLabels(Visualization vis) { 
 		int count = 0;
 		
@@ -743,7 +916,6 @@ public class SmallMultiplesPanel extends JLayeredPane implements ActionListener 
 	 * @param largestModelIndex - index of the most complete model
 	 * @param smScores - the computed similarity matrices
 	 */
-
 	public void sortModels(int largestModelIndex, SimilarityMatrices smScores) {
 		if (largestModelIndex == -1) {
 			return;
@@ -803,7 +975,6 @@ public class SmallMultiplesPanel extends JLayeredPane implements ActionListener 
 		return similarityScores;
 	} //computerModelSimilarityScores
 	
-
 	/**
 	 * Determine the size of each of the individual JPanels from the overall panel dimension
 	 * 
@@ -816,8 +987,7 @@ public class SmallMultiplesPanel extends JLayeredPane implements ActionListener 
 		width = (int) overallSize.getWidth() / cols;
 				
 		return new Dimension(width, height);
-	} //findIndividualPanelSize
-	
+	} //findIndividualPanelSize	
 	
 	/** 
 	 * Determine the number of BNGL files in the current working directory - this should be the number of
@@ -881,9 +1051,8 @@ public class SmallMultiplesPanel extends JLayeredPane implements ActionListener 
 		} //if-else
 	} //selectLayout
 	
-	
-	/*
-	 * Class to load the Small Multiples in a Thread rather than sequentially
+	/**
+	 * Class to load the Small Multiples (from disk) in a Thread rather than sequentially
 	 */
 	public class SmallMultipleLoaderThread extends Thread {
 		
@@ -891,12 +1060,22 @@ public class SmallMultiplesPanel extends JLayeredPane implements ActionListener 
 		File m_child;
 		String m_layoutChoice;
 		
+		/**
+		 * Initialize the instance variables for the Thread
+		 * 
+		 * @param currentMultiple - the panel index of the multiple we're loading
+		 * @param child - the file for the model we're loading
+		 * @param layoutChoice - the layout for the SmallMultiple
+		 */
 		public SmallMultipleLoaderThread(int currentMultiple, File child, String layoutChoice) {
 			m_currentMultiple = currentMultiple;
 			m_child = child;
 			m_layoutChoice = layoutChoice;
 		} //SmallMultipleThreadLoader (constructor)
 		
+		/**
+		 * Run the Thread
+		 */
 		public void run() {
 			// Loads the small multiple into memory, then adds the multiple to the registry
 			sm[m_currentMultiple] = BackgroundFileLoader.loadContactMap(m_child.getAbsolutePath(), lookupPosition(m_layoutChoice), m_individualSize, m_view);
@@ -905,7 +1084,7 @@ public class SmallMultiplesPanel extends JLayeredPane implements ActionListener 
 		
 	} //SmallMultipleLoaderThread (inner class)
 	
-	/*
+	/**
 	 * Class to update the positions of the Small Multiple nodes in a Thread rather than sequentially
 	 */
 	public class SmallMultiplePositionThread extends Thread {
@@ -913,11 +1092,20 @@ public class SmallMultiplesPanel extends JLayeredPane implements ActionListener 
 		int m_currentMultiple;
 		String m_layoutChoice;
 		
+		/**
+		 * Initialize the instance variables for the Thread
+		 * 
+		 * @param i - the panel index of the SmallMultiple we're re-laying-out
+		 * @param layoutChoice - layout choice we're following
+		 */
 		public SmallMultiplePositionThread(int i, String layoutChoice) {
 			m_currentMultiple = i;
 			m_layoutChoice = layoutChoice;
 		} //SmallMultiplePositionThread (constructor)
 		
+		/**
+		 * Run the Thread
+		 */
 		public void run() {
 			sm[m_currentMultiple].setLayoutPath(lookupPosition(m_layoutChoice));
 			sm[m_currentMultiple].getDisplay().getVisualization().run("layout");
@@ -926,26 +1114,25 @@ public class SmallMultiplesPanel extends JLayeredPane implements ActionListener 
 		
 	} //SmallMultiplePositionThread
 	
-	/*
-	 * Grabbed from LayeredPane - needs to be updated to reflect the new layout
-	 */
-	
 	/**
-	 * There is a native resize method, but I needed to do more so I created
+	 * Adam: There is a native resize method, but I needed to do more so I created
 	 * this one.  This default version calls the parameterized version with
 	 * the m_currentSize as input.
 	 */
 	public void myResize() {
 		myResize(m_overallSize);
+		
+		// The initial panel size is now set, so we shouldn't automatically resize the models
+		m_modelSizeInitialized = true;
 	} //myResize
 	
 	/**
-	 * There is a native resize method, but I needed to do more so I created
+	 * Adam: There is a native resize method, but I needed to do more so I created
 	 * this one.
 	 * 
 	 * Updates the size of the each pane
 	 * 
-	 * @param size
+	 * @param size - the size of the overall ViewPart
 	 */
 	public void myResize(Dimension size) {	
 		
@@ -962,34 +1149,24 @@ public class SmallMultiplesPanel extends JLayeredPane implements ActionListener 
 			
 			sm[i].getDisplay().getVisualization().run("layout");
 			
-			fitToPanel2(i);
-			
 		} //for
+		
+		
+		// Initialize the size of the models to their panels on the first resize only
+		if (!m_modelSizeInitialized) {
+			for (int i = 0; i < m_numFiles; i++) {
+				fitToPanel(i);
+			} //for	
+		} //if
 		
 	} //myResize (with dimension parameter provided)
 	
-	@Deprecated
+	/**
+	 * Fit the model to the size of the individual JPanel
+	 * 
+	 * @param panelIndex - index of the panel we're fitting to the panel
+	 */
 	public void fitToPanel(int panelIndex) {
-		//m_individualSize = findIndividualPanelSize(m_overallSize);
-		
-		double panelWidth = m_individualSize.width;
-		double panelHeight = m_individualSize.height;
-		
-		double visualizationWidth = sm[panelIndex].getDisplay().getWidth();
-		double visualizationHeight = sm[panelIndex].getDisplay().getWidth();
-		
-		double widthScale = panelWidth / visualizationWidth;
-		double heightScale = panelHeight / visualizationHeight;
-		
-		double zoomScale = (widthScale < heightScale ? widthScale : heightScale); 
-		
-		Point2D.Double center = new Point2D.Double(panelWidth/2, panelHeight/2);
-		
-		sm[panelIndex].getDisplay().zoomAbs(center, zoomScale);
-		
-	} //fitToPanel
-	
-	public void fitToPanel2(int panelIndex) {
 		
 		int m_margin = 5;
 		
@@ -999,7 +1176,7 @@ public class SmallMultiplesPanel extends JLayeredPane implements ActionListener 
         GraphicsLib.expand(bounds, m_margin + (int)(1/sm[panelIndex].getDisplay().getScale()));
         DisplayLib.fitViewToBounds(sm[panelIndex].getDisplay(), bounds, 0);
 		
-	} //fitToPanel2
+	} //fitToPanel
 	
 	public void setDisplay(Display d) {
 		// TODO Auto-generated method stub

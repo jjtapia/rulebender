@@ -111,6 +111,14 @@ public class SmallMultiple {
     // The set contains all the involved nodes in a rule.
     private Hashtable<Set<Node>, Node> m_hubNodes;
 	
+    /**
+     * Convert the model to a Visualization
+     * 
+     * @param view - SmallMultiplesView that the SmallMultiple will be loaded into
+     * @param model_in - ContactMapModel that we're converting to a visual representation
+     * @param cMapSize - Size bounds of the ContactMap
+     * @param layoutPath - Layout we're passing along to the CMAPNetworkViewer
+     */
 	public SmallMultiple(SmallMultiplesView view, ContactMapModel model_in, Dimension cMapSize, String layoutPath) {
 
 		m_model = model_in;
@@ -577,15 +585,34 @@ public class SmallMultiple {
 	
 	} //SmallMultiple
 	
+	/**
+	 * Set the path to the layout file
+	 * 
+	 * @param layoutPath - The path to the layout file
+	 */
 	public void setLayoutPath(String layoutPath) {
 		m_networkViewer.setPosPath(layoutPath);
 		m_networkViewer.build();
 	} //setLayoutPath
 	
+	/**
+	 * Returns the CMAPNetworkViewer tied to this SmallMultiple
+	 * 
+	 * @return - the CMAPNetworkViewer
+	 */
 	public CMAPNetworkViewer getNetworkViewer() {
 		return m_networkViewer;
 	} //getNetworkViewer
 	
+	/**
+	 * Makes a component node
+	 * 
+	 * @param tmole
+	 * @param tcomp
+	 * @param moleIndex
+	 * @param compIndex
+	 * @return
+	 */
 	private Node makeComponentNode(Molecule tmole, Component tcomp, int moleIndex, int compIndex) 
 	{
 		Node n = m_componentGraph.addNode();
@@ -607,6 +634,18 @@ public class SmallMultiple {
 	    return n;
 	} //makeComponentNode
 	
+	/**
+	 * Makes a state node
+	 * 
+	 * @param tmole
+	 * @param tcomp
+	 * @param tstate
+	 * @param moleIndex
+	 * @param compIndex
+	 * @param stateIndex
+	 * @param compNode
+	 * @return
+	 */
 	private Node makeStateNode(Molecule tmole, Component tcomp, State tstate,
 			int moleIndex, int compIndex, int stateIndex, Node compNode) 
 	{
@@ -631,6 +670,9 @@ public class SmallMultiple {
 		return n_state;
 	} //makeStateNode
 	
+	/**
+	 * Creates edges
+	 */
 	private void createEdgesForBonds() 
 	{
 		// Create an edge for each bond.
@@ -748,6 +790,13 @@ public class SmallMultiple {
 		} //for
 	} //createEdgesForBonds
 	
+	/**
+	 * Identifies bonds
+	 * 
+	 * @param thisRule
+	 * @param r_comp
+	 * @param r_state
+	 */
 	private void identifyBonds(Rule thisRule, VisualRule r_comp, VisualRule r_state)
 	{
 		//DEBUG
@@ -815,6 +864,13 @@ public class SmallMultiple {
 		} //for
 	} //identifyBonds
 	
+	/**
+	 * Identifies reactants
+	 * 
+	 * @param thisRule
+	 * @param r_comp
+	 * @param r_state
+	 */
 	private void identifyReactants(Rule thisRule, VisualRule r_comp, VisualRule r_state) {
 		// For all of the reactant patterns
 		for(RulePattern rp : thisRule.getReactantpatterns())
@@ -848,6 +904,13 @@ public class SmallMultiple {
 		} //for
 	} //identifyReactants
 	
+	/**
+	 * Identifies patterns
+	 * 
+	 * @param thisRule
+	 * @param r_comp
+	 * @param r_state
+	 */
 	private void identifyProducts(Rule thisRule, VisualRule r_comp, VisualRule r_state) {
 		// For all of the product patterns.
 		for(RulePattern pp : thisRule.getProductpatterns())
@@ -880,6 +943,12 @@ public class SmallMultiple {
 	} //identifyProducts
 	
 	//TODO really bad efficiency
+	/**
+	 * Identifies state chances
+	 * 
+	 * @param thisRule
+	 * @param r_state
+	 */
 	private void identifyStateChange(Rule thisRule, VisualRule r_state) {
 		for (RulePattern pp : thisRule.getProductpatterns()) 
 		{
@@ -966,6 +1035,12 @@ public class SmallMultiple {
 		} //for
 	} //identifyStateChange
 	
+	/**
+	 * Identifies mole level reactions
+	 * 
+	 * @param thisRule
+	 * @param r_comp
+	 */
 	private void identifyMoleLevelReaction(Rule thisRule, VisualRule r_comp) 
 	{
 		// hub node
@@ -1058,6 +1133,13 @@ public class SmallMultiple {
 		
 	} //identifyMoleLevelReaction
 	
+	/**
+	 * Adds hub edges
+	 * 
+	 * @param patterns
+	 * @param hubNode
+	 * @param forward
+	 */
 	private void addHubEdges(ArrayList<RulePattern> patterns, Node hubNode, boolean forward)
 	{
 		for (RulePattern rp : patterns) 
@@ -1140,7 +1222,12 @@ public class SmallMultiple {
 		} //for
 	} //addHubEdges
 	
-	
+	/**
+	 * Initializes compartment aggregates 
+	 * 
+	 * @param at_compartment
+	 * @param aggList
+	 */
 	private void initCompartmentAggregates(AggregateTable at_compartment,  ArrayList<AggregateItem> aggList) {
 		   
         CompartmentTable cmptTable = m_model.getCompartments();
@@ -1198,15 +1285,30 @@ public class SmallMultiple {
 		} //for
 	} //addItemToCompartmentAgg
 
+	/**
+	 * Returns the Display object
+	 * 
+	 * @return - the Display object
+	 */
 	public Display getDisplay()
 	{
 		return m_networkViewer.getDisplay();
 	} //getDisplay
-	
+
+	/**
+	 * Returns the CMAPNetworkViewer object
+	 * 
+	 * @return - the CMAPNetworkViewer object
+	 */
 	public CMAPNetworkViewer getCMAPNetworkViewer() {
 		return this.m_networkViewer;
 	} //getCMAPNetworkViewer
 
+	/**
+	 * Returns the node index hashtable
+	 * 
+	 * @return - the node index hashtable
+	 */
 	public Hashtable<String, Node> getNodeIndex() {
 		return m_nodes;
 	} //getNodeIndex
