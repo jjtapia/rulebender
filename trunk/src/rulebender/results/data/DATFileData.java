@@ -234,6 +234,7 @@ public class DATFileData extends FileData {
 		    + ".bngl");
 		List<List<String>> patterns = readPatternsFromBnglFile(observableNames,
 		    bnglFile);
+
 		List<List<String>> components = readComponentsFromNetFile(observableNames);
 		observableFolder = new ObservableFolderNode("Observables", observableNames,
 		    patterns, components);
@@ -348,17 +349,19 @@ public class DATFileData extends FileData {
 				observables.add(s);
 			}
 		}
+
+		if (observables.size() < varName.size()) {
+			for (int i = varName.size() - observables.size(); i < varName.size(); i++) {
+				observables.add(varName.get(i));
+			}
+		}
+
 		return observables;
 	}
 
 	private List<List<String>> readPatternsFromBnglFile(List<String> observables,
 	    File bnglFile) {
 		ArrayList<List<String>> patterns = new ArrayList<List<String>>();
-		if (bnglFile == null || !bnglFile.exists()) {
-			// bnglFile doesnt exists
-			// try net file
-			return readPatternsFromNetFile(observables, getNetFile());
-		}
 		Scanner in = null;
 		try {
 			in = new Scanner(bnglFile);
@@ -398,6 +401,15 @@ public class DATFileData extends FileData {
 			return readPatternsFromNetFile(observables, getNetFile());
 		}
 		in.close();
+
+		if (patterns.size() < varName.size()) {
+			for (int i = varName.size() - patterns.size(); i < varName.size(); i++) {
+				List<String> pattern = new ArrayList<String>();
+				pattern.add(varName.get(i));
+				patterns.add(pattern);
+			}
+		}
+
 		return patterns;
 	}
 
@@ -447,6 +459,13 @@ public class DATFileData extends FileData {
 			return generateEmptyPatterns();
 		}
 		in.close();
+		if (patterns.size() < varName.size()) {
+			for (int i = varName.size() - patterns.size(); i < varName.size(); i++) {
+				List<String> pattern = new ArrayList<String>();
+				pattern.add(varName.get(i));
+				patterns.add(pattern);
+			}
+		}
 		return patterns;
 	}
 
@@ -551,9 +570,9 @@ public class DATFileData extends FileData {
 						line = in.nextLine().trim();
 						if (line.lastIndexOf(")") != -1) {
 							// name of species
-//							String s = line.substring(line.indexOf(" ") + 1,
-//							    line.lastIndexOf(")") + 1);
-							String s = line.substring(0,line.lastIndexOf(")") + 1);
+							// String s = line.substring(line.indexOf(" ") + 1,
+							// line.lastIndexOf(")") + 1);
+							String s = line.substring(0, line.lastIndexOf(")") + 1);
 							speciesList.add(s);
 						}
 					} while (!line.equalsIgnoreCase("end species"));
@@ -562,6 +581,12 @@ public class DATFileData extends FileData {
 			}
 
 			in.close();
+			if (speciesList.size() != varName.size()) {
+				for (int i = varName.size() - speciesList.size(); i < varName.size(); i++) {
+					speciesList.add(varName.get(i));
+				}
+			}
+
 			return speciesList;
 		} catch (FileNotFoundException e) {
 			System.out.println("NET File not found!");
@@ -644,6 +669,14 @@ public class DATFileData extends FileData {
 			}
 
 			in.close();
+
+			if (componentsList.size() < varName.size()) {
+				for (int i = varName.size() - componentsList.size(); i < varName.size(); i++) {
+					List<String> comp = new ArrayList<String>();
+					comp.add(varName.get(i));
+					componentsList.add(comp);
+				}
+			}
 			return componentsList;
 		} catch (FileNotFoundException e) {
 			System.out.println("NET File not found!");
@@ -679,12 +712,12 @@ public class DATFileData extends FileData {
 	 * @param selectedSpeciesName
 	 */
 	public void setSelectedSpeciesName(String selectedSpeciesName) {
-//		if (!speciesNameTrans.isEmpty()
-//		    && speciesNameTrans.containsKey(selectedSpeciesName)) {
-//			this.selectedSpeciesName = speciesNameTrans.get(selectedSpeciesName);
-//		} else {
-			this.selectedSpeciesName = selectedSpeciesName;
-//		}
+		// if (!speciesNameTrans.isEmpty()
+		// && speciesNameTrans.containsKey(selectedSpeciesName)) {
+		// this.selectedSpeciesName = speciesNameTrans.get(selectedSpeciesName);
+		// } else {
+		this.selectedSpeciesName = selectedSpeciesName;
+		// }
 	}
 
 	/**
