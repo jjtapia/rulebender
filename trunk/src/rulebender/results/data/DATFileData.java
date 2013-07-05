@@ -581,11 +581,6 @@ public class DATFileData extends FileData {
 			}
 
 			in.close();
-			if (speciesList.size() != varName.size()) {
-				for (int i = varName.size() - speciesList.size(); i < varName.size(); i++) {
-					speciesList.add(varName.get(i));
-				}
-			}
 
 			return speciesList;
 		} catch (FileNotFoundException e) {
