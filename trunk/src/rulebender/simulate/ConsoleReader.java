@@ -1,14 +1,8 @@
 package rulebender.simulate;
 
-import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 
-public class ConsoleReader extends Thread {
-
-	/** The input stream. */
-	protected final InputStream inStream;
+public class ConsoleReader extends StreamDisplayThread {
 
 	private String error = "";
 
@@ -22,29 +16,7 @@ public class ConsoleReader extends Thread {
 	 *          the report level
 	 */
 	public ConsoleReader(InputStream input) {
-		inStream = input;
-	}
-
-	/**
-	 * Starts the reader on the stream. In order to process the line written on
-	 * the stream {@link #processLine(String)} is called.
-	 */
-	@Override
-	public void run() {
-		BufferedReader reader = new BufferedReader(new InputStreamReader(inStream));
-		String input = "";
-		try {
-			while ((input = reader.readLine()) != null) {
-				processLine(input);
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		try {
-			reader.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		super("BNGConsole", input, true);
 	}
 
 	/**
@@ -54,14 +26,15 @@ public class ConsoleReader extends Thread {
 	 * @param line
 	 *          the line
 	 */
+	@Override
 	protected void processLine(String line) {
+		super.processLine(line);
 		if (line.startsWith("ERROR")) {
 			error += line;
 		}
 		if (hadError() && line.trim().startsWith("at line")) {
 			error += line;
 		}
-		System.out.println(line);
 	}
 
 	/**
@@ -78,14 +51,13 @@ public class ConsoleReader extends Thread {
 	 * 
 	 * @return the error
 	 */
-	public String getError() {
-		return error;
+	public void reportError() {
+		processLine("An ERROR occuered during the processing in BioNetGen\n"
+		    + error);
+		error = "";
 	}
 
-	/**
-	 * Resets the error.
-	 */
-	public void resetError() {
-		error = "";
+	public String getError() {
+		return error;
 	}
 }

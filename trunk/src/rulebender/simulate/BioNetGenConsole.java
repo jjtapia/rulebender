@@ -15,7 +15,6 @@ public class BioNetGenConsole {
 	private static Process bngConsole = null;
 	private static OutputStreamWriter writer = null;
 	private static ConsoleReader out = null;
-	private static ConsoleReader err = null;
 	public static long creationTimeOut = 30000;
 	public static long check = 1000;
 
@@ -35,9 +34,7 @@ public class BioNetGenConsole {
 			}
 			writer = new OutputStreamWriter(bngConsole.getOutputStream());
 			out = new ConsoleReader(bngConsole.getInputStream());
-			err = new ConsoleReader(bngConsole.getErrorStream());
 			out.start();
-			err.start();
 		}
 	}
 
@@ -76,10 +73,8 @@ public class BioNetGenConsole {
 				Thread.sleep(check);
 				if (out.hadError()) {
 					String err = out.getError();
-					out.resetError();
-					throw new Error(
-					    "Wasn't able to read the model due to an error in BioNetGen:  "
-					        + err);
+					out.reportError();
+					throw new Error("An error occurred while processing the file: " + err);
 				} else if (waitTime > creationTimeOut) {
 					Logger.log(LOG_LEVELS.ERROR, BioNetGenConsole.class,
 					    "Wasn't able to create the xml-file for the model!!!");
