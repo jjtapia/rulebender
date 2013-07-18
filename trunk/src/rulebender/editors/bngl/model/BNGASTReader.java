@@ -1,6 +1,5 @@
 package rulebender.editors.bngl.model;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
@@ -12,7 +11,6 @@ import java.util.List;
 import org.jdom.DataConversionException;
 import org.jdom.Document;
 import org.jdom.Element;
-import org.jdom.JDOMException;
 import org.jdom.input.SAXBuilder;
 
 import rulebender.contactmap.models.Component;
@@ -64,22 +62,7 @@ public class BNGASTReader {
 
 	public void buildModel(File xmlFile) {
 		try {
-			System.out.println(xmlFile.toString());
-			BufferedReader reader = new BufferedReader(new FileReader(xmlFile));
-			StringBuffer content = new StringBuffer();
-			String l;
-			while ((l = reader.readLine()) != null) {
-				content.append(l + "\n");
-			}
-
-			Logger.log(LOG_LEVELS.INFO, this.getClass(), content.toString());
-			SAXBuilder builder = new SAXBuilder();
-			Document doc = builder.build(new StringReader(content.toString()));
-			buildModel(doc);
-			reader.close();
-		} catch (JDOMException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			buildModel(getDocument(new FileReader(xmlFile)));
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
