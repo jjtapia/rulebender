@@ -74,13 +74,20 @@ public class BioNetGenConsole {
 			try {
 				waitTime += check;
 				Thread.sleep(check);
-				if (waitTime > creationTimeOut) {
+				if (out.hadError()) {
+					String err = out.getError();
+					out.resetError();
+					throw new Error(
+					    "Wasn't able to read the model due to an error in BioNetGen:  "
+					        + err);
+				} else if (waitTime > creationTimeOut) {
 					Logger.log(LOG_LEVELS.ERROR, BioNetGenConsole.class,
 					    "Wasn't able to create the xml-file for the model!!!");
 					throw new Error(
 					    "Wasn't able to create the xml-file for the model located at: "
 					        + bngModel.toString());
 				}
+
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

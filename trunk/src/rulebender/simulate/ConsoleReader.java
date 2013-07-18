@@ -10,6 +10,8 @@ public class ConsoleReader extends Thread {
 	/** The input stream. */
 	protected final InputStream inStream;
 
+	private String error = "";
+
 	/**
 	 * Instantiates a new stream handler. The output is given to the SimSystem
 	 * with the appropriate Level.
@@ -53,6 +55,37 @@ public class ConsoleReader extends Thread {
 	 *          the line
 	 */
 	protected void processLine(String line) {
+		if (line.startsWith("ERROR")) {
+			error += line;
+		}
+		if (hadError() && line.trim().startsWith("at line")) {
+			error += line;
+		}
 		System.out.println(line);
+	}
+
+	/**
+	 * Error occurred in the console.
+	 * 
+	 * @return true, if error occurred
+	 */
+	public boolean hadError() {
+		return !error.equals("");
+	}
+
+	/**
+	 * Gets the error.
+	 * 
+	 * @return the error
+	 */
+	public String getError() {
+		return error;
+	}
+
+	/**
+	 * Resets the error.
+	 */
+	public void resetError() {
+		error = "";
 	}
 }
