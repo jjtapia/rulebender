@@ -90,7 +90,7 @@ public class ExampleView extends ViewPart implements IPartListener2
 		BNGASTReader reader = new BNGASTReader(builder);
 		
 		// Build the model.
-		reader.buildWithAST(model.getAST());
+		reader.buildModel(model.getAST());
 		
 		// Get the model.
 		m_myModel = builder.getModel();

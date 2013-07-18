@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 public class RuleData 
 {
-	private String m_expression;
+	private String m_ruleID;
 	private String m_label;
 	private String m_rate;
 	
@@ -30,12 +30,12 @@ public class RuleData
 		this.m_rate = rate;
 	}
 
-	public String getExpression() {
-		return m_expression;
+	public String getRuleID() {
+		return m_ruleID;
 	}
 
-	public void setExpression(String expression) {
-		this.m_expression = expression;
+	public void setRuleID(String ruleID) {
+		this.m_ruleID = ruleID;
 	}
 
 	public String getLabel() {

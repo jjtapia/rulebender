@@ -527,14 +527,15 @@ public class ContactMapVisual {
 			// Create a visual rule. Used for interaction. (See
 			// editor.contactmap.CMapClickControlDelegate.java)
 			VisualRule r_comp = new VisualRule(thisRule.getLabel(),
-			    thisRule.getExpression());
+			    thisRule.getLabel());
 			VisualRule r_state = new VisualRule(thisRule.getLabel(),
-			    thisRule.getExpression());
+			    thisRule.getLabel());
 
 			// Perform a check to see if this is the reverse rule for a bidirection.
 			// This is a quick hack to fix this problem, but it works for now.
 			// The old parser did not produce
-			if (!thisRule.getExpression().equals(previousRuleText)) {
+			if (!thisRule.getLabel().substring(0, thisRule.getLabel().length() - 1)
+			    .equals(previousRuleText)) {
 				// map rules to bonds
 				identifyBonds(thisRule, r_comp, r_state);
 			}
@@ -562,7 +563,7 @@ public class ContactMapVisual {
 			// map the rest of rules which can not be mapped to bonds or changed state
 			identifyMoleLevelReaction(thisRule, r_comp);
 
-			previousRuleText = thisRule.getExpression();
+			previousRuleText = thisRule.getLabel();
 		}
 
 		// Pass the BNGL source file into the CMAPNetworkViewer object

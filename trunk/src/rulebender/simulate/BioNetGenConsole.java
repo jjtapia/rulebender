@@ -6,6 +6,8 @@ import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.List;
 
+import rulebender.logging.Logger;
+import rulebender.logging.Logger.LOG_LEVELS;
 import rulebender.preferences.PreferencesClerk;
 
 public class BioNetGenConsole {
@@ -14,6 +16,8 @@ public class BioNetGenConsole {
 	private static OutputStreamWriter writer = null;
 	private static ConsoleReader out = null;
 	private static ConsoleReader err = null;
+	public static long creationTimeOut = 30000;
+	public static long check = 1000;
 
 	private static void invokeBNGConsole() {
 		String bngPath = PreferencesClerk.getFullBNGPath();
@@ -47,37 +51,43 @@ public class BioNetGenConsole {
 
 	// not working yet !!
 
-	// public static prog_return generateXML(File bngModel) {
-	// File xmlFile = new File(bngModel.getParentFile(), bngModel.getName()
-	// .substring(0, bngModel.getName().indexOf(".bngl")));
-	// // String net = xmlFile.toString();
-	// // net = net.substring(0, net.length() - 3) + "net";
-	// xmlFile.deleteOnExit();
-	// clearModel();
-	// readModel(bngModel);
-	// // String networkGen = "generate_network({" + "overwrite=>1,file=>\"" + net
-	// // + "\"})";
-	// // executeAction(networkGen);
-	// String writeXML = "writeXML({prefix=>\""
-	// + xmlFile.toString().replace("\\", "/") + "\"})";
-	// executeAction(writeXML);
-	//
-	// // BNGGrammar grammar = new BNGGrammar(input);
-	// try {
-	// BufferedReader r = new BufferedReader(new FileReader(new File(xmlFile
-	// + ".xml")));
-	// String s, line;
-	// s = "";
-	// while ((line = r.readLine()) != null) {
-	// s += line + "\n";
-	// }
-	//
-	// return BNGParserUtility.produceASTForBNGLText(s);
-	//
-	// } catch (IOException | RecognitionException e) {
-	// }
-	// return null;
-	// }
+	public static File generateXML(File bngModel) {
+		String fileName = bngModel.getParentFile().toString() + "/"
+		    + bngModel.getName().substring(0, bngModel.getName().indexOf(".bngl"));
+		File xmlFile = new File(fileName + ".xml");
+		if (xmlFile.exists()) {
+			xmlFile.delete();
+		}
+		String writeXML = "writeXML({prefix=>\"" + fileName.replace("\\", "/")
+		    + "\"})";
+		// String net = xmlFile.toString();
+		// net = net.substring(0, net.length() - 3) + "net";
+		xmlFile.deleteOnExit();
+		clearModel();
+		readModel(bngModel);
+		// String networkGen = "generate_network({" + "overwrite=>1,file=>\"" + net
+		// + "\"})";
+		// executeAction(networkGen);
+		executeAction(writeXML);
+		long waitTime = 0;
+		while (!xmlFile.exists()) {
+			try {
+				waitTime += check;
+				Thread.sleep(check);
+				if (waitTime > creationTimeOut) {
+					Logger.log(LOG_LEVELS.ERROR, BioNetGenConsole.class,
+					    "Wasn't able to create the xml-file for the model!!!");
+					throw new Error(
+					    "Wasn't able to create the xml-file for the model located at: "
+					        + bngModel.toString());
+				}
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		return xmlFile;
+	}
 
 	public static void clearModel() {
 		if (prepareConsole()) {

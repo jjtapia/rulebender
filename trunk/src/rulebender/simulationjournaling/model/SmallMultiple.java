@@ -526,14 +526,14 @@ public class SmallMultiple {
 			Rule thisRule = m_model.getRules().get(l);
 			
 			// Create a visual rule.  Used for interaction.  (See editor.contactmap.CMapClickControlDelegate.java)
-			VisualRule r_comp = new VisualRule(thisRule.getLabel(), thisRule.getExpression());
-			VisualRule r_state = new VisualRule(thisRule.getLabel(), thisRule.getExpression());
+			VisualRule r_comp = new VisualRule(thisRule.getLabel(), thisRule.getRuleID());
+			VisualRule r_state = new VisualRule(thisRule.getLabel(), thisRule.getRuleID());
 			
 			
 			// Perform a check to see if this is the reverse rule for a bidirection.
 			// This is a quick hack to fix this problem, but it works for now.  
 			// The old parser did not produce
-			if (!thisRule.getExpression().equals(previousRuleText)) {
+			if (!thisRule.getRuleID().equals(previousRuleText)) {
 				// map rules to bonds
 				identifyBonds(thisRule, r_comp, r_state);
 			} //if
@@ -563,7 +563,7 @@ public class SmallMultiple {
 			// map the rest of rules which can not be mapped to bonds or changed state
 			identifyMoleLevelReaction(thisRule, r_comp);
 			
-			previousRuleText = thisRule.getExpression();
+			previousRuleText = thisRule.getRuleID();
 		} //for
 				
 		// Pass the BNGL source file into the CMAPNetworkViewer object

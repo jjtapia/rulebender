@@ -149,7 +149,7 @@ public class TestBNGASTReader
 		// Create the astReader and register the cmapModelBuilder
 		BNGASTReader astReader = new BNGASTReader(mockBuilder);
 		// Use the reader to construct the model for the given ast.
-		astReader.buildWithAST(ast);
+		astReader.buildModel(ast);
 	}
 	
 	@Test
@@ -225,7 +225,7 @@ public class TestBNGASTReader
 			// Create the astReader and register the cmapModelBuilder
 			BNGASTReader astReader = new BNGASTReader(mockBuilder);
 			// Use the reader to construct the model for the given ast.
-			astReader.buildWithAST(ast);
+			astReader.buildModel(ast);
 		}
 	
 	@Test
@@ -485,6 +485,6 @@ public class TestBNGASTReader
 		// Create the astReader and register the cmapModelBuilder
 		BNGASTReader astReader = new BNGASTReader(mockBuilder);
 		// Use the reader to construct the model for the given ast.
-		astReader.buildWithAST(ast);
+		astReader.buildModel(ast);
 	}
 }

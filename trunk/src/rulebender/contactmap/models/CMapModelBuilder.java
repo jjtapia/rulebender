@@ -186,19 +186,22 @@ public class CMapModelBuilder implements BNGLModelBuilderInterface {
 	 */
 	@Override
 	public void foundRule(RuleData ruleData) {
-		// Get the existing rule.
-		Rule existingRule = m_model.getRuleWithExpression(ruleData.getExpression());
+		String label = ruleData.getLabel();
+		if (label.endsWith("r")) {
+			// Get the existing rule.
+			Rule existingRule = m_model.getRuleWithLabel(label.substring(0,
+			    label.length() - 1));
 
-		// If it is a reverse rule
-		if (existingRule != null) {
-			// Get the rule, set it to bidirectional, and set the 2nd rate.
-			existingRule.setBidirection(true);
-			existingRule.setRate2(ruleData.getRate());
+			// If it is a reverse rule
+			if (existingRule != null) {
+				// Get the rule, set it to bidirectional, and set the 2nd rate.
+				existingRule.setBidirection(true);
+				existingRule.setRate2(ruleData.getRate());
 
-			// Done
-			return;
+				// Done
+				return;
+			}
 		}
-
 		// Create a new rule.
 		Rule rule = new Rule();
 
@@ -206,7 +209,7 @@ public class CMapModelBuilder implements BNGLModelBuilderInterface {
 		rule.setLabel(ruleData.getLabel());
 
 		// Set the expression for the rule.
-		rule.setExpression(ruleData.getExpression());
+		rule.setRuleID(ruleData.getRuleID());
 
 		// Set the rate
 		rule.setRate1(ruleData.getRate());

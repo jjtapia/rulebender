@@ -12,7 +12,7 @@ public class Rule
 	private String m_label;  
 	
 	// expression of rule, including rates
-	private String m_expression; 
+	private String m_ruleID; 
 	
 	// Whether or not the rule is bidirectional (-> vs <->)
 	private boolean bidirection;
@@ -62,14 +62,14 @@ public class Rule
 	}
 
 
-	public String getExpression()
+	public String getRuleID()
 	{
-		return m_expression;
+		return m_ruleID;
 	}
 
-	public void setExpression(String name) 
+	public void setRuleID(String ruleID) 
 	{
-		this.m_expression = name;
+		this.m_ruleID = ruleID;
 	}
 
 	public void setBidirection(boolean bidirection) {
