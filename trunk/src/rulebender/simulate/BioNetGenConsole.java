@@ -6,6 +6,9 @@ import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.ui.console.MessageConsoleStream;
+
+import rulebender.core.utility.Console;
 import rulebender.logging.Logger;
 import rulebender.logging.Logger.LOG_LEVELS;
 import rulebender.preferences.PreferencesClerk;
@@ -15,7 +18,7 @@ public class BioNetGenConsole {
 	private static Process bngConsole = null;
 	private static OutputStreamWriter writer = null;
 	private static ConsoleReader out = null;
-	public static long creationTimeOut = 30000;
+	public static long creationTimeOut = 5000;
 	public static long check = 1000;
 
 	private static void invokeBNGConsole() {
@@ -48,7 +51,7 @@ public class BioNetGenConsole {
 
 	// not working yet !!
 
-	public static File generateXML(File bngModel) {
+	public static File generateXML(File bngModel, MessageConsoleStream errorStream) {
 		String fileName = bngModel.getParentFile().toString() + "/"
 		    + bngModel.getName().substring(0, bngModel.getName().indexOf(".bngl"));
 		File xmlFile = new File(fileName + ".xml");
@@ -74,13 +77,22 @@ public class BioNetGenConsole {
 				if (out.hadError()) {
 					String err = out.getError();
 					out.reportError();
-					throw new Error("An error occurred while processing the file: " + err);
+					errorStream.println(err);
+					// throw new Error("An error occurred while processing the file: " +
+					// err);
+					xmlFile = null;
+					break;
 				} else if (waitTime > creationTimeOut) {
 					Logger.log(LOG_LEVELS.ERROR, BioNetGenConsole.class,
 					    "Wasn't able to create the xml-file for the model!!!");
-					throw new Error(
+					Console.getMessageConsoleStream(bngModel.toString()).print(
 					    "Wasn't able to create the xml-file for the model located at: "
-					        + bngModel.toString());
+					        + bngModel.toString() + "\n");
+					// throw new Error(
+					// "Wasn't able to create the xml-file for the model located at: "
+					// + bngModel.toString());
+					xmlFile = null;
+					break;
 				}
 
 			} catch (InterruptedException e) {
@@ -88,6 +100,9 @@ public class BioNetGenConsole {
 				e.printStackTrace();
 			}
 		}
+		String warning = out.getWarnings();
+		out.reportWarnings();
+		errorStream.println(warning);
 		return xmlFile;
 	}
 
@@ -95,6 +110,7 @@ public class BioNetGenConsole {
 		if (prepareConsole()) {
 			write("clear");
 		}
+		out.reportWarnings();
 	}
 
 	public static void readModel(File bngModel) {

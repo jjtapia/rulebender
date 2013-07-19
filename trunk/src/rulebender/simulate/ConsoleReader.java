@@ -4,7 +4,10 @@ import java.io.InputStream;
 
 public class ConsoleReader extends StreamDisplayThread {
 
-	private String error = "";
+	private String errors = "";
+	private boolean errorLast = false;
+	private String warnings = "";
+	private boolean warningLast = false;
 
 	/**
 	 * Instantiates a new stream handler. The output is given to the SimSystem
@@ -30,10 +33,18 @@ public class ConsoleReader extends StreamDisplayThread {
 	protected void processLine(String line) {
 		super.processLine(line);
 		if (line.startsWith("ERROR")) {
-			error += line;
-		}
-		if (hadError() && line.trim().startsWith("at line")) {
-			error += line;
+			errors += line + "\n";
+			errorLast = true;
+		} else if (errorLast) {
+			errors += line + "\n";
+			errorLast = false;
+		} else if (line.startsWith("WARNING")
+		    && !line.startsWith("WARNING: Attempt to ")) {
+			warnings += line + "\n";
+			warningLast = true;
+		} else if (warningLast) {
+			warnings += line + "\n";
+			warningLast = false;
 		}
 	}
 
@@ -43,7 +54,7 @@ public class ConsoleReader extends StreamDisplayThread {
 	 * @return true, if error occurred
 	 */
 	public boolean hadError() {
-		return !error.equals("");
+		return !errors.equals("");
 	}
 
 	/**
@@ -52,12 +63,36 @@ public class ConsoleReader extends StreamDisplayThread {
 	 * @return the error
 	 */
 	public void reportError() {
-		processLine("An ERROR occuered during the processing in BioNetGen\n"
-		    + error);
-		error = "";
+		super.processLine("ERRORS occurred during the processing in BioNetGen\n"
+		    + errors);
+		errors = "";
 	}
 
 	public String getError() {
-		return error;
+		return errors;
+	}
+
+	/**
+	 * warnings occurred in the console.
+	 * 
+	 * @return true, if warnings occurred
+	 */
+	public boolean hadWarnings() {
+		return !warnings.equals("");
+	}
+
+	/**
+	 * Gets the warnings.
+	 * 
+	 * @return the warnings
+	 */
+	public void reportWarnings() {
+		super.processLine("WARNINGS occurred during the processing in BioNetGen\n"
+		    + warnings);
+		warnings = "";
+	}
+
+	public String getWarnings() {
+		return warnings;
 	}
 }

@@ -128,8 +128,9 @@ public class BackgroundFileLoader extends Thread {
 		System.setErr(errorStream);
 
 		try {
-			toReturn = BioNetGenConsole.generateXML(new File(sourcePath));
-			// toReturn = produceParseData(sourcePath).getParser().prog();
+			toReturn = BioNetGenConsole.generateXML(new File(sourcePath),
+			    Console.getMessageConsoleStream(sourcePath));
+			produceParseData(sourcePath).getParser().prog();
 		} catch (Exception e) {
 			e.printStackTrace();
 			System.out.println("Caught in the getAST Method.");

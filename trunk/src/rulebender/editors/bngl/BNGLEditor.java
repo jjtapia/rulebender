@@ -1,5 +1,7 @@
 package rulebender.editors.bngl;
 
+import java.io.File;
+import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -28,10 +30,12 @@ import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.ui.texteditor.IDocumentProvider;
 import org.eclipse.ui.texteditor.ITextEditor;
 
+import rulebender.core.utility.ANTLRFilteredPrintStream;
+import rulebender.core.utility.Console;
 import rulebender.editors.bngl.model.BNGLModel;
 import rulebender.errorview.model.BNGLError;
 import rulebender.logging.Logger;
-import rulebender.simulationjournaling.model.BackgroundFileLoader;
+import rulebender.simulate.BioNetGenConsole;
 import bngparser.BNGParseData;
 import bngparser.BNGParserUtility;
 
@@ -91,7 +95,7 @@ public class BNGLEditor extends TextEditor implements ISelectionListener,
 			    .toOSString());
 		}
 
-		m_model.setAST(BackgroundFileLoader.getAST(m_model.getPathID()));
+		m_model.setAST(getAST());
 	}
 
 	private void clearMarkers(String markerId) {
@@ -121,7 +125,7 @@ public class BNGLEditor extends TextEditor implements ISelectionListener,
 		if (m_model == null) {
 			m_model = new BNGLModel(((FileEditorInput) (getEditorInput())).getPath()
 			    .toOSString());
-			m_model.setAST(BackgroundFileLoader.getAST(m_model.getPathID()));
+			m_model.setAST(getAST());
 		}
 
 		return m_model;
@@ -135,7 +139,7 @@ public class BNGLEditor extends TextEditor implements ISelectionListener,
 	 */
 	public BNGLModel getModel(String src) {
 		BNGLModel mdl = new BNGLModel(src);
-		mdl.setAST(BackgroundFileLoader.getAST(m_model.getPathID()));
+		mdl.setAST(getAST());
 		return mdl;
 	} // getModel
 
@@ -146,39 +150,42 @@ public class BNGLEditor extends TextEditor implements ISelectionListener,
 	 * @return prog_return or NULL
 	 * 
 	 */
-	// private File getAST() {
-	// // The abstract syntax tree that will be returned.
-	// // On a failure, it will be null.
-	// prog_return toReturn = null;
-	//
-	// // Save a link to the orinal error out.
-	// PrintStream old = System.err;
-	//
-	// // Set the error out to a new printstream that will only display the antlr
-	// // output.
-	// String relative = ((FileEditorInput) (getEditorInput())).getFile()
-	// .getFullPath().makeRelative().toOSString();
-	//
-	// ANTLRFilteredPrintStream errorStream = new ANTLRFilteredPrintStream(
-	// Console.getMessageConsoleStream(relative),
-	// ((FileEditorInput) (getEditorInput())).getPath().toOSString(), old,
-	// ((FileEditorInput) (getEditorInput())).getPath().toOSString());
-	// System.setErr(errorStream);
-	//
-	// try {
-	// toReturn = produceParseData().getParser().prog();
-	// } catch (Exception e) {
-	// e.printStackTrace();
-	// System.out.println("Caught in the getAST Method.");
-	// }
-	//
-	// setErrors(errorStream.getErrorList());
-	//
-	// System.err.flush();
-	// System.setErr(old);
-	//
-	// return toReturn;
-	// }
+	private File getAST() {
+		// The abstract syntax tree that will be returned.
+		// On a failure, it will be null.
+		File toReturn = null;
+
+		// Save a link to the orinal error out.
+		PrintStream old = System.err;
+
+		// Set the error out to a new printstream that will only display the antlr
+		// output.
+		String path = ((FileEditorInput) (getEditorInput())).getPath().toOSString();
+
+		Console.clearConsole(path);
+		ANTLRFilteredPrintStream errorStream = new ANTLRFilteredPrintStream(
+		    Console.getMessageConsoleStream(path),
+		    ((FileEditorInput) (getEditorInput())).getPath().toOSString(), old,
+		    ((FileEditorInput) (getEditorInput())).getPath().toOSString());
+		System.setErr(errorStream);
+
+		try {
+			toReturn = BioNetGenConsole.generateXML(new File(
+			    ((FileEditorInput) (getEditorInput())).getPath().toOSString()),
+			    Console.getMessageConsoleStream(path));
+			produceParseData().getParser().prog();
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.out.println("Caught in the getAST Method.");
+		}
+
+		setErrors(errorStream.getErrorList());
+
+		System.err.flush();
+		System.setErr(old);
+
+		return toReturn;
+	}
 
 	private void setErrors(ArrayList<BNGLError> errorList) {
 		// Add the error list to the model
