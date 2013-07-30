@@ -13,6 +13,8 @@ import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.IWorkbenchPartReference;
 import org.eclipse.ui.part.FileEditorInput;
 
+import bngparser.grammars.BNGGrammar.prog_return;
+
 import rulebender.contactmap.models.CMapModelBuilder;
 import rulebender.contactmap.models.ContactMapModel;
 import rulebender.contactmap.prefuse.ContactMapVisual;
@@ -143,17 +145,17 @@ public class ContactMapSelectionListener implements ISelectionListener,
 	 * 
 	 * @param sourcePath
 	 *          The path of the resource. This is used for selection later.
-	 * @param ast
+	 * @param prog_return
 	 *          - The abstract syntax tree for the bngl model.
 	 * @return
 	 */
-	private prefuse.Display generateContactMap(String sourcePath, File ast) {
+	private prefuse.Display generateContactMap(String sourcePath, prog_return prog_return) {
 		// If the ast has not been generated for this model, then
 		// just return null so there is not contact map displayed.
 		// Also, an empty file produces a complete ast, so the length
 		// requirement catches that.
 
-		if (ast == null || ast.toString() == null) {
+		if (prog_return == null || prog_return.toString() == null) {
 			return null;
 		}
 
@@ -167,7 +169,7 @@ public class ContactMapSelectionListener implements ISelectionListener,
 		// Sometimes an ast is not null, but is not complete due to errors.
 		// This try/catch block catches those situations.
 		try {
-			astReader.buildModel(ast);
+			astReader.buildModel(prog_return);
 		} catch (NullPointerException e) {
 			Logger
 			    .log(
@@ -226,7 +228,7 @@ public class ContactMapSelectionListener implements ISelectionListener,
 	 * @param path
 	 * @param ast
 	 */
-	private void updateDisplayForPathAndAST(String path, File ast) {
+	private void updateDisplayForPathAndAST(String path, prog_return ast) {
 		// Clear the current entry.
 		m_contactMapRegistry.remove(path);
 
@@ -269,7 +271,7 @@ public class ContactMapSelectionListener implements ISelectionListener,
 						// Update the display object that is associated with the path and
 						// ast.
 						updateDisplayForPathAndAST(filePath,
-						    (File) propertyChangeEvent.getNewValue());
+						    (prog_return) propertyChangeEvent.getNewValue());
 					} else if (propertyName.equals(BNGLModel.ERRORS)) {
 						// Don't care.
 					}

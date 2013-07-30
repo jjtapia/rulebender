@@ -12,6 +12,8 @@ import org.eclipse.ui.ISelectionListener;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.IWorkbenchPartReference;
 
+import bngparser.grammars.BNGGrammar.prog_return;
+
 import rulebender.contactmap.models.CMapModelBuilder;
 import rulebender.contactmap.models.ContactMapModel;
 import rulebender.contactmap.prefuse.ContactMapVisual;
@@ -94,7 +96,7 @@ public class SmallMultiplesSelectionListener implements ISelectionListener,
 						// ast.
 						System.out.println("Property Changed on AST");
 						updateDisplayForPathAndAST(filePath,
-						    (File) propertyChangeEvent.getNewValue());
+						    (prog_return) propertyChangeEvent.getNewValue());
 
 					} else if (propertyName.equals(BNGLModel.ERRORS)) {
 						// Don't care.
@@ -133,7 +135,7 @@ public class SmallMultiplesSelectionListener implements ISelectionListener,
 	 * @param path
 	 * @param ast
 	 */
-	private void updateDisplayForPathAndAST(String path, File ast) {
+	private void updateDisplayForPathAndAST(String path, prog_return ast) {
 		// Clear the current entry.
 		m_contactMapRegistry.remove(path);
 
@@ -184,7 +186,7 @@ public class SmallMultiplesSelectionListener implements ISelectionListener,
 	 *          - The abstract syntax tree for the bngl model.
 	 * @return
 	 */
-	private prefuse.Display generateContactMap(String sourcePath, File ast) {
+	private prefuse.Display generateContactMap(String sourcePath, prog_return ast) {
 		// If the ast has not been generated for this model, then
 		// just return null so there is not contact map displayed.
 		// Also, an empty file produces a complete ast, so the length

@@ -35,9 +35,10 @@ import rulebender.core.utility.Console;
 import rulebender.editors.bngl.model.BNGLModel;
 import rulebender.errorview.model.BNGLError;
 import rulebender.logging.Logger;
-import rulebender.simulate.BioNetGenConsole;
+//import rulebender.simulate.BioNetGenConsole;
 import bngparser.BNGParseData;
 import bngparser.BNGParserUtility;
+import bngparser.grammars.BNGGrammar.prog_return;
 
 /**
  * This class defines the editor for bngl.
@@ -150,10 +151,10 @@ public class BNGLEditor extends TextEditor implements ISelectionListener,
 	 * @return prog_return or NULL
 	 * 
 	 */
-	private File getAST() {
+	private prog_return getAST() {
 		// The abstract syntax tree that will be returned.
 		// On a failure, it will be null.
-		File toReturn = null;
+		prog_return toReturn = null;
 
 		// Save a link to the orinal error out.
 		PrintStream old = System.err;
@@ -170,10 +171,10 @@ public class BNGLEditor extends TextEditor implements ISelectionListener,
 		System.setErr(errorStream);
 
 		try {
-			toReturn = BioNetGenConsole.generateXML(new File(
-			    ((FileEditorInput) (getEditorInput())).getPath().toOSString()),
-			    Console.getMessageConsoleStream(path));
-			produceParseData().getParser().prog();
+//			toReturn = BioNetGenConsole.generateXML(new File(
+//			    ((FileEditorInput) (getEditorInput())).getPath().toOSString()),
+//			    Console.getMessageConsoleStream(path));
+			toReturn = produceParseData().getParser().prog();
 		} catch (Exception e) {
 			e.printStackTrace();
 			System.out.println("Caught in the getAST Method.");

@@ -58,11 +58,11 @@ public class BNGExecutionJob extends Job {
 		// Tell the monitor
 		monitor.beginTask("Validation Files...", 5);
 
-		if (!validateBNGLFile(m_absoluteFilePath)) {
+		if (!validateFileExists(m_absoluteFilePath)) {
 			Console.displayOutput(m_absoluteFilePath, "Error in file path.");
 			return Status.CANCEL_STATUS;
 		}
-		if (!validateBNGPath(m_bngFullPath)) {
+		if (!validateFileExists(m_bngFullPath)) {
 			Console.displayOutput(m_bngFullPath, "Error in BNG path. Use the "
 			    + "Window->Preferences menu to set the correct path to BNG.");
 			return Status.CANCEL_STATUS;
@@ -321,15 +321,7 @@ public class BNGExecutionJob extends Job {
 		}
 	}
 
-	private static boolean validateBNGLFile(String path) {
-		if ((new File(path)).exists()) {
-			return true;
-		}
-
-		return false;
-	}
-
-	private static boolean validateBNGPath(String path) {
+	private static boolean validateFileExists(String path) {
 		if ((new File(path)).exists()) {
 			return true;
 		}

@@ -62,8 +62,11 @@ public class PreferencesClerk
 	 */
 	public static String getFullBNGPath()
 	{
-		return Activator.getDefault().getPreferenceStore().getString("SIM_PATH")
-				+ System.getProperty("file.separator") + BNGPathFromRoot + BNGName;
+	  System.out.println("bngroot: " + getBNGRoot());
+	  System.out.println("bng path from root: " + BNGPathFromRoot);
+	  System.out.println("bng name: " + BNGName);
+	  
+		return getBNGRoot() + BNGPathFromRoot + BNGName;
 	}
 	
 	public static OS getOS()

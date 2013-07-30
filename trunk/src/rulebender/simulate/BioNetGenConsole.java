@@ -15,37 +15,48 @@ import rulebender.preferences.PreferencesClerk;
 
 public class BioNetGenConsole {
 
-	private static Process bngConsole = null;
+	private static Process bngConsoleProcess = null;
 	private static OutputStreamWriter writer = null;
 	private static ConsoleReader out = null;
 	public static long creationTimeOut = 5000;
 	public static long check = 1000;
+	
+	private static void invokeBNGConsole() 
+	{
+	  String bngPath = PreferencesClerk.getFullBNGPath();
+    // String bngPath = bng.toString();
+    if (BioNetGenUtility.checkPreReq() && validateBNGPath(bngPath)) 
+    {
+      List<String> commands = new ArrayList<String>();
+      commands.add("perl");
+      commands.add(bngPath);
+      commands.add("-console");
+      ProcessBuilder builder = new ProcessBuilder(commands);
+      try 
+      {
+        bngConsoleProcess = builder.start();
+      } 
+      catch (IOException e) 
+      {
+        e.printStackTrace();
+      }
+      writer = new OutputStreamWriter(bngConsoleProcess.getOutputStream());
+      out = new ConsoleReader(bngConsoleProcess.getInputStream());
+      out.start();
+    }
+    else
+    {
+      //FIXME If this condition is hit, then there will be npe's.  Need
+      // inform user of why it failed because this breaks the contact map.
+    }
 
-	private static void invokeBNGConsole() {
-		String bngPath = PreferencesClerk.getFullBNGPath();
-		// String bngPath = bng.toString();
-		if (BioNetGenUtility.checkPreReq() && validateBNGPath(bngPath)) {
-			List<String> commands = new ArrayList<String>();
-			commands.add("perl");
-			commands.add(bngPath);
-			commands.add("-console");
-			ProcessBuilder builder = new ProcessBuilder(commands);
-			try {
-				bngConsole = builder.start();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-			writer = new OutputStreamWriter(bngConsole.getOutputStream());
-			out = new ConsoleReader(bngConsole.getInputStream());
-			out.start();
-		}
 	}
 
-	private static boolean validateBNGPath(String path) {
+	private static boolean validateBNGPath(String path) 
+	{
 		if ((new File(path)).exists()) {
 			return true;
 		}
-
 		return false;
 	}
 
@@ -110,6 +121,7 @@ public class BioNetGenConsole {
 		if (prepareConsole()) {
 			write("clear");
 		}
+		
 		out.reportWarnings();
 	}
 
@@ -126,9 +138,9 @@ public class BioNetGenConsole {
 	}
 
 	private static boolean prepareConsole() {
-		if (bngConsole == null) {
+		if (bngConsoleProcess == null) {
 			invokeBNGConsole();
-			if (bngConsole == null) {
+			if (bngConsoleProcess == null) {
 				return false;
 			}
 		}

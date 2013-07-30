@@ -73,7 +73,7 @@ public class BNGASTReader {
 
 	private void buildModel(Document doc) {
 		// The root of the document is the sbml tag. Get the Model node.
-		Element model = doc.getRootElement().getChild("model",
+		Element model = doc.getRootElement().getChild("Model",
 		    doc.getRootElement().getNamespace());
 
 		instantiateFunctions(model);
@@ -251,7 +251,7 @@ public class BNGASTReader {
 
 			// A species can contain multiple molecules. Get the molecules list for
 			// this species.
-			Element moleculesNode = species.getChild("ListOfMolecules",
+			Element moleculesNode = species.getChild("ListofMolecules",
 			    species.getNamespace());
 			List<Element> moleculesList = moleculesNode.getChildren();
 
@@ -455,7 +455,7 @@ public class BNGASTReader {
 
 				// Get the list of molecules in the pattern
 				Element reactantPatternMoleculeListNode = reactantPattern.getChild(
-				    "ListOfMolecules", reactantPattern.getNamespace());
+				    "ListofMolecules", reactantPattern.getNamespace());
 				List<Element> reactantPatternMoleculeList = reactantPatternMoleculeListNode
 				    .getChildren();
 
@@ -583,7 +583,7 @@ public class BNGASTReader {
 
 				// Get the list of molecules in the pattern
 				Element productPatternMoleculeListNode = productPattern.getChild(
-				    "ListOfMolecules", productPattern.getNamespace());
+				    "ListofMolecules", productPattern.getNamespace());
 				List<Element> productPatternMoleculeList = productPatternMoleculeListNode
 				    .getChildren();
 
@@ -702,7 +702,7 @@ public class BNGASTReader {
 			    reactionRule.getNamespace());
 			if (rateLawNode != null) {
 				String type = rateLawNode.getAttributeValue("type");
-				if (type.equals("Function")) {
+				if (type != null && type.equals("Function")) {
 					String functionName = rateLawNode.getAttributeValue("name");
 					ruleData.setRate(getExpressionOfFunction(functionName));
 				} else {
@@ -870,7 +870,7 @@ public class BNGASTReader {
 				    observablePattern.getAttributeValue("id"));
 				// patterns have molecules
 				Element observablePatternMoleculeListNode = observablePattern.getChild(
-				    "ListOfMolecules", observablePattern.getNamespace());
+				    "ListofMolecules", observablePattern.getNamespace());
 				List<Element> observablePatternMoleculeList = observablePatternMoleculeListNode
 				    .getChildren();
 
