@@ -6,6 +6,9 @@ import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.ui.console.MessageConsoleStream;
 
 import rulebender.core.utility.Console;
@@ -39,8 +42,16 @@ public class BioNetGenConsole {
 			out = new ConsoleReader(bngConsoleProcess.getInputStream());
 			out.start();
 		} else {
-			// FIXME If this condition is hit, then there will be npe's. Need
-			// inform user of why it failed because this breaks the contact map.
+			MessageBox errorMessage = new MessageBox(Display.getDefault()
+			    .getActiveShell(), SWT.ICON_ERROR | SWT.OK);
+			errorMessage.setText("BioNetGen Not Found");
+			errorMessage
+			    .setMessage("Warning: Was not able to locate BioNetGen. "
+			        + "The Contactmap can't be displayed because of that. "
+			        + "A valid BioNetGen distribution should"
+			        + " be in the Rulebender directory under BioNetGen-2.2.5.\n"
+			        + "In order to add BioNetGen go to Simulator in the Preferences Menu.");
+			errorMessage.open();
 		}
 
 	}
