@@ -6,86 +6,74 @@ package rulebender.preferences;
 import rulebender.Activator;
 import rulebender.core.workspace.PickWorkspaceDialog;
 
-public class PreferencesClerk 
-{
+public class PreferencesClerk {
 	// The name of the main BNG file.
 	private static String BNGName = "BNG2.pl";
-	
+
 	// The path from the root directory to the main BNG file.
 	private static String BNGPathFromRoot = "";
-	
+
 	// Private constructor for static access only.
-	private PreferencesClerk()
-	{
+	private PreferencesClerk() {
 		throw new AssertionError();
 	}
-	
+
 	/**
-	 * This method returns the path to the 'BNGName' file, but not including
-	 * that file.
+	 * This method returns the path to the 'BNGName' file, but not including that
+	 * file.
 	 * 
 	 * @return String path to 'BNGName'
 	 */
-	public static String getBNGPath()
-	{
+	public static String getBNGPath() {
 		return Activator.getDefault().getPreferenceStore().getString("SIM_PATH")
-			+ System.getProperty("file.separator") + BNGPathFromRoot;
+		    + System.getProperty("file.separator") + BNGPathFromRoot;
 	}
-	
+
 	/**
-	 * Returns the name of the main BNG file in 'BNGName'. 
+	 * Returns the name of the main BNG file in 'BNGName'.
 	 * 
 	 * @return String name of main bng file.
 	 */
-	public static String getBNGName()
-	{
+	public static String getBNGName() {
 		return BNGName;
 	}
-	
+
 	/**
-	 * Returns the user supplied root path to the BioNetGen directory.  
-	 * This does not include the path from the root to 'BNGName' or 
-	 * 'BNGName' itself.
+	 * Returns the user supplied root path to the BioNetGen directory. This does
+	 * not include the path from the root to 'BNGName' or 'BNGName' itself.
 	 * 
 	 * @return String root path to BNG directory.
 	 */
-	public static String getBNGRoot()
-	{
-		return Activator.getDefault().getPreferenceStore().getString("SIM_PATH") + 
-				System.getProperty("file.separator");
+	public static String getBNGRoot() {
+		return Activator.getDefault().getPreferenceStore().getString("SIM_PATH")
+		    + System.getProperty("file.separator");
 	}
-	
+
 	/**
-	 * Returns the entire path from the root to the 'BNGName' file. 
+	 * Returns the entire path from the root to the 'BNGName' file.
 	 * 
 	 * @return String path to main bng file.
 	 */
-	public static String getFullBNGPath()
-	{
-	  System.out.println("bngroot: " + getBNGRoot());
-	  System.out.println("bng path from root: " + BNGPathFromRoot);
-	  System.out.println("bng name: " + BNGName);
-	  
+	public static String getFullBNGPath() {
 		return getBNGRoot() + BNGPathFromRoot + BNGName;
 	}
-	
-	public static OS getOS()
-	{
+
+	public static OS getOS() {
 		String stemp = System.getProperty("os.name");
-		
- 	    if(stemp.contains("Windows") || stemp.contains("WINDOWS") || stemp.contains("windows"))
- 		    return OS.WINDOWS;
- 	    
- 	    else if (stemp.contains("Mac") || stemp.contains("MAC") || stemp.contains("mac"))
- 		    return OS.OSX;
- 	    
- 	    else
- 	    	return OS.LINUX;
- 	    
+
+		if (stemp.contains("Windows") || stemp.contains("WINDOWS")
+		    || stemp.contains("windows")) {
+			return OS.WINDOWS;
+		} else if (stemp.contains("Mac") || stemp.contains("MAC")
+		    || stemp.contains("mac")) {
+			return OS.OSX;
+		} else {
+			return OS.LINUX;
+		}
+
 	}
-	
-	public static String getWorkspace()
-	{
+
+	public static String getWorkspace() {
 		return PickWorkspaceDialog.getLastSetWorkspaceDirectory();
 	}
 }

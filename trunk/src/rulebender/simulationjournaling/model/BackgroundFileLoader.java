@@ -12,11 +12,10 @@ import rulebender.core.utility.ANTLRFilteredPrintStream;
 import rulebender.core.utility.Console;
 import rulebender.editors.bngl.model.BNGASTReader;
 import rulebender.editors.bngl.model.BNGLModel;
-//import rulebender.simulate.BioNetGenConsole;
+import rulebender.simulate.BioNetGenConsole;
 import rulebender.simulationjournaling.view.SmallMultiplesView;
 import bngparser.BNGParseData;
 import bngparser.BNGParserUtility;
-import bngparser.grammars.BNGGrammar.prog_return;
 
 public class BackgroundFileLoader extends Thread {
 
@@ -111,10 +110,10 @@ public class BackgroundFileLoader extends Thread {
 	 * 
 	 * @return - The AST representing the model
 	 */
-	public static prog_return getAST(String sourcePath) {
+	public static File getAST(String sourcePath) {
 		// The abstract syntax tree that will be returned.
 		// On a failure, it will be null.
-		prog_return toReturn = null;
+		File toReturn = null;
 
 		// Save a link to the orinal error out.
 		PrintStream old = System.err;
@@ -129,9 +128,10 @@ public class BackgroundFileLoader extends Thread {
 		System.setErr(errorStream);
 
 		try {
-//			toReturn = BioNetGenConsole.generateXML(new File(sourcePath),
-//			    Console.getMessageConsoleStream(sourcePath));
-			toReturn = produceParseData(sourcePath).getParser().prog();
+			toReturn = BioNetGenConsole.generateXML(new File(sourcePath),
+			    Console.getMessageConsoleStream(sourcePath));
+			// Just for syntax Analysis!!
+			produceParseData(sourcePath).getParser().prog();
 		} catch (Exception e) {
 			e.printStackTrace();
 			System.out.println("Caught in the getAST Method.");

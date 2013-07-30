@@ -5,8 +5,6 @@ import java.beans.PropertyChangeSupport;
 import java.io.File;
 import java.util.ArrayList;
 
-import bngparser.grammars.BNGGrammar.prog_return;
-
 import rulebender.errorview.model.BNGLError;
 
 public class BNGLModel {
@@ -17,7 +15,7 @@ public class BNGLModel {
 	private final PropertyChangeSupport pcs = new PropertyChangeSupport(this);
 
 	private String m_pathID;
-	private prog_return m_ast = null;
+	private File m_ast = null;
 	private ArrayList<BNGLError> m_errors;
 
 	public BNGLModel(String pathID) {
@@ -34,8 +32,8 @@ public class BNGLModel {
 		m_pathID = path;
 	}
 
-	public void setAST(prog_return prog_return) {
-		m_ast = prog_return;
+	public void setAST(File ast) {
+		m_ast = ast;
 		pcs.firePropertyChange(AST, null, m_ast);
 	}
 
@@ -48,7 +46,7 @@ public class BNGLModel {
 		return m_pathID;
 	}
 
-	public prog_return getAST() {
+	public File getAST() {
 		return m_ast;
 	}
 

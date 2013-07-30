@@ -10,8 +10,6 @@ import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.ui.ISelectionListener;
 import org.eclipse.ui.IWorkbenchPart;
 
-import bngparser.grammars.BNGGrammar.prog_return;
-
 import rulebender.editors.bngl.BNGLEditor;
 import rulebender.editors.bngl.model.BNGASTReader;
 import rulebender.editors.bngl.model.BNGLModel;
@@ -90,7 +88,7 @@ public class InfluenceGraphSelectionListener implements ISelectionListener {
 						// Update the display object that is associated with the path and
 						// ast.
 						updateDisplayForPathAndAST(filePath,
-						    (prog_return) propertyChangeEvent.getNewValue());
+						    (File) propertyChangeEvent.getNewValue());
 					} else if (propertyName.equals(BNGLModel.ERRORS)) {
 						// Don't care.
 					}
@@ -119,11 +117,11 @@ public class InfluenceGraphSelectionListener implements ISelectionListener {
 
 	// FIXME All of this needs to be rewritten. Look at the contactmap selection
 	// listener to see it.
-	private prefuse.Display generateInfluenceGraph(prog_return prog_return) {
+	private prefuse.Display generateInfluenceGraph(File ast) {
 
 		// If the ast has not been generated for this model, then
 		// just return null so there is not contact map displayed.
-		if (prog_return == null) {
+		if (ast == null) {
 			return null;
 		}
 
@@ -132,7 +130,7 @@ public class InfluenceGraphSelectionListener implements ISelectionListener {
 		// Create the astReader and register the cmapModelBuilder
 		BNGASTReader astReader = new BNGASTReader(iGraphModelBuilder);
 		// Use the reader to construct the model for the given ast.
-		astReader.buildModel(prog_return);
+		astReader.buildModel(ast);
 		// Get the model from the builder.
 		InfluenceGraphModel iModel = iGraphModelBuilder.getIGraphModel();
 
@@ -176,7 +174,7 @@ public class InfluenceGraphSelectionListener implements ISelectionListener {
 		return toShow;
 	}
 
-	private void updateDisplayForPathAndAST(String path, prog_return ast) {
+	private void updateDisplayForPathAndAST(String path, File ast) {
 		System.out.println("Updating:" + path);
 		// Clear the current entry.
 		influenceGraphRegistry.remove(path);
