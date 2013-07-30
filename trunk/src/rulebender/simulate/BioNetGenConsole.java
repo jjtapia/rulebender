@@ -19,50 +19,43 @@ public class BioNetGenConsole {
 	private static OutputStreamWriter writer = null;
 	private static ConsoleReader out = null;
 	public static long creationTimeOut = 5000;
-	public static long check = 1000;
-	
-	private static void invokeBNGConsole() 
-	{
-	  String bngPath = PreferencesClerk.getFullBNGPath();
-    // String bngPath = bng.toString();
-    if (BioNetGenUtility.checkPreReq() && validateBNGPath(bngPath)) 
-    {
-      List<String> commands = new ArrayList<String>();
-      commands.add("perl");
-      commands.add(bngPath);
-      commands.add("-console");
-      ProcessBuilder builder = new ProcessBuilder(commands);
-      try 
-      {
-        bngConsoleProcess = builder.start();
-      } 
-      catch (IOException e) 
-      {
-        e.printStackTrace();
-      }
-      writer = new OutputStreamWriter(bngConsoleProcess.getOutputStream());
-      out = new ConsoleReader(bngConsoleProcess.getInputStream());
-      out.start();
-    }
-    else
-    {
-      //FIXME If this condition is hit, then there will be npe's.  Need
-      // inform user of why it failed because this breaks the contact map.
-    }
+	public static long check = 100;
+
+	private static void invokeBNGConsole() {
+		String bngPath = PreferencesClerk.getFullBNGPath();
+		// String bngPath = bng.toString();
+		if (BioNetGenUtility.checkPreReq() && validateBNGPath(bngPath)) {
+			List<String> commands = new ArrayList<String>();
+			commands.add("perl");
+			commands.add(bngPath);
+			commands.add("-console");
+			ProcessBuilder builder = new ProcessBuilder(commands);
+			try {
+				bngConsoleProcess = builder.start();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			writer = new OutputStreamWriter(bngConsoleProcess.getOutputStream());
+			out = new ConsoleReader(bngConsoleProcess.getInputStream());
+			out.start();
+		} else {
+			// FIXME If this condition is hit, then there will be npe's. Need
+			// inform user of why it failed because this breaks the contact map.
+		}
 
 	}
 
-	private static boolean validateBNGPath(String path) 
-	{
+	private static boolean validateBNGPath(String path) {
 		if ((new File(path)).exists()) {
 			return true;
 		}
 		return false;
 	}
 
-	// not working yet !!
-
 	public static File generateXML(File bngModel, MessageConsoleStream errorStream) {
+		if (!prepareConsole()) {
+			return null;
+		}
 		String fileName = bngModel.getParentFile().toString() + "/"
 		    + bngModel.getName().substring(0, bngModel.getName().indexOf(".bngl"));
 		File xmlFile = new File(fileName + ".xml");
@@ -107,7 +100,6 @@ public class BioNetGenConsole {
 				}
 
 			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
@@ -121,7 +113,7 @@ public class BioNetGenConsole {
 		if (prepareConsole()) {
 			write("clear");
 		}
-		
+
 		out.reportWarnings();
 	}
 
@@ -152,46 +144,7 @@ public class BioNetGenConsole {
 			writer.write(s + "\n");
 			writer.flush();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
-
-	// generating an ast out of an xml is not working yet
-
-	// public static prog_return generateASTFromXML(File xmlFile) {
-	// prog_return ast = new prog_return();
-	// BufferedReader reader = null;
-	// try {
-	// reader = new BufferedReader(new FileReader(xmlFile));
-	// String line;
-	// while ((line = reader.readLine()) != null) {
-	// StringTemplate temp = new StringTemplate();
-	// temp.setTemplate(line);
-	// XML4JDOMAdapter ad = new XML4JDOMAdapter();
-	// try {
-	// ad.getDocument(xmlFile, true);
-	// ad.createDocument();
-	// } catch (JDOMException e) {
-	// // TODO Auto-generated catch block
-	// e.printStackTrace();
-	// }
-	// ast.st = temp;
-	// }
-	//
-	// } catch (IOException e) {
-	// // TODO Auto-generated catch block
-	// e.printStackTrace();
-	// } finally {
-	// try {
-	// if (reader != null) {
-	// reader.close();
-	// }
-	// } catch (IOException e) {
-	// e.printStackTrace();
-	// }
-	// }
-	//
-	// return ast;
-	// }
 }
