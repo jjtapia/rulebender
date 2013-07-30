@@ -1,0 +1,4 @@
+python googlecode_upload.py -s "This is a summary of the file" -p Project -u username -p password FILE
+
+example:
+python googlecode_upload.py -s "RuleBender v2.0.365 32-bit Linux" -p rulebender -u johnwenskovitch -p hunter2 RuleBender-2.0.365-lin32.zip
