@@ -45,12 +45,12 @@ public class BioNetGenConsole {
 			MessageBox errorMessage = new MessageBox(Display.getDefault()
 			    .getActiveShell(), SWT.ICON_ERROR | SWT.OK);
 			errorMessage.setText("BioNetGen Not Found");
-			errorMessage
-			    .setMessage("Warning: Was not able to locate BioNetGen. "
-			        + "The Contactmap can't be displayed because of that. "
-			        + "A valid BioNetGen distribution should"
-			        + " be in the Rulebender directory under BioNetGen-2.2.5.\n"
-			        + "In order to add BioNetGen go to Simulator in the Preferences Menu.");
+			errorMessage.setMessage("Warning: Was not able to locate BioNetGen. "
+			    + "The Contactmap can't be displayed due to that issue. "
+			    + "A valid BioNetGen distribution should"
+			    + " be in the Rulebender directory.\n"
+			    + "In order to add the BioNetGen path go to "
+			    + "Simulator in the Preferences Menu.");
 			errorMessage.open();
 		}
 
