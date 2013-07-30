@@ -101,7 +101,7 @@ public class BioNetGenConsole {
 					Logger.log(LOG_LEVELS.ERROR, BioNetGenConsole.class,
 					    "Wasn't able to create the xml-file for the model!!!");
 					Console.getMessageConsoleStream(bngModel.toString()).print(
-					    "Wasn't able to create the xml-file for the model located at: "
+					    "Wasn't able to create the xml-file for the model located at: \n"
 					        + bngModel.toString() + "\n");
 					// throw new Error(
 					// "Wasn't able to create the xml-file for the model located at: "

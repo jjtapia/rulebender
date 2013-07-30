@@ -32,7 +32,8 @@ public class ConsoleReader extends StreamDisplayThread {
 	@Override
 	protected void processLine(String line) {
 		super.processLine(line);
-		if (line.startsWith("ERROR")) {
+		if (line.startsWith("ERROR")
+		    || (line.startsWith("WARNING: Some problem processing"))) {
 			errors += line + "\n";
 			errorLast = true;
 		} else if (errorLast) {
