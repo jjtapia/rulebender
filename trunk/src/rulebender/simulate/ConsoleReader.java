@@ -39,6 +39,9 @@ public class ConsoleReader extends StreamDisplayThread {
 		} else if (errorLast) {
 			errors += line + "\n";
 			errorLast = false;
+		} else if (line
+		    .startsWith("WARNING: Attempt to execute action without loading model.")) {
+			errors += line + "\n";
 		} else if (line.startsWith("WARNING")
 		    && !line.startsWith("WARNING: Attempt to ")) {
 			warnings += line + "\n";

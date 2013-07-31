@@ -21,18 +21,17 @@ public class BioNetGenConsole {
 	private static Process bngConsoleProcess = null;
 	private static OutputStreamWriter writer = null;
 	private static ConsoleReader out = null;
-	public static long creationTimeOut = 5000;
+	public static long creationTimeOut = 3000;
 	public static long check = 100;
 
 	private static void invokeBNGConsole() {
 		String bngPath = PreferencesClerk.getFullBNGPath();
 		// String bngPath = bng.toString();
-		
-		boolean prereq = BioNetGenUtility.checkPreReq(); 
+
+		boolean prereq = BioNetGenUtility.checkPreReq();
 		boolean bng = validateBNGPath(bngPath);
-		
-		if (bng && prereq) 
-		{
+
+		if (bng && prereq) {
 			List<String> commands = new ArrayList<String>();
 			commands.add("perl");
 			commands.add(bngPath);
@@ -47,27 +46,25 @@ public class BioNetGenConsole {
 			out = new ConsoleReader(bngConsoleProcess.getInputStream());
 			out.start();
 		}
-		
-		else if (bng)
-		{
-		  MessageBox errorMessage = new MessageBox(Display.getDefault()
-          .getActiveShell(), SWT.ICON_ERROR | SWT.OK);
-      errorMessage.setText("Perl Not Found");
-      errorMessage.setMessage("Warning: Was not able to locate Perl on your system.");
-      errorMessage.open();
-		}
-		else
-		{
-		  MessageBox errorMessage = new MessageBox(Display.getDefault()
-          .getActiveShell(), SWT.ICON_ERROR | SWT.OK);
-      errorMessage.setText("BioNetGen Not Found");
-      errorMessage.setMessage("Warning: Was not able to locate BioNetGen in "  
-          + bngPath
-          + ". The Contact Map cannot be displayed if BioNetGen is not "
-          + "included in the RuleBender path. "
-          + "To add BioNetGen to the path click on "
-          + "'Simulator' under 'Preferences'.");
-      errorMessage.open();
+
+		else if (bng) {
+			MessageBox errorMessage = new MessageBox(Display.getDefault()
+			    .getActiveShell(), SWT.ICON_ERROR | SWT.OK);
+			errorMessage.setText("Perl Not Found");
+			errorMessage
+			    .setMessage("Warning: Was not able to locate Perl on your system.");
+			errorMessage.open();
+		} else {
+			MessageBox errorMessage = new MessageBox(Display.getDefault()
+			    .getActiveShell(), SWT.ICON_ERROR | SWT.OK);
+			errorMessage.setText("BioNetGen Not Found");
+			errorMessage.setMessage("Warning: Was not able to locate BioNetGen in "
+			    + bngPath
+			    + ". The Contact Map cannot be displayed if BioNetGen is not "
+			    + "included in the RuleBender path. "
+			    + "To add BioNetGen to the path click on "
+			    + "'Simulator' under 'Preferences'.");
+			errorMessage.open();
 		}
 
 	}
@@ -83,6 +80,8 @@ public class BioNetGenConsole {
 		if (!prepareConsole()) {
 			return null;
 		}
+		// If a previous error was thrown, but not reported yet.
+		out.reportError();
 		String fileName = bngModel.getParentFile().toString() + "/"
 		    + bngModel.getName().substring(0, bngModel.getName().indexOf(".bngl"));
 		File xmlFile = new File(fileName + ".xml");

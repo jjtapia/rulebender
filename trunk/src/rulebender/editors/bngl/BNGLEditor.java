@@ -178,8 +178,8 @@ public class BNGLEditor extends TextEditor implements ISelectionListener,
 			// Just for syntax analysis!!
 			produceParseData().getParser().prog();
 		} catch (Exception e) {
-			e.printStackTrace();
-			System.out.println("Caught in the getAST Method.");
+			// e.printStackTrace();
+			// System.out.println("Caught in the getAST Method.");
 		}
 
 		setErrors(errorStream.getErrorList());

@@ -133,8 +133,8 @@ public class BackgroundFileLoader extends Thread {
 			// Just for syntax Analysis!!
 			produceParseData(sourcePath).getParser().prog();
 		} catch (Exception e) {
-			e.printStackTrace();
-			System.out.println("Caught in the getAST Method.");
+			// e.printStackTrace();
+			// System.out.println("Caught in the getAST Method.");
 		} // try-catch
 
 		// setErrors(errorStream.getErrorList());
