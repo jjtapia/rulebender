@@ -5,8 +5,30 @@ package rulebender.preferences;
 
 import rulebender.Activator;
 import rulebender.core.workspace.PickWorkspaceDialog;
+import rulebender.preferences.views.MyFieldEditorPreferencePage;
 
-public class PreferencesClerk {
+public class PreferencesClerk 
+{
+  
+  static
+  {
+    String dir = 
+        Activator
+        .getDefault()
+        .getPreferenceStore()
+        .getString(MyFieldEditorPreferencePage.PREF_SIM_PATH);
+
+    if (null == dir || "".equals(dir))
+    {
+//      Activator
+//      .getDefault()
+//      .getPreferenceStore()
+//      .setDefault(MyFieldEditorPreferencePage.PREF_SIM_PATH, 
+//          System.getProperty("user.dir") + MyFieldEditorPreferencePage.DEF_SIM_DIR);
+      
+      // TODO Check the os and set the default or set the actual value appropriately
+    }
+  }
 	// The name of the main BNG file.
 	private static String BNGName = "BNG2.pl";
 
@@ -24,7 +46,8 @@ public class PreferencesClerk {
 	 * 
 	 * @return String path to 'BNGName'
 	 */
-	public static String getBNGPath() {
+	public static String getBNGPath() 
+	{
 		return Activator.getDefault().getPreferenceStore().getString("SIM_PATH")
 		    + System.getProperty("file.separator") + BNGPathFromRoot;
 	}

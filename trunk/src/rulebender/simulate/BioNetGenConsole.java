@@ -27,7 +27,12 @@ public class BioNetGenConsole {
 	private static void invokeBNGConsole() {
 		String bngPath = PreferencesClerk.getFullBNGPath();
 		// String bngPath = bng.toString();
-		if (BioNetGenUtility.checkPreReq() && validateBNGPath(bngPath)) {
+		
+		boolean prereq = BioNetGenUtility.checkPreReq(); 
+		boolean bng = validateBNGPath(bngPath);
+		
+		if (bng && prereq) 
+		{
 			List<String> commands = new ArrayList<String>();
 			commands.add("perl");
 			commands.add(bngPath);
@@ -41,16 +46,28 @@ public class BioNetGenConsole {
 			writer = new OutputStreamWriter(bngConsoleProcess.getOutputStream());
 			out = new ConsoleReader(bngConsoleProcess.getInputStream());
 			out.start();
-		} else {
-			MessageBox errorMessage = new MessageBox(Display.getDefault()
-			    .getActiveShell(), SWT.ICON_ERROR | SWT.OK);
-			errorMessage.setText("BioNetGen Not Found");
-			errorMessage.setMessage("Warning: Was not able to locate BioNetGen. "
-			    + "The Contact Map cannot be displayed if BioNetGen is not "
-			    + "included in the RuleBender path. "
-			    + "To add BioNetGen to the path click on "
-			    + "'Simulator' under 'Preferences'.");
-			errorMessage.open();
+		}
+		
+		else if (bng)
+		{
+		  MessageBox errorMessage = new MessageBox(Display.getDefault()
+          .getActiveShell(), SWT.ICON_ERROR | SWT.OK);
+      errorMessage.setText("Perl Not Found");
+      errorMessage.setMessage("Warning: Was not able to locate Perl on your system.");
+      errorMessage.open();
+		}
+		else
+		{
+		  MessageBox errorMessage = new MessageBox(Display.getDefault()
+          .getActiveShell(), SWT.ICON_ERROR | SWT.OK);
+      errorMessage.setText("BioNetGen Not Found");
+      errorMessage.setMessage("Warning: Was not able to locate BioNetGen in "  
+          + bngPath
+          + ". The Contact Map cannot be displayed if BioNetGen is not "
+          + "included in the RuleBender path. "
+          + "To add BioNetGen to the path click on "
+          + "'Simulator' under 'Preferences'.");
+      errorMessage.open();
 		}
 
 	}
