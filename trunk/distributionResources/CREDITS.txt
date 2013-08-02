@@ -3,7 +3,8 @@ RuleBender was developed at the University of Pittsburgh under the direction of 
 RuleBender Committers:
 Adam M. Smith
 John Wenskovich
-Leonard Harris
+Leonard A. Harris
+Robert Engelke
 
 Previous Committers:
 Yao Sun
