@@ -1,24 +1,24 @@
 RuleBender is licensed under the Eclipse Public License v 1.0 and 
-includes the BioNetGen (BNG) language and simulator distribution along with
-the NFSim simulator package.  
+includes the BioNetGen (BNG) modeling and simulation package along 
+with the NFsim simulator package.
 
 For more information:
 RuleBender: rulebender.org 
 RuleBender source: rulebender.googlecode.com
 BioNetGen: bionetgen.org 
-NFSim: http://emonet.biology.yale.edu/nfsim/
+NFsim: nfsim.org
 
-Also, the Simulators directory includes additional resources and 
+Also, the 'Simulation' directory includes additional resources and 
 README files for both BNG and NFSim.
 
-BioNetGen source is packaged with RuleBender in BioNetGen-2.2.4/Perl2,
-and the BioNetGen-2.2.4/bin/ directory includes all necessary binary 
-files.  
+BioNetGen source is packaged with RuleBender in BioNetGen-2.2.5/Perl2,
+and the BioNetGen-2.2.5/bin/ directory includes all necessary binary 
+files.
 
-For NFSim, the binary is included in the BioNetGen-2.2.4/bin/ directory, 
-and the source is included separately in NFSim-1.11-src.  If 
-you want to replace this packaged version, you must replace the NFSim 
-executables in BioNetGen-2.2.4/bin/.
+For NFsim, the binary is included in the BioNetGen-2.2.5/bin/ directory, 
+and the source is included separately in NFSim-1.11-src.  If you want to 
+replace this packaged version, you must replace the NFsim executables in 
+BioNetGen-2.2.5/bin/.
 
 
 ######################################################################
