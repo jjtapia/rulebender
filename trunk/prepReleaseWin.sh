@@ -27,6 +27,10 @@ version="2.0.377"
 rbReleaseDir="RB-Release"
 bngdirname="BioNetGen-2.2.5"
 
+echo "Did you check whether the permission bits for the Simulation files are set?
+If they aren't set, then you should use a svn downloader which loads the permission bits also.
+You could use the cygwin svn command and then copy your build files to the new repository."
+
 echo "Removing JREs"
 
 # get rid of the jre
@@ -158,6 +162,19 @@ cp distributionResources/*.txt $rbReleaseDir/zips/RuleBender-$version-win64/
 
 #cd to zips dir to avoid more dirs in zip
 cd $rbReleaseDir/zips/
+
+
+echo "Setting privileges"
+
+chmod -R u+rwX,go+rX,go-w ./*
+
+# linux
+chmod +x RuleBender-2.0.377-lin64/RuleBender
+chmod +x RuleBender-2.0.377-lin32/RuleBender
+
+# osx
+chmod +x RuleBender-2.0.377-osx64/RuleBender.app/Contents/MacOS/RuleBender
+chmod +x RuleBender-2.0.377-osx32/RuleBender.app/Contents/MacOS/RuleBender
 
 # remove the any svn files
 find . -type d -name .svn -exec rm -rf '{}' \;
