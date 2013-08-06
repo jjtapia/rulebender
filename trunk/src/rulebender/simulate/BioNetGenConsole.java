@@ -21,8 +21,9 @@ public class BioNetGenConsole {
 	private static Process bngConsoleProcess = null;
 	private static OutputStreamWriter writer = null;
 	private static ConsoleReader out = null;
-	public static long creationTimeOut = 3000;
+	public static long creationTimeOut = 5000;
 	public static long check = 100;
+	private static File currentModel = null;
 
 	private static void invokeBNGConsole() {
 		String bngPath = PreferencesClerk.getFullBNGPath();
@@ -55,16 +56,12 @@ public class BioNetGenConsole {
 			    .setMessage("Warning: Was not able to locate Perl on your system.");
 			errorMessage.open();
 		} else {
-			MessageBox errorMessage = new MessageBox(Display.getDefault()
-			    .getActiveShell(), SWT.ICON_ERROR | SWT.OK);
-			errorMessage.setText("BioNetGen Not Found");
-			errorMessage.setMessage("Warning: Was not able to locate BioNetGen in "
-			    + bngPath
-			    + ". The Contact Map cannot be displayed if BioNetGen is not "
-			    + "included in the RuleBender path. "
+			Console.displayOutput(currentModel.toString(), "BioNetGen Not Found\n\n"
+			    + "Warning: Was not able to locate BioNetGen in " + bngPath
+			    + ".\nThe Contact Map cannot be displayed if BioNetGen is not "
+			    + "included in the RuleBender path.\n"
 			    + "To add BioNetGen to the path click on "
-			    + "'Simulator' under 'Preferences'.");
-			errorMessage.open();
+			    + "'Simulator' under 'Preferences'.\n");
 		}
 
 	}
@@ -77,6 +74,7 @@ public class BioNetGenConsole {
 	}
 
 	public static File generateXML(File bngModel, MessageConsoleStream errorStream) {
+		currentModel = bngModel;
 		if (!prepareConsole()) {
 			return null;
 		}
@@ -138,6 +136,7 @@ public class BioNetGenConsole {
 	public static void clearModel() {
 		if (prepareConsole()) {
 			write("clear");
+			currentModel = null;
 		}
 
 		out.reportWarnings();
@@ -145,6 +144,7 @@ public class BioNetGenConsole {
 
 	public static void readModel(File bngModel) {
 		if (prepareConsole()) {
+			currentModel = bngModel;
 			write("load " + bngModel.toString());
 		}
 	}

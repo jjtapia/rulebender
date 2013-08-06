@@ -63,7 +63,7 @@ public class BNGExecutionJob extends Job {
 			return Status.CANCEL_STATUS;
 		}
 		if (!validateFileExists(m_bngFullPath)) {
-			Console.displayOutput(m_bngFullPath, "Error in BNG path. Use the "
+			Console.displayOutput(m_absoluteFilePath, "Error in BNG path. Use the "
 			    + "Window->Preferences menu to set the correct path to BNG.");
 			return Status.CANCEL_STATUS;
 		}
