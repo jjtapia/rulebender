@@ -738,21 +738,110 @@ public class BNGASTReader {
 
 			// For each operation
 			for (Element operation : operationsList) {
-				int action;
+				String action = operation.getName();
 
-				// If it is an AddBond operation
-				if (operation.getName().equals("AddBond")) {
-					action = 1;
-				}
-				// If it is an DeleteBond operation
-				else if (operation.getName().equals("DeleteBond")) {
-					action = -1;
+				if (operation.getName().equals("AddBond")
+				    || operation.getName().equals("DeleteBond")) {
+					// Adding/Deleting Bonds
+					// The ids of the components.
+					String comp1 = operation.getAttributeValue("site1");
+
+					String comp2 = operation.getAttributeValue("site2");
+
+					if (comp2.equals("")) {
+						// TODO WILDCARD! Doing nothing with these at the moment.
+						Logger.log(LOG_LEVELS.INFO, this.getClass(), "Wildcard");
+						continue;
+					}
+
+					// The ids are S#_M#_C#
+
+					// the mole id is up to the second underscore
+					String mole1id = comp1.substring(0, comp1.lastIndexOf("_"));
+
+					// TODO This errors out on A(a,a)->A(a!1, a!1)
+					Logger.log(LOG_LEVELS.INFO, this.getClass(), "*** " + comp2);
+					String mole2id = comp2.substring(0, comp2.lastIndexOf("_"));
+
+					// Get the names from the registries
+					String moleName1 = moleculeNameForID.get(mole1id);
+					String compName1 = componentDataForID.get(comp1).getComponent();
+					String moleName2 = moleculeNameForID.get(mole2id);
+					String compName2 = componentDataForID.get(comp2).getComponent();
+
+					// DEBUG
+					// Logger.log(LOG_LEVELS.INFO, this.getClass(), "comp1 id \"" + comp1
+					// +
+					// "\" gives component \"" +
+					// componentDataForID.get(comp1).getComponent() + "\" and state \"" +
+					// componentDataForID.get(comp1).getState() + "\"");
+					// Logger.log(LOG_LEVELS.INFO, this.getClass(), "comp2 id: " + comp2 +
+					// "\" gives component \"" +
+					// componentDataForID.get(comp2).getComponent() + "\" and state \"" +
+					// componentDataForID.get(comp2).getState() + "\"");
+
+					String state1 = componentDataForID.get(comp1).getState();
+					String state2 = componentDataForID.get(comp2).getState();
+
+					int compID1 = componentDataForID.get(comp1).getUniqueID();
+					int compID2 = componentDataForID.get(comp2).getUniqueID();
+
+					// DEBUG
+					// Logger.log(LOG_LEVELS.INFO, this.getClass(), "Name: " +
+					// ruleData.getName() + " Operation: " + operation.getName());
+
+					// DEBUG
+					// Logger.log(LOG_LEVELS.INFO, this.getClass(),
+					// "Adding BondData to Rule: " + moleName1 + "(" + compName1 + "[" +
+					// compID1 + "]~" + state1 +
+					// ")." + moleName2 + "(" + compName2 +"[" + compID2 + "]~" + state2 +
+					// ")" + "action: " + action);
+
+					ruleData.addBondData(moleName1, compName1, compID1, state1,
+					    moleName2, compName2, compID2, state2, action);
+				} else if (operation.getName().equals("Add")
+				    || operation.getName().equals("Delete")) {
+					// TODO: Adding/Deleting molecules
+
+					String id = operation.getAttributeValue("id");
+					String moleId = id;
+					// the mole id is up to the second underscore
+					int compIndex = id.indexOf('_');
+					compIndex = id.indexOf('_', compIndex + 1);
+					if (compIndex != -1) {
+						compIndex = id.indexOf('_', compIndex + 1);
+					}
+					if (compIndex != -1) {
+						moleId = id.substring(0, id.lastIndexOf("_"));
+					}
+					// Get the names from the registries
+					String moleName = moleculeNameForID.get(moleId);
+
+					if (operation.getName().equals("Add")) {
+						ruleData.addBondData(moleName, null, 0, null, null, null, 0, null,
+						    action);
+
+					} else {
+						String molecule = operation.getAttributeValue("DeleteMolecules");
+						if ("0".equals(molecule)) {
+							int count = 1;
+							moleName = moleculeNameForID.get(moleId + "_M" + count++);
+							while (moleName != null) {
+								ruleData.addBondData(null, null, 0, null, moleName, null, 0,
+								    null, action);
+								moleName = moleculeNameForID.get(moleId + "_M" + count++);
+							}
+						} else {
+							moleName = moleculeNameForID.get(moleId + "_M" + molecule);
+							if (moleName != null) {
+								ruleData.addBondData(null, null, 0, null, moleName, null, 0,
+								    null, action);
+							}
+						}
+					}
+
 				} else {
-					action = 0;
-				}
 
-				if (!operation.getName().equals("AddBond")
-				    && !operation.getName().equals("DeleteBond")) {
 					// FIXME Ignoring for now. The ContactMapVisual model has its
 					// own checks for Add and Delete actions on molecules (created before
 					// this parser and especially before the Add and Delete actions in
@@ -760,62 +849,6 @@ public class BNGASTReader {
 					// advantage of it.
 					continue;
 				}
-				// The ids of the components.
-				String comp1 = operation.getAttributeValue("site1");
-
-				String comp2 = operation.getAttributeValue("site2");
-
-				if (comp2.equals("")) {
-					// TODO WILDCARD! Doing nothing with these at the moment.
-					Logger.log(LOG_LEVELS.INFO, this.getClass(), "Wildcard");
-					continue;
-				}
-
-				// The ids are S#_M#_C#
-
-				// the mole id is up to the second underscore
-				String mole1id = comp1.substring(0, comp1.lastIndexOf("_"));
-
-				// TODO This errors out on A(a,a)->A(a!1, a!1)
-				Logger.log(LOG_LEVELS.INFO, this.getClass(), "*** " + comp2);
-				String mole2id = comp2.substring(0, comp2.lastIndexOf("_"));
-
-				// Get the names from the registries
-				String moleName1 = moleculeNameForID.get(mole1id);
-				String compName1 = componentDataForID.get(comp1).getComponent();
-				String moleName2 = moleculeNameForID.get(mole2id);
-				String compName2 = componentDataForID.get(comp2).getComponent();
-
-				// DEBUG
-				// Logger.log(LOG_LEVELS.INFO, this.getClass(), "comp1 id \"" + comp1 +
-				// "\" gives component \"" +
-				// componentDataForID.get(comp1).getComponent() + "\" and state \"" +
-				// componentDataForID.get(comp1).getState() + "\"");
-				// Logger.log(LOG_LEVELS.INFO, this.getClass(), "comp2 id: " + comp2 +
-				// "\" gives component \"" +
-				// componentDataForID.get(comp2).getComponent() + "\" and state \"" +
-				// componentDataForID.get(comp2).getState() + "\"");
-
-				String state1 = componentDataForID.get(comp1).getState();
-				String state2 = componentDataForID.get(comp2).getState();
-
-				int compID1 = componentDataForID.get(comp1).getUniqueID();
-				int compID2 = componentDataForID.get(comp2).getUniqueID();
-
-				// DEBUG
-				// Logger.log(LOG_LEVELS.INFO, this.getClass(), "Name: " +
-				// ruleData.getName() + " Operation: " + operation.getName());
-
-				// DEBUG
-				// Logger.log(LOG_LEVELS.INFO, this.getClass(),
-				// "Adding BondData to Rule: " + moleName1 + "(" + compName1 + "[" +
-				// compID1 + "]~" + state1 +
-				// ")." + moleName2 + "(" + compName2 +"[" + compID2 + "]~" + state2 +
-				// ")" + "action: " + action);
-
-				ruleData.addBondData(moleName1, compName1, compID1, state1, moleName2,
-				    compName2, compID2, state2, action);
-
 			} // Done with operations
 
 			m_builder.foundRule(ruleData);

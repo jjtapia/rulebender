@@ -179,6 +179,20 @@ public class CMapModelBuilder implements BNGLModelBuilderInterface {
 		    moleIndex2, compIndex2, stateIndex2));
 	}
 
+	private int addMoleculeToModel(String moleName1, String moleName2,
+	    String action) {
+		// Need ints for all of these strings
+		if (action == "Add") {
+			return m_moleculeIDForName.get(moleName1);
+
+		} else {
+			// System.out.println("State index 1: " + stateIndex1);
+
+			// Need ints for all of these strings
+			return m_moleculeIDForName.get(moleName2);
+		}
+	}
+
 	/**
 	 * Called when a rule is found. The RuleData object contains all of the
 	 * information that can be gleaned from the model. The rest must be looked up
@@ -307,14 +321,20 @@ public class CMapModelBuilder implements BNGLModelBuilderInterface {
 		// For each bond
 		for (BondActionData bad : ruleData.getBondActions()) {
 			// Add it to the model and get the index.
-			int index = addBondToModel(bad.getBondData().getSourceMol(), bad
-			    .getBondData().getSourceComp(), bad.getBondData().getSourceID(), bad
-			    .getBondData().getSourceState(), bad.getBondData().getTargetMol(),
-			    bad.getBondData().getTargetComp(), bad.getBondData().getTargetID(),
-			    bad.getBondData().getTargetState());
-
+			int index;
+			if (bad.getAction().endsWith("Bond")) {
+				index = addBondToModel(bad.getBondData().getSourceMol(), bad
+				    .getBondData().getSourceComp(), bad.getBondData().getSourceID(),
+				    bad.getBondData().getSourceState(), bad.getBondData()
+				        .getTargetMol(), bad.getBondData().getTargetComp(), bad
+				        .getBondData().getTargetID(), bad.getBondData()
+				        .getTargetState());
+			} else {
+				index = addMoleculeToModel(bad.getBondData().getSourceMol(), bad
+				    .getBondData().getTargetMol(), bad.getAction());
+			}
 			// Add the BondAction to the rule.
-			rule.addBondAction(new BondAction(index, bad.getAction()));
+			rule.addAction(new Action(index, bad.getAction()));
 		}
 
 		m_model.addRule(rule);

@@ -1,12 +1,10 @@
 package rulebender.editors.bngl.model.ruledata;
 
-public class BondActionData 
-{
+public class BondActionData {
 	private BondData bondData;
-	private int action; // + for add, - for del
-	
-	public BondActionData(BondData bondDataIn, int actionIn)
-	{
+	private String action; // + for add, - for del
+
+	public BondActionData(BondData bondDataIn, String actionIn) {
 		setBondData(bondDataIn);
 		setAction(actionIn);
 	}
@@ -19,11 +17,11 @@ public class BondActionData
 		this.bondData = bondData;
 	}
 
-	public int getAction() {
+	public String getAction() {
 		return action;
 	}
 
-	public void setAction(int action) {
+	public void setAction(String action) {
 		this.action = action;
 	}
 }

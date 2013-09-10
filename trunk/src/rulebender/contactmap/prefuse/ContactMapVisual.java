@@ -18,8 +18,8 @@ import prefuse.visual.AggregateTable;
 import prefuse.visual.EdgeItem;
 import prefuse.visual.NodeItem;
 import prefuse.visual.VisualItem;
+import rulebender.contactmap.models.Action;
 import rulebender.contactmap.models.Bond;
-import rulebender.contactmap.models.BondAction;
 import rulebender.contactmap.models.Compartment;
 import rulebender.contactmap.models.CompartmentTable;
 import rulebender.contactmap.models.Component;
@@ -561,7 +561,7 @@ public class ContactMapVisual {
 			}
 
 			// map the rest of rules which can not be mapped to bonds or changed state
-			identifyMoleLevelReaction(thisRule, r_comp);
+			// identifyMoleLevelReaction(thisRule, r_comp);
 
 			previousRuleText = thisRule.getLabel();
 		}
@@ -745,8 +745,12 @@ public class ContactMapVisual {
 		// System.out.println("Bond Actions: " + thisRule.getBondactions().size());
 
 		// For the bonds created or destroyed by the rule
-		for (BondAction ba : thisRule.getBondactions()) {
-			String bondid = Integer.toString(ba.getBondIndex());
+		for (Action ba : thisRule.getActions()) {
+			if (ba.getAction() != "AddBond" && ba.getAction() != "DeleteBond") {
+				handleMoleLevelReaction(ba, thisRule, r_comp);
+				continue;
+			}
+			String bondid = Integer.toString(ba.getindex());
 
 			// DEBUG
 			// System.out.println("Bond ID: " + bondid);
@@ -758,9 +762,9 @@ public class ContactMapVisual {
 			if (e_state != null) {
 				// Add the bond to the rule as either created or
 				// destroyed by the rule.
-				if (ba.getAction() > 0) {
+				if (ba.getAction() == "AddBond") {
 					r_state.addAddBond(e_state);
-				} else {
+				} else if (ba.getAction() == "DeleteBond") {
 					r_state.addRemoveBond(e_state);
 				}
 
@@ -782,9 +786,9 @@ public class ContactMapVisual {
 			if (e_comp != null) {
 				// Add the bond to the rule as either created or
 				// destroyed by the rule.
-				if (ba.getAction() > 0) {
+				if (ba.getAction() == "AddBond") {
 					r_comp.addAddBond(e_comp);
-				} else {
+				} else if (ba.getAction() == "DeleteBond") {
 					r_comp.addRemoveBond(e_comp);
 				}
 
@@ -951,12 +955,8 @@ public class ContactMapVisual {
 		}
 	}
 
-	private void identifyMoleLevelReaction(Rule thisRule, VisualRule r_comp) {
-		// hub node
-		Node hubNode;
-		// get the hub node if already exists
+	private Set<Node> createHubNodeSet(Rule thisRule) {
 		Set<Node> moleSet = new HashSet<Node>();
-
 		// go over all molecules
 		ArrayList<ArrayList<RulePattern>> patterns = new ArrayList<ArrayList<RulePattern>>(
 		    2);
@@ -998,9 +998,13 @@ public class ContactMapVisual {
 				}
 			}
 		}
+		return moleSet;
+	}
 
-		// get the hub node from hash table if exists
-		hubNode = m_hubNodes.get(moleSet);
+	private Node getHubNode(Rule thisRule, VisualRule r_comp) {
+		// get the hub node if already exists
+		Set<Node> moleSet = createHubNodeSet(thisRule);
+		Node hubNode = m_hubNodes.get(moleSet);
 
 		// node does not exist in hash table, create a new one
 		if (hubNode == null) {
@@ -1023,6 +1027,129 @@ public class ContactMapVisual {
 			    .get("rules");
 			tmplist.add(r_comp);
 		}
+		return hubNode;
+	}
+
+	private void handleMoleLevelReaction(Action bond, Rule thisRule,
+	    VisualRule r_comp) {
+		// hub node
+		Node hubNode = getHubNode(thisRule, r_comp);
+		// add edges for visible and non-visible nodes
+		if (bond.getAction() == "Add") {
+			for (RulePattern rp : thisRule.getProductpatterns()) {
+				boolean mol = false;
+				for (MoleculePattern mp : rp.getMolepatterns()) {
+					if (mp.getMoleIndex() == bond.getindex()) {
+						mol = true;
+						addHubEdge(rp, hubNode, false);
+						break;
+					}
+				}
+				// if (mol) {
+				// break;
+				// }
+			}
+			for (RulePattern rp : thisRule.getReactantpatterns()) {
+				addHubEdge(rp, hubNode, true);
+			}
+		} else if (bond.getAction() == "Delete") {
+			for (RulePattern rp : thisRule.getReactantpatterns()) {
+				boolean mol = false;
+				for (MoleculePattern mp : rp.getMolepatterns()) {
+					if (mp.getMoleIndex() == bond.getindex()) {
+						mol = true;
+						addHubEdge(rp, hubNode, true);
+						break;
+					}
+				}
+				// if (mol) {
+				// break;
+				// }
+			}
+			// addHubEdge(thisRule.getReactantpatterns().get(bond.getindex()),
+			// hubNode,
+			// true);
+			for (RulePattern rp : thisRule.getProductpatterns()) {
+				addHubEdge(rp, hubNode, false);
+			}
+		}
+		m_vis.getVisualItem(COMPONENT_GRAPH, hubNode).setVisible(true);
+
+	}
+
+	private void addHubEdge(RulePattern rp, Node hubNode, boolean toHub) {
+		for (MoleculePattern mp : rp.getMolepatterns()) {
+			if (mp.getComppatterns().size() != 1) {
+				Node moleNode = m_nodes.get("" + mp.getMoleIndex());
+
+				// set visible
+				VisualItem nItem = m_vis.getVisualItem(COMPONENT_GRAPH, moleNode);
+
+				nItem.setVisible(true);
+				if (moleNode != null) {
+					// FIXME This is a really simple way to achieve bidirectional
+					// edges...
+					// I just add another overlapping edge.
+					Edge e;
+					// create edge between the hub node and the molecule.
+					if (toHub) {
+						e = m_componentGraph.addEdge(moleNode, hubNode);
+
+						System.out.println("Forward Edge");
+					} else {
+						e = m_componentGraph.addEdge(hubNode, moleNode);
+
+						System.out.println("Reverse Edge");
+					}
+					e.set("type", "hubMoleConnection");
+					m_vis.getVisualItem(COMPONENT_GRAPH, e).setVisible(true);
+				}
+			}
+			// If there is only 1 component.
+			else {
+				ComponentPattern cp = mp.getComppatterns().get(0);
+				Node compNode = null, stateNode = null;
+				compNode = m_nodes
+				    .get("" + mp.getMoleIndex() + "." + cp.getCompIndex());
+				boolean hasState = false;
+
+				if (cp.getStateindex() != -1) {
+					// has certain state
+					stateNode = m_nodes.get(mp.getMoleIndex() + "." + cp.getCompIndex()
+					    + "." + cp.getStateindex());
+					hasState = true;
+				}
+
+				if (compNode != null) {
+					// connect to component node
+					Edge e_comp = m_componentGraph.addEdge(hubNode, compNode);
+					e_comp.set("type", "hubMoleConnection");
+					e_comp.set("displaymode", "component");
+
+					m_vis.getVisualItem(COMPONENT_GRAPH, e_comp).setVisible(true);
+					// connect to state node
+					if (hasState && stateNode != null) {
+						Edge e_state = m_componentGraph.addEdge(hubNode, stateNode);
+						e_state.set("type", "hubMoleConnection");
+						e_state.set("displaymode", "state");
+						stateNode.set("hasedge", true);
+
+						// set invisible
+						EdgeItem eitem = (EdgeItem) m_vis.getVisualItem(COMPONENT_GRAPH
+						    + ".edges", e_state);
+						eitem.setVisible(false);
+
+					} else {
+						e_comp.set("displaymode", "both");
+					}
+				}
+			}
+		}
+	}
+
+	private void identifyMoleLevelReaction(Rule thisRule, VisualRule r_comp) {
+		// hub node
+		Node hubNode = getHubNode(thisRule, r_comp);
 
 		// add edges for visible and non-visible nodes
 

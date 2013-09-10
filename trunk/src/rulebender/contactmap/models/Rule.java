@@ -30,7 +30,7 @@ public class Rule
 	private ArrayList<RulePattern> productPatterns;
 	
 	// Bonds that are created or destroyed by the Rule.
-	private ArrayList<BondAction> bondActions;
+	private ArrayList<Action> actions;
 	
 	//TODO: molecule actions.  Molecule level actions are the generation 
 	// or degredation of molecules, which should be relatively straight-forward
@@ -48,7 +48,7 @@ public class Rule
 		
 		reactantPatterns = new ArrayList<RulePattern>();
 		productPatterns = new ArrayList<RulePattern>();
-		bondActions = new ArrayList<BondAction>();
+		actions = new ArrayList<Action>();
 	}
 	
 	
@@ -107,9 +107,9 @@ public class Rule
 		productPatterns.add(rulePattern);
 	}
 	
-	public void addBondAction(BondAction bondAction)
+	public void addAction(Action action)
 	{
-		bondActions.add(bondAction);
+		actions.add(action);
 	}
 	
 	public ArrayList<RulePattern> getReactantpatterns() 
@@ -122,8 +122,8 @@ public class Rule
 		return productPatterns;
 	}
 
-	public ArrayList<BondAction> getBondactions() 
+	public ArrayList<Action> getActions() 
 	{
-		return bondActions;
+		return actions;
 	}
 }
