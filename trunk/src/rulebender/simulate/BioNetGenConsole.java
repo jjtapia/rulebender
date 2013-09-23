@@ -112,10 +112,15 @@ public class BioNetGenConsole {
 					break;
 				} else if (waitTime > creationTimeOut) {
 					Logger.log(LOG_LEVELS.ERROR, BioNetGenConsole.class,
-					    "Wasn't able to create the xml-file for the model!!!");
+					    "Wasn't able to create the xml-file for the model located at: \n"
+					        + bngModel.toString() + "\n"
+					        + "You should use BioNetGen 2.2.5 or later."
+					        + " Also check for errors in your model.");
 					Console.getMessageConsoleStream(bngModel.toString()).print(
 					    "Wasn't able to create the xml-file for the model located at: \n"
-					        + bngModel.toString() + "\n");
+					        + bngModel.toString() + "\n"
+					        + "You should use BioNetGen 2.2.5 or later."
+					        + " Also check for errors in your model.");
 					// throw new Error(
 					// "Wasn't able to create the xml-file for the model located at: "
 					// + bngModel.toString());
