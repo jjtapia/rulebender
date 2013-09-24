@@ -113,7 +113,7 @@ public class CMapClickControlDelegate extends ControlAdapter implements
 	 * A string label for the right click context menu that allows the displaying
 	 * of the hub nodes.
 	 */
-	private String displaymode_hubs = "Hide Hub nodes";
+	private String displaymode_hubs = "Hide Synth/Deg";
 
 	/** Indicates whether hubs are shown. */
 	private boolean showHubs = true;
@@ -438,7 +438,7 @@ public class CMapClickControlDelegate extends ControlAdapter implements
 
 					Iterator iter = m_vis.items("component_graph");
 					// show hubs
-					// if (aButton.getText().equals("Show Hub nodes")) {
+					// if (aButton.getText().equals("Show Synth/Deg")) {
 					if (!showHubs) {
 						showHubs = true;
 						while (iter.hasNext()) {
@@ -484,7 +484,7 @@ public class CMapClickControlDelegate extends ControlAdapter implements
 							}
 
 						}
-						displaymode_hubs = "Hide Hub nodes";
+						displaymode_hubs = "Hide Synth/Deg";
 					} else {
 						showHubs = false;
 						while (iter.hasNext()) {
@@ -531,7 +531,7 @@ public class CMapClickControlDelegate extends ControlAdapter implements
 								// }
 							}
 						}
-						displaymode_hubs = "Show Hub nodes";
+						displaymode_hubs = "Show Synth/Deg";
 					}
 
 					// apply actions
