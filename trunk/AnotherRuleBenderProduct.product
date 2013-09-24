@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="RuleBender" id="rulebender.product" application="rulebender.application" version="2.0.320" useFeatures="false" includeLaunchers="true">
+<product name="RuleBender" id="rulebender.product" application="rulebender.application" version="2.0.377" useFeatures="false" includeLaunchers="true">
 
    <aboutInfo>
       <text>
-         RuleBender 2.0r271
+         RuleBender 2.0r377
 
 RuleBender is a front end to cell signaling simulation that is developed at the University of Pittsburgh in the Computer Science Viz Lab.  The BioNetGen simulator is a product of the Faeder Lab in the Systems and Computational Biology Department.  NFSim is developed by the Emonet Lab at Yale.
 
@@ -22,22 +22,22 @@ Please send all feedback and questions to help@rulebender.org.
       <vmArgsMac>-XstartOnFirstThread -Dorg.eclipse.swt.internal.carbon.smallFonts -Xdock:icon=../Resources/Eclipse.icns -XstartOnFirstThread -d64</vmArgsMac>
    </launcherArgs>
 
-   <windowImages i16="/rulebender/icons/system/RB-16.gif" i32="/rulebender/icons/system/RB-32.gif" i48="/rulebender/icons/system/RB-48.gif" i64="/rulebender/icons/system/RB-64.gif" i128="/rulebender/icons/system/RB-128.gif"/>
+   <windowImages i16="/RB new/icons/system/RB-16.gif" i32="/RB new/icons/system/RB-32.gif" i48="/RB new/icons/system/RB-48.gif" i64="/RB new/icons/system/RB-64.gif" i128="/RB new/icons/system/RB-128.gif"/>
 
    <splash
       location="rulebender" />
    <launcher name="RuleBender">
-      <linux icon="/rulebender/icons/system/linux/RB-128.xpm"/>
-      <macosx icon="/rulebender/icons/system/osx/RB-128.icns"/>
+      <linux icon="/RB new/icons/system/linux/RB-128.xpm"/>
+      <macosx icon="/RB new/icons/system/osx/RB-128.icns"/>
       <solaris/>
       <win useIco="false">
          <bmp
-            winSmallHigh="/RB/icons/system/win32/RB-16.bmp"
-            winSmallLow="/RB/icons/system/win32/RB-16-8bit.bmp"
-            winMediumHigh="/RB/icons/system/win32/RB-32.bmp"
-            winMediumLow="/RB/icons/system/win32/RB-32-8bit.bmp"
-            winLargeHigh="/RB/icons/system/win32/RB-48.bmp"
-            winLargeLow="/RB/icons/system/win32/RB-48-8bit.bmp"/>
+            winSmallHigh="/RB new/icons/system/win32/RB-16.bmp"
+            winSmallLow="/RB new/icons/system/win32/RB-16-8bit.bmp"
+            winMediumHigh="/RB new/icons/system/win32/RB-32.bmp"
+            winMediumLow="/RB new/icons/system/win32/RB-32-8bit.bmp"
+            winLargeHigh="/RB new/icons/system/win32/RB-48.bmp"
+            winLargeLow="/RB new/icons/system/win32/RB-48-8bit.bmp"/>
       </win>
    </launcher>
 
@@ -126,7 +126,13 @@ This Agreement is governed by the laws of the State of New York and the intellec
 
    <plugins>
       <plugin id="com.ibm.icu"/>
+      <plugin id="javax.annotation"/>
+      <plugin id="javax.inject"/>
       <plugin id="javax.servlet"/>
+      <plugin id="javax.xml"/>
+      <plugin id="org.apache.batik.css"/>
+      <plugin id="org.apache.batik.util"/>
+      <plugin id="org.apache.batik.util.gui"/>
       <plugin id="org.eclipse.ant.core"/>
       <plugin id="org.eclipse.compare"/>
       <plugin id="org.eclipse.compare.core"/>
@@ -139,7 +145,11 @@ This Agreement is governed by the laws of the State of New York and the intellec
       <plugin id="org.eclipse.core.filebuffers"/>
       <plugin id="org.eclipse.core.filesystem"/>
       <plugin id="org.eclipse.core.filesystem.aix.ppc" fragment="true"/>
+      <plugin id="org.eclipse.core.filesystem.aix.ppc64" fragment="true"/>
+      <plugin id="org.eclipse.core.filesystem.hpux.ia64" fragment="true"/>
       <plugin id="org.eclipse.core.filesystem.hpux.ia64_32" fragment="true"/>
+      <plugin id="org.eclipse.core.filesystem.linux.ppc" fragment="true"/>
+      <plugin id="org.eclipse.core.filesystem.linux.ppc64" fragment="true"/>
       <plugin id="org.eclipse.core.filesystem.linux.x86" fragment="true"/>
       <plugin id="org.eclipse.core.filesystem.linux.x86_64" fragment="true"/>
       <plugin id="org.eclipse.core.filesystem.macosx" fragment="true"/>
@@ -149,12 +159,39 @@ This Agreement is governed by the laws of the State of New York and the intellec
       <plugin id="org.eclipse.core.jobs"/>
       <plugin id="org.eclipse.core.resources"/>
       <plugin id="org.eclipse.core.resources.win32.x86" fragment="true"/>
+      <plugin id="org.eclipse.core.resources.win32.x86_64" fragment="true"/>
       <plugin id="org.eclipse.core.runtime"/>
       <plugin id="org.eclipse.core.runtime.compatibility.auth"/>
       <plugin id="org.eclipse.core.runtime.compatibility.registry" fragment="true"/>
       <plugin id="org.eclipse.core.variables"/>
+      <plugin id="org.eclipse.e4.core.commands"/>
+      <plugin id="org.eclipse.e4.core.contexts"/>
+      <plugin id="org.eclipse.e4.core.di"/>
+      <plugin id="org.eclipse.e4.core.di.extensions"/>
+      <plugin id="org.eclipse.e4.core.services"/>
+      <plugin id="org.eclipse.e4.ui.bindings"/>
+      <plugin id="org.eclipse.e4.ui.css.core"/>
+      <plugin id="org.eclipse.e4.ui.css.swt"/>
+      <plugin id="org.eclipse.e4.ui.css.swt.theme"/>
+      <plugin id="org.eclipse.e4.ui.di"/>
+      <plugin id="org.eclipse.e4.ui.model.workbench"/>
+      <plugin id="org.eclipse.e4.ui.services"/>
+      <plugin id="org.eclipse.e4.ui.widgets"/>
+      <plugin id="org.eclipse.e4.ui.workbench"/>
+      <plugin id="org.eclipse.e4.ui.workbench.addons.swt"/>
+      <plugin id="org.eclipse.e4.ui.workbench.renderers.swt"/>
+      <plugin id="org.eclipse.e4.ui.workbench.renderers.swt.cocoa" fragment="true"/>
+      <plugin id="org.eclipse.e4.ui.workbench.swt"/>
+      <plugin id="org.eclipse.e4.ui.workbench3"/>
+      <plugin id="org.eclipse.emf.common"/>
+      <plugin id="org.eclipse.emf.ecore"/>
+      <plugin id="org.eclipse.emf.ecore.change"/>
+      <plugin id="org.eclipse.emf.ecore.xmi"/>
       <plugin id="org.eclipse.equinox.app"/>
+      <plugin id="org.eclipse.equinox.bidi"/>
       <plugin id="org.eclipse.equinox.common"/>
+      <plugin id="org.eclipse.equinox.ds"/>
+      <plugin id="org.eclipse.equinox.event"/>
       <plugin id="org.eclipse.equinox.p2.core"/>
       <plugin id="org.eclipse.equinox.p2.engine"/>
       <plugin id="org.eclipse.equinox.p2.metadata"/>
@@ -166,6 +203,7 @@ This Agreement is governed by the laws of the State of New York and the intellec
       <plugin id="org.eclipse.equinox.security.macosx" fragment="true"/>
       <plugin id="org.eclipse.equinox.security.win32.x86" fragment="true"/>
       <plugin id="org.eclipse.equinox.security.win32.x86_64" fragment="true"/>
+      <plugin id="org.eclipse.equinox.util"/>
       <plugin id="org.eclipse.help"/>
       <plugin id="org.eclipse.jdt.compiler.apt" fragment="true"/>
       <plugin id="org.eclipse.jdt.compiler.tool" fragment="true"/>
@@ -183,7 +221,9 @@ This Agreement is governed by the laws of the State of New York and the intellec
       <plugin id="org.eclipse.swt.cocoa.macosx.x86_64" fragment="true"/>
       <plugin id="org.eclipse.swt.gtk.aix.ppc" fragment="true"/>
       <plugin id="org.eclipse.swt.gtk.aix.ppc64" fragment="true"/>
+      <plugin id="org.eclipse.swt.gtk.hpux.ia64" fragment="true"/>
       <plugin id="org.eclipse.swt.gtk.hpux.ia64_32" fragment="true"/>
+      <plugin id="org.eclipse.swt.gtk.linux.ppc" fragment="true"/>
       <plugin id="org.eclipse.swt.gtk.linux.ppc64" fragment="true"/>
       <plugin id="org.eclipse.swt.gtk.linux.s390" fragment="true"/>
       <plugin id="org.eclipse.swt.gtk.linux.s390x" fragment="true"/>
@@ -212,12 +252,17 @@ This Agreement is governed by the laws of the State of New York and the intellec
       <plugin id="org.eclipse.ui.workbench.texteditor"/>
       <plugin id="org.hamcrest.core"/>
       <plugin id="org.junit"/>
+      <plugin id="org.w3c.css.sac"/>
+      <plugin id="org.w3c.dom.smil"/>
+      <plugin id="org.w3c.dom.svg"/>
       <plugin id="rulebender"/>
    </plugins>
 
    <configurations>
       <plugin id="org.eclipse.core.runtime" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.equinox.common" autoStart="true" startLevel="2" />
+      <plugin id="org.eclipse.equinox.ds" autoStart="true" startLevel="3" />
+      <plugin id="org.eclipse.equinox.event" autoStart="true" startLevel="3" />
       <plugin id="org.eclipse.osgi" autoStart="true" startLevel="-1" />
    </configurations>
 
