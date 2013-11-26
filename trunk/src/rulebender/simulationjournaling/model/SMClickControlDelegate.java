@@ -26,6 +26,8 @@ import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IEditorInput;
+import org.eclipse.ui.IViewPart;
+import org.eclipse.ui.IViewReference;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PartInitException;
@@ -52,12 +54,16 @@ import prefuse.visual.NodeItem;
 import prefuse.visual.VisualItem;
 import rulebender.core.prefuse.SmallMultiplesPanel;
 import rulebender.core.prefuse.collinsbubbleset.layout.BubbleSetLayout;
+import rulebender.simulationjournaling.Message;
 import rulebender.simulationjournaling.view.SmallMultiplesView;
+import rulebender.simulationjournaling.view.TimelineView;
 
 public class SMClickControlDelegate extends ControlAdapter implements ISelectionProvider, ActionListener {
 
 	// Component graph string variable
 	private static String COMPONENT_GRAPH = "component_graph";
+	private static String AGG_COMP = "aggregates_component";
+	private static String AGG = "aggregates";
 	
 	// The current selection
 	private ISelection m_selection;
@@ -98,6 +104,7 @@ public class SMClickControlDelegate extends ControlAdapter implements ISelection
 	// Popup Menu items
 	private JMenuItem removeOverlayMenuItem;
 	private JMenuItem openModelMenuItem;
+	private JMenuItem refreshModelMenuItem;
 	private JMenuItem[] differencesList;
 	private JMenuItem[] similaritiesList;
 	
@@ -126,6 +133,9 @@ public class SMClickControlDelegate extends ControlAdapter implements ISelection
 	// Variables to measure delay for single vs double click
 	private int delay;
 	private Timer timer;
+	
+	// Temp global variables for calculation speed results
+	long startTime, endTime;
 	
 	/**
 	 * Constructor:
@@ -471,6 +481,13 @@ public class SMClickControlDelegate extends ControlAdapter implements ISelection
 			popupMenu.add(openModelMenuItem);
 			openModelMenuItem.addActionListener(this);
 			
+			// Refresh model menu option
+			// TODO: restore this function when you have the time
+			//refreshModelMenuItem = new JMenuItem("Refresh model");
+			//popupMenu.add(refreshModelMenuItem);
+			//refreshModelMenuItem.addActionListener(this);
+			
+			
 			popupMenu.show(e.getComponent(), e.getX(), e.getY());
 			
 			
@@ -505,11 +522,11 @@ public class SMClickControlDelegate extends ControlAdapter implements ISelection
 	 * @param e - The mouse click
 	 */
 	private void singleLeftClick(MouseEvent e) {
-		int panelIndexClicked = Integer.parseInt(mostRecentClick.getComponent().getParent().getName());
+		final int panelIndexClicked = Integer.parseInt(mostRecentClick.getComponent().getParent().getName());
 		System.out.println("Single click on panel " + panelIndexClicked);
 		
 		// Highlight panel clicked if not highlighted, de-highlight if already highlighted
-		SmallMultiplesPanel smPanel = m_view.getSmallMultiplesPanel();
+		final SmallMultiplesPanel smPanel = m_view.getSmallMultiplesPanel();
 		
 		if (m_currentlySelected) {
 			smPanel.removeHighlightedPanel(panelIndexClicked);
@@ -518,6 +535,31 @@ public class SMClickControlDelegate extends ControlAdapter implements ISelection
 			smPanel.addHighlightedPanel(panelIndexClicked);
 			m_currentlySelected = true;
 		} //if-else
+		
+		
+		// Find the TimelineView to pass a selection message to
+		org.eclipse.swt.widgets.Display.getDefault().asyncExec(new Runnable() {
+		    @Override
+		    public void run() {
+		        IWorkbenchWindow iw = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
+		        
+				TimelineView view = (TimelineView) getView(/*PlatformUI.getWorkbench().getActiveWorkbenchWindow()*/iw,  "rulebender.simulationjournaling.view.timelineview");
+				
+				if (view != null) {
+					Message msg = new Message();
+					msg.setType("ModelSelection");
+					
+					String filepath = smPanel.getMultiple(panelIndexClicked).getNetworkViewer().getFilepath();
+					String modelname = getModelNameFromFilepath(filepath);
+					msg.setDetails(modelname);
+					
+					view.iGotAMessage(msg);
+				} else {
+					System.err.println("Could not find TimelineView to pass message.");
+				} //if-else
+		    } //run
+		});
+				
 		
 	} //singleLeftClick
 	
@@ -662,6 +704,9 @@ public class SMClickControlDelegate extends ControlAdapter implements ISelection
 		// If we select the open model menu item
 		if (e2.getSource() == openModelMenuItem) {
 			openBNGLFile(smPanel, panelIndexClicked);
+			
+		} else if (e2.getSource() == refreshModelMenuItem) {
+			reloadModel(smPanel, panelIndexClicked);
 		    	
 		} else if (e2.getSource() == removeOverlayMenuItem) {
 			// If we select this menu item, we are deselecting model comparison
@@ -724,14 +769,24 @@ public class SMClickControlDelegate extends ControlAdapter implements ISelection
 				if (similarityIndex == -1) {
 					Thread.dumpStack();						
 				} else {
+					startTime = System.nanoTime();
 					handleSimilaritiesOption(smPanel, similarityIndex, selectedModel, panelIndexClicked);
+					endTime = System.nanoTime();
+					
+					printSystemTimes();
+					
 					smPanel.selectCompareSimilaritiesButton();
 					comparisonIndex = similarityIndex;
 				} //if-else
 									
 			} else {
 				// Compare the models, get the differences, and display
+				startTime = System.nanoTime();
 				handleDifferencesOption(smPanel, comparisonIndex, selectedModel, panelIndexClicked);
+				endTime = System.nanoTime();
+				
+				printSystemTimes();
+				
 				smPanel.selectCompareDifferencesButton();
 					
 			} //if-else
@@ -1060,7 +1115,16 @@ public class SMClickControlDelegate extends ControlAdapter implements ISelection
 
 		
 	} //openBNGLFile
-	
+
+	/**
+	 * Reload the model in the selected panel (for use if the model fails to load the first time, or to restore the model to its original state)
+	 * 
+	 * @param smPanel - The small multiples panel
+	 * @param panelIndexClicked - The panel selected to reload
+	 */
+	private void reloadModel(SmallMultiplesPanel smPanel, int panelIndexClicked) {
+		smPanel.reloadModel(panelIndexClicked);	
+	} //if
 	
 	/**
 	 * Checks to see if an item in the differences context sub-menu was selected
@@ -2001,6 +2065,8 @@ public class SMClickControlDelegate extends ControlAdapter implements ISelection
 	 */
 	public void itemClicked(VisualItem item, MouseEvent e) {
 		
+		mostRecentClick = e;
+		
 		// Saved the code for right-click/left-click check, but right now we'll only worry about left-clicks
 		
 		/*
@@ -2043,6 +2109,8 @@ public class SMClickControlDelegate extends ControlAdapter implements ISelection
 		clearPanels(smPanel, panels);			
 		clearBubbleSets();
 		
+		startTime = System.nanoTime();
+		
 		if ((item instanceof NodeItem)) {
 			nodeLeftClicked((NodeItem)item, e, smPanel, panels);
 		} else if (item instanceof EdgeItem) {
@@ -2050,6 +2118,10 @@ public class SMClickControlDelegate extends ControlAdapter implements ISelection
 		} else if (item instanceof AggregateItem) {
 			aggregateLeftClicked((AggregateItem)item, e, smPanel, panels);
 		} //if-else
+		
+		endTime = System.nanoTime();
+		
+		printSystemTimes();
 			/*
 		} //if-else
 		*/
@@ -2201,8 +2273,13 @@ public class SMClickControlDelegate extends ControlAdapter implements ISelection
 	 * @param panels - The collection of JPanels stored in the SmallMultiplesPanel
 	 */
 	private void aggregateLeftClicked(AggregateItem item, MouseEvent e, SmallMultiplesPanel smPanel, JPanel[] panels) {
+		System.out.println("WE HIT A MOLECULE!");
+		
 		// Get the name of the aggregate clicked (molecule)
 		String nodeName = item.getString("molecule");
+		
+		System.out.println("molecule hit = " + nodeName);
+		
 		
 		// Highlight that (molecule) in all models (if it exists)
 		for (int i = 0; i < panels.length; i++) {
@@ -2216,7 +2293,7 @@ public class SMClickControlDelegate extends ControlAdapter implements ISelection
 			// Loop through the aggregates of the model, building a string representation identical to the one before, then compare
 			//TODO: don't want to iterate over Graph.NODES; want to find aggregates...
 			Iterator iter = vis.items(PrefuseLib.getGroupName(COMPONENT_GRAPH, Graph.NODES));
-
+			//Iterator iter = vis.items(PrefuseLib.getGroupName(COMPONENT_GRAPH, vis.));	
 			
 			while (iter.hasNext()) {
 				VisualItem myItem = (VisualItem) iter.next();
@@ -2255,6 +2332,17 @@ public class SMClickControlDelegate extends ControlAdapter implements ISelection
 		
 	} //aggregateLeftClicked
 	
+	public void printSystemTimes() {
+		System.out.println("Start Time:   " + startTime);
+		System.out.println("End Time:     " + endTime);
+		System.out.println("Time Elapsed: " + (endTime - startTime));		
+	} //printSystemTimes
+	
+	public String getFileName() {
+		return getModelNameFromFilepath(m_sourcePath);
+	} //getFileName
+	
+	
 	/*
 	public void mouseMoved(MouseEvent e) {
 		showTooltip(e);
@@ -2269,6 +2357,16 @@ public class SMClickControlDelegate extends ControlAdapter implements ISelection
 		System.out.println(panelIndex);
 	} //showTooltip
 	*/
+	
+	public static IViewPart getView(IWorkbenchWindow window, String viewId) {
+	    IViewReference[] refs = window.getActivePage().getViewReferences();
+	    for (IViewReference viewReference : refs) {
+	        if (viewReference.getId().equals(viewId)) {
+	            return viewReference.getView(true);
+	        } //if
+	    } //for
+	    return null;
+	} //getView
 	
 	
 	
@@ -2285,11 +2383,11 @@ public class SMClickControlDelegate extends ControlAdapter implements ISelection
 		m_listeners.add(listener);		
 	} //addSelectionChangedListener
 	
-
 	@Override
 	public ISelection getSelection() {
 		return m_selection;
 	} //getSelection
+	
 	
 
 	@Override
@@ -2302,11 +2400,11 @@ public class SMClickControlDelegate extends ControlAdapter implements ISelection
 		//m_listeners.remove(listener);		
 	} //removeSelectionChangedListener
 	
+	
 
 	@Override
 	public void setSelection(ISelection selection) {
 		
-		// Some magic code from Adam's CMapClickControlDelegate that I'll learn how to use later		
 		m_selection = selection;
 		final SMClickControlDelegate thisInstance = this;
 		
@@ -2319,12 +2417,11 @@ public class SMClickControlDelegate extends ControlAdapter implements ISelection
 			
 			Display.getDefault().syncExec(new Runnable(){
 				@Override
-				public void run() 
-				{
+				public void run() {
 					scl.selectionChanged(new SelectionChangedEvent(thisInstance, m_selection));
-				}
+				} //run
 			});
-		}
+		} //for
 		
 	} //setSelection
 

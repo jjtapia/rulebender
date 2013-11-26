@@ -135,6 +135,7 @@ public class CMAPNetworkViewer
 	public AggregateTable addAggregateTable(String atString) {
 		AGG = atString;
 		return vis.addAggregates(atString);
+		
 	}
 
 	/**

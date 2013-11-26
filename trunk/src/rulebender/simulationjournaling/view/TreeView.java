@@ -4,6 +4,7 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
+import java.awt.event.MouseEvent;
 import java.awt.geom.Point2D;
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -22,6 +23,10 @@ import javax.xml.crypto.dsig.XMLObject;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
+import org.eclipse.ui.IViewPart;
+import org.eclipse.ui.IViewReference;
+import org.eclipse.ui.IWorkbenchWindow;
+import org.eclipse.ui.PlatformUI;
 import org.xml.sax.InputSource;
 import org.xml.sax.XMLReader;
 
@@ -42,10 +47,12 @@ import prefuse.action.filter.FisheyeTreeFilter;
 import prefuse.action.layout.CollapsedSubtreeLayout;
 import prefuse.action.layout.graph.NodeLinkTreeLayout;
 import prefuse.activity.SlowInSlowOutPacer;
+import prefuse.controls.ControlAdapter;
 import prefuse.controls.FocusControl;
 import prefuse.controls.PanControl;
 import prefuse.controls.ZoomControl;
 import prefuse.controls.ZoomToFitControl;
+import prefuse.data.Graph;
 import prefuse.data.Tree;
 import prefuse.data.Tuple;
 import prefuse.data.event.TupleSetListener;
@@ -55,12 +62,16 @@ import prefuse.data.tuple.TupleSet;
 import prefuse.render.DefaultRendererFactory;
 import prefuse.render.EdgeRenderer;
 import prefuse.render.ShapeRenderer;
+import rulebender.simulationjournaling.Message;
 import rulebender.simulationjournaling.TextItemRenderer;
+import rulebender.simulationjournaling.listeners.interfaces.SmallMultipleSelectionListener;
+import rulebender.simulationjournaling.listeners.interfaces.TimelineItemSelectionListener;
 import rulebender.simulationjournaling.model.TimelineItem;
 import rulebender.simulationjournaling.model.TimelineLoader;
 import rulebender.simulationjournaling.model.TreeCreator;
 import prefuse.util.ColorLib;
 import prefuse.util.FontLib;
+import prefuse.util.PrefuseLib;
 import prefuse.visual.VisualItem;
 import prefuse.visual.expression.InGroupPredicate;
 import prefuse.visual.sort.TreeDepthItemSorter;
@@ -77,8 +88,11 @@ public class TreeView extends JPanel {
 	private static final long serialVersionUID = 3175624563371866408L;
 
 	// Temp hardcoded stuff
-    private String m_dir = "C:\\Users\\John\\runtime-rulebender.product\\fceri\\fceri.info";
+    //private String m_dir = "C:\\Users\\John\\runtime-rulebender.product\\fceri\\fceri.info";
 	//private String m_dir = "C:\\Users\\John\\runtime-rulebender.product\\stat\\stat.info";
+    private String m_dir = null;
+    
+	//private static String COMPONENT_GRAPH = "component_graph";
     
 	// Color choices
     private Color BACKGROUND = Color.WHITE;
@@ -104,6 +118,15 @@ public class TreeView extends JPanel {
     
     private String m_label = "label";
     private int m_orientation = Constants.ORIENT_LEFT_RIGHT;
+    
+	// Temp global variables for calculation speed results
+	//long startTime, endParserTime, endDisplayTime;
+	
+	// Model selected in the small multiples view
+	//private String m_selectedModelFromSmallMultiplesView;
+	
+	// Registered SmallMultiples objects
+	//private ArrayList<TimelineItemSelectionListener> observers = new ArrayList<TimelineItemSelectionListener>();
 	
     /**
      * Constructor:
@@ -114,51 +137,62 @@ public class TreeView extends JPanel {
      * @param size - Size of the panel
      * @param tv - TimelineView
      */
-    public TreeView(Dimension size, TimelineView tv) {
+    public TreeView(Dimension size, TimelineView tv, String path) {
 
     	m_overallSize = size;
     	m_view = tv;
+    	m_dir = path;
+    	
+    	if (path == null) {
+    		//tview = new MyTreeView(new Tree(), m_label, m_overallSize);
+    		return;
+    	} //if
     	
     	// Temp hardcoded stuff
-    	Tree t = null;
+        Tree t = null;
         //m_label = label;
-    	m_label = "name";
-
-    	// The actual data from the .INFO file
-		TimelineLoader loader = new TimelineLoader(m_dir);
-		ArrayList<TimelineItem> files = loader.parseFile();
-		String xml = loader.createXML(files);
-		printTimelineItems(files);
-		
-		
-		
-		
-		
-		// Load the data into a tree from the XML representation
-        try {
-        	String path = writeXMLToFile(xml, m_dir);
-        	t = (Tree)new TreeMLReader().readGraph(path);
-            //t = (Tree)new TreeMLReader().readGraph(m_path);
+        m_label = "name";
         	
-        	//t = (Tree)new TreeMLReader().readGraph(new ByteArrayInputStream(xml.getBytes()));
-        	//t = (Tree)new TreeMLReader().readGraph(xml);
-        	//t = (Tree)new TreeCreator().readGraph(loadXMLFromString(xml));
+        //startTime = System.nanoTime();
+
+        // The actual data from the .INFO file
+    	TimelineLoader loader = new TimelineLoader(m_dir);
+    	ArrayList<TimelineItem> files = loader.parseFile();
+    	String xml = loader.createXML(files);
+    	printTimelineItems(files);
+    		
+    	//endParserTime = System.nanoTime();
+    		
+    		
+    		
+    	// Load the data into a tree from the XML representation
+        try {
+           	String myPath = writeXMLToFile(xml, m_dir);
+           	t = (Tree)new TreeMLReader().readGraph(myPath);
+            //t = (Tree)new TreeMLReader().readGraph(m_path);
+           	
+         	//t = (Tree)new TreeMLReader().readGraph(new ByteArrayInputStream(xml.getBytes()));
+           	//t = (Tree)new TreeMLReader().readGraph(xml);
+           	//t = (Tree)new TreeCreator().readGraph(loadXMLFromString(xml));
         } catch (Exception e) {
             e.printStackTrace();
             //System.exit(1);
         } //try-catch
-		
-		
-        
-        
-        
-        
+    		
+    		
+            
+            
+            
+            
         if (!(t == null)) {
-        	// create a new treemap
-        	tview = new MyTreeView(t, m_label, m_overallSize);
-        	tview.setBackground(BACKGROUND);
-        	tview.setForeground(FOREGROUND);
+         	// create a new treemap
+        	tview = null;
+           	tview = new MyTreeView(t, m_label, m_overallSize);
+           	tview.setBackground(BACKGROUND);
+           	tview.setForeground(FOREGROUND);
         } //if
+
+    	    	
         
         // Remove extra search panel stuff (for the moment, at least)
         /*
@@ -182,18 +216,37 @@ public class TreeView extends JPanel {
         title.setForeground(FOREGROUND);
         */
         
-        /*
+        
         tview.addControlListener(new ControlAdapter() {
+        	
+        	public void itemClicked(VisualItem item, MouseEvent e) {
+        		
+                if ( item.canGetString(m_label) ) {
+                	//title.setText(item.getString(m_label));
+                	highlightPanel(item.getString(m_label));
+                	//tview.getVis().repaint();
+                	//tview.getVis().run("fullPaint");
+                	//tview.getVis().run("animate");
+                	//tview.getVis().repaint();
+                	
+                	m_view.repaint();
+                } //if
+        	} //itemReleased
+        	
+        	/*
             public void itemEntered(VisualItem item, MouseEvent e) {
-                if ( item.canGetString(m_label) )
-                    title.setText(item.getString(m_label));
+            	// temporarily moved to itemReleased
             } //itemEntered
             
             public void itemExited(VisualItem item, MouseEvent e) {
-                title.setText(null);
+                //title.setText(null);
+            	//TODO restore this function later
+            	//removePanelHighlight();
             } //itemExited
+            */
         });
-        */
+        
+        
         /*
         Box box = new Box(BoxLayout.X_AXIS);
         box.add(Box.createHorizontalStrut(10));
@@ -210,15 +263,71 @@ public class TreeView extends JPanel {
         
         if (!(tview == null)) {
         	panel.add(tview, BorderLayout.CENTER);
+        	//panel.repaint();
         } //if
         //panel.add(box, BorderLayout.SOUTH);
         
         myResize(m_overallSize);
         this.add(panel);
+        //this.repaint();
         //this.setVisible(true);
         
+        //endDisplayTime = System.nanoTime();
+        //printSystemTimes();
+        
     } //TreeView (constructor)
-	
+	/*
+   	public void setDirectory(String dir) {
+    	
+    	// Clear the existing m_dir
+    	m_dir = null;
+    	
+    	// Find .info file in this directory or its parent
+		File d = new File(dir);
+		boolean infoFileFound = false;
+		
+		// Iterate across all files in the provided directory
+		if (d.isDirectory()) {
+			for (File child : d.listFiles()) {
+				if (isINFOFile(child)) {
+					infoFileFound = true;
+					m_dir = child.getAbsolutePath();
+					break;
+				} //if
+			} //for
+		} //if
+    	
+		// If we haven't found the info file yet, step up a level and look again
+    	if (!infoFileFound) {
+    		d = new File(d.getParent());
+			for (File child : d.listFiles()) {
+				if (isINFOFile(child)) {
+					infoFileFound = true;
+					m_dir = child.getAbsolutePath();
+					break;
+				} //if
+			} //for
+    	} //if
+    	
+    	// Check to see if we found the new one
+    	if (!infoFileFound) {
+    		System.err.println("INFO file not found for timeline tree construction.");
+    	} //if-else
+    	
+    } //setDirectory
+    
+	private boolean isINFOFile(File child) {
+		String filepath = child.getPath();
+		return ((filepath.substring(filepath.length()-5, filepath.length()).equals(".info")) || (filepath.substring(filepath.length()-5, filepath.length()).equals(".INFO")));
+	} //isBNGLFile
+    */
+    
+    /*
+    public void reloadTree() {
+    
+    } //reloadTree
+    */
+    
    /**
     * Writes XML to file
     * 
@@ -291,6 +400,7 @@ public class TreeView extends JPanel {
 		public MyTreeView(Tree t, String label, Dimension dim) {
         	super(new Visualization());
     		
+        	m_vis = new Visualization();
             m_vis.add(tree, t);
             
             m_nodeRenderer = new TextItemRenderer(label);
@@ -409,7 +519,7 @@ public class TreeView extends JPanel {
             // filter graph and perform layout
             setOrientation(m_orientation);
             m_vis.run("filter");
-            
+          
             TupleSet search = new PrefixSearchTupleSet(); 
             m_vis.addFocusGroup(Visualization.SEARCH_ITEMS, search);
             
@@ -420,6 +530,7 @@ public class TreeView extends JPanel {
                     m_vis.run("animatePaint");
                 } //tupleSetChanged
             }); //addTupleSetListener
+
     	} //MyTreeView (constructor)
     	
 		/**
@@ -612,9 +723,17 @@ public class TreeView extends JPanel {
     	    } //getColor
     	        
     	} //NodeColorAction (inner class)
+ 
+    	public Visualization getVis() {
+    		return m_vis;
+    	} //getVis
     	
     } //MyTreeView (inner class)
 
+    public Visualization getMyVis() {
+    	return tview.getVis();
+    } //getMyVis
+    
     /**
      * Resize the ViewPart
      */
@@ -631,6 +750,7 @@ public class TreeView extends JPanel {
 		m_overallSize = dimension;
 		if (!(tview == null)) {
 			tview.resetSize(dimension);
+			tview.repaint();
 		} //if
 	} //myResize
 
@@ -668,5 +788,99 @@ public class TreeView extends JPanel {
 		System.out.println("End of TimelineItem list.");
 				
 	} //printTimelineItems
+	/*
+	public void setSelection(String sel) {
+		TupleSet search = new PrefixSearchTupleSet();
+		
+		
+		
+		tview.getVis().addFocusGroup(Visualization.SEARCH_ITEMS, search);
+		
+	} //setSelection
+	*/
+	public void highlightPanel(final String modelName) {
+		
+		// Find the TimelineView to pass a selection message to
+		org.eclipse.swt.widgets.Display.getDefault().asyncExec(new Runnable() {
+		    @Override
+		    public void run() {
+		        IWorkbenchWindow iw = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
+		        
+				SmallMultiplesView view = (SmallMultiplesView) getView(iw,  "rulebender.simulationjournaling.view.smallmultiplesview");
+				
+				if (view != null) {
+					Message msg = new Message();
+					msg.setType("ModelSelection");
+					msg.setDetails(modelName);
+					
+					view.iGotAMessage(msg);
+				} else {
+					System.err.println("Could not find TimelineView to pass message.");
+				} //if-else
+		    } //run
+		});
+		
+	} //highlightPanel
+	/*
+	public void removePanelHighlight() {
+		
+		// Find the TimelineView to pass a selection message to
+		org.eclipse.swt.widgets.Display.getDefault().asyncExec(new Runnable() {
+		    @Override
+		    public void run() {
+		        IWorkbenchWindow iw = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
+		        
+				SmallMultiplesView view = (SmallMultiplesView) getView(iw,  "rulebender.simulationjournaling.view.smallmultiplesview");
+				
+				if (view != null) {
+					Message msg = new Message();
+					msg.setType("ModelDeselection");
+					msg.setDetails("");
+					
+					view.iGotAMessage(msg);
+				} else {
+					System.err.println("Could not find TimelineView to pass message.");
+				} //if-else
+		    } //run
+		});
+		
+	} //removePanelHighlight
+	*/
 	
+	public static IViewPart getView(IWorkbenchWindow window, String viewId) {
+	    IViewReference[] refs = window.getActivePage().getViewReferences();
+	    for (IViewReference viewReference : refs) {
+	        if (viewReference.getId().equals(viewId)) {
+	            return viewReference.getView(true);
+	        } //if
+	    } //for
+	    return null;
+	} //getView
+	
+	/*
+	public void printSystemTimes() {
+		System.out.println("Start time:       " + startTime);
+		System.out.println("End parser time:  " + endParserTime);
+		System.out.println("End display time: " + endDisplayTime);
+		System.out.println("");
+		System.out.println("Parser Time:      " + (endParserTime - startTime));
+		System.out.println("Display Time:     " + (endDisplayTime - endParserTime));
+	} //printSystemTimes
+    */
+	/*
+    public void registerObserver(TimelineItemSelectionListener observer) {
+        observers.add(observer);
+    } //registerObserver
+    
+    public void notifyListeners() {
+        for(TimelineItemSelectionListener observer : observers) {
+            observer.notify("myModel");
+        } //for
+    } //notifyListeners
+    
+    public void aTimelineItemWasSelected() {
+        //bounce etc
+        notifyListeners();
+    } //aTimelineItemWasSelected
+	*/
 } //TreeView

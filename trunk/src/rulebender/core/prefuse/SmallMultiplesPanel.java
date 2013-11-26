@@ -6,7 +6,6 @@ import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.io.File;
 import java.util.ArrayList;
@@ -16,6 +15,7 @@ import java.util.Iterator;
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
+import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JLayeredPane;
 import javax.swing.JPanel;
@@ -24,20 +24,27 @@ import javax.swing.SwingConstants;
 import javax.swing.border.Border;
 import javax.swing.border.LineBorder;
 
+import org.eclipse.core.runtime.Platform;
+import org.eclipse.ui.IViewPart;
+import org.eclipse.ui.IViewReference;
+import org.eclipse.ui.IWorkbenchWindow;
+import org.eclipse.ui.PlatformUI;
+
 import prefuse.Display;
 import prefuse.Visualization;
 import prefuse.data.Edge;
 import prefuse.data.Graph;
-import prefuse.util.ColorLib;
 import prefuse.util.GraphicsLib;
 import prefuse.util.PrefuseLib;
 import prefuse.util.display.DisplayLib;
 import prefuse.visual.VisualItem;
+import rulebender.simulationjournaling.Message;
 import rulebender.simulationjournaling.comparison.SimilarityMatrices;
 import rulebender.simulationjournaling.model.BackgroundFileLoader;
 import rulebender.simulationjournaling.model.SMClickControlDelegate;
 import rulebender.simulationjournaling.model.SmallMultiple;
 import rulebender.simulationjournaling.view.SmallMultiplesView;
+import rulebender.simulationjournaling.view.TimelineView;
 
 /**
  * This class defines the pane that contains an array of prefuse.Display objects,
@@ -45,20 +52,18 @@ import rulebender.simulationjournaling.view.SmallMultiplesView;
  * @author johnwenskovitch
 */
 
-public class SmallMultiplesPanel extends JLayeredPane implements ActionListener {
+public class SmallMultiplesPanel extends JLayeredPane implements ActionListener /*TimelineItemSelectionListener*/ {
 	
 	private static final long serialVersionUID = -5595319590026393256L;
 	private static String COMPONENT_GRAPH = "component_graph";
 	
-	// Temporary values for while I'm just hardcoding in the directory
-	// TODO: get this directory path automatically from a user's RuleBender interactions
-	//private String m_directory = "C:\\Users\\John\\runtime-rulebender.product\\TLR\\TLR\\";
-	//private String m_directory = "C:\\Users\\John\\runtime-rulebender.product\\egfr_net\\egfr_net\\";
-	private String m_directory = "C:\\Users\\John\\runtime-rulebender.product\\fceri\\models\\";
-	//private String m_directory = "C:\\Users\\John\\runtime-rulebender.product\\stat\\stat\\";
+	// Directory that we're currently exploring
+	private String m_directory = null;
 	
+	// Number of models in that directory
 	private int m_numFiles;
 	
+	// Layout information
 	private int rows;
 	private int cols;	
 	String sourcePath[];
@@ -79,6 +84,9 @@ public class SmallMultiplesPanel extends JLayeredPane implements ActionListener 
 	private JRadioButton rbtnCompareSimilarities;
 	private JRadioButton rbtnCompareDifferences;
 	ButtonGroup rbtnGroupCompare;
+	
+	// A directory selection button
+	private JButton btnChooseDirectory;
 	
 	// The border object that separates the inner JPanels
 	private Border border;
@@ -127,6 +135,9 @@ public class SmallMultiplesPanel extends JLayeredPane implements ActionListener 
 	// If something is currently highlighted in the interface
 	private boolean m_currentlyHighlighted;
 	
+	// The directory to begin at for the Directory Chooser
+	private String m_chooserCurrentDirectory = null;
+	
 	// A HashMap that holds any pre-existing but not currently displayed
 	// contact map prefuse visualizations. This is so that a new contact map
 	// is not created every time a user selects a new bngl editor tab.
@@ -140,6 +151,15 @@ public class SmallMultiplesPanel extends JLayeredPane implements ActionListener 
 	
 	// Size of models initialized to the sizes of their panels
 	private boolean m_modelSizeInitialized;
+	
+	// When the interface first loads, only a single panel should get displayed
+	private JPanel singlePanel;
+	
+	// Selected item from timeline tree view
+	private String m_selectedItemFromTimelineTreeView;
+	
+	// Temp global variables for calculation speed results
+	//long startTime, endLoadTime, endSimilarityTime, endSortTime;
 	
 	
 	/**
@@ -167,15 +187,18 @@ public class SmallMultiplesPanel extends JLayeredPane implements ActionListener 
 		
 		m_selectedModels = new ArrayList<Integer>();
 		
+		
+		/// Moved to initializeSmallMultiplesDisplay()
+		
 		// Figure out the number of multiples are in the folder
-		m_numFiles = findNumberOfSmallMultiples(m_directory);
+		//m_numFiles = findNumberOfSmallMultiples(m_directory);
 		
 		// Set the layout of the small multiples panel
-		selectLayout(m_numFiles);
+		//selectLayout(m_numFiles);
 		
-		m_individualSize = findIndividualPanelSize(m_overallSize);
+		//m_individualSize = findIndividualPanelSize(m_overallSize);
 		
-		sm = new SmallMultiple[m_numFiles];
+		//sm = new SmallMultiple[m_numFiles];
 		
 		// Initialize the label and dropdown list for the layouts
 		lblLayouts = new JLabel();
@@ -185,17 +208,20 @@ public class SmallMultiplesPanel extends JLayeredPane implements ActionListener 
 		lblLayouts.setText("Choose layout: ");
 		lblLayouts.setHorizontalAlignment(SwingConstants.RIGHT);
 		
-		populatePositionDropdown(m_directory);
+		//populatePositionDropdown(m_directory);
+		populatePositionDropdownDefault();
 		
-		ddlLayouts.setSelectedIndex(0);
+		//ddlLayouts.setSelectedIndex(0);
 		ddlLayouts.addActionListener(this);
 		
 		// Initialize the buttons and add listener
 		btnPopulate = new JButton("Populate from Folder");
 		btnClear = new JButton("Clear the Canvas");
+		btnChooseDirectory = new JButton("Select a Directory to Explore");
 		
 		btnPopulate.addActionListener(this);
 		btnClear.addActionListener(this);
+		btnChooseDirectory.addActionListener(this);
 		
 		// Initialize the radio buttons, and to a group, add listener
 		rbtnGroupCompare = new ButtonGroup();
@@ -219,27 +245,34 @@ public class SmallMultiplesPanel extends JLayeredPane implements ActionListener 
 		
 		// Set the layout on the panels and the RCP View
 		fullPanel.setLayout(new BorderLayout());
-		upperPanel.setLayout(new GridLayout(1, 4));
-		lowerPanel.setLayout(new GridLayout(rows, cols, -1, -1));
+		upperPanel.setLayout(new GridLayout(1, 5));
+		
+		/// Moved to initializeSmallMultiplesDisplay
+		//lowerPanel.setLayout(new GridLayout(rows, cols, -1, -1));
+		
 		this.setLayout(new GridLayout(1, 1));
 		
+		/// Moved to initializeSmallMultiplesDisplay
 		// Create the array of panels
-		myPanel = new JPanel[m_numFiles];
-		for (int i = 0; i < m_numFiles; i++) {
-			myPanel[i] = new JPanel();
-			myPanel[i].setName(""+i);
-			myPanel[i].setToolTipText("testing");
-		} //for
+		//myPanel = new JPanel[m_numFiles];
+		//for (int i = 0; i < m_numFiles; i++) {
+		//	myPanel[i] = new JPanel();
+		//	myPanel[i].setName(""+i);
+		//	myPanel[i].setToolTipText("testing");
+		//} //for
+		
+		//startTime = System.nanoTime();
 		
 		// Initialize the small multiples layout
-		initializeSmallMultiplesDisplay((String)ddlLayouts.getSelectedItem());
-		//initializeBlankDisplay();
+		//initializeSmallMultiplesDisplay((String)ddlLayouts.getSelectedItem());
+		initializeBlankDisplay();
 		
 		for (int i = 0; i < m_numFiles; i++) {
 			lowerPanel.add(myPanel[i]);
 		} //if
 		
 		// Add the dropdown list and label to the upper panel
+		upperPanel.add(btnChooseDirectory);
 		upperPanel.add(lblLayouts);
 		upperPanel.add(ddlLayouts);
 		//upperPanel.add(btnPopulate);
@@ -256,8 +289,17 @@ public class SmallMultiplesPanel extends JLayeredPane implements ActionListener 
 		
 		// Update the sizes of the JPanels and Displays
 		myResize(m_overallSize);
+				
+		// Print system times for results
+		//printSystemTimes();
 		
 	} //SmallMultiplesPanel (constructor)
+	
+	private void populatePositionDropdownDefault() {
+		ddlLayouts.addItem("-- Use default layouts --");
+		m_positionLookup.put("-- Use default layouts --", null);		
+		ddlLayouts.setSelectedIndex(0);
+	} //popularePositionDropdownDefault
 	
 	/**
 	 * Populates the dropdown list of position files
@@ -265,6 +307,11 @@ public class SmallMultiplesPanel extends JLayeredPane implements ActionListener 
 	 * @param directory - The directory to search through for position files
 	 */
 	private void populatePositionDropdown(String directory) {
+		// Start by clearing everything that's already in the DDL
+		if (ddlLayouts.getItemCount() > 0) {
+			ddlLayouts.removeAllItems();
+		} //if
+		
 		File dir = new File(directory);
 		
 		ddlLayouts.addItem("-- Use default layouts --");
@@ -395,44 +442,186 @@ public class SmallMultiplesPanel extends JLayeredPane implements ActionListener 
 	 */
 	public void initializeSmallMultiplesDisplay(String layoutChoice) {
 		
-		// Load the small multiples if they don't exist in the array already
-		populateSmallMultiplesDisplay(m_directory, layoutChoice);
+		// Wipe the display
+		initializeBlankDisplay();
 		
-		String[] modelNames = populateModelNames(m_directory);
-		matrixLayout = new SimilarityMatrices(modelNames, sm);		
+		// Figure out the number of multiples are in the folder
+		m_numFiles = findNumberOfSmallMultiples(m_directory);
+		
+		// If there are no models in the selected directory, display a message; otherwise, show the models as normal 
+		if (m_numFiles == 0) {
+			
+			noModelsFound();
+			
+		} else {
+			// Set the layout of the small multiples panel
+			selectLayout(m_numFiles);
+		
+			m_individualSize = findIndividualPanelSize(m_overallSize);
+		
+			// temp value until bug is fixed
+			//m_individualSize = new Dimension(200,200);
+		
+			sm = new SmallMultiple[m_numFiles];
+		
+			singlePanel.removeAll();
+			//singlePanel.add(new JLabel("Models loading; please wait!"));
+			singlePanel.validate();
+		
+			singlePanel.repaint();
+			lowerPanel.repaint();
+			fullPanel.repaint();
+			this.repaint();
+		
+			lowerPanel.removeAll();
+			//fullPanel.remove(lowerPanel);
+			//fullPanel.validate();
+		
+			//lowerPanel = new JPanel();
+			
+			lowerPanel.setLayout(new GridLayout(rows, cols, -1, -1));
 				
-		matrixLayout.fillSimilarityMatrices();
-		matrixLayout.printSimilarityMatrices();
+			myPanel = new JPanel[m_numFiles];
+			for (int i = 0; i < m_numFiles; i++) {
+				myPanel[i] = new JPanel();
+				myPanel[i].setName(""+i);
+				//myPanel[i].setToolTipText("testing");
+				myPanel[i].add(new JLabel("Model loading; please wait"));
+				lowerPanel.add(myPanel[i]);
+			} //for
+		
+		
+			fullPanel.add(lowerPanel, BorderLayout.CENTER);
+			fullPanel.repaint();
+		
+		
+			// Load the small multiples if they don't exist in the array already
+			populateSmallMultiplesDisplay(m_directory, layoutChoice);
+		
+			//endLoadTime = System.nanoTime();
+		
+			String[] modelNames = populateModelNames(m_directory);
+			matrixLayout = new SimilarityMatrices(modelNames, sm);		
+				
+			matrixLayout.fillSimilarityMatrices();
+			matrixLayout.printSimilarityMatrices();
 
-		// Sort the small multiples here
-		int largestIndex = findMostCompleteModel();
-		sortModels(largestIndex, matrixLayout);
+			//endSimilarityTime = System.nanoTime();
 		
-		// Instantiate the border object.
-		border = new LineBorder(Color.GRAY, BORDER_WIDTH);
+			// Sort the small multiples here
+			int largestIndex = findMostCompleteModel();
+			sortModels(largestIndex, matrixLayout);
+		
+			//endSortTime = System.nanoTime();
+		
+			// Instantiate the border object.
+			border = new LineBorder(Color.GRAY, BORDER_WIDTH);
 				
-		// Add each of the sorted small multiple panels to the lower Panel
-		for (int i = 0; i < m_numFiles; i++) {
+			// Add each of the sorted small multiple panels to the lower Panel
+			for (int i = 0; i < m_numFiles; i++) {
 			
-			sm[i].getDisplay().getVisualization().run("layout");
-			sm[i].getDisplay().getVisualization().run("color");
-			sm[i].getDisplay().getVisualization().run("bubbleLayout");
-			sm[i].getDisplay().getVisualization().run("bubbleColor");
+				sm[i].getDisplay().getVisualization().run("layout");
+				sm[i].getDisplay().getVisualization().run("color");
+				sm[i].getDisplay().getVisualization().run("bubbleLayout");
+				sm[i].getDisplay().getVisualization().run("bubbleColor");
 			
-			if (myPanel[i].getComponentCount() == 0) {
-				myPanel[i].add(sm[i].getDisplay());
-			} //if
+				if (myPanel[i].getComponentCount() == 0) {
+					myPanel[i].add(sm[i].getDisplay());
+				} else {
+					myPanel[i].remove(0);
+					myPanel[i].add(sm[i].getDisplay());
+					myPanel[i].validate();
+				} //if-else
 			
-			myPanel[i].setBorder(border);
-			myPanel[i].setBackground(Color.WHITE);
-			myPanel[i].repaint();
-			sm[i].getDisplay().repaint();
-		} //for
+				myPanel[i].setBorder(border);
+				myPanel[i].setBackground(Color.WHITE);
+				myPanel[i].repaint();
+				sm[i].getDisplay().repaint();
+			
+			} //for
+			
+			//Pass directory info to TimelineView
+			sendDirectoryChoiceToTimelineView(m_directory);
+			
+		} //if-else
+		
+		
+		
 				
+		//lowerPanel.validate();
+		fullPanel.validate();
+		
+		lowerPanel.repaint();
+		fullPanel.repaint();
+		repaint();
+		
+		// Update the sizes of the JPanels and Displays
+		myResize(m_overallSize);
+		
 		// Display is no longer blank
 		displayBlank = false;
 		
 	} //initializeSmallMultiplesDisplay
+	
+	public void reloadModel(int modelIndex) {
+		
+		// Get path of model to reload
+		String modelNameToReload = sm[modelIndex].getNetworkViewer().getFilepath();
+		String layoutChoice = (String)ddlLayouts.getSelectedItem();
+		
+		// Clear the panel
+		myPanel[modelIndex] = new JPanel();
+		myPanel[modelIndex].setName(""+modelIndex);
+		//myPanel[i].setToolTipText("testing");
+		myPanel[modelIndex].add(new JLabel("Model loading; please wait"));
+		myPanel[modelIndex].repaint();
+				
+		// Load the model
+		SmallMultiple modelToReload = lookupDisplay(modelNameToReload);
+		
+		if (modelToReload == null) {
+			// If the model hasn't already been loaded, load it (using the thread class), then store it in the registry
+			SmallMultipleLoaderThread thread = new SmallMultipleLoaderThread(modelIndex, new File(modelNameToReload), layoutChoice);
+			thread.run();
+		} else {
+			// If the model has already been loaded, retrieve it from the HashMap, and make sure it's using the right layout
+			sm[modelIndex] = modelToReload;
+			sm[modelIndex].setLayoutPath(lookupPosition(layoutChoice));
+		} //if-else
+		
+		// Display the model
+		sm[modelIndex].getDisplay().getVisualization().run("layout");
+		sm[modelIndex].getDisplay().getVisualization().run("color");
+		sm[modelIndex].getDisplay().getVisualization().run("bubbleLayout");
+		sm[modelIndex].getDisplay().getVisualization().run("bubbleColor");
+	
+		if (myPanel[modelIndex].getComponentCount() == 0) {
+			myPanel[modelIndex].add(sm[modelIndex].getDisplay());
+		} else {
+			myPanel[modelIndex].removeAll();
+			myPanel[modelIndex].repaint();
+			myPanel[modelIndex].add(sm[modelIndex].getDisplay());
+		} //if-else
+	
+		myPanel[modelIndex].setBorder(border);
+		myPanel[modelIndex].setBackground(Color.WHITE);
+		myPanel[modelIndex].repaint();
+		myPanel[modelIndex].validate();
+		sm[modelIndex].getDisplay().repaint();
+		
+		myPanel[modelIndex].repaint();
+		//lowerPanel.repaint();
+		
+		// Refresh the display
+		//fullPanel.validate();
+		
+		//lowerPanel.repaint();
+		//fullPanel.repaint();
+		
+		// Update the sizes of the JPanels and Displays
+		myResize(m_overallSize);
+		
+	} //reloadModel
 	
 	/**
 	 * Returns the last panel selected
@@ -552,12 +741,30 @@ public class SmallMultiplesPanel extends JLayeredPane implements ActionListener 
 		
 	} //addHighlightedPanel
 	
+	public int findPanelFromModelName(String modelName) {
+		int foundModel = -1;
+		
+		for (int i = 0; i < m_numFiles; i++) {
+			String filename = ((SMClickControlDelegate)sm[i].getNetworkViewer().getClickControl()).getFileName();
+			if (filename.equals(removeBNGLFromPath(modelName))) {
+				foundModel = i;
+				break;
+			} //if
+		} //for
+		
+		return foundModel;
+	} //findPanelFromModelName
+	
+	private String removeBNGLFromPath(String path) {
+		return path.substring(0, (path.length() - 5));
+	} //removeBNGLFromPath
+	
 	/**
 	 * Add a single panel to the highlighted list
 	 * 
 	 * @param panel - Index of the panel to add to the list
 	 */
-	private void addPanelToList(int panel) {
+  	private void addPanelToList(int panel) {
 		// Check to be sure it isn't already in the list
 		for (int i = 0; i < m_selectedModels.size(); i++) {
 			if (m_selectedModels.get(i) == panel) {
@@ -734,18 +941,47 @@ public class SmallMultiplesPanel extends JLayeredPane implements ActionListener 
 				myPanel[i].remove(0);
 			} //while
 		} //for
+		
+		lowerPanel.removeAll();
+		lowerPanel.validate();
 				
-		// Repaint blank grid
+		// We only want a single panel on the screen while it's a blank display
+		rows = 1;
+		cols = 1;
+		
+		// Paint blank grid with one panel
+		singlePanel = new JPanel();
+		singlePanel.setBorder(border);
+		singlePanel.setBackground(Color.WHITE);
+		singlePanel.setLayout(new GridLayout(1, 1, 0, 0));
+		singlePanel.repaint();
+		
+		lowerPanel.setLayout(new GridLayout(rows, cols, -1, -1));
+		lowerPanel.add(singlePanel);
+
+		lowerPanel.validate();
+		
+		// Update the size of the single panel and Displays
+		myResize(m_overallSize);
+		
+		
+		/*
 		for (int i = 0; i < m_numFiles; i++) {
 			myPanel[i].setBorder(border);
 			myPanel[i].setBackground(Color.WHITE);
 			myPanel[i].repaint();
 		} //for
-		
+		*/
 		// Display is now blank
 		displayBlank = true;
 				
 	} //initializeBlankDisplay
+	
+	public void noModelsFound() {
+		initializeBlankDisplay();
+		JLabel lbl = new JLabel("No models to display in this directory.", JLabel.CENTER);
+		singlePanel.add(lbl);
+	} //noModelsFound
 	
 	/**
 	 * Returns the collection of JPanels storing the SmallMultiples
@@ -781,8 +1017,13 @@ public class SmallMultiplesPanel extends JLayeredPane implements ActionListener 
 	        	initializeBlankDisplay();
 	        } else {
 	        	for (int i = 0; i < m_numFiles; i++) {
-	        		SmallMultiplePositionThread positionThread = new SmallMultiplePositionThread(i, layoutChoice);
-	        		positionThread.run();
+	        		if (layoutChoice != null) {
+	        			SmallMultiplePositionThread positionThread = new SmallMultiplePositionThread(i, layoutChoice);
+		        		positionThread.run();
+	        		} else {
+	        			System.err.println("layoutChoice was null... this shouldn't be happening...");
+	        		} //if-else
+	        		
 	        	} //for
 	        	//initializeSmallMultiplesDisplay(layoutChoice);	
 	        } //if-else
@@ -791,12 +1032,58 @@ public class SmallMultiplesPanel extends JLayeredPane implements ActionListener 
 	        	m_lastPanelSelected = -1;	
 	        } //if
 	        
-	        	        
+	        for (int i = 0; i < m_numFiles; i++) {
+	        	fitToPanel(i, sm[0].getDisplay().getVisualization().getBounds(Visualization.ALL_ITEMS));
+	        } //for
+	        
+
 		} else if (e.getSource() == btnPopulate) {
 			initializeSmallMultiplesDisplay((String)ddlLayouts.getSelectedItem());
 			
 		} else if (e.getSource() == btnClear) {
 			initializeBlankDisplay();
+			
+		} else if (e.getSource() == btnChooseDirectory) {
+			
+			JFileChooser chooser;
+			String choosertitle = "Select a Directory";
+			
+			chooser = new JFileChooser(); 
+		    
+			if (m_chooserCurrentDirectory == null) {
+				chooser.setCurrentDirectory(new File(Platform.getLocation().toString()));
+			} else {
+				chooser.setCurrentDirectory(new File(m_chooserCurrentDirectory));
+			} //if-else
+						
+		    chooser.setDialogTitle(choosertitle);
+		    chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+
+		    // disable the "All files" option.
+		    chooser.setAcceptAllFileFilterUsed(false);
+
+		    if (chooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) { 
+		        System.out.println("getCurrentDirectory(): " +  chooser.getCurrentDirectory());
+		        System.out.println("getSelectedFile() : " +  chooser.getSelectedFile());
+		    
+		        m_directory = chooser.getSelectedFile().toString();
+				m_chooserCurrentDirectory = chooser.getCurrentDirectory().toString();
+		        
+		        // Load the models
+		        //initializeSmallMultiplesDisplay((String)ddlLayouts.getSelectedItem());
+		        initializeSmallMultiplesDisplay("-- Use default layouts --");
+		        
+		        // Load the position files dropdownlist
+		        populatePositionDropdown(m_directory);
+				ddlLayouts.setSelectedIndex(0);
+		        
+		    } else {
+		        System.out.println("No Selection!");
+		        return;
+		    } //if-else
+			
+		    
+			
 			
 		} else if (e.getSource() == rbtnCompareSimilarities) {
 			if (twoPanelsHighlighted()) {
@@ -1019,32 +1306,44 @@ public class SmallMultiplesPanel extends JLayeredPane implements ActionListener 
 	 */
 	public void selectLayout(int numFiles) {
 		if (numFiles <= 2) {
-			cols = 1;
-			rows = 2;
+			cols = 2;
+			rows = 1;
 		} else if (numFiles <= 4) {
 			cols = 2;
 			rows = 2;
 		} else if (numFiles <= 6) {
-			cols = 2;
-			rows = 3;
+			cols = 3;
+			rows = 2;
+		} else if (numFiles <= 8) {
+			cols = 4;
+			rows = 2;
 		} else if (numFiles <= 9) {
 			cols = 3;
 			rows = 3;
 		} else if (numFiles <= 12) {
-			cols = 3;
-			rows = 4;
+			cols = 4;
+			rows = 3;
+		} else if (numFiles <= 15) {
+			cols = 5;
+			rows = 3;
 		} else if (numFiles <= 16) {
 			cols = 4;
 			rows = 4;
 		} else if (numFiles <= 20) {
-			cols = 4;
-			rows = 5;
+			cols = 5;
+			rows = 4;
+		} else if (numFiles <= 24) {
+			cols = 6;
+			rows = 4;
 		} else if (numFiles <= 25) {
 			cols = 5;
 			rows = 5;
 		} else if (numFiles <= 30) {
-			cols = 5;
-			rows = 6;
+			cols = 6;
+			rows = 5;
+		} else if (numFiles <= 35) {
+			cols = 7;
+			rows = 5;
 		} else {
 			cols = 6;
 			rows = 6;
@@ -1114,6 +1413,20 @@ public class SmallMultiplesPanel extends JLayeredPane implements ActionListener 
 		
 	} //SmallMultiplePositionThread
 	
+	/*
+	public void printSystemTimes() {
+		System.out.println("Start Time:          " + startTime);
+		System.out.println("End Load Time:       " + endLoadTime);
+		System.out.println("End Similarity Time: " + endSimilarityTime);
+		System.out.println("End Sort Time:       " + endSortTime);
+		System.out.println();
+		System.out.println("Model Load Time:     " + (endLoadTime - startTime));
+		System.out.println("Similarity Time:     " + (endSimilarityTime - endLoadTime));
+		System.out.println("Sort Time:           " + (endSortTime - endSimilarityTime));
+		
+	} //printSystemTimes
+	*/
+	
 	/**
 	 * Adam: There is a native resize method, but I needed to do more so I created
 	 * this one.  This default version calls the parameterized version with
@@ -1136,7 +1449,14 @@ public class SmallMultiplesPanel extends JLayeredPane implements ActionListener 
 	 */
 	public void myResize(Dimension size) {	
 		
+		// Update the m_overall size with new size information from the parent 
+		m_overallSize = size;
+		
 		m_individualSize = findIndividualPanelSize(size);
+		
+		if ((rows == 1) && (cols == 1)) {
+			m_individualSize = size;
+		} //if
 		
 		for (int i = 0; i < m_numFiles; i++) {
 			
@@ -1155,7 +1475,7 @@ public class SmallMultiplesPanel extends JLayeredPane implements ActionListener 
 		// Initialize the size of the models to their panels on the first resize only
 		if (!m_modelSizeInitialized) {
 			for (int i = 0; i < m_numFiles; i++) {
-				fitToPanel(i);
+				fitToPanel(i, sm[0].getDisplay().getVisualization().getBounds(Visualization.ALL_ITEMS));
 			} //for	
 		} //if
 		
@@ -1165,16 +1485,23 @@ public class SmallMultiplesPanel extends JLayeredPane implements ActionListener 
 	 * Fit the model to the size of the individual JPanel
 	 * 
 	 * @param panelIndex - index of the panel we're fitting to the panel
+	 * @param bounds - the bounds passed in, presumably from the primary model
 	 */
-	public void fitToPanel(int panelIndex) {
+	public void fitToPanel(int panelIndex, Rectangle2D bounds) {
 		
 		int m_margin = 5;
 		
         Visualization vis = sm[panelIndex].getDisplay().getVisualization();
-        //Rectangle2D bounds = vis.getBounds(COMPONENT_GRAPH);
-        Rectangle2D bounds = vis.getBounds(Visualization.ALL_ITEMS);
+        Rectangle2D mybounds = vis.getBounds(COMPONENT_GRAPH);
+        //Rectangle2D bounds = vis.getBounds(Visualization.ALL_ITEMS);
         GraphicsLib.expand(bounds, m_margin + (int)(1/sm[panelIndex].getDisplay().getScale()));
-        DisplayLib.fitViewToBounds(sm[panelIndex].getDisplay(), bounds, 0);
+        DisplayLib.fitViewToBounds(sm[panelIndex].getDisplay(), mybounds, 0);
+        //Point2D center = new Point2D.Double(bounds.getCenterX(), bounds.getCenterY());
+        
+        vis.run("layout");
+        vis.run("color");
+        vis.run("bubbleLayout");
+        vis.run("bubbleColor");
 		
 	} //fitToPanel
 	
@@ -1182,5 +1509,68 @@ public class SmallMultiplesPanel extends JLayeredPane implements ActionListener 
 		// TODO Auto-generated method stub
 		
 	} //setDisplay
+
+	/*
+	@Override
+	public void notify(String modelName) {
+		// Highlight the panel based on the Timeline Tree item selected
+		m_selectedItemFromTimelineTreeView = modelName;
+		
+		int foundModel = findPanelFromModelName(modelName);
+		
+		if (foundModel != -1) {
+			addHighlightedPanel(foundModel);	
+		} //if
+		
+	} //notify*/
+	
+	public void sendDirectoryChoiceToTimelineView(final String dir) {
+		org.eclipse.swt.widgets.Display.getDefault().asyncExec(new Runnable() {
+		    @Override
+		    public void run() {
+		        IWorkbenchWindow iw = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
+		        
+				TimelineView view = (TimelineView) getView(/*PlatformUI.getWorkbench().getActiveWorkbenchWindow()*/iw,  "rulebender.simulationjournaling.view.timelineview");
+				
+				if (view != null) {
+					Message msg = new Message();
+					msg.setType("DirectorySelection");
+					msg.setDetails(dir);
+					
+					view.iGotAMessage(msg);
+				} else {
+					System.err.println("Could not find TimelineView to pass message.");
+				} //if-else
+		    } //run
+		});
+		
+		
+		
+		/*
+		// Find the TimelineView to pass a message to
+		Display.getDefault().asyncExec(new Runnable() {
+		    @Override
+		    public void run() {
+		        IWorkbenchWindow iw = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
+		        
+				TimelineView view = (TimelineView) getView(iw,  "rulebender.simulationjournaling.view.timelineview");
+				
+				if (view != null) {
+					System.out.println("Found view!");
+				} //if
+		    } //run
+		});
+		*/
+	} //sendDirectoryChoiceToTimelineView
+	
+	public static IViewPart getView(IWorkbenchWindow window, String viewId) {
+	    IViewReference[] refs = window.getActivePage().getViewReferences();
+	    for (IViewReference viewReference : refs) {
+	        if (viewReference.getId().equals(viewId)) {
+	            return viewReference.getView(true);
+	        } //if
+	    } //for
+	    return null;
+	} //getView
 
 } //SmallMultiplesPanel

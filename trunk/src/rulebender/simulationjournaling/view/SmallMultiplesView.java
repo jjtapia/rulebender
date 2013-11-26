@@ -12,6 +12,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.part.ViewPart;
 
 import rulebender.core.prefuse.SmallMultiplesPanel;
+import rulebender.simulationjournaling.Message;
 
 /**
  * This class defines the ViewPart subclass that holds the small multiples.
@@ -60,8 +61,8 @@ public class SmallMultiplesView extends ViewPart {
 		
 		// Create the SmallMultiplesPanel.  This is a data type that has an
 		// array of jpanels for the cmaps
-		smPanel = new SmallMultiplesPanel(new Dimension(parent.getSize().x, parent.getSize().y), this);
-		//smPanel = new SmallMultiplesPanel(new Dimension(580,625), this);
+		
+		smPanel = new SmallMultiplesPanel(new Dimension(1000,500), this);
 		
 		// Add the layered pane to the frame.
 		frame.add(smPanel);
@@ -139,6 +140,38 @@ public class SmallMultiplesView extends ViewPart {
 		frame.repaint();
 	} //setSmallMultiple
 	*/
+	
+	public void iGotAMessage(Message msg) {
+		if (msg.getType().equals("ModelSelection")) {
+			highlightAPanel(msg.getDetails());
+		} else if (msg.getType().equals("ModelDeselection")) {
+			unhighlightAPanel(msg.getDetails());
+		} //if-else
+	} //iGotAMessage
+	
+	private void highlightAPanel(String modelName) {
+		int panelNum = smPanel.findPanelFromModelName(modelName);
+		
+		if (panelNum != -1) {
+			smPanel.addHighlightedPanel(panelNum);
+			System.out.println("Highlighted panel number " + panelNum);	
+		} else {
+			System.err.println("Could not find panel to highlight.  Provided label was " + modelName + ".");
+		} //if-else
+		
+	} //highlightAPanel
+	
+	private void unhighlightAPanel(String modelName) {
+		if (modelName.equals("")) {
+			smPanel.removeAllSelections();
+			System.out.println("Unhighlighted all panels");
+		} else {
+			int panelNum = smPanel.findPanelFromModelName(modelName);
+			smPanel.removeHighlightedPanel(panelNum);
+			System.out.println("Unhighlighted panel number " + panelNum);
+		} //if-else
+	} //unhighlightAPanel
+	
 	public SmallMultiplesPanel getSmallMultiplesPanel() {
 		return smPanel;
 	} //getSmallMultiplesPanel

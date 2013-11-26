@@ -54,8 +54,7 @@ public class BackgroundFileLoader extends Thread {
 		} catch (NullPointerException e) {
 			// e.printStackTrace();
 			// Debug
-			System.out.println("Failed to produce CMapModel on ast:\n"
-			    + getModel(sourcePath).getAST().toString());
+			System.out.println("Failed to produce CMapModel on ast:\n" + getModel(sourcePath).getAST().toString());
 			return null;
 		} // try-catch
 
