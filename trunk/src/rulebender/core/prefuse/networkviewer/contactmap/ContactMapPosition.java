@@ -21,6 +21,13 @@ public class ContactMapPosition {
 	
 	private static String COMPONENT_GRAPH = "component_graph";
 	
+	/**
+	 * Read molecule positions from a file
+	 * 
+	 * @param filepath - file to read from
+	 * 
+	 * @return - NodePosition list of all molecule/bindingsite/counters
+	 */
 	public static ArrayList<NodePosition> loadMoleculePositions(String filepath) {
 
 		ArrayList<NodePosition> positionMap = new ArrayList<NodePosition>();
@@ -90,7 +97,12 @@ public class ContactMapPosition {
 		return positionMap;
 	} //getSavedMoleculePositions
 	
-	// Writes node locations to the given filepath
+	/**
+	 * Caller function for all of the below functions
+	 * 
+	 * @param filepath - input filepath
+	 * @param visualization - visualization to save
+	 */
 	//public void writeNodeLocations(String filepath, ContactMapVisual visualization) {
 	public static void writeNodeLocations(String filepath, Visualization visualization) {
 		ArrayList<NodePosition> positionMap = generatePositionList(visualization);
@@ -99,6 +111,13 @@ public class ContactMapPosition {
 		saveMoleculePositions(newFilepath, positionMap, bounds);
 	} //writeNodeLocations
 	
+	/**
+	 * Takes a .bngl filepath and turns it into a .pos filepath
+	 * 
+	 * @param bnglFilePath - input filepath
+	 * 
+	 * @return - output pos filepath
+	 */
 	public static String modifyFilePath(String bnglFilePath) {
 		StringBuilder positionFilePath = new StringBuilder();
 		
@@ -115,6 +134,13 @@ public class ContactMapPosition {
 		return positionFilePath.toString();
 	} //modifyFilePath
 	
+	/**
+	 * Writes a file containing the positions of each of the nodes
+	 * 
+	 * @param filepath - Location/name of the file
+	 * @param positionMap - The list of positions to write
+	 * @param bounds - The bounds of the model to save
+	 */
 	public static void saveMoleculePositions(String filepath, ArrayList<NodePosition> positionMap, Rectangle2D bounds) {
 		StringBuilder sb;
 		
@@ -167,6 +193,13 @@ public class ContactMapPosition {
 		
 	} //saveMoleculePositions
 	
+	/**
+	 * Creates a NodePosition list for each molecule/bindingsite/counter in a visualization
+	 * 
+	 * @param visualization - The provided visualization
+	 * 
+	 * @return - NodePosition list
+	 */
 	//public ArrayList<Position> generatePositionList(ContactMapVisual visualization) {
 	public static ArrayList<NodePosition> generatePositionList(Visualization visualization) {	
 		// Create the ArrayList that needs to be returned

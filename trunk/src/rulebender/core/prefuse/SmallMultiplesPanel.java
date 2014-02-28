@@ -1475,7 +1475,18 @@ public class SmallMultiplesPanel extends JLayeredPane implements ActionListener 
 		// Initialize the size of the models to their panels on the first resize only
 		if (!m_modelSizeInitialized) {
 			for (int i = 0; i < m_numFiles; i++) {
-				fitToPanel(i, sm[0].getDisplay().getVisualization().getBounds(Visualization.ALL_ITEMS));
+				//fitToPanel(i, sm[0].getDisplay().getVisualization().getBounds(Visualization.ALL_ITEMS));
+				
+				// Temp variable to hold the bounds of sm[0]
+				Rectangle2D bounds = sm[0].getDisplay().getVisualization().getBounds(COMPONENT_GRAPH);
+				
+				// Set bounds to the first multiple if they exist; otherwise set bounds to the current multiple
+				if ((bounds.getHeight() != 0) && (bounds.getWidth() != 0)) {
+					fitToPanel(i, bounds);
+				} else {
+					fitToPanel(i, sm[i].getDisplay().getVisualization().getBounds(COMPONENT_GRAPH));
+				} //if
+				
 			} //for	
 		} //if
 		

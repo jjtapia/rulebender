@@ -41,6 +41,9 @@ public class SmallMultiplesView extends ViewPart {
 	// This is the parent that we will add our composite to.
 	private Composite parentComposite;
 
+	/**
+	 * Blank constructor
+	 */
 	public SmallMultiplesView() {
 		// Do nothing for now
 	} //SmallMultiplesView (constructor)
@@ -141,6 +144,11 @@ public class SmallMultiplesView extends ViewPart {
 	} //setSmallMultiple
 	*/
 	
+	/**
+	 * Function to handle messages received from the timeline tree view
+	 * 
+	 * @param msg - message details in a Message object
+	 */
 	public void iGotAMessage(Message msg) {
 		if (msg.getType().equals("ModelSelection")) {
 			highlightAPanel(msg.getDetails());
@@ -149,6 +157,11 @@ public class SmallMultiplesView extends ViewPart {
 		} //if-else
 	} //iGotAMessage
 	
+	/**
+	 * Add highlighting/selection to a panel
+	 * 
+	 * @param modelName - The name of the model who's panel should be highlighted
+	 */
 	private void highlightAPanel(String modelName) {
 		int panelNum = smPanel.findPanelFromModelName(modelName);
 		
@@ -161,6 +174,11 @@ public class SmallMultiplesView extends ViewPart {
 		
 	} //highlightAPanel
 	
+	/**
+	 * Remove the highlighting/selection from a panel
+	 * 
+	 * @param modelName - The name of the model who's panel should not be highlighted
+	 */
 	private void unhighlightAPanel(String modelName) {
 		if (modelName.equals("")) {
 			smPanel.removeAllSelections();
@@ -172,15 +190,28 @@ public class SmallMultiplesView extends ViewPart {
 		} //if-else
 	} //unhighlightAPanel
 	
+	/**
+	 * Function to retrieve the SMPanel object
+	 * 
+	 * @return - active SMPanel
+	 */
 	public SmallMultiplesPanel getSmallMultiplesPanel() {
 		return smPanel;
 	} //getSmallMultiplesPanel
 
+	/**
+	 * Repaints the frame
+	 */
 	@Override
 	public void setFocus() {
 		frame.repaint();
 	} //setFocus
 
+	/**
+	 * Returns the size of the parent composite
+	 * 
+	 * @return - size
+	 */
 	public Dimension getSize() {
 		return new Dimension(parentComposite.getSize().x, parentComposite.getSize().y); 
 	} //getSize

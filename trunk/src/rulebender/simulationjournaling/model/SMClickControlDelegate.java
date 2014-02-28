@@ -222,12 +222,13 @@ public class SMClickControlDelegate extends ControlAdapter implements ISelection
 		ColorAction aFill;
 		
 		if (differentActivated) {
-			aFill = new ColorAction("bubbles", VisualItem.FILLCOLOR, ColorLib.rgba(240, 50, 40, 150)); //red
+			aFill = new ColorAction("bubbles", VisualItem.FILLCOLOR, ColorLib.rgba(225, 26, 28, 150)); //red
 			//aFill = new ColorAction("bubbles", VisualItem.FILLCOLOR, ColorLib.rgba(50, 50, 240, 150)); //blue
 		} else if (similarActivated) {
-			aFill = new ColorAction("bubbles", VisualItem.FILLCOLOR, ColorLib.rgba(50, 240, 240, 150)); //green
+			aFill = new ColorAction("bubbles", VisualItem.FILLCOLOR, ColorLib.rgba(77, 175, 74, 150)); //green
 		} else if (itemHighlightActivated) {
-			aFill = new ColorAction("bubbles", VisualItem.FILLCOLOR, ColorLib.rgba(255, 240, 0, 150)); //yellow
+			//aFill = new ColorAction("bubbles", VisualItem.FILLCOLOR, ColorLib.rgba(255, 240, 0, 150)); //yellow
+			aFill = new ColorAction("bubbles", VisualItem.FILLCOLOR, ColorLib.rgba(55, 126, 184, 150)); //blue
 		} else {
 			aFill = new ColorAction("bubbles", VisualItem.FILLCOLOR, ColorLib.rgba(150, 150, 150, 150)); //gray
 		} //if-else
@@ -2332,12 +2333,20 @@ public class SMClickControlDelegate extends ControlAdapter implements ISelection
 		
 	} //aggregateLeftClicked
 	
+	/**
+	 * Function to output timing information
+	 */
 	public void printSystemTimes() {
 		System.out.println("Start Time:   " + startTime);
 		System.out.println("End Time:     " + endTime);
 		System.out.println("Time Elapsed: " + (endTime - startTime));		
 	} //printSystemTimes
 	
+	/**
+	 * Returns the name of the model given a filepath
+	 * 
+	 * @return - The name of the model
+	 */
 	public String getFileName() {
 		return getModelNameFromFilepath(m_sourcePath);
 	} //getFileName
