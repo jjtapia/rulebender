@@ -314,6 +314,9 @@ public class TimelineLoader {
 		attr.append(addAttribute("name", currentFile.getName()));
 		
 		for (int i = 0; i < currentFile.getSimulations().size(); i++) {
+			// Tab in
+			attr.append(addTab(level));
+			
 			attr.append(addAttribute("simulation", currentFile.getSimulations().get(i)));
 		} //for
 		

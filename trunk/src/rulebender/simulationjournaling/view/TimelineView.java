@@ -5,6 +5,8 @@ import java.io.File;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import javax.swing.JPanel;
+
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.awt.SWT_AWT;
 import org.eclipse.swt.events.ControlAdapter;
@@ -65,8 +67,9 @@ public class TimelineView extends ViewPart {
 		frame = SWT_AWT.new_Frame(swtAwtComponent);
 		
 		// Create the TreeView object
-		tree = new TreeView(new Dimension(1000, 250), this, /*"C:\\Users\\John\\runtime-rulebender.product\\stat\\stat.info"*/ null /*"C:\\Users\\John\\runtime-rulebender.product\\fceri\\fceri.info"*/);
+		tree = new TreeView(new Dimension(1200, 150), this, /*"C:\\Users\\John\\runtime-rulebender.product\\stat\\stat.info"*/ null /*"C:\\Users\\John\\runtime-rulebender.product\\fceri\\fceri.info"*/);
 		//tree = new TreeView(new Dimension(parent.getSize().x, parent.getSize().y), this);
+
 		
 		// Add the layered pane to the frame.
 		frame.add(tree);
@@ -131,9 +134,12 @@ public class TimelineView extends ViewPart {
 		frame.repaint();		
 	} //setFocus
 
-	public void repaint() {
-		tree.repaint();
+	/*public void repaint() {
+		//tree.repaint();
+		frame.repaint();
+		//parentComposite.layout(true);
 	} //repaint
+	*/
 	
 	/**
 	 * Returns the size of the parent Composite
@@ -144,45 +150,85 @@ public class TimelineView extends ViewPart {
 		return new Dimension(parentComposite.getSize().x, parentComposite.getSize().y); 
 	} //getSize
 	
+	/**
+	 * Function to handle messages received from the SMPanel View
+	 * 
+	 * @param msg - message
+	 */
 	public void iGotAMessage(Message msg) {
 		if (msg.getType().equals("DirectorySelection")) {
 			updateTree(msg);
+			//this.repaint();
 		} else if (msg.getType().equals("ModelSelection")) {
 			//highlightLabel(msg.getDetails());
 		} //if
 	} //iGotAMessage
     
+	/**
+	 * Update the tree with a new model
+	 * 
+	 * @param msg - message from SMPanel containing directory information
+	 */
 	public void updateTree(Message msg) {
-		frame.remove(0);
+		/*
+		frame.removeAll();
 		frame.validate();
 		
-		// // Create the composite that will hold everything.
-		//Composite swtAwtComponent = new Composite(parentComposite, SWT.EMBEDDED);
-		
-		// // Create the special swt/awt frame to hold the awt stuff.
-		//frame = SWT_AWT.new_Frame(swtAwtComponent);
-		
+				
 		tree = null;
-		tree = new TreeView(new Dimension(1000,250), this, getINFOPath(msg.getDetails()));
+		tree = new TreeView(new Dimension(parentComposite.getSize().x,parentComposite.getSize().y), this, getINFOPath(msg.getDetails()));
+		//tree.getMyVis().run("animate");
+		
+		//tree.getMyVis().run("animate");
+		//tree.getMyVis().run("repaint");
+		//tree.getMyVis().repaint();
+		//tree.repaint();
+		//tree.setBounds(0, 0, parentComposite.getSize().x, parentComposite.getSize().y);
+
+		//tree.tview.damageReport();
+		//tree.tview.repaint();
 		
 		frame.add(tree);
 		frame.validate();
+		//frame.repaint();
+		
+		
+		
+		//this.repaint();
+
+		
+		//parentComposite.layout(true);
+		//parentComposite.layout();
+		//parentComposite.update();
+		
+		//stupidHackyFix();
+		
+		tree.myResize();
+		//tree.repaint();
+		*/
+		
+		// TODO: Try to fake a mouse signal
+		
+		tree.setDirectory(msg.getDetails());
+		tree.reloadTree();	
+		frame.validate();
 		frame.repaint();
-		
-		this.repaint();
-		
-		tree.repaint();
-		tree.getMyVis().repaint();
-		tree.getMyVis().run("treeLayout");
-		
-		parentComposite.layout();
-		parentComposite.update();
-		//tree.setDirectory(msg.getDetails());
-		//tree.reloadTree();		
 	} //updateTree
-    
-	
-   	public String getINFOPath(String dir) {
+    /*
+	public void stupidHackyFix() {
+		parentComposite.setSize(parentComposite.getSize().x, parentComposite.getSize().y+1);
+		parentComposite.setSize(parentComposite.getSize().x, parentComposite.getSize().y-1);
+	} //stupidHackyFix
+	*/
+
+	/**
+	 * Find the path of the INFO file from a provided directory
+	 * 
+	 * @param dir - directory to search
+	 * 
+	 * @return - path to the INFO file
+	 */
+	public String getINFOPath(String dir) {
     	
     	String infoPath = null;
     	
@@ -224,6 +270,12 @@ public class TimelineView extends ViewPart {
     	
     } //setDirectory
     
+   	/**
+   	 * Checks to see if the current file under consideration is an INFO file
+   	 * 
+   	 * @param child
+   	 * @return
+   	 */
 	private boolean isINFOFile(File child) {
 		String filepath = child.getPath();
 		return ((filepath.substring(filepath.length()-5, filepath.length()).equals(".info")) || (filepath.substring(filepath.length()-5, filepath.length()).equals(".INFO")));

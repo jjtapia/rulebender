@@ -223,13 +223,14 @@ public class TreeView extends JPanel {
         		
                 if ( item.canGetString(m_label) ) {
                 	//title.setText(item.getString(m_label));
-                	highlightPanel(item.getString(m_label));
+                	//highlightPanel(item.getString(m_label));
+                	//m_view.stupidHackyFix();
                 	//tview.getVis().repaint();
                 	//tview.getVis().run("fullPaint");
                 	//tview.getVis().run("animate");
-                	//tview.getVis().repaint();
+                	tview.getVis().repaint();
                 	
-                	m_view.repaint();
+                	//m_view.repaint();
                 } //if
         	} //itemReleased
         	
@@ -244,8 +245,11 @@ public class TreeView extends JPanel {
             	//removePanelHighlight();
             } //itemExited
             */
+        	
+        	
         });
         
+       
         
         /*
         Box box = new Box(BoxLayout.X_AXIS);
@@ -257,26 +261,33 @@ public class TreeView extends JPanel {
         box.setBackground(BACKGROUND);
         */
         
-        JPanel panel = new JPanel(new BorderLayout());
-        panel.setBackground(BACKGROUND);
-        panel.setForeground(FOREGROUND);
+        //JPanel panel = new JPanel(new BorderLayout());
+        this.setLayout(new BorderLayout());
+        this.setBackground(BACKGROUND);
+        this.setForeground(FOREGROUND);
         
         if (!(tview == null)) {
-        	panel.add(tview, BorderLayout.CENTER);
+        	this.add(tview, BorderLayout.CENTER);
         	//panel.repaint();
         } //if
         //panel.add(box, BorderLayout.SOUTH);
         
+        //this.add(panel);
         myResize(m_overallSize);
-        this.add(panel);
-        //this.repaint();
+        
+        this.repaint();
         //this.setVisible(true);
         
         //endDisplayTime = System.nanoTime();
         //printSystemTimes();
         
     } //TreeView (constructor)
-	/*
+	
+    /**
+     * Sets the directory that we're exploring in looking for the INFO file
+     * 
+     * @param dir - selected directory
+     */
    	public void setDirectory(String dir) {
     	
     	// Clear the existing m_dir
@@ -316,17 +327,108 @@ public class TreeView extends JPanel {
     	
     } //setDirectory
     
+   	/**
+   	 * Checks to see if the current file under consideration is the project INFO file
+   	 * 
+   	 * @param child - file being checked
+   	 * 
+   	 * @return T/F
+   	 */
 	private boolean isINFOFile(File child) {
 		String filepath = child.getPath();
 		return ((filepath.substring(filepath.length()-5, filepath.length()).equals(".info")) || (filepath.substring(filepath.length()-5, filepath.length()).equals(".INFO")));
 	} //isBNGLFile
-    */
-    
-    /*
+
+	/**
+	 * Reloads the tree with new structure/information
+	 */
     public void reloadTree() {
+    	int a = this.countComponents();
+    	
+    	this.remove(0);
+    	
+    	Tree t = null;
+    	
+    	// The actual data from the .INFO file
+    	TimelineLoader loader = new TimelineLoader(m_dir);
+    	ArrayList<TimelineItem> files = loader.parseFile();
+    	String xml = loader.createXML(files);
+    	printTimelineItems(files);
+    	
+    	// Load the data into a tree from the XML representation
+        try {
+           	String myPath = writeXMLToFile(xml, m_dir);
+           	t = (Tree)new TreeMLReader().readGraph(myPath);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            //System.exit(1);
+        } //try-catch
+            
+        if (!(t == null)) {
+         	// create a new treemap
+        	tview = null;
+           	tview = new MyTreeView(t, m_label, m_overallSize);
+           	tview.setBackground(BACKGROUND);
+           	tview.setForeground(FOREGROUND);
+        } //if
+        
+        tview.addControlListener(new ControlAdapter() {
+        	
+        	public void itemClicked(VisualItem item, MouseEvent e) {
+        		
+                if ( item.canGetString(m_label) ) {
+                	//title.setText(item.getString(m_label));
+                	highlightPanel(item.getString(m_label));
+                	//m_view.stupidHackyFix();
+                	//tview.getVis().repaint();
+                	tview.getVis().run("fullPaint");
+                	tview.getVis().run("animate");
+                	tview.getVis().repaint();
+                	
+                	//m_view.repaint();
+                } //if
+        	} //itemReleased
+        	
+        	/*
+            public void itemEntered(VisualItem item, MouseEvent e) {
+            	// temporarily moved to itemReleased
+            } //itemEntered
+            
+            public void itemExited(VisualItem item, MouseEvent e) {
+                //title.setText(null);
+            	//TODO restore this function later
+            	//removePanelHighlight();
+            } //itemExited
+            */
+        	
+        	
+        });
+        
+       
+        
+        //JPanel panel = new JPanel(new BorderLayout());
+        //this.setLayout(new BorderLayout());
+        //this.setBackground(BACKGROUND);
+        //this.setForeground(FOREGROUND);
+        
+        if (!(tview == null)) {
+        	this.add(tview, BorderLayout.CENTER);
+        	//panel.repaint();
+        } //if
+        //panel.add(box, BorderLayout.SOUTH);
+        
+        //this.add(panel);
+        myResize(m_overallSize);
+        
+        //this.repaint();
+        //this.setVisible(true);
+        
+        //endDisplayTime = System.nanoTime();
+        //printSystemTimes();
     
     } //reloadTree
-    */
+    
     
    /**
     * Writes XML to file
@@ -391,7 +493,7 @@ public class TreeView extends JPanel {
 		private static final long serialVersionUID = -9158026561142479125L;
 
 		/**
-		 * Constructor:  renders the timeline tree viewpart
+		 * Constructor:  renders the timeline tree visualization
 		 * 
 		 * @param t - the tree
 		 * @param label - label field
@@ -475,8 +577,11 @@ public class TreeView extends JPanel {
             animate.add(new LocationAnimator(treeNodes));
             animate.add(new ColorAnimator(treeNodes));
             animate.add(new RepaintAction());
+            //animate.setDuration(10000);
+            animate.setStepTime(1000);
             m_vis.putAction("animate", animate);
             m_vis.alwaysRunAfter("filter", "animate");
+            m_vis.alwaysRunAfter("animate", "repaint");
             
             // create animator for orientation changes
             ActionList orient = new ActionList(2000);
@@ -730,9 +835,23 @@ public class TreeView extends JPanel {
     	
     } //MyTreeView (inner class)
 
+    /**
+     * Returns Visualization Object
+     * 
+     * @return - Visualization Object
+     */
     public Visualization getMyVis() {
     	return tview.getVis();
     } //getMyVis
+    
+    /**
+     * Returns TreeView object
+     * 
+     * @return - TreeView object
+     */
+    public MyTreeView getMyTreeView() {
+    	return tview;
+    } //getMyTreeView
     
     /**
      * Resize the ViewPart
@@ -749,9 +868,36 @@ public class TreeView extends JPanel {
 	public void myResize(Dimension dimension) {
 		m_overallSize = dimension;
 		if (!(tview == null)) {
+			
+			// Have to do this!
 			tview.resetSize(dimension);
+			
+			
+			//tview.repaint();
+			
+			//tview.getVis().run("fullPaint");
+			//tview.getVis().run("animatePaint");
+			//tview.getVis().runAfter("animatePaint", "repaint");
+			//tview.getVis().run("animatePaint");
+			tview.getVis().runAfter("animate", "repaint");
+			tview.getVis().run("filter");
+			//tview.getVis().run("repaint");
+			//tview.getVis().runAfter("repaint", "animatePaint");
+			//tview.getVis().repaint();
+			
+			// Hardcoded delay workaround (TODO: temporary fix)
+			for (int i = 0; i < 100000000; i++) {
+				int j = i+1;
+			} //for
+			
+			// Have to do this!
 			tview.repaint();
 		} //if
+		
+		this.setSize(dimension);
+		
+		//m_view.repaint();
+		
 	} //myResize
 
 	/**
@@ -790,6 +936,7 @@ public class TreeView extends JPanel {
 	} //printTimelineItems
 	/*
 	public void setSelection(String sel) {
+
 		TupleSet search = new PrefixSearchTupleSet();
 		
 		
@@ -798,6 +945,12 @@ public class TreeView extends JPanel {
 		
 	} //setSelection
 	*/
+	
+	/**
+	 * Pass a message to the SMPanel to highlight/select a model
+	 * 
+	 * @param modelName - model to select
+	 */
 	public void highlightPanel(final String modelName) {
 		
 		// Find the TimelineView to pass a selection message to
@@ -856,6 +1009,7 @@ public class TreeView extends JPanel {
 	    } //for
 	    return null;
 	} //getView
+	
 	
 	/*
 	public void printSystemTimes() {
