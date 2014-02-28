@@ -170,7 +170,7 @@ public class TimelineView extends ViewPart {
 	 * @param msg - message from SMPanel containing directory information
 	 */
 	public void updateTree(Message msg) {
-		/*
+		
 		frame.removeAll();
 		frame.validate();
 		
@@ -205,12 +205,12 @@ public class TimelineView extends ViewPart {
 		
 		tree.myResize();
 		//tree.repaint();
-		*/
+		
 		
 		// TODO: Try to fake a mouse signal
 		
-		tree.setDirectory(msg.getDetails());
-		tree.reloadTree();	
+		//tree.setDirectory(msg.getDetails());
+		//tree.reloadTree();	
 		frame.validate();
 		frame.repaint();
 	} //updateTree
