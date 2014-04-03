@@ -10,6 +10,7 @@ import java.util.StringTokenizer;
 
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.Timer;
@@ -107,6 +108,8 @@ public class SMClickControlDelegate extends ControlAdapter implements ISelection
 	private JMenuItem refreshModelMenuItem;
 	private JMenuItem[] differencesList;
 	private JMenuItem[] similaritiesList;
+	private JMenuItem openSingleSimulationMenuItem;
+	private JMenuItem openMultipleSimulationMenuItem;
 	
 	// Popup Menu items (states)
 	private JMenuItem showStatesMenuItem;
@@ -136,6 +139,9 @@ public class SMClickControlDelegate extends ControlAdapter implements ISelection
 	
 	// Temp global variables for calculation speed results
 	long startTime, endTime;
+	
+	//Temp global variables for printing model size
+	int numNodes, numEdges;
 	
 	/**
 	 * Constructor:
@@ -482,6 +488,30 @@ public class SMClickControlDelegate extends ControlAdapter implements ISelection
 			popupMenu.add(openModelMenuItem);
 			openModelMenuItem.addActionListener(this);
 			
+			// Open simulations menu option
+			if ((smPanel.isCurrentlyHighlighted())) {
+				JMenu m = new JMenu("Open simulations...");
+				
+				openSingleSimulationMenuItem = new JMenuItem("On this model only");
+				openSingleSimulationMenuItem.addActionListener(this);
+				
+				openMultipleSimulationMenuItem = new JMenuItem("On both highlighted models");
+				openMultipleSimulationMenuItem.addActionListener(this);
+				
+				m.add(openSingleSimulationMenuItem);
+				m.add(openMultipleSimulationMenuItem);
+				
+				popupMenu.add(m);
+				
+			} else { 
+				openSingleSimulationMenuItem = new JMenuItem("Open most recent simulation");
+				popupMenu.add(openSingleSimulationMenuItem);
+				openSingleSimulationMenuItem.addActionListener(this);
+				
+			} //if-else
+			
+			
+			
 			// Refresh model menu option
 			// TODO: restore this function when you have the time
 			//refreshModelMenuItem = new JMenuItem("Refresh model");
@@ -746,6 +776,14 @@ public class SMClickControlDelegate extends ControlAdapter implements ISelection
 			// If we select this menu item, we are deselecting the visibility of compartments in this small multiple only
 			showCompartments();
 			
+		} else if (e2.getSource() == openSingleSimulationMenuItem) {
+			// If we select this menu item, we are opening the most recent simulation of the model clicked
+			openSimulation(smPanel, panelIndexClicked);
+						
+		} else if (e2.getSource() == openMultipleSimulationMenuItem) {
+			// If we select this menu item, we are opening the most recent simulations of both highlighted models			
+			openTwoSimulations(smPanel, smPanel.getHighlightedPanels());
+			
 		} else if (e2.getSource().getClass().getName().equals("javax.swing.JMenuItem")) {
 			// If we select any JMenuItem item from the dropdown list
 			
@@ -774,7 +812,11 @@ public class SMClickControlDelegate extends ControlAdapter implements ISelection
 					handleSimilaritiesOption(smPanel, similarityIndex, selectedModel, panelIndexClicked);
 					endTime = System.nanoTime();
 					
+					numNodes = countNodes(selectedModel);
+					numEdges = countEdges(selectedModel);
+					
 					printSystemTimes();
+					printModelSize(numNodes, numEdges);
 					
 					smPanel.selectCompareSimilaritiesButton();
 					comparisonIndex = similarityIndex;
@@ -786,7 +828,11 @@ public class SMClickControlDelegate extends ControlAdapter implements ISelection
 				handleDifferencesOption(smPanel, comparisonIndex, selectedModel, panelIndexClicked);
 				endTime = System.nanoTime();
 				
+				numNodes = countNodes(selectedModel);
+				numEdges = countEdges(selectedModel);
+				
 				printSystemTimes();
+				printModelSize(numNodes, numEdges);
 				
 				smPanel.selectCompareDifferencesButton();
 					
@@ -815,6 +861,75 @@ public class SMClickControlDelegate extends ControlAdapter implements ISelection
 		} //if-else
 		
 	} //actionPerformed
+	
+	/**
+	 * Counts the number of nodes in a visualization
+	 * 
+	 * @param model - the input model
+	 * 
+	 * @return - the number of nodes
+	 */
+	public int countNodes(Visualization model) {
+		int count = 0;
+		
+		Iterator iter = model.items(PrefuseLib.getGroupName(COMPONENT_GRAPH, Graph.NODES));
+		
+		// Loop through the list of nodes
+		while (iter.hasNext()) {
+			VisualItem item = (VisualItem) iter.next();
+			
+			// Increment the counter if the node is not null
+			if (item.getString("molecule") != null) {
+				count++;				
+			} //if
+			
+		} //while
+			
+		return count;
+	} //countNodes
+	
+	/**
+	 * Counts the number of edges in a visualization
+	 * 
+	 * @param model - the input model
+	 * 
+	 * @return - the number of edges
+	 */
+	public int countEdges(Visualization model) {
+		int count = 0;
+		
+		Iterator iter = model.items(PrefuseLib.getGroupName(COMPONENT_GRAPH, Graph.EDGES));
+		
+		// Loop through the list of edges
+		while (iter.hasNext()) {
+			
+			// Get the two endpoints of each edge and find their labels
+			Edge edge = (Edge) iter.next();
+			
+			VisualItem source = (VisualItem) edge.getSourceNode();
+			VisualItem target = (VisualItem) edge.getTargetNode();
+			
+			if ((source.getString("molecule") == null) || (target.getString("molecule") == null)) {
+				continue;
+			} //if
+			
+			count++;
+		} // while
+		
+		return count;
+	} //countEdges
+	
+	/**
+	 * Outputs the size of a model, where size = numNodes + numEdges
+	 * 
+	 * @param nodes - number of nodes
+	 * @param edges - number of edges
+	 */
+	public void printModelSize(int nodes, int edges) {
+		System.out.println("Model size: " +  (nodes+edges));
+		System.out.println("Number nodes: " + nodes);
+		System.out.println("Number edges: " + edges);
+	} //printModelSize
 	
 	/**
 	 * Hides all state nodes in this SmallMultiple 
@@ -1116,6 +1231,122 @@ public class SMClickControlDelegate extends ControlAdapter implements ISelection
 
 		
 	} //openBNGLFile
+	
+	private void openSimulation(SmallMultiplesPanel smPanel, int panelIndexClicked) {
+		
+		// Switch to the default perspective
+		Display.getDefault().syncExec(new Runnable() {
+
+			@Override
+			public void run() {
+				try {
+					PlatformUI.getWorkbench().showPerspective("rulebender.perspective", PlatformUI.getWorkbench().getActiveWorkbenchWindow());
+				} catch (WorkbenchException e) {
+					e.printStackTrace();
+				} //try-catch
+				
+			} //run				
+		});
+		
+		try {
+			
+			// Find the file that needs to be opened
+		    IWorkspace workspace = ResourcesPlugin.getWorkspace();  
+		    IPath location = Path.fromOSString(smPanel.getMultiple(panelIndexClicked).getNetworkViewer().getMostRecentSimulation());
+		    IFile iFile = workspace.getRoot().getFileForLocation(location);		
+			
+		    final IEditorInput editorInput = new FileEditorInput(iFile);
+			
+			// clumsy hack
+			IWorkbenchPage page_last = null;
+		    
+		    for (IWorkbenchWindow window : PlatformUI.getWorkbench().getWorkbenchWindows()) {
+		        for (IWorkbenchPage page : window.getPages()) {
+		            page_last = page;
+		        } //for
+	    	} //for
+	    
+	    	final IWorkbenchPage p = page_last;
+	    
+	    	// Open the file using the results display
+			Display.getDefault().syncExec(new Runnable() {
+
+				@Override
+				public void run() {
+					try {
+						p.openEditor(editorInput, "rulebender.editors.dat");
+					} catch (PartInitException e) {
+						e.printStackTrace();
+					} //try-catch
+				
+				} //run				
+			});		
+		} catch (Exception e) {
+			JOptionPane.showMessageDialog(null, "No simulations exist for model " + getModelNameFromFilepath(smPanel.getMultiple(panelIndexClicked).getNetworkViewer().getFilepath()), "Error", JOptionPane.ERROR_MESSAGE);
+		} //try-catch
+		
+	} //openSimulation
+	
+	private void openTwoSimulations(SmallMultiplesPanel smPanel, ArrayList<Integer> panels) {
+		
+		// Switch to the default perspective
+		Display.getDefault().syncExec(new Runnable() {
+
+			@Override
+			public void run() {
+				try {
+					PlatformUI.getWorkbench().showPerspective("rulebender.perspective", PlatformUI.getWorkbench().getActiveWorkbenchWindow());
+				} catch (WorkbenchException e) {
+					e.printStackTrace();
+				} //try-catch
+				
+			} //run				
+		});
+		
+		// Loop through the list of highlighted panels (should only be two) to display simulation runs for each
+		for (int i : panels) {
+			
+			try {
+			
+				// Find the file that needs to be opened
+				IWorkspace workspace = ResourcesPlugin.getWorkspace();  
+		    	IPath location = Path.fromOSString(smPanel.getMultiple(i).getNetworkViewer().getMostRecentSimulation());
+		    	IFile iFile = workspace.getRoot().getFileForLocation(location);		
+			
+	    		final IEditorInput editorInput = new FileEditorInput(iFile);
+		    	
+				// clumsy hack
+				IWorkbenchPage page_last = null;
+		    
+		    	for (IWorkbenchWindow window : PlatformUI.getWorkbench().getWorkbenchWindows()) {
+		        	for (IWorkbenchPage page : window.getPages()) {
+		        		page_last = page;
+		        	} //for
+		    	} //for
+		    
+		   		final IWorkbenchPage p = page_last;
+		    
+		   		// Open the file using the results display
+				Display.getDefault().syncExec(new Runnable() {
+
+					@Override
+					public void run() {
+						try {
+							p.openEditor(editorInput, "rulebender.editors.dat");
+						} catch (PartInitException e) {
+							e.printStackTrace();
+						} //try-catch
+					
+					} //run				
+				});		
+			
+			} catch (Exception e) {
+				JOptionPane.showMessageDialog(null, "No simulations exist for model " + getModelNameFromFilepath(smPanel.getMultiple(i).getNetworkViewer().getFilepath()), "Error", JOptionPane.ERROR_MESSAGE);
+			} //try-catch
+		} //for
+		
+	} //openTwoSimulations
+		
 
 	/**
 	 * Reload the model in the selected panel (for use if the model fails to load the first time, or to restore the model to its original state)

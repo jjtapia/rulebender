@@ -174,7 +174,7 @@ public class TimelineView extends ViewPart {
 		frame.removeAll();
 		frame.validate();
 		
-				
+		
 		tree = null;
 		tree = new TreeView(new Dimension(parentComposite.getSize().x,parentComposite.getSize().y), this, getINFOPath(msg.getDetails()));
 		//tree.getMyVis().run("animate");

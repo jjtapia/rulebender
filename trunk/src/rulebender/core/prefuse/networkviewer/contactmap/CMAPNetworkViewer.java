@@ -5,6 +5,16 @@ import java.awt.geom.Rectangle2D;
 
 import java.awt.Dimension;
 import java.awt.Font;
+import java.io.File;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IWorkspace;
+import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.Path;
 
 
 import prefuse.Constants;
@@ -30,6 +40,7 @@ import prefuse.visual.VisualItem;
 import prefuse.visual.VisualTupleSet;
 import prefuse.visual.expression.InGroupPredicate;
 import rulebender.core.prefuse.networkviewer.CustomizedZoomToFitControl;
+import rulebender.simulate.ResultsFileUtility;
 import rulebender.simulationjournaling.model.SMClickControlDelegate;
 
 public class CMAPNetworkViewer 
@@ -163,6 +174,84 @@ public class CMAPNetworkViewer
 	public String getFilepath() {
 		return m_filePath;
 	} //getFilepath
+	
+	public String getMostRecentSimulation() {
+		String mostRecentSimulationFilepath = null;
+		
+		// Get an iFile for the BNGL file location
+		IWorkspace workspace = ResourcesPlugin.getWorkspace();  
+		IPath location = Path.fromOSString(m_filePath);
+	    IFile iFile = workspace.getRoot().getFileForLocation(location);
+		
+	    // Use that iFile to get the results directory
+		String resultsDir = ResultsFileUtility.getSimulationResultsDirectoryForIFile(iFile);
+		
+		// Jump up to the parent
+		resultsDir = getParentDirectory(resultsDir);
+		System.out.println(resultsDir);
+		
+		// Find the .gdat file
+		mostRecentSimulationFilepath = findMostRecentResultsRun(resultsDir);
+				
+		return mostRecentSimulationFilepath;
+	} //getMostRecentSimulation
+	
+	public String getParentDirectory(String filePath) {
+		File d = new File(filePath);
+		filePath = d.getParent().toString();		
+		return filePath;
+	} //getParentDirectory
+	
+	public String findMostRecentResultsRun(String filePath) {
+		File d = new File(filePath);
+		File newest = null;
+		Date date;
+		Date newestTimestamp = null;
+		
+		try {
+			// Look for the newest directory that isn't
+			for (File child : d.listFiles()) {
+				if (child.isDirectory()) {
+					try {
+						date = new SimpleDateFormat("dd-MMMM-yy_HH-mm-ss", Locale.ENGLISH).parse(child.getName().toString());
+						System.out.println(date);
+					} catch (Exception e) {
+						try {
+							date = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss", Locale.ENGLISH).parse(child.getName().toString());
+							System.out.println(date);
+						} catch (Exception e2) {
+							System.err.println("Unknown date format");
+							break;
+						} //try-catch
+					} //try-catch
+				
+					// Compare current date against most recent
+					if (newestTimestamp == null) {
+						newestTimestamp = date;
+						newest = child;
+					} else {
+						if (date.after(newestTimestamp)) {
+							newestTimestamp = date;
+							newest = child;	
+						} //if
+					} //if-else
+					
+				} //if
+			} //for
+		} catch (NullPointerException npe) {
+			return "";
+		}
+		
+		// Look for the gdat file in that directory
+		for (File child : newest.listFiles()) {
+			String path = child.toString();
+			if (path.substring(path.length()-5, path.length()).equals(".gdat")) {
+				return path;
+			} //if
+		} //for
+		
+		return "";
+	} //findMostRecentResultsRun
 	
 	public void setPosPath(String path) {
 		m_posPath = path;

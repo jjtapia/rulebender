@@ -568,6 +568,7 @@ public class TreeView extends JPanel {
             filter.add(edgeColor);
             m_vis.putAction("filter", filter);
             
+            
             // animated transition
             ActionList animate = new ActionList(1000);
             animate.setPacingFunction(new SlowInSlowOutPacer());
@@ -582,7 +583,7 @@ public class TreeView extends JPanel {
             m_vis.putAction("animate", animate);
             m_vis.alwaysRunAfter("filter", "animate");
             m_vis.alwaysRunAfter("animate", "repaint");
-            
+           
             // create animator for orientation changes
             ActionList orient = new ActionList(2000);
             orient.setPacingFunction(new SlowInSlowOutPacer());
