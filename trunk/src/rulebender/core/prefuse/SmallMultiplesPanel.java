@@ -159,7 +159,7 @@ public class SmallMultiplesPanel extends JLayeredPane implements ActionListener 
 	private String m_selectedItemFromTimelineTreeView;
 	
 	// Temp global variables for calculation speed results
-	//long startTime, endLoadTime, endSimilarityTime, endSortTime;
+	long startTime, endLoadTime, endSimilarityTime, endSortTime;
 	
 	
 	/**
@@ -261,7 +261,7 @@ public class SmallMultiplesPanel extends JLayeredPane implements ActionListener 
 		//	myPanel[i].setToolTipText("testing");
 		//} //for
 		
-		//startTime = System.nanoTime();
+		startTime = System.nanoTime();
 		
 		// Initialize the small multiples layout
 		//initializeSmallMultiplesDisplay((String)ddlLayouts.getSelectedItem());
@@ -291,7 +291,7 @@ public class SmallMultiplesPanel extends JLayeredPane implements ActionListener 
 		myResize(m_overallSize);
 				
 		// Print system times for results
-		//printSystemTimes();
+		printSystemTimes();
 		
 	} //SmallMultiplesPanel (constructor)
 	
@@ -479,6 +479,8 @@ public class SmallMultiplesPanel extends JLayeredPane implements ActionListener 
 		
 			//lowerPanel = new JPanel();
 			
+			startTime = System.nanoTime();
+			
 			lowerPanel.setLayout(new GridLayout(rows, cols, -1, -1));
 				
 			myPanel = new JPanel[m_numFiles];
@@ -498,7 +500,7 @@ public class SmallMultiplesPanel extends JLayeredPane implements ActionListener 
 			// Load the small multiples if they don't exist in the array already
 			populateSmallMultiplesDisplay(m_directory, layoutChoice);
 		
-			//endLoadTime = System.nanoTime();
+			endLoadTime = System.nanoTime();
 		
 			String[] modelNames = populateModelNames(m_directory);
 			matrixLayout = new SimilarityMatrices(modelNames, sm);		
@@ -506,13 +508,13 @@ public class SmallMultiplesPanel extends JLayeredPane implements ActionListener 
 			matrixLayout.fillSimilarityMatrices();
 			matrixLayout.printSimilarityMatrices();
 
-			//endSimilarityTime = System.nanoTime();
+			endSimilarityTime = System.nanoTime();
 		
 			// Sort the small multiples here
 			int largestIndex = findMostCompleteModel();
 			sortModels(largestIndex, matrixLayout);
 		
-			//endSortTime = System.nanoTime();
+			endSortTime = System.nanoTime();
 		
 			// Instantiate the border object.
 			border = new LineBorder(Color.GRAY, BORDER_WIDTH);
@@ -1076,6 +1078,8 @@ public class SmallMultiplesPanel extends JLayeredPane implements ActionListener 
 		        // Load the position files dropdownlist
 		        populatePositionDropdown(m_directory);
 				ddlLayouts.setSelectedIndex(0);
+				
+				printSystemTimes();
 		        
 		    } else {
 		        System.out.println("No Selection!");
@@ -1413,7 +1417,7 @@ public class SmallMultiplesPanel extends JLayeredPane implements ActionListener 
 		
 	} //SmallMultiplePositionThread
 	
-	/*
+	
 	public void printSystemTimes() {
 		System.out.println("Start Time:          " + startTime);
 		System.out.println("End Load Time:       " + endLoadTime);
@@ -1424,8 +1428,55 @@ public class SmallMultiplesPanel extends JLayeredPane implements ActionListener 
 		System.out.println("Similarity Time:     " + (endSimilarityTime - endLoadTime));
 		System.out.println("Sort Time:           " + (endSortTime - endSimilarityTime));
 		
+		System.out.println("");
+		
+		//printModelSizes();
 	} //printSystemTimes
-	*/
+	
+	
+	public void printModelSizes() {
+		for (int i = 0; i < m_numFiles; i++) {
+			int nodeCount = 0, edgeCount = 0;
+			String modelName = "";
+			
+			Visualization vis = sm[i].getDisplay().getVisualization();
+			
+			// Get the model name
+			modelName = ((SMClickControlDelegate)sm[i].getNetworkViewer().getClickControl()).getModelNameFromFilepath(sm[i].getNetworkViewer().getFilepath());
+			
+			// Count the number of nodes
+			Iterator compareIter = vis.items(PrefuseLib.getGroupName(COMPONENT_GRAPH, Graph.NODES));
+			while (compareIter.hasNext()) {
+				VisualItem item = (VisualItem) compareIter.next();
+				if (item.getString("molecule") != null) {
+					nodeCount++;
+				} //if
+			} //while
+			
+			// Count the number of edges
+			Iterator compareEdgeIter = vis.items(PrefuseLib.getGroupName(COMPONENT_GRAPH, Graph.EDGES));
+			while (compareEdgeIter.hasNext()) {
+				Edge selectedEdge = (Edge) compareEdgeIter.next();
+				
+				VisualItem source = (VisualItem) selectedEdge.getSourceNode();
+				VisualItem target = (VisualItem) selectedEdge.getTargetNode();
+				
+				if ((source.getString("molecule") == null) || (target.getString("molecule") == null)) {
+					continue;
+				} //if
+				
+				edgeCount++;
+			} //while	
+			
+			
+			System.out.println("Model name: " + modelName);
+			System.out.println("Number of nodes: " + nodeCount);
+			System.out.println("Number of edges: " + edgeCount);
+			System.out.println();
+			
+		} //for
+	} //printModelSizes
+	
 	
 	/**
 	 * Adam: There is a native resize method, but I needed to do more so I created

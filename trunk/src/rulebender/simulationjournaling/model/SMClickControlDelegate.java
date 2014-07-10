@@ -228,13 +228,16 @@ public class SMClickControlDelegate extends ControlAdapter implements ISelection
 		ColorAction aFill;
 		
 		if (differentActivated) {
-			aFill = new ColorAction("bubbles", VisualItem.FILLCOLOR, ColorLib.rgba(225, 26, 28, 150)); //red
+			aFill = new ColorAction("bubbles", VisualItem.FILLCOLOR, ColorLib.rgba(233, 70, 70, 150)); //less saturated red
+			//aFill = new ColorAction("bubbles", VisualItem.FILLCOLOR, ColorLib.rgba(225, 26, 28, 150)); //red
 			//aFill = new ColorAction("bubbles", VisualItem.FILLCOLOR, ColorLib.rgba(50, 50, 240, 150)); //blue
 		} else if (similarActivated) {
-			aFill = new ColorAction("bubbles", VisualItem.FILLCOLOR, ColorLib.rgba(77, 175, 74, 150)); //green
+			aFill = new ColorAction("bubbles", VisualItem.FILLCOLOR, ColorLib.rgba(165, 217, 164, 150)); //less saturated green
+			//aFill = new ColorAction("bubbles", VisualItem.FILLCOLOR, ColorLib.rgba(77, 175, 74, 150)); //green
 		} else if (itemHighlightActivated) {
 			//aFill = new ColorAction("bubbles", VisualItem.FILLCOLOR, ColorLib.rgba(255, 240, 0, 150)); //yellow
-			aFill = new ColorAction("bubbles", VisualItem.FILLCOLOR, ColorLib.rgba(55, 126, 184, 150)); //blue
+			//aFill = new ColorAction("bubbles", VisualItem.FILLCOLOR, ColorLib.rgba(55, 126, 184, 150)); //blue
+			aFill = new ColorAction("bubbles", VisualItem.FILLCOLOR, ColorLib.rgba(132, 171, 209, 150)); //less saturated blue
 		} else {
 			aFill = new ColorAction("bubbles", VisualItem.FILLCOLOR, ColorLib.rgba(150, 150, 150, 150)); //gray
 		} //if-else
@@ -635,7 +638,7 @@ public class SMClickControlDelegate extends ControlAdapter implements ISelection
 	 * 
 	 * @return - the name of the model
 	 */
-	private String getModelNameFromFilepath(String filepath) {
+	public String getModelNameFromFilepath(String filepath) {
 		
 		// Remove the .bngl extension
 		String modelName = filepath.substring(0, (filepath.length() - 5));
