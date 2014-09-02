@@ -1717,9 +1717,10 @@ public class SMClickControlDelegate extends ControlAdapter implements ISelection
 				selectedTargetString = buildStringRepresentation(selectedTarget).toString();
 				
 				// Now let's check to see if the edges are the same... if they are, then if we're looking for similarities, then add the edge, otherwise skip it
-				if ((sourceString.equals(selectedSourceString)) && (targetString.equals(selectedTargetString))) {
+				if (((sourceString.equals(selectedSourceString)) && (targetString.equals(selectedTargetString))) || ((sourceString.equals(selectedTargetString)) && (targetString.equals(selectedSourceString)))) {
 					if (!findingDifferences) {
 						edges.add(sourceString + "|" + targetString);
+						edges.add(targetString + "|" + sourceString);
 					} else {
 						itemFound = true;
 						break;	
